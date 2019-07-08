@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1553176524508.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "99979FFF",
+    "lastKnownWriteTime" : 1553263670,
+    "last_content_update" : 1553263671000,
+    "path" : "~/sandbox/sandbox/project/chemmaps/Rscripts/addonMap.R",
+    "project_path" : "addonMap.R",
+    "properties" : {
+        "cursorPosition" : "20,0",
+        "scrollLine" : "3",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

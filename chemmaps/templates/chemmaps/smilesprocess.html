@@ -1,0 +1,121 @@
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Create three equal columns that floats next to each other */
+    .column {
+        float: left;
+        width: 33.33%;
+        padding: 10px;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+    @media screen and (max-width: 600px) {
+        .column {
+            width: 100%;
+        }
+    }
+
+
+</style>
+
+
+{% block content %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="/static/chemmaps/css/ntpweb.css" rel="stylesheet">
+<link href="/static/chemmaps/css/ntpweb-shared.css" rel="stylesheet">
+<link href="/static/chemmaps/css/base.css" rel="stylesheet">
+<link href="/static/chemmaps/css/theme.css" rel="stylesheet">
+<script  src="/static/chemmaps/js/theme.js"></script>
+<br>
+<div id = "bg">
+    {% include 'chemmaps/includes/navbar.html' %}
+    <br>
+
+    {% if ERRORSmiles == "1" %}
+    <p class = "Errorform" style="margin-right: 0px"> No valid SMILES found.</p>
+    {% endif %}
+
+    <div class="row">
+        <div class="column" style="background-color:#232b5f;">
+            <h3>Inputs</h3>
+            <table width="100%" border="0">
+                <tr><th>ID</th><th>Input</th></tr>
+                {% for lk, lv in dSMILESIN.items %}
+                <tr><th>{{lk}}</th><th>{{lv}}</th></tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="column" style="background-color:#232b8b;">
+            <h3>SMILES prepared</h3>
+            <table width="100%" border="0">
+                <tr><th>ID</th><th>SMILES</th><th></th></tr>
+                {% for k1, dout in dSMILESOUT.items %}
+                <tr><th>{{k1}}</th>
+                    <th>{{dout.SMILES}}</th><th><img src="/static/{{dout.file}}" width="18"></th>
+                </tr>
+                {% endfor %}
+
+            </table>
+            <br><br>
+
+            {% if map == "DrugMap"  %}
+            <form action='/chemmaps/DrugMap' method='get'>
+                <input type='submit' value='Resubmit Chemicals' />
+            </form>
+            {% endif %}
+            {% if map == "DSSToxMap"  %}
+            <form action='/chemmaps/DSSToxMap' method='get'>
+                <input type='submit' value='Resubmit Chemicals' />
+            </form>
+            {% endif %}
+            {% if map == "PFASMap"  %}
+            <form action='/chemmaps/PFASMap' method='get'>
+                <input type='submit' value='Resubmit Chemicals' />
+            </form>
+            {% endif %}
+            {% if map == "Tox21Map"  %}
+            <form action='/chemmaps/Tox21Map' method='get'>
+                <input type='submit' value='Resubmit Chemicals' />
+            </form>
+            {% endif %}
+
+            {% if ERRORSmiles == "0" %}
+            {% if map == "DrugMap"  %}
+            <form action='/chemmaps/DrugMapDescriptors' method='get' onsubmit="ShowLoading()">
+                <input type='submit' value='Compute descriptors' />
+            </form>
+            {% endif %}
+            {% if map == "DSSToxMap"  %}
+            <form action='/chemmaps/DSSToxMapDescriptors' method='get' onsubmit="ShowLoading()">
+                <input type='submit' value='Compute descriptors' />
+            </form>
+            {% endif %}
+            {% if map == "PFASMap"  %}
+            <form action='/chemmaps/PFASMapDescriptors' method='get' onsubmit="ShowLoading()">
+                <input type='submit' value='Compute descriptors' />
+            </form>
+            {% endif %}
+            {% if map == "Tox21Map"  %}
+            <form action='/chemmaps/Tox21MapDescriptors' method='get' onsubmit="ShowLoading()">
+                <input type='submit' value='Compute descriptors' />
+            </form>
+            {% endif %}
+            {% endif %}
+
+        </div>
+    </div>
+    <br>
+
+</div>
+{% endblock content %}
+

@@ -1,0 +1,202 @@
+{% block content %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="/static/chemmaps/css/ntpweb.css" rel="stylesheet">
+<link href="/static/chemmaps/css/ntpweb-shared.css" rel="stylesheet">
+<link href="/static/chemmaps/css/base.css" rel="stylesheet">
+<link href="/static/chemmaps/css/theme.css" rel="stylesheet">
+
+<div id = "bg">
+    {% include 'chemmaps/includes/navbar.html' %}
+
+
+    <h2>Generate the 3D Map</h2>
+    <p>Select up to 5 features you would like put on the map:</p>
+
+    {% if Error == "1" %}
+    <p class = "Errorform" style="margin-right: 0px"> Please choose only 5 categories.</p>
+    {% endif %}
+    {% if map == "DrugMap"  %}
+    <form action='/chemmaps/DrugMap3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+        <div class="row">
+            <div class="column">
+                {% for aa in form_info.desc %}
+                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
+                {% if forloop.counter == 1 %} <b>Chemical information</b>{% endif %}
+                {% if forloop.counter == 7 %} <b>Chemical rules</b>{% endif %}
+                {% if forloop.counter == 11 %} <b>Descriptors</b>{% endif %}
+                <div class="checkbox">{{ aa }}</div>
+                {%endfor%}
+                <br>
+                <input type='submit' value='Generate DrugMap'>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+    {% if map == "Tox21Map"%}
+    <form action='/chemmaps/Tox21Map3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+        <div class="row">
+            <div class="column">
+                {% for aa in form_info.desc %}
+                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
+                {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
+                {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
+                {% if forloop.counter == 12 %} <b>Physicochemical prediction</b>{% endif %}
+                {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
+                <div class="checkbox">{{ aa }}</div>
+                {%endfor%}
+                <br>
+                <input type='submit' value='Generate PFASMap'>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+    {% if map == "PFASMap"%}
+    <form action='/chemmaps/PFASMap3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+        <div class="row">
+            <div class="column">
+                {% for aa in form_info.desc %}
+                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
+                {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
+                {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
+                {% if forloop.counter == 12 %} <b>Physicochemical prediction</b>{% endif %}
+                {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
+                <div class="checkbox">{{ aa }}</div>
+                {%endfor%}
+                <br>
+                <input type='submit' value='Generate Tox21Map'>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+    {% if map == "DSSToxMap"%}
+    <form action='/chemmaps/DSSToxMap3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+        <div class="row">
+            <div class="column">
+                {% for aa in form_info.desc %}
+                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
+                {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
+                {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
+                {% if forloop.counter == 12 %} <b>Physicochemical prediction</b>{% endif %}
+                {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
+                <div class="checkbox">{{ aa }}</div>
+                {%endfor%}
+                {% if ErrorDSSTox == "1" %}
+                <p class = "Errorform" style="margin-right: 30px">Chemical not recognized</p>
+                {% endif %}
+                Chemical in the center of the map (DTXSID):
+                <br>
+                <div style="margin-right: 30px">{{form_info.chem}}</div>
+                <br>
+                <input type='submit' value='Generate DSSToxMap'>
+            </div>
+        </div>
+    </form>
+    {% endif %}  
+
+    <br>
+    <br>
+    <br>
+    <button class="collapsible"><h2><img src="/static/chemmaps/img/arrow.png" style="width:30px"> Optional - Upload your list of chemicals (< 100 chemicals)</h2></button>
+    <div class="content" style="display: none">
+        {% if ErrorLine == "1"  %}
+        <p class = "Errorform">Please upload < 100 chemicals</p>
+        {% endif %}
+        <p>From a list including SMILES, CAS or DTXSID:</p>
+        {% if map == "DrugMap"  %}
+        <form action='/chemmaps/DrugMapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+            {{ form_smiles.as_p }}
+            <input type='submit' value='Submit chemicals'/>
+        </form>
+        {% endif %}
+        {% if map == "DSSToxMap"  %}
+        <form action='/chemmaps/DSSToxMapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+            {{ form_smiles.as_p }}
+            <input type='submit' value='Submit chemicals'/>
+        </form>
+        {% endif %}
+        {% if map == "Tox21Map"  %}
+        <form action='/chemmaps/Tox21MapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+            {{ form_smiles.as_p }}
+            <input type='submit' value='Submit chemicals'/>
+        </form>
+        {% endif %}
+        {% if map == "PFASMap"  %}
+        <form action='/chemmaps/PFASMapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+            {{ form_smiles.as_p }}
+            <input type='submit' value='Submit chemicals'/>
+        </form>
+        {% endif %}
+
+        <p>From a file:</p>
+        {% if ErrorFile == "1"  %}
+        <p class = "Errorform">Please upload a text file with one chemical by line (< 100 lines)</p>
+        {% endif %}
+        {% if map == "DrugMap"  %}
+        <form method="post" enctype="multipart/form-data" action='/chemmaps/DrugMapSmilesUploaded/' onsubmit="ShowLoading()">
+            {% csrf_token %}
+            {%for field in from_upload%}
+            <div id="UploadBox">{{field}}</div>
+            {% endfor %}
+            <br>
+
+            <button type="submit" class="upload_button">Upload list of chemicals</button>
+        </form>
+        {% endif %}
+        {% if map == "DSSToxMap"  %}
+        <form method="post" enctype="multipart/form-data" action='/chemmaps/DSSToxMapSmilesUploaded/' onsubmit="ShowLoading()">
+            {% csrf_token %}
+            {%for field in from_upload%}
+            <div id="UploadBox">{{field }}</div>
+            {% endfor %}
+            <br>
+            <button type="submit" class="upload_button">Upload list of chemicals</button>
+        </form>
+        {% endif %}
+        {% if map == "PFASMap"  %}
+        <form method="post" enctype="multipart/form-data" action='/chemmaps/PFASMapSmilesUploaded/' onsubmit="ShowLoading()">
+            {% csrf_token %}
+            {%for field in from_upload%}
+            <div id="UploadBox">{{field }}</div>
+            {% endfor %}
+            <br>
+            <button type="submit" class="upload_button">Upload list of chemicals</button>
+        </form>
+        {% endif %}
+        {% if map == "Tox21Map"  %}
+        <form method="post" enctype="multipart/form-data" action='/chemmaps/Tox21MapSmilesUploaded/' onsubmit="ShowLoading()">
+            {% csrf_token %}
+            {%for field in from_upload%}
+            <div id="UploadBox">{{field }}</div>
+            {% endfor %}
+            <br>
+            <button type="submit" class="upload_button">Upload list of chemicals</button>
+        </form>
+        {% endif %}
+
+    </div>
+<br>
+<br>
+	
+</div>
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    }
+</script>
+
+
+
+
+{% endblock content %}

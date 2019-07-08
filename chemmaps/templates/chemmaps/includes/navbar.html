@@ -1,0 +1,18 @@
+<ul class="nav nav-pills" style="padding: 0.5em 0.5em; font-size: 1.5em; ">
+
+    {% url 'chemmaps:home' as url %}
+    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #00ccff"><i class="fa fa-home fa-lg"></i>&nbsp;ChemMaps.com</a></li>
+
+    {% url 'chemmaps:DrugMap' as url %}
+    <li {% if map == "DrugMap" %} class="active"{% endif %}><a href="{{ url }}" style="color: #00ccff">DrugMap</a></li>
+
+    {% url 'chemmaps:DSSToxMap' as url %}
+    <li {% if map == "DSSToxMap" %} class="active"{% endif %}><a href="{{ url }}" style="color: #00ccff">DSSToxMap</a></li>
+    
+    {% url 'chemmaps:Tox21Map' as url %}
+    <li {% if map == "Tox21Map" %} class="active"{% endif %}><a href="{{ url }}" style="color: #00ccff">Tox21Map</a></li>
+
+    {% url 'chemmaps:PFASMap' as url %}
+    <li {% if map == "PFASMap" %} class="active"{% endif %}><a href="{{ url }}" style="color: #00ccff">PFASMap</a></li>
+    
+</ul>
