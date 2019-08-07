@@ -1,3 +1,5 @@
 /static/chemmaps/png/*
 /static/chemmaps/map/*
 /static/chemmaps/img/*
+/chemmaps/temp/*
+/chemmaps/interferences/*
