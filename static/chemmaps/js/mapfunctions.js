@@ -344,6 +344,11 @@ function callbackFunc(response) {
     console.log(response);
 }
 
+
+//var fs = require('fs');
+
+
+
 // map function
 function drawChemical() {
     document.getElementById('drawChemical');
@@ -351,19 +356,21 @@ function drawChemical() {
     for (ktype in dpoints) {
         for (var i = 0; i < dpoints[ktype].length; i++) {
             if (ID == dpoints[ktype][i].name) {
+                console.log(ktype)
                 var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                //if (ktype == 'add') {
-                //    var texture = textureLoader.load(prSession + namepng + '.png');
-                //     alert(prSession + namepng + '.png');
-                //} else {
-                var texture = textureLoader.load('/static/chemmaps/png/' + namepng + '.png');
+                ppng = "/static/chemmaps/png/" + namepng + '.png'
+                //if(fs.exists(ppng) == true){
+                    var texture = textureLoader.load(ppng);
+                    dpoints[ktype][i].material.map = texture;
+                    console.log('/static/chemmaps/png/' + namepng + '.png')
+                    dpoints[ktype][i].material.size = 15;
+                    dpoints[ktype][i].material.color.setHex(0xffffff);
+                    dpoints[ktype][i].col = 0xffffff;
+                    dpoints[ktype][i].material.map.needsUpdate = true;
+                    dpoints[ktype][i].material.size.needsUpdate = true;
+               // } else {
+               //     console.log(ppng);
                 //}
-                dpoints[ktype][i].material.map = texture;
-                dpoints[ktype][i].material.size = 15;
-                dpoints[ktype][i].material.color.setHex(0xffffff);
-                dpoints[ktype][i].col = 0xffffff;
-                dpoints[ktype][i].material.map.needsUpdate = true;
-                dpoints[ktype][i].material.size.needsUpdate = true;
             }
         }
     }

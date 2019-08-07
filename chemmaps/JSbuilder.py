@@ -47,7 +47,7 @@ class JSbuilder:
     def __init__(self, nameMap, prout = ""):
         self.nameMap = nameMap
         self.prout = prout
-        self.pMap = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/" + self.nameMap + "/"
+        self.pMap = "/home/aborrel/django_server/django_server/static/chemmaps/map/" + self.nameMap + "/"
         self.err = 0
         self.loadMap()
 
@@ -264,7 +264,7 @@ class JSbuilder:
                 self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = convertSMILEStoINCHIKEY(d2Ddesc[IDadd]["SMILES"])
             else:
                 self.dchemAdd["SMILESClass"][IDadd]["GHS_category"] = "add"
-                self.dchemAdd["SMILESClass"][IDadd]["inchkey"] = convertSMILEStoINCHIKEY(d2Ddesc[IDadd]["SMILES"])
+                self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = convertSMILEStoINCHIKEY(d2Ddesc[IDadd]["SMILES"])
 
             # info
             for desc in self.ldescMap:

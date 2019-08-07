@@ -160,7 +160,7 @@ class uploadSMILES:
                         filout2D.write("%i\t%s\t%s\n"%(k, SMICLEAN, "\t".join([str(chemdesc.all2D[d]) for d in l2D])))
                         filout3D.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(chemdesc.all3D[d]) for d in l3D])))
                         # run png generation
-                        descriptor.computePNG(SMICLEAN, chemical.inchikey, self.prout)
+                        descriptor.computePNG(SMICLEAN, chemical.inchikey, self.prout, "/home/aborrel/django_server/django_server/static/chemmaps/png/")
                     else:
                         dout[k]["desc"] = "chemmaps/img/checkNo.png"
                         dout[k]["Descriptor"] = "Error"

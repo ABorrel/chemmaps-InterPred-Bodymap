@@ -226,10 +226,10 @@ def getLdesc (typeDesc):
 
 
 
-def computePNG(SMILES, inchikey, prout):
+def computePNG(SMILES, inchikey, prin, prout):
 
-    pSMILES = prout + inchikey + ".smi"
-    pPNG = "./chemmaps/static/chemmaps/png/" + inchikey + ".png"
+    pSMILES = prin + inchikey + ".smi"
+    pPNG = prout + inchikey + ".png"
     if path.exists(pPNG):
         return
     else:

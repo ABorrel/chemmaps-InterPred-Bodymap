@@ -14,6 +14,7 @@ import os
 
 # project path origin
 PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+PROJECT_ROOT = os.path.abspath(os.path.join(PROJECT_PATH, os.pardir))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,7 +29,7 @@ SECRET_KEY = 'n7)bc%gfm=4jo&xc^nbsg)c@mq)hwloo)mlun&dkgc&sol)kx#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['152.1.45.108', 'localhost', '127.0.0.1', 'www.chemmaps.com', 'www.realityconvert.com']
+ALLOWED_HOSTS = ['152.1.45.108', 'www.chemmaps.com', "www.alexborrel.com"]
 
 
 # Application definition
@@ -41,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'webpack_loader',
-    'chemmaps'
+    'chemmaps',
+    'interferences',
 ]
 
 MIDDLEWARE = [
@@ -121,7 +123,17 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
-STATIC_ROOT = PROJECT_PATH + '/static/'
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_PATH, 'static'),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
 

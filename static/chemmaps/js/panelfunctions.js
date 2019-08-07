@@ -210,13 +210,10 @@ function drawChemicals(visibility) {
             for (var i = 0; i < dpoints[ktype].length; i++) {
                 // have to be rewrtie when png accessment will be fix
                 var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-
                 console.log(namepng);
-                if (ktype == 'add') {
-                    var texture = textureLoader.load('/temp/' + prSession + '/' + namepng + '.png');
-                } else {
-                    var texture = textureLoader.load('/static/chemmaps/png/' + namepng + '.png');
-                }
+                var ppng = '/static/chemmaps/png/' + namepng + '.png'
+                console.log(ppng);
+                var texture = textureLoader.load(ppng);
                 dpoints[ktype][i].material.map = texture;
                 dpoints[ktype][i].material.size = 15;
                 dpoints[ktype][i].material.color.setHex(0xffffff);
