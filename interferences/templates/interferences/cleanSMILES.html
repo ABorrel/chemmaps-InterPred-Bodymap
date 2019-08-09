@@ -7,6 +7,8 @@
 <link href="/static/django_server/css/base.css" rel="stylesheet">
 <link href="/static/interferences/css/theme.css" rel="stylesheet">
 <link href="/static/interferences/css/table.css" rel="stylesheet">
+<script src="/static/django_server/js/theme.js"></script>
+
 
 {% include 'interferences/includes/navbar.html' %}
 
@@ -46,7 +48,7 @@
         </form>
 
         {% if ERRORSmiles == "0" %}
-        <form action='/interferences/computeDESC' method='get' onsubmit="ShowLoading()">
+        <form action='/interferences/computeDESC' method='get' onsubmit="ShowLoadingInterferences()">
             <input type='submit' value='Compute descriptors' runat="server"/>
         </form>
         {% endif %}

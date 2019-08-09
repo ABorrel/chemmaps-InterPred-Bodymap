@@ -7,6 +7,8 @@
 <link href="/static/django_server/css/base.css" rel="stylesheet">
 <link href="/static/interferences/css/theme.css" rel="stylesheet">
 <link href="/static/interferences/css/table.css" rel="stylesheet">
+<script src="/static/django_server/js/theme.js"></script>
+
 
 {% include 'interferences/includes/navbar.html' %}
 <h1>Chemical descriptors</h1>
@@ -82,7 +84,7 @@
 <p class = "Errorform"> Please choose at least one model</p>
 {% endif %}
 
-<form action='/interferences/results/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+<form action='/interferences/results/' method='post' onsubmit="ShowLoadingInterferences()">{% csrf_token %}
     <div class="row">
         <div class="column">
             {% for aa in form_model.modelQSAR %}
