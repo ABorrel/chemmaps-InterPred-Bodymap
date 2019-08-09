@@ -87,7 +87,7 @@ LMOE = ['EstateVSA8', 'EstateVSA9', 'EstateVSA4', 'EstateVSA5', 'EstateVSA6', 'E
         'LabuteASA', 'PEOEVSA3', 'PEOEVSA2', 'PEOEVSA1', 'PEOEVSA0', 'PEOEVSA7', 'PEOEVSA6', 'PEOEVSA5', 'PEOEVSA4',
         'MRVSA5', 'MRVSA4', 'PEOEVSA9', 'PEOEVSA8', 'MRVSA1', 'MRVSA0', 'MRVSA3', 'MRVSA2', 'MRVSA9', 'slogPVSA10',
         'slogPVSA11', 'MRVSA8', 'MRVSA7', 'MRVSA6', 'EstateVSA10', 'slogPVSA2', 'slogPVSA3', 'slogPVSA0', 'slogPVSA1',
-        'slogPVSA6', 'slogPVSA7', 'slogPVSA4', 'slogPVSA5', 'slogPVSA8', 'slogPVSA9', 'VSAEstate9', 'VSAEstate10']
+        'slogPVSA6', 'slogPVSA7', 'slogPVSA4', 'slogPVSA5', 'slogPVSA8', 'slogPVSA9', 'VSAEstate9']#, 'VSAEstate10']
 
 L3D = ['RDFC6', 'MoRSEN11', 'RDFU8', 'RDFU9', 'RDFU2', 'RDFU3', 'MoRSEN5', 'RDFU1', 'RDFU6', 'RDFU7', 'RDFU4', 'RDFU5',
        'Harary3D', 'P2u', 'MoRSEM6', 'MoRSEM7', 'MoRSEM4', 'MoRSEM5', 'MoRSEM2', 'MoRSEM3', 'MoRSEE30', 'MoRSEM1',
@@ -144,8 +144,8 @@ LOPERA = ["MolWeight", "nbAtoms", "nbHeavyAtoms", "nbC", "nbO", "nbH", "nbAromAt
           #"Sim_index_BP", "Sim_index_LogP", "Sim_index_VP", "Sim_index_AOH", "Sim_index_BioDeg", "Sim_index_ReadyBiodeg",
           #"Sim_index_KM", "Sim_index_KOA", "Sim_index_RT"]#, "pka_acid", "pka_basic"]
 
-PADEL = "/home/borrela2/softwares/padel/PaDEL-Descriptor.jar"
-OPERA = "/home/borrela2/softwares/OPERA2/application/run_OPERA.sh"
+PADEL = "/usr/local/bin/OPERA/application/padel-full-1.00.jar"
+OPERA = "/usr/local/bin/OPERA/application/run_OPERA.sh"
 MATLAB = "/usr/local/MATLAB/MATLAB_Runtime/v94"
 
 
@@ -278,7 +278,7 @@ def createFolder(prin, clean=0):
 
 
 
-def runPadel(prin=""):
+def runPadelDesc(prin=""):
     """Input include a folder of sdf file"""
     pfilout = prin + "tem.csv"
     if path.exists(pfilout) and path.getsize(pfilout) > 50:
@@ -287,10 +287,29 @@ def runPadel(prin=""):
     if prin == "":
         return "ERROR - Padel Input"
     else:
-        cmd = "java -jar " + PADEL + " -maxruntime 10000 -2d -dir " + str(prin) + " -file " + pfilout
+        cmd = "java -jar " + PADEL + " -2d -removesalt -standardizenitro -detectaromaticity -retainorder -maxruntime 10000 -dir " + str(prin) + " -file " + pfilout
         system(cmd)
 
     return pfilout
+
+
+
+def runPadelfp(prin=""):
+    """Input include a folder of sdf file"""
+    pfilout = prin + "temFP.csv"
+    if path.exists(pfilout) and path.getsize(pfilout) > 50:
+        return pfilout
+
+    if prin == "":
+        return "ERROR - Padel Input"
+    else:
+        cmd = "java -jar %s -fingerprints -descriptortypes /home/aborrel/django_server/django_server/interferences/descriptor/desc_fp.xml -removesalt -standardizenitro -detectaromaticity -retainorder -maxruntime 10000 -dir %s -file %s"%(PADEL, str(prin), pfilout)
+        print(cmd)
+        system(cmd)
+
+    return pfilout
+
+
 
 
 
@@ -302,13 +321,14 @@ def computeOperaDesc(psdf, prSession):
     prOPERA = prSession + "OPERA/"
 
     # run PADEL
-    pdescPADEL = runPadel(prOPERA)
+    pdescPADEL = runPadelDesc(prOPERA)
+    pfpPADEL = runPadelfp(prOPERA)
 
     ddescPADEL = loadMatrixToDict(pdescPADEL, sep=",")
     transformOPERAList(ddescPADEL)
 
     # run OPERA
-    lpdesc = runOPERA(psdf, pdescPADEL, prOPERA)
+    lpdesc = runOPERA(psdf, pdescPADEL, pfpPADEL, prOPERA)
 
     # load result and write
     dopera = {}
@@ -344,17 +364,17 @@ def computeOperaDesc(psdf, prSession):
     return dopera
 
 
-def runOPERA(psdf, p2Ddesc, prtemp):
+def runOPERA(psdf, p2Ddesc, pfp, prtemp):
 
     lfstart = [path.basename(psdf), "tem.csv"]
 
-    if len (listdir(prtemp)) == 2:
+    if len (listdir(prtemp)) == 3:
         #print("INNN")
         # add option to no compute tox model
         ppred = prtemp + path.basename(psdf)[:-3] + "csv"
-        cmd = "%s %s -d %s -s %s -o %s -StrP -BCF -BP -logP -MP -VP -logVP -WS -AOH -BioDeg -RB -ReadyBiodeg -HL " \
-              "-logHL -KM -logKM -KOA -Koc -logKoc -RT -logD" % (OPERA, MATLAB, p2Ddesc, psdf, ppred)
-        #print (cmd)
+
+        cmd = "%s %s -d %s -fp %s -s %s -o %s -StrP -BCF -BP -logP -MP -VP -WS -AOH -BioDeg -RB -HL -KM -KOA -Koc -RT -logD"%(OPERA, MATLAB, p2Ddesc, pfp, psdf, ppred)
+        print (cmd)
         system(cmd)
 
 

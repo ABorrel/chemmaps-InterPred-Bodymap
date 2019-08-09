@@ -20,9 +20,9 @@ class formatSMILES:
                 doutOUT[int(k)] = {}
                 doutOUT[int(k)]["SMILES"] = self.input[k]["SMI_CLEAN"]
                 if doutOUT[int(k)]["SMILES"] == "0":
-                    doutOUT[int(k)]["file"] = "interferences/img/checkNo.png"
+                    doutOUT[int(k)]["file"] = "/static/interferences/img/checkNo.png"
                 else:
-                    doutOUT[int(k)]["file"] = "interferences/img/checkOK.png"
+                    doutOUT[int(k)]["file"] = "/static/interferences/img/checkOK.png"
 
             self.dclean = {"IN":doutIN, "OUT":doutOUT}
 
@@ -49,10 +49,10 @@ class formatSMILES:
                 chemical.clean()
                 if chemical.err == 0:
                     doutOUT[i]["SMILES"] = chemical.smiclean
-                    doutOUT[i]["file"] = "interferences/img/checkOK.png"
+                    doutOUT[i]["file"] = "/static/interferences/img/checkOK.png"
                 else:
                     doutOUT[i]["SMILES"] = 0
-                    doutOUT[i]["file"] = "interferences/img/checkNo.png"
+                    doutOUT[i]["file"] = "/static/interferences/img/checkNo.png"
                 i = i + 1
 
             # see to pass process
@@ -93,8 +93,8 @@ class formatSMILES:
                 SMICLEAN = self.dclean["OUT"][k]["SMILES"]
                 if SMICLEAN == "0":
                     dout[k]["Descriptor"] = "Error"
-                    dout[k]["desc"] = "interferences/img/checkNo.png"
-                    dout[k]["desc"] = "interferences/img/checkNo.png"
+                    dout[k]["desc"] = "/static/interferences/img/checkNo.png"
+                    dout[k]["desc"] = "/static/interferences/img/checkNo.png"
                     continue
                 else:
                     chemical = prep.prep(SMICLEAN, self.prout)
@@ -104,9 +104,9 @@ class formatSMILES:
 
                     # have to check the database here !!!!
                     if str(k) in d2D.keys():
-                        dout[k]["desc"] = "interferences/img/checkOK.png"
+                        dout[k]["desc"] = "/static/interferences/img/checkOK.png"
                     else:
-                        dout[k]["desc"] = "interferences/img/checkNo.png"
+                        dout[k]["desc"] = "/static/interferences/img/checkNo.png"
 
             dopera = loadMatrixToDict(pfiloutOpera)
 
@@ -124,9 +124,9 @@ class formatSMILES:
                 dout[k] = {}
                 SMICLEAN = self.dclean["OUT"][k]["SMILES"]
                 if SMICLEAN == "0":
-                    dout[k]["Descriptor"] = "Error"
-                    dout[k]["desc"] = "interferences/img/checkNo.png"
-                    dout[k]["desc"] = "interferences/img/checkNo.png"
+                    dout[k]["Descriptor"] = "ERROR SMILES"
+                    dout[k]["desc"] = "/static/interferences/img/checkNo.png"
+                    dout[k]["desc"] = "/static/interferences/img/checkNo.png"
                     continue
                 else:
                     # chemical preparation
@@ -136,23 +136,20 @@ class formatSMILES:
 
                     #ompute descriptor
                     chemdesc = descriptor.Descriptor(SMICLEAN, self.prout + chemical.inchikey)
-                    try:
-                        chemdesc.computeAll2D()
-                        chemdesc.writeMatrix("2D")
-                    except:
-                        chemdesc.err = 1
-
+                    chemdesc.computeAll2D()
+                    chemdesc.writeMatrix("2D")
+                    #chemdesc.err = 1
 
                     # have to check case of error
                     if chemdesc.err == 0:
                         chemdesc.writeSDF(psdfOPERA, k)
                         dout[k]["Descriptor"] = "OK"
-                        dout[k]["desc"] = "interferences/img/checkOK.png"
+                        dout[k]["desc"] = "/static/interferences/img/checkOK.png"
                         filout2D.write("%i\t%s\t%s\n"%(k, SMICLEAN, "\t".join([str(chemdesc.all2D[d]) for d in l2D])))
                         # run png generation
                     else:
-                        dout[k]["desc"] = "interferences/img/checkNo.png"
-                        dout[k]["Descriptor"] = "ERROR"
+                        dout[k]["desc"] = "/static/interferences/img/checkNo.png"
+                        dout[k]["Descriptor"] = "ERROR DESC"
             filout2D.close()
 
 
@@ -169,8 +166,10 @@ class formatSMILES:
                     break
 
         if self.err == 1:
-            remove(pfilout2D)
-            remove(pfiloutOpera)
+            if path.exists(pfilout2D):
+                remove(pfilout2D)
+            if path.exists(pfiloutOpera):
+                remove(pfiloutOpera)
 
         self.ddesc = dout
         return [pfilout2D, pfiloutOpera]

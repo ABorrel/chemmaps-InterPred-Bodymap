@@ -19,7 +19,7 @@ Email: oriental-cds@163.com
 
 from rdkit import Chem
 from rdkit.Chem import rdchem
-from rdkit.Chem import pyPeriodicTable as PeriodicTable
+from rdkit.Chem import PeriodicTable as PeriodicTable
 
 periodicTable = rdchem.GetPeriodicTable()
 
@@ -116,6 +116,7 @@ def _HallKierAlpha(mol):
     Calculation of the Hall-Kier alpha value for a molecule
     #################################################################
     """
+    return 0.0
     alphaSum=0.0
     rC=PeriodicTable.nameTable['C'][5]
     for atom in mol.GetAtoms():

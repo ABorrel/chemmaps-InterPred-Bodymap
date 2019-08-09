@@ -9,38 +9,57 @@
 <link href="/static/interferences/css/table.css" rel="stylesheet">
 
 {% include 'interferences/includes/navbar.html' %}
-
+<h1>Chemical descriptors</h1>
+<br>
 
 <div class="row">
-    <div class="column" style="background-color:#232b5f;">
+    <div class="column" style="background-color:#004400;">
         <h3>Inputs</h3>
         <table width="100%" border="0">
-            <tr><th>ID</th><th>Input</th><th></th></tr>
+            <tr>
+                <th>ID</th>
+                <th>Input</th>
+            </tr>
             {% for lk, lv in dSMILESIN.items %}
-            <tr><th>{{lk}}</th><th>{{lv}}</th></tr>
-            {% endfor %}
-            <br>
-        </table>
-    </div>
-    <div class="column" style="background-color:#232b8b;">
-        <h3>SMILES prepared</h3>
-        <table width="100%" border="0">
-            <tr><th>ID</th><th>SMILES</th><th></th></tr>
-            {% for k1, dout in dSMILESOUT.items %}
-            <tr><th>{{k1}}</th>
-                <th>{{dout.SMILES}}</th><th><img src="{{STATIC_URL}}{{dout.file}}" width="18"></th>
+            <tr>
+                <th>{{lk}}</th>
+                <th>{{lv}}</th>
             </tr>
             {% endfor %}
             <br>
         </table>
     </div>
-    <div class="column" style="background-color:#11a5d3;">
+    <div class="column" style="background-color:#04600b;">
+        <h3>QSAR-ready SMILES</h3>
+        <table width="100%" border="0">
+            <tr>
+                <th>ID</th>
+                <th>QSAR-ready SMILES</th>
+                <th></th>
+            </tr>
+            {% for k1, dout in dSMILESOUT.items %}
+            <tr>
+                <th>{{k1}}</th>
+                <th>{{dout.SMILES}}</th>
+                <th><img src="{{STATIC_URL}}{{dout.file}}" width="18"></th>
+            </tr>
+            {% endfor %}
+            <br>
+        </table>
+    </div>
+    <div class="column" style="background-color:#0dd61c;">
         <h3>Descriptor computation</h3>
         <table width="100%" border="0">
-            <tr><th>ID</th><th>Descriptor</th><th></th></tr>
+            <tr>
+                <th>ID</th>
+                <th>Chemical descriptors</th>
+                <th></th>
+            </tr>
             {% for k1, dout in ddesc.items %}
-            <tr><th>{{k1}}</th>
-                <th>{{dout.Descriptor}}</th><th><img src="{{STATIC_URL}}{{dout.desc}}" width="18"></th>
+            <tr>
+                <th>{{k1}}</th>
+                <th>{{dout.Descriptor}}</th>
+                <th><img src="{{STATIC_URL}}{{dout.desc}}" width="18"></th>
             </tr>
             {% endfor %}
             <br>

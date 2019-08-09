@@ -16,7 +16,7 @@
     <p class = "Errorform">Please upload < 100 chemicals</p>
     {% endif %}
     <p>From a list including SMILES, CAS or DTXSID:</p>
-    <form action='/interferences/cleanSMILES/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+    <form style="margin:20px" action='/interferences/cleanSMILES/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
         {{ form_smiles.as_p }}
         <input type='submit' value='Submit chemicals'/>
     </form>
@@ -25,15 +25,15 @@
     {% if ErrorFile == "1"  %}
     <p class = "Errorform">Please upload a text file with one chemical by line (< 100 lines)</p>
     {% endif %}
-    <form method="post" enctype="multipart/form-data" action='/interferences/cleanSMILES/' onsubmit="ShowLoading()">
+    <form style="margin:20px" method="post" enctype="multipart/form-data" action='/interferences/cleanSMILES/' onsubmit="ShowLoading()">
         {% csrf_token %}
         {% for field in from_upload %}
         <div id="UploadBox">{{field}}</div>
         {% endfor %}
         <br>
 
-        <button type="submit" class="upload_button">Upload list of chemicals</button>
+       <button type="submit" class="upload_button">Upload list of chemicals</button>
     </form>
-
+    <p>Example of input: <a href="/static/interferences/test.txt">Test input</a></p>
 
 {% endblock content %}

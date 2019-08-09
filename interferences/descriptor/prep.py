@@ -3,13 +3,7 @@ from rdkit.Chem import Descriptors, AllChem
 from rdkit.Chem.SaltRemover import SaltRemover
 from re import search
 from os import path, system
-
-import pandas as pd
 import requests
-from bs4 import BeautifulSoup
-from io import StringIO
-from django.http import HttpResponseRedirect, HttpResponse
-
 
 from .molvs import standardize_smiles, Standardizer
 

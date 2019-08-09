@@ -10,7 +10,8 @@
 
 {% include 'interferences/includes/navbar.html' %}
 
-
+<h1>QSAR-ready SMILES</h1>
+<br>
 
 {% if ERRORSmiles == "1" %}
 <p class = "Errorform" style="margin-right: 0px"> No valid SMILES found.</p>
@@ -18,7 +19,7 @@
 
 
 <div class="row">
-    <div class="column" style="background-color:#232b5f;">
+    <div class="column" style="background-color:#004400;">
         <h3>Inputs</h3>
         <table width="100%" border="0">
             <tr><th>ID</th><th>Input</th></tr>
@@ -27,8 +28,8 @@
             {% endfor %}
         </table>
     </div>
-    <div class="column" style="background-color:#232b8b;">
-        <h3>SMILES prepared</h3>
+    <div class="column" style="background-color:#04600b;">
+        <h3>QSAR-ready SMILES</h3>
         <table width="100%" border="0">
             <tr><th>ID</th><th>SMILES</th><th></th></th></tr>
             {% for k1, dout in dSMILESOUT.items %}

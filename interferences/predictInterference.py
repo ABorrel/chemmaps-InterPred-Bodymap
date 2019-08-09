@@ -4,7 +4,7 @@ from numpy import mean, std
 from .toolbox import loadMatrixToDict, formatModelName
 
 
-PMODEL = "interferences/static/interferences/models/"
+PMODEL = "/home/aborrel/django_server/django_server/static/interferences/models/"
 
 
 class Predict:
@@ -37,7 +37,7 @@ class Predict:
     def predictRmodel(self, pmodel, pout):
 
 
-        cmd = "./interferences/Rscripts/predictfromModel.R %s %s %s %s" % (self.pdes2D, self.pOpera, pmodel, pout)
+        cmd = "/home/aborrel/django_server/django_server/interferences/Rscripts/predictfromModel.R %s %s %s %s" % (self.pdes2D, self.pOpera, pmodel, pout)
         print(cmd)
         system(cmd)
 
