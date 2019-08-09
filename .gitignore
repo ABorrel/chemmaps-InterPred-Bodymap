@@ -1,7 +1,8 @@
-/static/chemmaps/png/*
-/static/chemmaps/map/*
-/static/chemmaps/img/*
-/chemmaps/temp/*
-/interferences/temp/*
-/public/
+./static/chemmaps/png/*
+./static/chemmaps/map/*
+./static/chemmaps/img/*
+
+./chemmaps/temp/*
+./interferences/temp/*
+./public/
 */__pycache__/*
