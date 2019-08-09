@@ -1,0 +1,30 @@
+{% extends "interferences/base.html" %}
+{% block content %}
+<link href="{{STATIC_URL}}interferences/css/theme.css" rel="stylesheet">
+<script  src="{{STATIC_URL}}interferences/js/theme.js"></script>
+<h2>Upload chemicals (< 100)</h2>
+    {% if ErrorLine == "1"  %}
+    <p class = "Errorform">Please upload < 100 chemicals</p>
+    {% endif %}
+    <p>From a list including SMILES, CAS or DTXSID:</p>
+    <form action='/interferences/cleanSMILES/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+        {{ form_smiles.as_p }}
+        <input type='submit' value='Submit chemicals'/>
+    </form>
+    <br>
+    <p>From a file:</p>
+    {% if ErrorFile == "1"  %}
+    <p class = "Errorform">Please upload a text file with one chemical by line (< 100 lines)</p>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" action='/interferences/cleanSMILES/' onsubmit="ShowLoading()">
+        {% csrf_token %}
+        {% for field in from_upload %}
+        <div id="UploadBox">{{field}}</div>
+        {% endfor %}
+        <br>
+
+        <button type="submit" class="upload_button">Upload list of chemicals</button>
+    </form>
+
+
+{% endblock content %}

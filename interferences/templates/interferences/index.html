@@ -1,0 +1,217 @@
+{% extends "interferences/base.html" %}
+{% block content %}
+<link href="{{STATIC_URL}}interferences/css/theme.css" rel="stylesheet">
+<h1 style="font-weight: 200">Prediction of Chemical-Assay Interference </h1>
+<br>
+
+<p>
+    This work represents one of the largest screening efforts to date 
+    specifically intended to identify and characterize 
+    chemical-assay interference via luciferase inhibition and autofluorescence,
+    and to interrogate the influence of cell types and culture conditions. 
+    The resulting predictive models can be used to predict interference
+    potential of new chemicals, and to provide insight into structural features
+    that may influence activity and inform molecular design and assay selection.
+
+</p>
+
+<p style="text-align:  center; font-size: 25px">
+    Please cite: <a href="https://www.nature.com/srep/" style="color: #0074D9">
+        Alexandre Borrel et al.; High-Throughput Screening to Predict Chemical-Assay Interference </a><br>
+    (submitted)
+</p>
+
+<h2> Dataset</h2>
+
+Three assay platforms were applied to analyze luciferase and fluorescence 
+interference patterns using the Tox21 chemical screening library. <br>
+The raw data are freely available on the <a href="https://tripod.nih.gov/tox21/assays/">NCATS Tox21 browser:</a>
+<ul>
+
+    <li>“tox21-luc-biochem-p1” for the luciferase inhibition assay</li>
+    <li>“tox21-spec-hepg2-p1” and “tox21-spec-hek293-p1” for autofluorescence assays
+        using HepG2 and HEK-293 cell cultures, respectively, measuring red, green 
+        and blue wavelengths using cell-based and cell-free culture-medium-only 
+        conditions.</li>
+</ul>
+
+<br>
+<h2>QSAR modeling</h2>
+
+<p>
+
+    The QSAR modeling workflow was conducted according to the best practices 
+    (<a href="http://www.eurekaselect.com/66013/article">Tropsha and Golbraikh, 2007</a>; <a href="https://pubs.acs.org/doi/10.1021/jm4004285">Cherkasov et al., 2014</a>; <a href="https://pubs.acs.org/doi/10.1021/ci400572x">Golbraikh et al., 2014</a>). 
+    Classification models to predict active versus inactive chemicals for each 
+    of the interference assay endpoints were built using 
+    Random Forests machine learning. Each model was tuned 
+    via a grid optimization and parameters were chosen to maximize performance 
+    on a ten-fold cross validation using Matthew’s correlation coefficient (MCC).
+    Considering the unbalanced dataset, i.e. far more inactive chemicals, 
+    under-sampling methods were applied via random selection of inactive 
+    chemicals to yield a ratio of 70% inactive and 30% active chemicals. 
+    Each model was built ten times with a different inactive set to cover 
+    the full set of chemicals. Model performance was reported as a mean with 
+    associated standard deviation on the ten repetitions for the training set, 
+    the cross-validation, and the external test set.
+</p>
+
+<p>
+    In result we proposed <b>17 models </b>to predict interference for luciferase 
+    assays as well combination of color wave, cell culture and condition: <br>
+
+<div class="div-table">
+    <div class="div-table-row">
+        <div class="div-table-head">Model</div>
+        <div class="div-table-head">Type of study</div>
+        <div class="div-table-head">Wave length (color)</div>
+        <div class="div-table-head">Cell culture</div>
+        <div class="div-table-head">Condition</div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">Luciferase</div>
+        <div class="div-table-col">Luciferase</div>
+        <div class="div-table-col">-</div>
+        <div class="div-table-col">-</div>
+        <div class="div-table-col">-</div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-All</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Blue, Green and Red</div>
+        <div class="div-table-col">HepG2 and HEK293</div>
+        <div class="div-table-col">Cell-based and cell-free </div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Blue</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Blue</div>
+        <div class="div-table-col">HepG2 and HEK293</div>
+        <div class="div-table-col">Cell-based and cell-free </div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Green</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Green</div>
+        <div class="div-table-col">HepG2 and HEK293</div>
+        <div class="div-table-col">Cell-based and cell-free </div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Red</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Red</div>
+        <div class="div-table-col">HepG2 and HEK293</div>
+        <div class="div-table-col">Cell-based and cell-free </div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Blue HepG2 Cell-based</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Blue</div>
+        <div class="div-table-col">HepG2</div>
+        <div class="div-table-col">Cell-based</div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Blue HEK293 Cell-based</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Blue</div>
+        <div class="div-table-col">HEK293</div>
+        <div class="div-table-col">Cell-based</div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Blue HepG2 Cell-Free</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Blue</div>
+        <div class="div-table-col">HepG2</div>
+        <div class="div-table-col">Cell-free </div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Blue HEK293 Cell-Free</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Blue</div>
+        <div class="div-table-col">HEK293</div>
+        <div class="div-table-col">Cell-free </div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Green HepG2 Cell-based</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Green</div>
+        <div class="div-table-col">HepG2</div>
+        <div class="div-table-col">Cell-based</div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Green HEK293 Cell-based</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Green</div>
+        <div class="div-table-col">HEK293</div>
+        <div class="div-table-col">Cell-based</div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Green HepG2 Cell-Free</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Green</div>
+        <div class="div-table-col">HepG2</div>
+        <div class="div-table-col">Cell-free </div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Green HEK293 Cell-Free</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Green</div>
+        <div class="div-table-col">HEK293</div>
+        <div class="div-table-col">Cell-free </div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Red HepG2 Cell-based</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Red</div>
+        <div class="div-table-col">HepG2</div>
+        <div class="div-table-col">Cell-based</div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Red HEK293 Cell-based</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Red</div>
+        <div class="div-table-col">HEK293</div>
+        <div class="div-table-col">Cell-based</div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Red HepG2 Cell-Free</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Red</div>
+        <div class="div-table-col">HepG2</div>
+        <div class="div-table-col">Cell-free </div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">A-Red HEK293 Cell-Free</div>
+        <div class="div-table-col">Autofluorescence</div>
+        <div class="div-table-col">Red</div>
+        <div class="div-table-col">HEK293</div>
+        <div class="div-table-col">Cell-free</div>
+    </div>
+
+</div>
+
+<br>
+<br>
+
+<div class="row" style="width: 100%">
+    <div class="column" style="width: 50%">
+        <form action='/interferences/uploadSMILES' method='get'>
+            <input type='submit' value='Submit Chemicals for prediction'/>
+        </form>
+    </div>
+    <div class="column" style="width: 50%" align=right>
+        <form action='/interferences/resources' method='get'>
+            <input type='submit' value='Resources'/>
+        </form>
+    </div>
+
+</div>
+
+
+
+
+</p>
+
+
+
+{% endblock content %}

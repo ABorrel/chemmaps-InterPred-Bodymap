@@ -1,0 +1,35 @@
+{% extends "interferences/base.html" %}
+{% block content %}
+
+
+<link href="{{STATIC_URL}}interferences/css/theme.css" rel="stylesheet">
+<link href="{{STATIC_URL}}interferences/css/table.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
+<script src="{{STATIC_URL}}interferences/js/table.js"></script>
+<script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+
+<br>
+
+<div id="myGrid" style="height: 600px;" class="ag-theme-balham"></div>
+<span style="font-size: 12px">A: autofluorescence; M: mean of ten interference probabilities; SD: mean of ten interference probabilities</span>
+<br>
+<div align="right">
+    <form method="get" action="/interferences/2D.csv"><button class="btn"><i class="fa fa-download"></i> Download 2D descriptor table</button></form>
+    <form method="get" action="/interferences/OPERA.csv"><button class="btn"><i class="fa fa-download"></i> Download OPERA descriptor table</button></form>
+    <form method="get" action="/interferences/predict.csv"><button class="btn"><i class="fa fa-download"></i> Download interference predictions</button></form>
+</div>
+<br>
+
+<script>
+var dpred = {{ dpred | safe }};
+console.log(dpred);
+// lookup the container we want the Grid to use
+var eGridDiv = document.querySelector('#myGrid');
+// create the grid passing in the div to use together with the columns & data we want to use
+gridOptions = defineGridOption(dpred);
+new agGrid.Grid(eGridDiv, gridOptions);
+
+</script>
+
+{% endblock content %}
