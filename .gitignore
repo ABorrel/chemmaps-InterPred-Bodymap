@@ -4,3 +4,4 @@
 /chemmaps/temp/*
 /interferences/temp/*
 /public/
+*/__pycache__/*
