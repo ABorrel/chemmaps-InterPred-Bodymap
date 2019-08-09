@@ -1,6 +1,7 @@
 ./static/chemmaps/png/*
 ./static/chemmaps/map/*
 ./static/chemmaps/img/*
+./static/admin/*
 
 ./chemmaps/temp/*
 ./interferences/temp/*
