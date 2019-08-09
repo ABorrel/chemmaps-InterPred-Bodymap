@@ -1,0 +1,86 @@
+{% block content %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="/static/django_server/css/ntpweb.css" rel="stylesheet">
+<link href="/static/django_server/css/ntpweb-shared.css" rel="stylesheet">
+<link href="/static/django_server/css/base.css" rel="stylesheet">
+<link href="/static/interferences/css/theme.css" rel="stylesheet">
+<script  src="/static/interferences/js/theme.js"></script>
+
+{% include 'interferences/includes/navbar.html' %}
+<h2>Chemical descriptors</h2>
+<br>
+
+
+<div class="row">
+    <div class="column" style="background-color:#006400;">
+        <h3>Inputs</h3>
+        <table width="100%" border="0">
+            <tr><th>ID</th><th>Input</th></tr>
+            {% for lk, lv in dSMILESIN.items %}
+            <tr><th>{{lk}}</th><th>{{lv}}</th></tr>
+            {% endfor %}
+            <br>
+        </table>
+    </div>
+    <div class="column" style="background-color:#228B22;">
+        <h3>QSAR-ready SMILES</h3>
+        <table width="100%" border="0">
+            <tr><th>ID</th><th>SMILES</th><th></th></tr>
+            {% for k1, dout in dSMILESOUT.items %}
+            <tr><th>{{k1}}</th>
+                <th>{{dout.SMILES}}</th><th><img src="/static/{{dout.file}}" width="18"></th>
+            </tr>
+            {% endfor %}
+            <br>
+        </table>
+    </div>
+    <div class="column" style="background-color:#66ff66;">
+        <h3>Descriptor computation</h3>
+        <table width="100%" border="0">
+            <tr><th>ID</th><th>Descriptor</th><th></th></tr>
+            {% for k1, dout in ddesc.items %}
+            <tr><th>{{k1}}</th>
+                <th>{{dout.Descriptor}}</th><th><img src="/static/{{dout.desc}}" width="18"></th>
+            </tr>
+            {% endfor %}
+            <br>
+        </table>
+
+        {% if ErrorDesc != "1" %}
+        <div align="right">
+            <form method="get" action="/interferences/2D.csv"><button class="btn"><i class="fa fa-download"></i> Download 2D descriptor table</button></form>
+            <form method="get" action="/interferences/OPERA.csv"><button class="btn"><i class="fa fa-download"></i> Download OPERA descriptor table</button></form>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+<br><br>
+
+<h2>Choose model to prediction interferences</h2>
+
+{% if Error == "1" %}
+<p class = "Errorform"> Please choose at least one model</p>
+{% endif %}
+
+<form action='/interferences/results/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+    <div class="row">
+        <div class="column">
+            {% for aa in form_model.modelQSAR %}
+            {% if forloop.counter0|divisibleby:6 %}  </div><div class="column"> {% endif %}
+            {% if forloop.counter == 1 %} <b>Luciferase interference model</b>{% endif %}
+            {% if forloop.counter == 2 %} <b>Generic autofluorescence model and by color</b>{% endif %}
+            {% if forloop.counter == 6 %} <b>Specific autofluorescence model by cell type, color and condition</b>{% endif %}
+
+            <div class="checkbox">{{ aa }}</div>
+            {%endfor%}
+            <br>
+            <input type='submit' value='Compute predictions'>
+        </div>
+    </div>
+</form>
+
+
+{% endblock content %}
+

@@ -1,0 +1,40 @@
+{% block content %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="/static/django_server/css/ntpweb.css" rel="stylesheet">
+<link href="/static/django_server/css/ntpweb-shared.css" rel="stylesheet">
+<link href="/static/django_server/css/base.css" rel="stylesheet">
+<link href="/static/interferences/css/theme.css" rel="stylesheet">
+<script  src="/static/interferences/js/theme.js"></script>
+
+{% include 'interferences/includes/navbar.html' %}
+
+
+<h2>Upload chemicals (< 100)</h2>
+    {% if ErrorLine == "1"  %}
+    <p class = "Errorform">Please upload < 100 chemicals</p>
+    {% endif %}
+    <p>From a list including SMILES, CAS or DTXSID:</p>
+    <form style="margin:20px" action='/interferences/cleanSMILES/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+        {{ form_smiles.as_p }}
+        <input type='submit' value='Submit chemicals'/>
+    </form>
+    <br>
+    <p>From a file:</p>
+    {% if ErrorFile == "1"  %}
+    <p class = "Errorform">Please upload a text file with one chemical by line (< 100 lines)</p>
+    {% endif %}
+    <form style="margin:20px" method="post" enctype="multipart/form-data" action='/interferences/cleanSMILES/' onsubmit="ShowLoading()">
+        {% csrf_token %}
+        {% for field in from_upload %}
+        <div id="UploadBox">{{field}}</div>
+        {% endfor %}
+        <br>
+
+        <button type="submit" class="upload_button">Upload list of chemicals</button>
+    </form>
+    <p>Example of an input: <a href="/static/interferences/test.txt">Test input</a></p>
+
+
+
+{% endblock content %}

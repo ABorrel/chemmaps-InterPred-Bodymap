@@ -1,0 +1,47 @@
+{% block content %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="/static/django_server/css/ntpweb.css" rel="stylesheet">
+<link href="/static/django_server/css/ntpweb-shared.css" rel="stylesheet">
+<link href="/static/django_server/css/base.css" rel="stylesheet">
+
+<link href="/static/interferences/css/theme.css" rel="stylesheet">
+<link href="/static/interferences/css/table.css" rel="stylesheet">
+<script src="/static/interferences/js/theme.js"></script>
+<script src="/static/interferences/js/table.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
+<script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+
+
+{% include 'interferences/includes/navbar.html' %}
+
+
+<br>
+<h2>Interference predictions results</h2>
+<p>
+For each model selected a score between 0 and 1 is reported with an associated standard deviation. The score is a probability for a chemical to interfere with the technology, cell culture and condition related to the model. A score close to 1 signifies that the chemical has a highly chance to be an interference chemical. The standard deviation associated relates the deviation of the ten random forest model predictions. 
+</p>
+
+<div id="myGrid" style="height: 600px" class="ag-theme-balham"></div>
+<span style="font-size: 12px">A: autofluorescence; M: mean of ten interference probabilities; SD: mean of ten interference probabilities</span>
+<br>
+<div align="right">
+    <form method="get" action="/interferences/2D.csv"><button class="btn"><i class="fa fa-download"></i> Download 2D descriptor table</button></form>
+    <form method="get" action="/interferences/OPERA.csv"><button class="btn"><i class="fa fa-download"></i> Download OPERA descriptor table</button></form>
+    <form method="get" action="/interferences/predict.csv"><button class="btn"><i class="fa fa-download"></i> Download interference predictions</button></form>
+</div>
+<br>
+
+<script>
+var dpred = {{ dpred | safe }};
+console.log(dpred);
+// lookup the container we want the Grid to use
+var eGridDiv = document.querySelector('#myGrid');
+// create the grid passing in the div to use together with the columns & data we want to use
+gridOptions = defineGridOption(dpred);
+new agGrid.Grid(eGridDiv, gridOptions);
+
+</script>
+
+{% endblock content %}
