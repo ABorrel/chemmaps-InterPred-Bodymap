@@ -2,6 +2,6 @@
 /static/chemmaps/map/*
 /static/chemmaps/img/*
 /chemmaps/temp/*
-/interferences/temp/*
+/chemmaps/interferences/*
 /public/
 */__pycache__/*
