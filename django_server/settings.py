@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'webpack_loader',
+    #'webpack_loader',
     'chemmaps',
     'interferences',
 ]
@@ -127,9 +127,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 # Additional locations of static files
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_PATH, 'static'),
-)
+#STATICFILES_DIRS = (
+#    os.path.join(PROJECT_PATH, 'static'),
+#)
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
