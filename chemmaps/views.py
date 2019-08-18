@@ -45,7 +45,7 @@ def launchHelp(request, map):
 def download(request, name):
 
     name_session = request.session.get("name_session")
-    file_path = "/home/aborrel/django_server/django_server/chemmaps/temp/" + str(name_session) + "/" + name + ".csv"
+    file_path = "/home/sandbox/ChemMap2Site/chemmaps/temp/" + str(name_session) + "/" + name + ".csv"
     if path.exists(file_path):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
@@ -62,7 +62,7 @@ def launchMap(request, map):
     print(name_session)
 
     # open file with
-    prsession = "/home/aborrel/django_server/django_server/chemmaps/temp/" + str(name_session) + "/"
+    prsession = "/home/sandbox/ChemMap2Site/chemmaps/temp/" + str(name_session) + "/"
 
 
     if request.method == 'GET':
@@ -97,7 +97,7 @@ def launchMap(request, map):
             return render(request, 'chemmaps/launchMap.html', {"form_info":formDesc, "form_smiles":form_smiles,
                                                            "from_upload": formUpload, "ErrorLine": "1", "map":map})
 
-        prSession = "/home/aborrel/django_server/django_server/chemmaps/temp/" + str(name_session) + "/"
+        prSession = "/home/sandbox/ChemMap2Site/chemmaps/temp/" + str(name_session) + "/"
         createFolder(prSession, 1)
 
         cinput = uploadSMILES(content, prSession)
@@ -109,7 +109,7 @@ def launchMap(request, map):
 
     elif formUpload.is_valid() == True:
 
-        prSession = "/home/aborrel/django_server/django_server/chemmaps/temp/" + str(name_session) + "/"
+        prSession = "/home/sandbox/ChemMap2Site/chemmaps/temp/" + str(name_session) + "/"
         createFolder(prSession, 1)
 
         pfileserver = prSession + "upload.txt"
@@ -233,7 +233,7 @@ def computeDescriptor(request, map):
     #print(name_session)
 
     # open file with
-    prsession = "/home/aborrel/django_server/django_server/chemmaps/temp/" + str(name_session) + "/"
+    prsession = "/home/sandbox/ChemMap2Site/chemmaps/temp/" + str(name_session) + "/"
     dSMI = loadMatrixToDict(prsession + "smiClean.csv", sep="\t")
 
     cinput = uploadSMILES(dSMI, prsession)

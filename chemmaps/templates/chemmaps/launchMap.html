@@ -1,3 +1,4 @@
+{% load static %}
 {% block content %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -41,12 +42,12 @@
                 {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
                 {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
                 {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
-                {% if forloop.counter == 12 %} <b>Physicochemical prediction</b>{% endif %}
+                {% if forloop.counter == 13 %} <b>Physicochemical prediction</b>{% endif %}
                 {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
                 <div class="checkbox">{{ aa }}</div>
                 {%endfor%}
                 <br>
-                <input type='submit' value='Generate PFASMap'>
+                <input type='submit' value='Generate Tox21Map'>
             </div>
         </div>
     </form>
@@ -59,12 +60,12 @@
                 {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
                 {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
                 {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
-                {% if forloop.counter == 12 %} <b>Physicochemical prediction</b>{% endif %}
+                {% if forloop.counter == 13 %} <b>Physicochemical prediction</b>{% endif %}
                 {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
                 <div class="checkbox">{{ aa }}</div>
                 {%endfor%}
                 <br>
-                <input type='submit' value='Generate Tox21Map'>
+                <input type='submit' value='Generate PFASMap'>
             </div>
         </div>
     </form>
@@ -77,7 +78,7 @@
                 {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
                 {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
                 {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
-                {% if forloop.counter == 12 %} <b>Physicochemical prediction</b>{% endif %}
+                {% if forloop.counter == 13 %} <b>Physicochemical prediction</b>{% endif %}
                 {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
                 <div class="checkbox">{{ aa }}</div>
                 {%endfor%}
