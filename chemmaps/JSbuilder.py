@@ -47,7 +47,7 @@ class JSbuilder:
     def __init__(self, nameMap, prout = ""):
         self.nameMap = nameMap
         self.prout = prout
-        self.pMap = "/home/aborrel/django_server/django_server/static/chemmaps/map/" + self.nameMap + "/"
+        self.pMap = "/home/sandbox/ChemMap2Site/static/chemmaps/map/" + self.nameMap + "/"
         self.err = 0
         self.loadMap()
 
@@ -179,7 +179,7 @@ class JSbuilder:
 
     def generateCoords(self, p1D2D, p3D):
 
-        cmd = "/home/aborrel/django_server/django_server/chemmaps/Rscripts/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
+        cmd = "/home/sandbox/ChemMap2Site/chemmaps/Rscripts/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
         print(cmd)
         system(cmd)
 
