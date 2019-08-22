@@ -22,4 +22,5 @@ urlpatterns = [
     path('', Home.as_view(), name='home'),
     url(r'^chemmaps/', include(('chemmaps.urls', 'chemmaps'), namespace='chemmaps')),
     url(r'^interferences/', include(('interferences.urls', 'interferences'), namespace='interferences')),
+    url(r'^bodymap/', include(('bodymap.urls', 'bodymap'), namespace='bodymap')),
 ]
