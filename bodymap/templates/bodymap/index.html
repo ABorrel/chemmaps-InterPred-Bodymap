@@ -5,96 +5,10 @@
 <link href="/static/django_server/css/ntpweb.css" rel="stylesheet">
 <link href="/static/django_server/css/ntpweb-shared.css" rel="stylesheet">
 <link href="/static/django_server/css/base.css" rel="stylesheet">
-<link href="/static/chemmaps/css/theme.css" rel="stylesheet">
+<link href="/static/bodymap/css/theme.css" rel="stylesheet">
+{% include 'bodymap/includes/navbar.html' %}
 
-<div id = "bg">
+<h1>BodyMap</h1>
 
-    {% include 'chemmaps/includes/navbar.html' %}
-    <br>
-    <h1 style="align-content: center; text-align: center; font-size:45px; color: #00ccff">ChemMaps.com: Navigate in chemical space</h1>
-    <p align="center">Version 2.0 (Beta)</p>
-
-    {% if DTXSID  %}
-    <p class = "Errorform">{{DTXSID}} is not a valid request</p>
-    {% endif %}
-    <br>
-    <p>
-        ChemMaps.com is a webserver developed in JavaScript to
-        interact with a chemical space. It's
-        available for the drug space and for environmental
-        space and was developed in collaboration with the NIEHS and the 
-        Fourches' lab in North Carolina State University.
-    </p>
-    <p>Full publication:</p>
-    <p style="font-size: 22px; margin: 30px; text-align: center">
-        <a href="https://doi.org/10.1093/bioinformatics/bty412" style="color: #00d6b2"> A. Borrel, N. C. Kleinstreuer, & D. Fourches. (2018) Exploring drug space with ChemMaps.com. Bioinformatics, (1), 1–3. </a> 
-    </p>
-
-
-    <div class="row">
-        <div class="column">
-            <div class="desc">Explore large chemical space</div>
-            <a href="/static/chemmaps/img/drugmap2.PNG">
-                <img src="/static/chemmaps/img/drugmap2.PNG" style="width:100%">
-            </a>
-        </div>
-        <div class="column">
-            <div class="desc">Select neighborhood</div>
-            <a href="/static/chemmaps/img/drugmap3.PNG">
-                <img src="/static/chemmaps/img/drugmap3.PNG" style="width:100%">
-            </a>
-        </div>
-        <div class="column">
-            <div class="desc">Explore chemical neighborhood</div>
-            <a href="/static/chemmaps/img/drugmap4.PNG">
-                <img src="/static/chemmaps/img/drugmap4.PNG" style="width:100%">
-            </a>
-        </div>
-        <div class="column">
-            <div class="desc">Connect chemicals on the map</div>
-            <a href="/static/chemmaps/img/drugmap1.PNG">
-                <img src="/static/chemmaps/img/drugmap1.PNG" style="width:100%">
-            </a>
-        </div>
-    </div>
-
-    <br>
-    <br>
-
-
-    <div class="row" align="center">
-        <div class ="column">
-            <p><a href="{% url 'chemmaps:DrugMap' %}">DrugMap</a><br>
-                Drugbank Version 5.1.2, release 2018-12-20<br>
-                ~12,000 entries</p>
-        </div>
-        <div class ="column">
-            <p> <a href="{% url 'chemmaps:DSSToxMap' %}">DSSToxMap</a><br>
-                DSSTox Release 2019-3-09<br>
-                > 800,000 entries</p>
-        </div>
-        <div class ="column">
-            <p> <a href="{% url 'chemmaps:Tox21Map' %}">Tox21Map</a><br>
-                Tox21 included in the DSSTox database<br>
-                ~ 9,000 entries</p>
-        </div>
-        <div class ="column">
-            <p> <a href="{% url 'chemmaps:PFASMap' %}">PFASMap</a><br>
-                PFAS included in the DSSTox database<br>
-                ~ 5,000 entries</p>
-        </div>
-
-    </div>
-    <h2>Author's Contact</h2>
-
-    <p>
-        Mail: <a href="mailto:aborrel@chemmaps.com"> aborrel@chemmaps.com</a>
-        <br>
-        <a href="https://twitter.com/SpaceChemMaps">
-            <i class="fa fa-twitter fa-fw"></i>
-            <span class="network-name">Twitter</span>
-        </a>
-    </p>
-</div>
 
 {% endblock content %}

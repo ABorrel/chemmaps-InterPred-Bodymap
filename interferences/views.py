@@ -109,7 +109,6 @@ def uploadSMILES(request):
 def computeDesc(request):
 
     name_session = request.session.get("name_session")
-    print(name_session)
 
     # open file with
     prsession = "/home/aborrel/django_server/django_server/interferences/temp/" + str(name_session) + "/"
