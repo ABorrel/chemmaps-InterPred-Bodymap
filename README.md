@@ -3,3 +3,5 @@ README
 - 7-8-19: add gitignore to no include png in chemmaps
 - 9-8-19: Error interferences, revert on sandbox version
 - 18-8-19: Fix ChemMaps for VM and create git tree
+- 22-8-19: Add bodyMap project
+- 23-8-19: develop bodyMap

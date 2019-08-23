@@ -25,3 +25,13 @@ class bodypartChoice(forms.Form):
         if len(self.cleaned_data['bodypart']) == 0:
             return "ERROR"
         return self.cleaned_data['bodypart']
+
+
+
+class CASUpload(forms.Form):
+    chem = forms.CharField(label="", error_messages={'required': ''}, required=True)
+
+    def clean_chem(self):
+        if len(self.cleaned_data['chem']) == "":
+            return "ERROR"
+        return self.cleaned_data['chem'].upper()

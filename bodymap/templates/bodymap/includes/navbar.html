@@ -6,7 +6,7 @@
     {% url 'bodymap:assaysMapping' as url %}
     <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Assays mapping</a></li>
 
-    {% url 'bodymap:chemicalsMapping' as url %}
+    {% url 'bodymap:chemMapping' as url %}
     <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Chemicals mapping</a></li>
 
     {% url 'bodymap:help' as url %}

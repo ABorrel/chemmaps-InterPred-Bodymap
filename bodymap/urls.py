@@ -22,4 +22,15 @@ urlpatterns = [
         name='assaysMappingTable'
 
     ),
+    url(
+        r'^chemMapping/$',
+        views.mappingChemicalToBody,
+        name='chemMapping'
+    ),
+    url(
+        r'^chemMappingTable/$',
+        views.mappingChemicalToBody,
+        name='chemMappingTable'
+
+    ),
     ]

@@ -18,26 +18,39 @@
 
 
 Error: {{ Error }}
-
+{% if Type == "chem" %}
+<p>Chemical (CAS): {{CAS}}</p>
+{% endif %}
 
 <p>Table Mapping</p>
 
 <div id="myGrid" style="height: 800px;" class="ag-theme-balham"></div>
 
-
+<p>
+    End Page
+</p>
 
 
 
 
 <script>
 var dmap = {{ dmap | safe }};
+var typeTable = {{ TypeJS | safe }};
+console.log(typeTable);
 console.log(dmap);
 // lookup the container we want the Grid to use
-var nameGrid = '#myGrid'
-var eGridDiv = document.querySelector(nameGrid);
-gridOptions = defineGridAssays(dmap);
-new agGrid.Grid(eGridDiv, gridOptions);
-
+if (typeTable == "assays"){
+    var nameGrid = '#myGrid'
+    var eGridDiv = document.querySelector(nameGrid);
+    gridOptions = defineGridAssays(dmap);
+    new agGrid.Grid(eGridDiv, gridOptions);
+}else{
+    var nameGrid = '#myGrid'
+    var eGridDiv = document.querySelector(nameGrid);
+    gridOptions = defineGridChem(dmap);
+    new agGrid.Grid(eGridDiv, gridOptions);
+}
+;
 
 // create the grid passing in the div to use together with the columns & data we want to use
 
