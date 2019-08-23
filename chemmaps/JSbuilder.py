@@ -1,4 +1,3 @@
-
 from os import system, path
 from .toolbox import loadMatrixToDict, loadMatrixInfoToDict, convertSMILEStoINCHIKEY, loadMap1D2D3D
 import math

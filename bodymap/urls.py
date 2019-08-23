@@ -16,4 +16,10 @@ urlpatterns = [
         views.mappingAssaysBody,
         name='assaysMapping'
     ),
+    url(
+        r'^assaysMappingTable/$',
+        views.mappingAssaysBody,
+        name='assaysMappingTable'
+
+    ),
     ]

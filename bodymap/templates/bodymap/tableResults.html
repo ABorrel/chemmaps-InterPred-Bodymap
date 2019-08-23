@@ -6,19 +6,23 @@
 <link href="/static/django_server/css/ntpweb-shared.css" rel="stylesheet">
 <link href="/static/django_server/css/base.css" rel="stylesheet">
 <link href="/static/bodymap/css/theme.css" rel="stylesheet">
-<link href="/static/interferences/css/table.css" rel="stylesheet">
+<link href="/static/bodymap/css/table.css" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
-<script src="/static/interferences/js/table.js"></script>
+<script src="/static/bodymap/js/table.js"></script>
 
 {% include 'bodymap/includes/navbar.html' %}
 
 <h1>Results</h1>
 
 
+Error: {{ Error }}
 
 
+<p>Table Mapping</p>
+
+<div id="myGrid" style="height: 800px;" class="ag-theme-balham"></div>
 
 
 
@@ -26,13 +30,16 @@
 
 
 <script>
-var dpred = {{ dpred | safe }};
-console.log(dpred);
+var dmap = {{ dmap | safe }};
+console.log(dmap);
 // lookup the container we want the Grid to use
-var eGridDiv = document.querySelector('#myGrid');
-// create the grid passing in the div to use together with the columns & data we want to use
-gridOptions = defineGridOption(dpred);
+var nameGrid = '#myGrid'
+var eGridDiv = document.querySelector(nameGrid);
+gridOptions = defineGridAssays(dmap);
 new agGrid.Grid(eGridDiv, gridOptions);
+
+
+// create the grid passing in the div to use together with the columns & data we want to use
 
 </script>
 

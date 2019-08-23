@@ -16,7 +16,7 @@
 <p class = "Errorform"> Please choose at least one body part</p>
 {% endif %}
 
-<form action='/bodymap/results/' method='post' onsubmit="ShowLoadingInterferences()">{% csrf_token %}
+<form action='/bodymap/assaysMappingTable/' method='post' onsubmit="ShowLoadingInterferences()">{% csrf_token %}
     <div class="row">
         <div class="column">
             {% for aa in form_body.bodypart %}

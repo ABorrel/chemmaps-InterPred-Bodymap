@@ -1,6 +1,11 @@
 from django.shortcuts import render
-from .forms import bodypartChoice
 from random import randint
+import json
+
+
+from .forms import bodypartChoice
+from .loadMapping import assaysMapping
+
 
 # Create your views here.
 def index(request):
@@ -28,17 +33,21 @@ def mappingAssaysBody(request):
     # run map with new chem
     if formBody.is_valid() == True:
         lBodypart = formBody.clean_run()
+        dmap = assaysMapping(lBodypart, 2)
+        doutbody = {}
+        i = 1
+        for bodypart in dmap.keys():
+            doutbody[bodypart] = i
+            i = i + 1
+        dmapJS = json.dumps(dmap)
 
-        # do something here
 
-        #cPred = Predict(ldescMap, prsession)
-        #cPred.predictAll()
-        #dpred = cPred.processResult()
-        ## print(dpred)
-        #dpredJS = json.dumps(dpred)
+        return render(request, 'bodymap/tableResults.html', {"dmap": dmapJS, "dbody":doutbody, "Error": "0"})
 
-        #return render(request, 'interferences/results.html', {"dpred": dpredJS})
+    else:
 
+        return render(request, 'bodymap/tableResults.html', {"Error": "1"})
+    # add error mapping here
     #else:
     #    return render(request, 'interferences/computeDESC.html', {"map": map, "dSMILESIN": cinput.dclean["IN"],
     #                                                              "dSMILESOUT": cinput.dclean["OUT"],
