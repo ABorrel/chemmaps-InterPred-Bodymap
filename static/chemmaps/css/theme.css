@@ -1,11 +1,10 @@
-/* Aries v1.0 - by WowThemes.net */
-
 #bg {
     /*background-color: #000;
     #margin: 0px;
     overflow: hidden;*/
     background-image: url('/static/chemmaps/img/background.jpg');
     color: #ffffff;
+    margin-top: 15px;
     /*padding-bottom: 15px;*/
 }
 
@@ -25,12 +24,20 @@ html {
     height: 100%;
 }
 
+h1 {
+    margin: 25px;
+    margin-bottom: 15px;
+    color: #00ccff;
+    /*font-size: 3.6vmin;*/
+    font-size: 40px;
+}
+
 h2 {
-    margin: 10px;
-    margin-bottom: 5px;
+   margin: 25px;
+    margin-bottom: 15px;
     color: #00ccff;
     /*font-size: 5.6vmin;*/
-    font-size: 40px;
+    font-size: 30px;
 }
 
 h3 {
@@ -103,10 +110,10 @@ div.desc {
 }
 
 p {
-    font-size: 22px;
+    font-size: 20px;
     /*font-size: 2.5vmin*/
 
-    margin: 30px;
+    margin: 20px;
 }
 
 .marginauto {
