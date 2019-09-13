@@ -6,7 +6,6 @@ from math import sqrt
 from copy import deepcopy
 
 
-class DSSToxPrep:
 
     def __init__(self, input):
 

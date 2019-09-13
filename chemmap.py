@@ -3,6 +3,8 @@ from configparser import ConfigParser
 
 def main():    
     connect()
+
+
 def connect():
     conn = None
     try:
