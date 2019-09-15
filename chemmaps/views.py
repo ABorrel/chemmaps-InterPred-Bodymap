@@ -31,8 +31,7 @@ def index(request):
         a = randint(0, 1000000)
         request.session.get("name_session", a)
         request.session["name_session"] = a
-    return render(request, 'chemmaps/index.html', {
-    })
+    return render(request, 'chemmaps/index.html')
 
 
 
@@ -45,7 +44,9 @@ def launchHelp(request, map):
 def download(request, name):
 
     name_session = request.session.get("name_session")
-    file_path = "/home/sandbox/ChemMap2Site/chemmaps/temp/" + str(name_session) + "/" + name + ".csv"
+    prsession = path.abspath("./temp") + "/" + str(name_session) + "/"
+
+    file_path = prsession + name + ".csv"
     if path.exists(file_path):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
@@ -59,11 +60,9 @@ def download(request, name):
 def launchMap(request, map):
 
     name_session = request.session.get("name_session")
-    print(name_session)
 
     # open file with
-    prsession = "/home/sandbox/ChemMap2Site/chemmaps/temp/" + str(name_session) + "/"
-
+    prsession = path.abspath("./temp") + "/" + str(name_session) + "/"
 
     if request.method == 'GET':
         form_smiles = UploadChemList()
@@ -97,10 +96,10 @@ def launchMap(request, map):
             return render(request, 'chemmaps/launchMap.html', {"form_info":formDesc, "form_smiles":form_smiles,
                                                            "from_upload": formUpload, "ErrorLine": "1", "map":map})
 
-        prSession = "/home/sandbox/ChemMap2Site/chemmaps/temp/" + str(name_session) + "/"
-        createFolder(prSession, 1)
+        prsession = path.abspath("./temp") + "/" + str(name_session) + "/"
+        createFolder(prsession, 1)
 
-        cinput = uploadSMILES(content, prSession)
+        cinput = uploadSMILES(content, prsession)
         cinput.prepListSMILES()
 
         return render(request, 'chemmaps/smilesprocess.html', {"dSMILESIN": cinput.dclean["IN"], "ERRORSmiles": str(cinput.err),
@@ -109,10 +108,10 @@ def launchMap(request, map):
 
     elif formUpload.is_valid() == True:
 
-        prSession = "/home/sandbox/ChemMap2Site/chemmaps/temp/" + str(name_session) + "/"
-        createFolder(prSession, 1)
+        prsession = path.abspath("./temp") + "/" + str(name_session) + "/"
+        createFolder(prsession, 1)
 
-        pfileserver = prSession + "upload.txt"
+        pfileserver = prsession + "upload.txt"
         with open(pfileserver, 'wb+') as destination:
             for chunk in formUpload.files["docfile"].chunks():
                 destination.write(chunk)
@@ -129,7 +128,7 @@ def launchMap(request, map):
                 return render(request, 'chemmaps/launchMap.html', {"form_info": formDesc, "form_smiles": form_smiles,
                                                                    "from_upload": formUpload, "ErrorFile": "1",
                                                                    "map": map})
-            cinput = uploadSMILES(lsmiles, prSession)
+            cinput = uploadSMILES(lsmiles, prsession)
             cinput.prepListSMILES()
 
             return render(request, 'chemmaps/smilesprocess.html', {"dSMILESIN": cinput.dclean["IN"],
@@ -233,7 +232,8 @@ def computeDescriptor(request, map):
     #print(name_session)
 
     # open file with
-    prsession = "/home/sandbox/ChemMap2Site/chemmaps/temp/" + str(name_session) + "/"
+    prsession = path.abspath("./temp") + "/" + str(name_session) + "/"
+    
     dSMI = loadMatrixToDict(prsession + "smiClean.csv", sep="\t")
 
     cinput = uploadSMILES(dSMI, prsession)

@@ -13,91 +13,99 @@
 <div id = "bg">
 
     {% include 'chemmaps/includes/navbar.html' %}
-    <br>
-    <h1 style="align-content: center; text-align: center; font-size:45px; color: #00ccff">ChemMaps.com: Navigate in chemical space</h1>
-    <p align="center">Version 2.0 (Beta)</p>
-
-    {% if DTXSID  %}
-    <p class = "Errorform">{{DTXSID}} is not a valid request</p>
-    {% endif %}
-    <br>
+    <h1>ChemMaps.com (v2-Beta3)</h1>
     <p>
-        ChemMaps.com is a webserver developed in JavaScript to
-        interact with a chemical space. It's
-        available for the drug space and for environmental
-        space and was developed in collaboration with the NIEHS and the 
-        Fourches' lab in North Carolina State University.
+        ChemMaps.com is a webserver developed to navigate in the chemical space. 
+        In the version 1 the navivation was limited to the DrugBank database. Now
+        with the version 2. It is available for the drug space and for extented universe
+        in the environmental chemical space. <br>
+        ChemMaps.com is a collaboration work between the National Institute of Health
+        and the Fourches' lab in North Carolina State University.
     </p>
-    <p>Full publication:</p>
-    <p style="font-size: 22px; margin: 30px; text-align: center">
-        <a href="https://doi.org/10.1093/bioinformatics/bty412" style="color: #00d6b2"> A. Borrel, N. C. Kleinstreuer, & D. Fourches. (2018) Exploring drug space with ChemMaps.com. Bioinformatics, (1), 1–3. </a> 
-    </p>
-
-
-    <div class="row">
-        <div class="column">
-            <div class="desc">Explore large chemical space</div>
-            <a href="/static/chemmaps/img/drugmap2.PNG">
-                <img src="/static/chemmaps/img/drugmap2.PNG" style="width:100%">
-            </a>
-        </div>
-        <div class="column">
-            <div class="desc">Select neighborhood</div>
-            <a href="/static/chemmaps/img/drugmap3.PNG">
-                <img src="/static/chemmaps/img/drugmap3.PNG" style="width:100%">
-            </a>
-        </div>
-        <div class="column">
-            <div class="desc">Explore chemical neighborhood</div>
-            <a href="/static/chemmaps/img/drugmap4.PNG">
-                <img src="/static/chemmaps/img/drugmap4.PNG" style="width:100%">
-            </a>
-        </div>
-        <div class="column">
-            <div class="desc">Connect chemicals on the map</div>
-            <a href="/static/chemmaps/img/drugmap1.PNG">
-                <img src="/static/chemmaps/img/drugmap1.PNG" style="width:100%">
-            </a>
-        </div>
-    </div>
-
     <br>
+    <p style="text-align:  center; font-size: 25px">
+        Please cite: <a href="https://doi.org/10.1093/bioinformatics/bty412" style="color: #00d6b2">
+            A. Borrel, N. C. Kleinstreuer, & D. Fourches. (2018) Exploring drug space with ChemMaps.com. Bioinformatics, (1), 1–3.</a><br>
+    </p>
     <br>
 
-
-    <div class="row" align="center">
-        <div class ="column">
-            <p><a href="{% url 'chemmaps:DrugMap' %}">DrugMap</a><br>
-                Drugbank Version 5.1.2, release 2018-12-20<br>
-                ~12,000 entries</p>
-        </div>
-        <div class ="column">
-            <p> <a href="{% url 'chemmaps:DSSToxMap' %}">DSSToxMap</a><br>
-                DSSTox Release 2019-3-09<br>
-                > 800,000 entries</p>
-        </div>
-        <div class ="column">
-            <p> <a href="{% url 'chemmaps:Tox21Map' %}">Tox21Map</a><br>
-                Tox21 included in the DSSTox database<br>
-                ~ 9,000 entries</p>
-        </div>
-        <div class ="column">
-            <p> <a href="{% url 'chemmaps:PFASMap' %}">PFASMap</a><br>
-                PFAS included in the DSSTox database<br>
-                ~ 5,000 entries</p>
-        </div>
-
-    </div>
-    <h2>Author's Contact</h2>
-
+    <h2>Available maps</h2>
     <p>
-        Mail: <a href="mailto:aborrel@chemmaps.com"> aborrel@chemmaps.com</a>
-        <br>
-        <a href="https://twitter.com/SpaceChemMaps">
+        The current version allows user to navigate in drug space (DrugMap) as well in three
+        maps to navigate in the environmental chemicals space built from the 
+        <a class = "aurl" href="https://comptox.epa.gov/dashboard">DSSTox database</a>. 
+    </p>
+    <p>
+        <div class="row" align="center">
+            <div class ="column">
+                <p><a class = "aurl" style = "font-size: 25px; color:#00ccff" href="{% url 'chemmaps:DrugMap' %}">DrugMap</a><br>
+                    Drugbank Version 5.1.2, release 2018-12-20<br>
+                    ~12,000 entries</p>
+            </div>
+            <div class ="column">
+                <p> <a class = "aurl" style = "font-size: 25px; color:#00ccff" href="{% url 'chemmaps:DSSToxMap' %}">DSSToxMap</a><br>
+                    DSSTox Release 2019-3-09<br>
+                    > 800,000 entries</p>
+            </div>
+            <div class ="column">
+                <p> <a class = "aurl" style = "font-size: 25px; color:#00ccff" href="{% url 'chemmaps:Tox21Map' %}">Tox21Map</a><br>
+                    Tox21 included in the DSSTox database<br>
+                    ~ 9,000 entries</p>
+            </div>
+            <div  class ="column">
+                <p> <a class = "aurl" style = "font-size: 25px; color:#00ccff" href="{% url 'chemmaps:PFASMap' %}">PFASMap</a><br>
+                    PFAS included in the DSSTox database<br>
+                    ~ 5,000 entries</p>
+            </div>
+        </div>
+    </p>
+    
+    <h2>Visualization</h2>
+    <p>ChemMaps.com aloows user to navigate in the space using different navigation tools.
+        <div class="row">
+            <div class="column">
+                <div class="desc">Navigate in a 3D space</div>
+                <a href="/static/chemmaps/img/drugmap2.PNG">
+                    <img src="/static/chemmaps/img/drugmap2.PNG" style="width:100%">
+                </a>
+            </div>
+            <div class="column">
+                <div class="desc">Select chemicals on the fly</div>
+                <a href="/static/chemmaps/img/drugmap3.PNG">
+                    <img src="/static/chemmaps/img/drugmap3.PNG" style="width:100%">
+            </a>
+            </div>
+            <div class="column">
+                <div class="desc">Explore neighborhood</div>
+                <a href="/static/chemmaps/img/drugmap4.PNG">
+                    <img src="/static/chemmaps/img/drugmap4.PNG" style="width:100%">
+                </a>
+            </div>
+            <div class="column">
+                <div class="desc">Draw chemicals</div>
+                <a href="/static/chemmaps/img/drugmap1.PNG">
+                    <img src="/static/chemmaps/img/drugmap1.PNG" style="width:100%">
+                </a>
+            </div>
+        </div>
+    </p>
+
+    <h2>Contact</h2>
+    <p><a a class = "aurl" href="mailto:aborrel@chemmaps.com"> aborrel@chemmaps.com</a><br> 
+        <a a class = "aurl" href="https://twitter.com/SpaceChemMaps">
             <i class="fa fa-twitter fa-fw"></i>
-            <span class="network-name">Twitter</span>
+            <span class="network-name">@alborrel</span>
         </a>
     </p>
+
+    <br>
+    <h2>Last updates</h2>
+    <textarea class="update" cols="1" rows="3">
+        - 09-2019: ChemMaps version 2 for test
+        - 04-2019: ChemMaps version 2-B
+        - 04-2018: ChemMaps version 1
+        - ...
+    </textarea>
     <br>
 </div>
 

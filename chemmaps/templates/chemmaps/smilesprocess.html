@@ -23,24 +23,26 @@
             width: 100%;
         }
     }
-
-
 </style>
 
+{% extends "base.html" %}
 {% load static %}
-{% block content %}
+{% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link href="/static/django_server/css/ntpweb.css" rel="stylesheet">
 <link href="/static/django_server/css/ntpweb-shared.css" rel="stylesheet">
 <link href="/static/django_server/css/base.css" rel="stylesheet">
 <link href="/static/chemmaps/css/theme.css" rel="stylesheet">
-<script  src="/static/chemmaps/js/theme.js"></script>
-<br>
+{% endblock %}
+
+{% block content %}
 <div id = "bg">
     {% include 'chemmaps/includes/navbar.html' %}
+    
+    <h1>QSAR-ready SMILES</h1>
     <br>
-
+    
     {% if ERRORSmiles == "1" %}
     <p class = "Errorform" style="margin-right: 0px"> No valid SMILES found.</p>
     {% endif %}
@@ -56,7 +58,7 @@
             </table>
         </div>
         <div class="column" style="background-color:#232b8b;">
-            <h3>SMILES prepared</h3>
+            <h3>QSAR-ready SMILES</h3>
             <table width="100%" border="0">
                 <tr><th>ID</th><th>SMILES</th><th></th></tr>
                 {% for k1, dout in dSMILESOUT.items %}
@@ -115,7 +117,8 @@
         </div>
     </div>
     <br>
-
+    <br>
+    <br>
 </div>
 {% endblock content %}
 
