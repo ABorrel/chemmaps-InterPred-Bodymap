@@ -40,7 +40,7 @@
 <div id = "bg">
     {% include 'chemmaps/includes/navbar.html' %}
     <br>
-    <h2>Chemicals added to the map:</h2>
+    <h1>Descriptor computation</h1>
     <br>
 
     {% if ErrorDesc == "1" %}
@@ -58,7 +58,7 @@
             </table>
         </div>
         <div class="column" style="background-color:#232b8b;">
-            <h3>SMILES prepared</h3>
+            <h3>QSAR-ready SMILES</h3>
             <table width="100%" border="0">
                 <tr><th>ID</th><th>SMILES</th><th></th></tr>
                 {% for k1, dout in dSMILESOUT.items %}
@@ -69,7 +69,7 @@
             </table>
         </div>
         <div class="column" style="background-color:#11a5d3;">
-            <h3>Descriptor computation</h3>
+            <h3>Descriptor</h3>
             <table width="100%" border="0">
                 <tr><th>ID</th><th>Descriptor</th><th></th></tr>
                 {% for k1, dout in ddesc.items %}
@@ -112,7 +112,7 @@
 
     {% if ErrorDesc != "1" %}
 
-    <h2>Optimize view</h2>
+    <h1>Generate the {{map}}</h1>
     <p>Select up to 5 features you would like put on the map</p>
 
     {% if Error == "1" %}

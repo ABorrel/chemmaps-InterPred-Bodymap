@@ -15,4 +15,7 @@
     {% url 'chemmaps:PFASMap' as url %}
     <li {% if map == "PFASMap" %} class="active"{% endif %}><a href="{{ url }}" style="color: #00ccff">PFASMap</a></li>
     
+    {% url 'chemmaps:help' as url %}
+    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #00ccff">Help</a></li>
+
 </ul>

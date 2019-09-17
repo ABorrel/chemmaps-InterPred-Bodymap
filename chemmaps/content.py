@@ -1,6 +1,9 @@
-from .descriptor import prep, descriptor
 from .toolbox import loadMatrixToDict
 from os import path, remove
+
+import sys
+sys.path.insert(0, path.abspath('./../MD/'))
+from MD import Chemical
 
 
 class uploadSMILES:
@@ -45,10 +48,10 @@ class uploadSMILES:
                 doutIN[i] = {}
                 doutOUT[i] = {}
                 doutIN[i] = SMILES
-                chemical = prep.prep(SMILES, self.prout)
-                chemical.clean()
+                chemical = Chemical.Chemical(SMILES, self.prout)
+                chemical.prepChem()
                 if chemical.err == 0:
-                    doutOUT[i]["SMILES"] = chemical.smiclean
+                    doutOUT[i]["SMILES"] = chemical.smi
                     doutOUT[i]["file"] = "chemmaps/img/checkOK.png"
                 else:
                     doutOUT[i]["SMILES"] = 0
@@ -114,8 +117,8 @@ class uploadSMILES:
         else:
             dout = {}
 
-            l2D = descriptor.getLdesc("1D2D")
-            l3D = descriptor.getLdesc("3D")
+            l2D = Chemical.getLdesc("1D2D")
+            l3D = Chemical.getLdesc("3D")
 
             filout2D = open(pfilout2D, "w")
             filout3D = open(pfilout3D, "w")
@@ -132,35 +135,23 @@ class uploadSMILES:
                     continue
                 else:
                     # chemical preparation
-                    chemical = prep.prep(SMICLEAN, self.prout)
-                    chemical.clean(SMICLEAN)
+                    chemical = Chemical.Chemical(SMICLEAN, self.prout)
+                    chemical.prepChem()
                     chemical.generateInchiKey()
-                    chemical.generate3D()
-                    chemical.parseSDFfor3DdescComputation()
-
+                    chemical.computeAll2D()
+                    chemical.set3DChemical()
+                    chemical.computeAll3D()
                     #ompute descriptor
-                    chemdesc = descriptor.Descriptor(SMICLEAN, self.prout + chemical.inchikey)
-                    #try:
-                    chemdesc.computeAll2D()
-                    chemdesc.writeMatrix("2D")
-                    #except:
-                    chemdesc.err = 0 
-                    try:
-                        chemdesc.computeAll3D(chemical.lcoords)
-                        chemdesc.writeMatrix("3D")
-                    except:
-                        chemdesc.err = 1
-
-
                     # have to check case of error
-                    if chemdesc.err == 0:
+
+                    if chemical.err == 0:
                         #print(chemdesc.all2D.keys())
                         dout[k]["Descriptor"] = "OK"
                         dout[k]["desc"] = "chemmaps/img/checkOK.png"
-                        filout2D.write("%i\t%s\t%s\n"%(k, SMICLEAN, "\t".join([str(chemdesc.all2D[d]) for d in l2D])))
-                        filout3D.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(chemdesc.all3D[d]) for d in l3D])))
+                        filout2D.write("%i\t%s\t%s\n"%(k, SMICLEAN, "\t".join([str(chemical.all2D[d]) for d in l2D])))
+                        filout3D.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(chemical.all3D[d]) for d in l3D])))
                         # run png generation
-                        descriptor.computePNG(SMICLEAN, chemical.inchikey, self.prout, "/home/aborrel/django_server/django_server/static/chemmaps/png/")
+                        chemical.computePNG("/home/aborrel/django_server/django_server/static/chemmaps/png/")
                     else:
                         dout[k]["desc"] = "chemmaps/img/checkNo.png"
                         dout[k]["Descriptor"] = "Error"
@@ -182,7 +173,3 @@ class uploadSMILES:
 
         self.ddesc = dout
         return [pfilout2D, pfilout3D]
-
-
-
-

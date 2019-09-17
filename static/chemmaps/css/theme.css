@@ -18,10 +18,6 @@
     color: #000000;
 }
 
-html {
-    width: 100%;
-    height: 100%;
-}
 
 h1 {
     margin: 25px;
@@ -79,12 +75,13 @@ h3 {
 }
 
 /* The grid: Four equal columns that floats next to each other */
-.column {
+/*.column {
     float: left;
     width: 25%;
     padding: 20px;
     background-color: transparent;
-}
+    font-size: 22px;
+}*/
 
 /* Style the images inside the grid */
 .column img {
@@ -103,6 +100,8 @@ h3 {
     clear: both;
     background-color: transparent;
 }
+
+
 
 /* Expanding image text */
 #imgtext {
@@ -154,13 +153,7 @@ button:hover {
     color: #ffffff;
 }
 
-.column{
-    font-size: 22px;
-}
 
-.row{
-    font-size: 22px;
-}
 
 input[type='submit'] {
     font-size: 22px;

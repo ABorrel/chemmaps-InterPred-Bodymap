@@ -40,6 +40,7 @@ def loadMatrixToDict(pmatrixIn, sep ="\t"):
 
 
 from os import path, makedirs, listdir, remove
+from shutil import rmtree
 
 def cleanFolder(prin):
 
@@ -48,8 +49,8 @@ def cleanFolder(prin):
         for filin in lfiles:
             if filin[-3:] != "txt" and filin[-3:] != "png": # keep descriptor in memory
                 # problem with folder
-                remove(prin + filin)
-
+                try:remove(prin + filin)
+                except: rmtree(prin + filin)
     return prin
 
 

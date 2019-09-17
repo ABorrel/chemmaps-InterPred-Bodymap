@@ -11,6 +11,13 @@ urlpatterns = [
         views.index,
         name='home'
     ),
+    url(
+        r'^help$',
+        views.launchHelp,
+        name='help'
+    ),
+
+
     ### DrugMap ###
     ###############
     url(

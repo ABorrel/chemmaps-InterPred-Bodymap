@@ -3,13 +3,10 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.core.files.storage import default_storage
 from random import randint
-
 import json
 
-from .descriptor import prep, descriptor
 
 from .forms import UploadChemList, descDrugMapChoice, descDSSToxMapChoice, descDSSToxChoice, uploadList
-
 from .content import uploadSMILES
 from .toolbox import loadMatrixToDict
 from .JSbuilder import JSbuilder
@@ -35,8 +32,8 @@ def index(request):
 
 
 
-def launchHelp(request, map):
-    return render(request, 'chemmaps/MapHelp.html', {
+def launchHelp(request):
+    return render(request, 'chemmaps/help.html', {
     })
 
 
