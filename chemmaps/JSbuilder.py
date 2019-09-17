@@ -1,7 +1,9 @@
 from os import system, path
 from .toolbox import loadMatrixToDict, loadMatrixInfoToDict, convertSMILEStoINCHIKEY, loadMap1D2D3D
-import math
+from .DBrequest import DBrequest
+from .uploadMap import loadingMap
 
+import math
 from copy import deepcopy
 
 
@@ -46,16 +48,19 @@ class JSbuilder:
     def __init__(self, nameMap, prout = ""):
         self.nameMap = nameMap
         self.prout = prout
-        self.pMap = "/home/sandbox/ChemMap2Site/static/chemmaps/map/" + self.nameMap + "/"
+        self.pMap = path.abspath("./static/chemmaps/map/" + self.nameMap) + "/"
         self.err = 0
         self.loadMap()
 
 
     def loadMap(self, ldescMap = [], IDmap = 1):
 
-        self.ldescMap = ldescMap
-
+        self.ldescMap = ldescMap# prop in
+        #cDB = DBrequest()
         if self.nameMap == "DrugMap" or self.nameMap == "PFASMap" or self.nameMap == "Tox21Map":
+            #cload = loadingMap(self.nameMap, [])
+            #dmap = cload.loadMap()
+        #elif self.nameMap == "PFASMap" or self.nameMap == "Tox21Map":
             dmap = {}
             dmap["coord"] = loadMap1D2D3D(self.pMap)
             # modif with user choose

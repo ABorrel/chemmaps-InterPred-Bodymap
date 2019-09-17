@@ -78,7 +78,6 @@ def launchMap(request, map):
             formDesc = descDSSToxChoice(request.POST)
         else:
             formDesc = descDSSToxMapChoice(request.POST)
-
         formUpload = uploadList(request.POST, request.FILES)
 
 
@@ -288,7 +287,7 @@ def computeDescriptor(request, map):
                 build = JSbuilder(map, prsession)
                 build.loadMap(ldescMap)
                 # manage new chemical for the JS
-                build.generateCoords(lfileDesc[0], lfileDesc[1])
+                build.generateCoords(lfileDesc[0], lfileDesc[1])# fro mcomputed descriptors
                 build.findinfoTable()
                 build.findneighbor()
 
