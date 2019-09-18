@@ -147,6 +147,7 @@
 
                 //Coordinates
                 var dcoords = {{dcoord | safe}};
+                console.log(Object.keys(dcoords).length)
                 
                 // info for compound bar
                 var dinfo = {{dinfo | safe}};
@@ -161,7 +162,7 @@
                     var dcol = {"approved": 0x00ff00, "indev": 0xffffff, "withdraw": 0x663399, "add":0Xffffff};
                     var dsize = {"approved": 20, "indev": 2.5, "withdraw": 10, "add": 7};
                     var nbcol = 20;
-                    var fact = 15;
+                    var fact = 20;
                 
                     // textures and material
                     var textureLoader = new THREE.TextureLoader();

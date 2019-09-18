@@ -165,12 +165,10 @@ def launchMap(request, map):
 
 
         else:
-            print("qqqq", ldescMap)
             build = JSbuilder(map)
             build.loadMap(list(ldescMap))
 
             dJS = build.generateJS()
-            print(dJS["info"])
             #   format for JS
             dcoord = json.dumps(dJS["coord"])
             dinfo = json.dumps(dJS["info"])
@@ -289,7 +287,7 @@ def computeDescriptor(request, map):
                 build = JSbuilder(map, prsession)
                 build.loadMap(ldescMap)
                 # manage new chemical for the JS
-                build.generateCoords(lfileDesc[0], lfileDesc[1])# fro mcomputed descriptors
+                build.generateCoords(lfileDesc[0], lfileDesc[1])# from computed descriptors
                 build.findinfoTable()
                 build.findneighbor()
 

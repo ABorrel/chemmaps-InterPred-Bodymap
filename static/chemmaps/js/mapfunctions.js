@@ -513,7 +513,7 @@ function extractNeighbor(that) {
                         }
                     }
                 }
-                console.log(dSMILESClass[IDtemp]['GHS_category']);
+                //console.log(dSMILESClass[IDtemp]['GHS_category']);
                 if (flag == 0) {
                     if (map == 'drugMap') {
                         if (dinfo[IDtemp]['Drug group'].search('NA') !== -1) {

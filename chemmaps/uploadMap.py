@@ -20,7 +20,6 @@ def coordToDict(lcoord):
     for chem in lcoord:
         inchikey = str(chem[0])
         dout[inchikey] = [chem[1][0], chem[1][1], chem[2][0]]
-
     return dout
 
 def NeighborToDict(lneighbors):
@@ -29,7 +28,6 @@ def NeighborToDict(lneighbors):
     for chem in lneighbors:
         inchikey = str(chem[2])
         dout[inchikey] = chem[0]
-
     return dout
 
 
@@ -40,12 +38,10 @@ class loadingMap:
         self.DB = DBrequest()
         self.DB.verbose = 0
         self.lprop = lprop
-        print("ssss",self.lprop)
 
         # load order prop
         if map == "DrugMap":
             lprop = self.DB.extractColoumn("drugbank_name_prop", "name")
-            print(lprop)
             #self.lallProp = lprop
             self.lallProp = [prop [0] for prop in lprop]
             
@@ -59,15 +55,16 @@ class loadingMap:
         dout["info"] = {}
         dout["neighbor"] = {}
         dout["SMILESClass"] = {}
+        dout["inchikey"] = {}
         #self.DB.verbose = 1
-        lchem = self.DB.extractColoumn("drugbank_chemicals", "*")
+        # load chem matrix
+        lchem = self.DB.extractColoumn("drugbank_chem", "*")
         lcoord = self.DB.extractColoumn("drugbank_coords", "*")
         dcoord = coordToDict(lcoord)
         linfo = self.DB.extractColoumn("drugbank_prop", "*")
         dinfo = propToDict(linfo, self.lallProp)
         lneighbor = self.DB.extractColoumn("drugbank_neighbors", "*")
         dneighbor = NeighborToDict(lneighbor)
-
 
         for chem in lchem:
             DB_id = chem[0]
@@ -100,16 +97,11 @@ class loadingMap:
             dout["SMILESClass"][DB_id]["DRUG_GROUPS"] = dinfo[DB_id]["DRUG_GROUPS"]
             dout["SMILESClass"][DB_id]["inchikey"] = inchikey
 
-
+            # transform inchikey to ChemID
+            if not inchikey in list(dout["inchikey"].keys()):
+                dout["inchikey"][inchikey] = []
+            dout["inchikey"][inchikey].append(DB_id) 
         return dout
-
-
-
-
-
-
-
-
 
 
 

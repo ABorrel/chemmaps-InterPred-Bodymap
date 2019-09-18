@@ -55,7 +55,6 @@ class JSbuilder:
     def loadMap(self, ldescMap = [], IDmap = 1):
 
         self.ldescMap = ldescMap# prop in
-        print("aaaa", ldescMap)
         #cDB = DBrequest()
         if self.nameMap == "DrugMap":
             cload = loadingMap(self.nameMap, self.ldescMap)
@@ -75,7 +74,6 @@ class JSbuilder:
             dmap["info"] = loadMatrixInfoToDict(self.pMap + str(IDmap) + "_TableProp.csv", sep="\t", ldesc=ldescMap)
             dmap["neighbor"] = loadMatrixToDict(self.pMap + str(IDmap) + "_TableNeighbors.csv")
         self.map = dmap
-
 
 
 
@@ -140,9 +138,12 @@ class JSbuilder:
         #############
 
         dneighbor = {}
-        # map
-        #for IDchem in self.map["neighbor"].keys():
-        #    dneighbor[IDchem] = self.map["neighbor"][IDchem]["Neighbors"].split(" ")
+        # map transform inchikey to DBID
+        for IDchem in self.map["neighbor"].keys():
+            dneighbor[IDchem] = []
+            for neighbor in self.map["neighbor"][IDchem]:
+                try:dneighbor[IDchem] = dneighbor[IDchem] + self.map["inchikey"][neighbor]
+                except: pass
 
         # user chem
         if "dchemAdd" in self.__dict__:
@@ -185,22 +186,54 @@ class JSbuilder:
 
     def generateCoords(self, p1D2D, p3D):
 
-        cmd = "/home/sandbox/ChemMap2Site/chemmaps/Rscripts/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
+        if not "dchemAdd" in self.__dict__:
+            self.dchemAdd = {}
+            self.dchemAdd["p2D"] = p1D2D
+            self.dchemAdd["p3D"] = p3D
+            self.dchemAdd["coord"] = {}
+
+        # control if included in DB
+        filin = open(p1D2D, "r")
+        llines = filin.readlines()
+        filin.close()
+        i = 1
+        imax = len(llines)
+        while i < imax:
+            inchikey = llines[i].split("\t")[2]
+            id = llines[i].split("\t")[0]
+            dcoord = downloadCoordsFromDB(self.nameMap, inchikey, "3D")
+            if dcoord != [] and dcoord != "Error":
+                self.dchemAdd["coord"][id] = {}
+                self.dchemAdd["coord"][id]["DIM1"] = dcoord[0]
+                self.dchemAdd["coord"][id]["DIM2"] = dcoord[1]
+                self.dchemAdd["coord"][id]["DIM3"] = dcoord[2]
+
+                del llines[i]
+                imax = imax - 1
+                continue
+            else:
+                i = i + 1 
+
+        if len(llines) == 1:
+            return 
+        
+        filout = open(p1D2D, "w")
+        filout.write("".join(llines))
+        filout.close()
+            
+
+        cmd = "%s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath("./chemmaps/Rscripts"), p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
         print(cmd)
         system(cmd)
 
         p1D2Dcoord = self.prout + "coord1D2D.csv"
         p3Dcoord = self.prout + "coord3D.csv"
 
-        if not "dchemAdd" in self.__dict__:
-            self.dchemAdd = {}
-            self.dchemAdd["p2D"] = p1D2D
-            self.dchemAdd["p3D"] = p3D
 
         if path.exists(p1D2Dcoord) and path.exists(p3Dcoord):
-            self.dchemAdd["coord"] = loadMap1D2D3D(self.prout)
-        else:
-            self.dchemAdd["coord"] = {}
+            self.dchemAdd["coord"].update(loadMap1D2D3D(self.prout))
+        
+        if self.dchemAdd["coord"] == {}:
             self.err = 1
             return "ERROR"
 
@@ -280,5 +313,22 @@ class JSbuilder:
                     self.dchemAdd["info"][IDadd][desc] = "NA"
 
 
+def downloadCoordsFromDB(map, inchikey, typeCoord):
+
+    cDB = DBrequest()
+    cDB.verbose = 0
+
+    if map == "DrugMap":
+        table = "drugbank_coords"
+
+    lval = cDB.getRow(table, "inchikey='%s'"%(inchikey))
+    #print(lval[0][0])
+    if lval == "Error" and lval == []:
+        return []
+
+    if typeCoord == "3D":
+        lout = [lval[0][1][0], lval[0][1][1], lval[0][2][0]]
+    
+    return lout
 
 
