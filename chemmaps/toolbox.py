@@ -190,3 +190,4 @@ def convertSMILEStoINCHIKEY(SMILESin):
 
     return inchikey
 
+

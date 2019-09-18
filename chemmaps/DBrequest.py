@@ -57,7 +57,7 @@ class DBrequest:
 
     def extractColoumn(self, nameTable, coloumn):
         self.connOpen()
-        sqlCMD = "SELECT %s FROM %s LIMIT(10);" % (coloumn, nameTable)
+        sqlCMD = "SELECT %s FROM %s;" % (coloumn, nameTable)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:

@@ -165,10 +165,12 @@ def launchMap(request, map):
 
 
         else:
+            print("qqqq", ldescMap)
             build = JSbuilder(map)
-            build.loadMap(ldescMap)
+            build.loadMap(list(ldescMap))
 
             dJS = build.generateJS()
+            print(dJS["info"])
             #   format for JS
             dcoord = json.dumps(dJS["coord"])
             dinfo = json.dumps(dJS["info"])

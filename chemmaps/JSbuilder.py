@@ -50,17 +50,17 @@ class JSbuilder:
         self.prout = prout
         self.pMap = path.abspath("./static/chemmaps/map/" + self.nameMap) + "/"
         self.err = 0
-        self.loadMap()
 
 
     def loadMap(self, ldescMap = [], IDmap = 1):
 
         self.ldescMap = ldescMap# prop in
+        print("aaaa", ldescMap)
         #cDB = DBrequest()
-        if self.nameMap == "DrugMap" or self.nameMap == "PFASMap" or self.nameMap == "Tox21Map":
-            #cload = loadingMap(self.nameMap, [])
-            #dmap = cload.loadMap()
-        #elif self.nameMap == "PFASMap" or self.nameMap == "Tox21Map":
+        if self.nameMap == "DrugMap":
+            cload = loadingMap(self.nameMap, self.ldescMap)
+            dmap = cload.loadMap()
+        elif self.nameMap == "PFASMap" or self.nameMap == "Tox21Map":
             dmap = {}
             dmap["coord"] = loadMap1D2D3D(self.pMap)
             # modif with user choose
@@ -141,8 +141,8 @@ class JSbuilder:
 
         dneighbor = {}
         # map
-        for IDchem in self.map["neighbor"].keys():
-            dneighbor[IDchem] = self.map["neighbor"][IDchem]["Neighbors"].split(" ")
+        #for IDchem in self.map["neighbor"].keys():
+        #    dneighbor[IDchem] = self.map["neighbor"][IDchem]["Neighbors"].split(" ")
 
         # user chem
         if "dchemAdd" in self.__dict__:
@@ -156,7 +156,9 @@ class JSbuilder:
         ####################
 
         if self.nameMap == "DrugMap":
-            dSMILES = loadMatrixInfoToDict(self.pMap + "TableProp.csv", sep="\t", ldesc=["SMILES", "DRUG_GROUPS", "inchikey"])
+            dSMILES = self.map["SMILESClass"]
+            # using file
+            #dSMILES = loadMatrixInfoToDict(self.pMap + "TableProp.csv", sep="\t", ldesc=["SMILES", "DRUG_GROUPS", "inchikey"])
 
         if self.nameMap == "DSSToxMap" or self.nameMap == "PFASMap" or self.nameMap == "Tox21Map":
             try: dSMILES = loadMatrixInfoToDict(self.pMap + str(self.IDmap) + "_TableProp.csv", sep="\t", ldesc=["SMILES", "GHS_category", "inchikey"])

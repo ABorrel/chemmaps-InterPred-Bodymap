@@ -4,6 +4,8 @@ function createpanel() {
     // folder 2 -> real time update function of information selected by user
     var folder2 = panel.addFolder('Colors by');
     var lchem = Object.keys(dSMILESClass);
+    //console.log(lchem);
+    //console.log(dinfo);
     var lonMap = Object.keys(dinfo[lchem[1]]);
     console.log(lonMap);
     var settings = {};
