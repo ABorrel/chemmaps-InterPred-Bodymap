@@ -54,9 +54,9 @@ class DBrequest:
         else:
             print("Open connection first")
 
-    def extractColoumn(self, nameTable, coloumn):
+    def extractColoumn(self, nameTable, coloumn, condition=""):
         self.connOpen()
-        sqlCMD = "SELECT %s FROM %s;" % (coloumn, nameTable)
+        sqlCMD = "SELECT %s FROM %s %s;" % (coloumn, nameTable, condition)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:

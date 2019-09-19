@@ -186,42 +186,89 @@ class JSbuilder:
 
     def generateCoords(self, p1D2D, p3D):
 
+        self.inDB = 0
+        # define the all structure here of output
         if not "dchemAdd" in self.__dict__:
             self.dchemAdd = {}
             self.dchemAdd["p2D"] = p1D2D
             self.dchemAdd["p3D"] = p3D
             self.dchemAdd["coord"] = {}
+            self.dchemAdd["info"] = {}
+            self.dchemAdd["SMILESClass"] = {}
+            self.dchemAdd["neighbor"] = {}
 
         # control if included in DB
         filin = open(p1D2D, "r")
         llines = filin.readlines()
         filin.close()
+        ldesc = llines[0].strip().split("\t")
         i = 1
         imax = len(llines)
         while i < imax:
-            inchikey = llines[i].split("\t")[2]
-            id = llines[i].split("\t")[0]
+            lval = llines[i].strip().split("\t")
+            inchikey = lval[2]
+            id = lval[0]
+            smiles = lval[1]
+
+            ddesc = {}
+            d = 0
+            dmax = len(ldesc)
+            while d < dmax:
+                ddesc[ldesc[d]] = lval[d]
+                d = d + 1
+
             dcoord = downloadCoordsFromDB(self.nameMap, inchikey, "3D")
+            # manage coord
             if dcoord != [] and dcoord != "Error":
                 self.dchemAdd["coord"][id] = {}
                 self.dchemAdd["coord"][id]["DIM1"] = dcoord[0]
                 self.dchemAdd["coord"][id]["DIM2"] = dcoord[1]
                 self.dchemAdd["coord"][id]["DIM3"] = dcoord[2]
 
+
+                # take info and neighbor
+                dinfo = downloadInfoFromDB(self.nameMap, inchikey)
+                lneighbor = downloadNeighborsFromDB(self.nameMap, inchikey)
+                
+                #info
+                self.dchemAdd["info"][id] = {}
+                self.dchemAdd["SMILESClass"][id]= {}
+                self.dchemAdd["SMILESClass"][id]["SMILES"] = smiles
+                self.dchemAdd["SMILESClass"][id]["inchikey"] = inchikey
+
+                if self.nameMap == "DrugMap":
+                    self.dchemAdd["SMILESClass"][id]["DRUG_GROUPS"] = "add"
+                else:
+                    self.dchemAdd["SMILESClass"][id]["GHS_category"] = "add"
+
+
+                for desc in self.ldescMap:
+                    if desc in list(ddesc.keys()):
+                        self.dchemAdd["info"][id][desc] = ddesc[desc]
+                    elif desc in list(dinfo.keys()):
+                        self.dchemAdd["info"][id][desc] = dinfo[desc]
+                    else:
+                        self.dchemAdd["info"][id][desc] = "NA"
+                
+                # neighbor
+                if lneighbor != [] and lneighbor != "Error":
+                    self.dchemAdd["neighbor"] = lneighbor
+
                 del llines[i]
                 imax = imax - 1
                 continue
+            
             else:
                 i = i + 1 
 
         if len(llines) == 1:
+            self.inDB = 1
             return 
         
-        filout = open(p1D2D, "w")
-        filout.write("".join(llines))
-        filout.close()
+        #filout = open(p1D2D, "w")
+        #filout.write("".join(llines))
+        #filout.close()
             
-
         cmd = "%s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath("./chemmaps/Rscripts"), p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
         print(cmd)
         system(cmd)
@@ -281,36 +328,39 @@ class JSbuilder:
             print("ERROR -> generate first coordinate")
             return "ERROR"
 
-        # for info table
-        self.dchemAdd["info"] = {}
 
-        # for SMILES table
-        self.dchemAdd["SMILESClass"] = {}
+        if self.inDB == 1:
+            return
+        
 
         # load Desc 2D
         d2Ddesc = loadMatrixInfoToDict(self.dchemAdd["p2D"])
 
         for IDadd in d2Ddesc.keys():
-            self.dchemAdd["info"][IDadd] = {}
-            self.dchemAdd["SMILESClass"][IDadd] = {}
-
-            #SMILES
-            self.dchemAdd["SMILESClass"][IDadd]["SMILES"] = d2Ddesc[IDadd]["SMILES"]
-
-
-            if self.nameMap == "DrugMap":
-                self.dchemAdd["SMILESClass"][IDadd]["DRUG_GROUPS"] = "add"
-                self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = convertSMILEStoINCHIKEY(d2Ddesc[IDadd]["SMILES"])
+            if str(IDadd) in list(self.dchemAdd["info"].keys()):
+                print("ddddddd")
+                continue
             else:
-                self.dchemAdd["SMILESClass"][IDadd]["GHS_category"] = "add"
-                self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = convertSMILEStoINCHIKEY(d2Ddesc[IDadd]["SMILES"])
+                self.dchemAdd["info"][IDadd] = {}
+                self.dchemAdd["SMILESClass"][IDadd] = {}
 
-            # info
-            for desc in self.ldescMap:
-                if desc in d2Ddesc[IDadd].keys():
-                    self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd][desc]
+                #SMILES
+                self.dchemAdd["SMILESClass"][IDadd]["SMILES"] = d2Ddesc[IDadd]["SMILES"]
+
+
+                if self.nameMap == "DrugMap":
+                    self.dchemAdd["SMILESClass"][IDadd]["DRUG_GROUPS"] = "add"
+                    self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = convertSMILEStoINCHIKEY(d2Ddesc[IDadd]["SMILES"])
                 else:
-                    self.dchemAdd["info"][IDadd][desc] = "NA"
+                    self.dchemAdd["SMILESClass"][IDadd]["GHS_category"] = "add"
+                    self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = convertSMILEStoINCHIKEY(d2Ddesc[IDadd]["SMILES"])
+
+                # info
+                for desc in self.ldescMap:
+                    if desc in list(d2Ddesc[IDadd].keys()):
+                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd][desc]
+                    else:
+                        self.dchemAdd["info"][IDadd][desc] = "NA"
 
 
 def downloadCoordsFromDB(map, inchikey, typeCoord):
@@ -332,3 +382,45 @@ def downloadCoordsFromDB(map, inchikey, typeCoord):
     return lout
 
 
+def downloadInfoFromDB(map, inchikey):
+    cDB = DBrequest()
+    cDB.verbose = 0
+
+    if map == "DrugMap":
+        table_chem = "drugbank_chem"
+        table_prop = "drugbank_prop"
+        table_prop_name = "drugbank_name_prop"
+    
+    # find name chem in DB
+    dbID = cDB.extractColoumn(table_chem, "db_id", "WHERE inchikey='%s'"%(inchikey))
+    if dbID == [] or  dbID == "Error":
+        return {}
+    else :
+        dbID = dbID[0][0]
+        lval = cDB.extractColoumn(table_prop, "prop_value", "WHERE db_id='%s'"%(dbID))
+        lval = lval[0][0]
+        lprop =  cDB.extractColoumn(table_prop_name, "name")
+        lprop = [prop [0] for prop in lprop]
+        
+        dout = {}
+        i = 0
+        imax = len(lprop)
+        while i < imax:
+            dout[lprop[i]] = lval[i]
+            i = i + 1
+
+        return dout
+
+def downloadNeighborsFromDB(map, inchikey):
+
+    cDB = DBrequest()
+    cDB.verbose = 0
+
+    if map == "DrugMap":
+        table_neighbors = "drugbank_neighbors"
+
+    lneighbor  =  cDB.extractColoumn(table_neighbors, "neighbors_dim3")
+    if lneighbor == "Error" or lneighbor == []:
+        return []
+    else:
+        return lneighbor[0]
