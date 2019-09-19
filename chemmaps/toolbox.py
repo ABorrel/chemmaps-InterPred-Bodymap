@@ -47,10 +47,9 @@ def cleanFolder(prin):
     lfiles = listdir(prin)
     if len(lfiles) != 0:
         for filin in lfiles:
-            if filin[-3:] != "txt" and filin[-3:] != "png": # keep descriptor in memory
-                # problem with folder
-                try:remove(prin + filin)
-                except: rmtree(prin + filin)
+            pdel = path.abspath(prin + filin)
+            try:remove(pdel)
+            except: rmtree(pdel)
     return prin
 
 

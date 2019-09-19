@@ -219,7 +219,7 @@ class Chemical:
             fmol3D.write(wmol)
             fmol3D.close()
 
-            functionToolbox.babelConvertMoltoSDF(pmol, psdf3D, window=0, update=self.update)
+            functionToolbox.babelConvertMoltoSDF(pmol, psdf3D, window=1, update=self.update)
 
             self.coords = functionToolbox.parseSDFfor3DdescComputation(psdf3D)
             self.psdf3D = psdf3D

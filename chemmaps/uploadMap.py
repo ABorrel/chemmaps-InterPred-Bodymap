@@ -59,11 +59,11 @@ class loadingMap:
         #self.DB.verbose = 1
         # load chem matrix
         lchem = self.DB.extractColoumn("drugbank_chem", "*")
-        lcoord = self.DB.extractColoumn("drugbank_coords", "*")
+        lcoord = self.DB.extractColoumn("drugmap_coords", "*")
         dcoord = coordToDict(lcoord)
         linfo = self.DB.extractColoumn("drugbank_prop", "*")
         dinfo = propToDict(linfo, self.lallProp)
-        lneighbor = self.DB.extractColoumn("drugbank_neighbors", "*")
+        lneighbor = self.DB.extractColoumn("drugmap_neighbors", "*")
         dneighbor = NeighborToDict(lneighbor)
 
         for chem in lchem:
@@ -82,10 +82,7 @@ class loadingMap:
             if not inchikey in list(dcoord.keys()):
                 continue
             else:
-                dout["coord"][DB_id] = {}
-                dout["coord"][DB_id]["DIM1"] = dcoord[inchikey][0]
-                dout["coord"][DB_id]["DIM2"] = dcoord[inchikey][1]
-                dout["coord"][DB_id]["DIM3"] = dcoord[inchikey][2]
+                dout["coord"][DB_id] = [float(dcoord[inchikey][0]), float(dcoord[inchikey][1]), float(dcoord[inchikey][2])]
 
             # neighbor
             dout["neighbor"][DB_id] = {}

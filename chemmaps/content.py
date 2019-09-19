@@ -12,7 +12,7 @@ class uploadSMILES:
     def __init__(self, content, prout):
 
         self.prout = prout
-
+        self.cDB = DBrequest()
         self.input = content
         self.err = 0
 
@@ -83,13 +83,10 @@ class uploadSMILES:
             self.err = 1
             return
 
-        cDB = DBrequest()
-
         pfilout2D = self.prout + "2D.csv"
         pfilout3D = self.prout + "3D.csv"
 
         dout = {}
-
         l2D = Chemical.getLdesc("1D2D")
         l3D = Chemical.getLdesc("3D")
 
@@ -178,7 +175,12 @@ def downloadDescFromDB(typedesc, inchikey):
         lval = cDB.getRow("desc_3d", "inchikey='%s'"%(inchikey))
     ldesc = [desc [0] for desc in ldesc]
 
-    if lval == "Error" and lval == []:
+    print("=====================================================")
+    print(ldesc)
+    print(lval)
+
+    if lval == "Error" or lval == []:
+        print("OUUUUUTTTTTT")
         return {}
     else:
         dout = {}
