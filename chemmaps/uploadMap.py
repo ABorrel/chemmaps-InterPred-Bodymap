@@ -1,9 +1,6 @@
 from .DBrequest import DBrequest
 
 
-
-
-
 def propToDict(ldbprop, ldesc):
     dout = {}
     for chem in ldbprop:

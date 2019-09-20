@@ -12,7 +12,7 @@
 
 ## To do list
 ### ChemMaps
-#### Main 
+#### Urgent 
 - Fix JS connect neighbor error when it is a uploaded chemicals
 - Add DSSTOX in the DB and split map
 - Add command to upload a new chemical on the fly in the DB
@@ -26,7 +26,7 @@
 
 
 ### Interferences
-#### Main 
+#### Urgent
 - Connect to a DB to increase spead
 - Update the descriptor computation and add a table of name from previous / new version (or reload model)
 - add header and footer for all of the page
@@ -37,7 +37,7 @@
 
 
 ### BodyMap
-#### Main
+#### Urgent
 - Add footer and header on each page
 - Update the mapping with the assays mapping
 - Fix a mapping on a body
