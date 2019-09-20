@@ -5,7 +5,6 @@
 scaling = function(din, dscaling){
   
   ldesc = intersect(colnames(dscaling), colnames(din))
-  print(dscaling)
   din = din[,ldesc]
   dscaling = dscaling[,ldesc]
   lcenter = as.double(dscaling[2,ldesc])
@@ -62,6 +61,10 @@ prout = args[7]
 
 d1D2D = read.csv(p1D2D, sep = "\t", header = TRUE, row.names = 1)
 d3D = read.csv(p3D, sep = "\t", header = TRUE, row.names = 1)
+
+lchem = intersect(rownames(d1D2D), rownames(d3D))
+d1D2D = d1D2D[lchem, ]
+d3D = d3D[lchem, ]
 
 d1D2Dscale = read.csv(p1D2Dscaling, sep = ",", row.names = 1)
 d3Dscale = read.csv(p3Dscaling, sep = ",", row.names = 1)

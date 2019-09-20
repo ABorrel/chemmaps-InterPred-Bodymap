@@ -263,13 +263,13 @@ class JSbuilder:
             filout.write("".join(llines))
             filout.close()
 
+            # generate coords
             cmd = "%s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath("./chemmaps/Rscripts"), p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
             print(cmd)
             system(cmd)
 
             p1D2Dcoord = self.prout + "coord1D2D.csv"
             p3Dcoord = self.prout + "coord3D.csv"
-
 
             if path.exists(p1D2Dcoord) and path.exists(p3Dcoord):
                 self.dchemAdd["coord"].update(loadMap1D2D3D(self.prout))
@@ -344,12 +344,30 @@ class JSbuilder:
                     self.dchemAdd["SMILESClass"][IDadd]["GHS_category"] = "add"
                     self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = convertSMILEStoINCHIKEY(d2Ddesc[IDadd]["SMILES"])
 
-                # info
+                # info => fix prop with descriptor computed
+                # add to DB HERE for info to put on map
                 for desc in self.ldescMap:
-                    if desc in list(d2Ddesc[IDadd].keys()):
-                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd][desc]
+                    if desc == "MOLECULAR_WEIGHT":
+                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["MolWt"]
+                    elif desc == "JCHEM_ROTATABLE_BOND_COUNT":
+                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["NumRotatableBonds"]
+                    elif desc == "JCHEM_POLAR_SURFACE_AREA":
+                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["TPSA"]
+                    elif desc == "JCHEM_ATOM_COUNT":
+                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["NumHeteroatoms"]
+                    elif desc == "ALOGPS_LOGP":
+                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["MolLogP"]
+                    elif desc == "JCHEM_NUMBER_OF_RINGS":
+                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["RingCount"]
+                    elif desc == "JCHEM_ACCEPTOR_COUNT":
+                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["NumHAcceptors"]
+                    elif desc == "JCHEM_DONOR_COUNT":
+                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["NumHDonors"]
+                    elif desc == "JCHEM_REFRACTIVITY":
+                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["MolMR"]
                     else:
                         self.dchemAdd["info"][IDadd][desc] = "NA"
+
 
 
 def downloadCoordsFromDB(map, inchikey, typeCoord):

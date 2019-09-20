@@ -13,6 +13,7 @@ class uploadSMILES:
 
         self.prout = prout
         self.cDB = DBrequest()
+        self.cDB.verbose = 0
         self.input = content
         self.err = 0
 
@@ -95,6 +96,14 @@ class uploadSMILES:
         filout2D.write("ID\tSMILES\tinchikey\t" + "\t".join(l2D) + "\n")
         filout3D.write("ID\tSMILES\t" + "\t".join(l3D) + "\n")
 
+        # load descriptor names here to avoid repeat
+        ldesc1D2D = self.cDB.extractColoumn("desc_1d2d_name", "name")
+        ldesc1D2D = [desc [0] for desc in ldesc1D2D]
+
+        ldesc3D = self.cDB.extractColoumn("desc_3D_name", "name")
+        ldesc3D = [desc [0] for desc in ldesc3D]
+
+
         for k in self.dclean["IN"].keys():
             dout[k] = {}
             SMICLEAN = self.dclean["OUT"][k]["SMILES"]
@@ -110,7 +119,7 @@ class uploadSMILES:
                 chemical.generateInchiKey()
 
                 # check if chemical is in DB for 1D2D
-                d1D2D = downloadDescFromDB("1D2D", chemical.inchikey)
+                d1D2D = downloadDescFromDB(self.cDB, "1D2D", ldesc1D2D, chemical.inchikey)
                 if d1D2D == {}:
                     chemical.computeAll2D()
                 else:
@@ -118,14 +127,13 @@ class uploadSMILES:
                     chemical.all2D = d1D2D
                 
                 # for 3D
-                d3D = downloadDescFromDB("3D", chemical.inchikey)
+                d3D = downloadDescFromDB(self.cDB, "3D", ldesc3D, chemical.inchikey)
                 if d3D == {}:
                     chemical.set3DChemical()
                     chemical.computeAll3D()
                 else:
                     # add upload here !!!!!!!!!!
                     chemical.all3D = d3D
-
                 #compute descriptor
                 # have to check case of error
 
@@ -163,24 +171,15 @@ class uploadSMILES:
 
 
 
-def downloadDescFromDB(typedesc, inchikey):
+def downloadDescFromDB(cDB, typedesc, ldesc, inchikey):
 
-    cDB = DBrequest()
     cDB.verbose = 0
     if typedesc == "1D2D":
-        ldesc = cDB.extractColoumn("desc_1d2d_name", "name")
         lval = cDB.getRow("desc_1d2d", "inchikey='%s'"%(inchikey))
     elif typedesc == "3D":
-        ldesc = cDB.extractColoumn("desc_3d_name", "name")
         lval = cDB.getRow("desc_3d", "inchikey='%s'"%(inchikey))
-    ldesc = [desc [0] for desc in ldesc]
-
-    print("=====================================================")
-    print(ldesc)
-    print(lval)
 
     if lval == "Error" or lval == []:
-        print("OUUUUUTTTTTT")
         return {}
     else:
         dout = {}
