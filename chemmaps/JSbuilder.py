@@ -48,7 +48,6 @@ class JSbuilder:
     def __init__(self, nameMap, prout = ""):
         self.nameMap = nameMap
         self.prout = prout
-        self.pMap = path.abspath("./static/chemmaps/map/" + self.nameMap) + "/"
         self.cDB = DBrequest()
         self.cDB.verbose = 0
         self.err = 0
@@ -62,12 +61,9 @@ class JSbuilder:
             cload = loadingMap(self.nameMap, self.ldescMap)
             dmap = cload.loadMap()
         elif self.nameMap == "PFASMap" or self.nameMap == "Tox21Map":
-            dmap = {}
-            dmap["coord"] = loadMap1D2D3D(self.pMap)
-            # modif with user choose
-            dmap["info"] = loadMatrixInfoToDict(self.pMap + "TableProp.csv", sep = "\t", ldesc=ldescMap)
-            dmap["neighbor"] = loadMatrixToDict(self.pMap + "TableNeighbors.csv")
-
+            cload = loadingMap(self.nameMap, self.ldescMap)
+            dmap = cload.loadMap()
+            
         elif self.nameMap == "DSSToxMap":
             self.IDmap = IDmap
             dmap = {}

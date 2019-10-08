@@ -55,7 +55,7 @@ def uploadSMILES(request):
             return render(request, 'interferences/uploadSMILES.html', {"form_smiles":form_smiles,
                                                            "from_upload": formUpload, "ErrorLine": "1"})
 
-        prSession = "/home/aborrel/django_server/django_server/interferences/temp/" + str(name_session) + "/"
+        prSession = path.abspath("./temp") + "/" + str(name_session) + "/"
         createFolder(prSession, 1)
 
         cinput = formatSMILES(content, prSession)
@@ -111,7 +111,7 @@ def computeDesc(request):
     name_session = request.session.get("name_session")
 
     # open file with
-    prsession = "/home/aborrel/django_server/django_server/interferences/temp/" + str(name_session) + "/"
+    prsession = path.abspath("./temp") + "/" + str(name_session) + "/"
     dSMI = loadMatrixToDict(prsession + "smiClean.csv", sep="\t")
 
     cinput = formatSMILES(dSMI, prsession)
@@ -155,7 +155,8 @@ def computeDesc(request):
 def download(request, name):
 
     name_session = request.session.get("name_session")
-    file_path = "/home/aborrel/django_server/django_server/interferences/temp/" + str(name_session) + "/" + name + ".csv"
+    prSession = path.abspath("./temp") + "/" + str(name_session) + "/"
+    file_path = prSession + name + ".csv"
     if path.exists(file_path):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")

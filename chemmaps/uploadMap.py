@@ -7,7 +7,8 @@ def propToDict(ldbprop, ldesc):
         DB_ID = str(chem[0])
         dout[DB_ID] = {}
         for desc in ldesc:
-            dout[DB_ID][desc] = chem[1][ldesc.index(desc)]
+            try:dout[DB_ID][desc] = round(float(chem[1][ldesc.index(desc)]),1)
+            except: dout[DB_ID][desc] = chem[1][ldesc.index(desc)]
     return dout
 
 
@@ -23,8 +24,8 @@ def NeighborToDict(lneighbors):
 
     dout = {}
     for chem in lneighbors:
-        inchikey = str(chem[2])
-        dout[inchikey] = chem[0]
+        inchikey = str(chem[0])
+        dout[inchikey] = chem[1]
     return dout
 
 
@@ -45,6 +46,15 @@ class loadingMap:
             # to del after test 
             if lprop == []:
                 self.lprop = self.lallProp
+        
+        else:
+            lprop = self.DB.extractColoumn("dsstox_name_prop", "name")
+            #self.lallProp = lprop
+            self.lallProp = [prop [0] for prop in lprop]
+            
+            # to del after test 
+            if lprop == []:
+                self.lprop = self.lallProp
 
     def loadMap(self):
         dout = {}
@@ -55,25 +65,45 @@ class loadingMap:
         dout["inchikey"] = {}
         #self.DB.verbose = 1
         # load chem matrix
-        lchem = self.DB.extractColoumn("drugbank_chem", "*")
-        lcoord = self.DB.extractColoumn("drugmap_coords", "*")
-        dcoord = coordToDict(lcoord)
-        linfo = self.DB.extractColoumn("drugbank_prop", "*")
-        dinfo = propToDict(linfo, self.lallProp)
-        lneighbor = self.DB.extractColoumn("drugmap_neighbors", "*")
-        dneighbor = NeighborToDict(lneighbor)
+
+        if self.map == "DrugMap":
+            lchem = self.DB.extractColoumn("drugbank_chem", "db_id, smiles_clean, inchikey, qsar_ready")
+            lcoord = self.DB.extractColoumn("drugmap_coords", "*")
+            dcoord = coordToDict(lcoord)
+            linfo = self.DB.extractColoumn("drugbank_prop", "db_id, prop_value")
+            dinfo = propToDict(linfo, self.lallProp)
+            lneighbor = self.DB.extractColoumn("drugmap_neighbors", "inchikey, neighbors_dim3")
+            dneighbor = NeighborToDict(lneighbor)
+
+        elif self.map == "PFASMap":
+            lchem = self.DB.extractColoumn("dsstox_chem", "db_id, smiles_clean, inchikey, qsar_ready", "WHERE pfas=true")
+            lcoord = self.DB.extractColoumn("pfas_coords", "*")
+            dcoord = coordToDict(lcoord)
+            linfo = self.DB.extractColoumn("dsstox_prop", "db_id, prop_value", "WHERE pfas=true")
+            dinfo = propToDict(linfo, self.lallProp)
+            lneighbor = self.DB.extractColoumn("pfas_neighbors", "inchikey, neighbors_dim3")
+            dneighbor = NeighborToDict(lneighbor)
+
+
+        # add tox21
+
+
 
         for chem in lchem:
             DB_id = chem[0]
             SMILES = chem[1]
-            inchikey = chem[3]
-            QSAR = chem[4]
+            inchikey = chem[2]
+            QSAR = chem[3]
             if QSAR == False:
                 continue
             # info with prop from DB
-            dout["info"][DB_id] = {}
-            for prop in self.lprop:
-                dout["info"][DB_id][str(prop)] = dinfo[DB_id][str(prop)]
+            
+            try:
+                dout["info"][DB_id] = {}
+                for prop in self.lprop:
+                    dout["info"][DB_id][str(prop)] = dinfo[DB_id][str(prop)]
+            except:
+                continue
 
             # coords
             if not inchikey in list(dcoord.keys()):
@@ -88,13 +118,16 @@ class loadingMap:
             # SMILES 
             dout["SMILESClass"][DB_id] = {}
             dout["SMILESClass"][DB_id]["SMILES"] = SMILES
-            dout["SMILESClass"][DB_id]["DRUG_GROUPS"] = dinfo[DB_id]["DRUG_GROUPS"]
-            dout["SMILESClass"][DB_id]["inchikey"] = inchikey
+            if self.map == "DrugMap":
+                dout["SMILESClass"][DB_id]["DRUG_GROUPS"] = dinfo[DB_id]["DRUG_GROUPS"]
+            else:
+                 dout["SMILESClass"][DB_id]["GHS_category"] = dinfo[DB_id]["GHS_category"]
 
             # transform inchikey to ChemID
             if not inchikey in list(dout["inchikey"].keys()):
                 dout["inchikey"][inchikey] = []
             dout["inchikey"][inchikey].append(DB_id) 
+
         return dout
 
 

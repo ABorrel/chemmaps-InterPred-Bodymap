@@ -6,6 +6,7 @@
 - Add command to upload a new chemical on the fly in the DB
 - develop a carciMap choose on the 1600 chemicals and 1600 chemicals on the DSSTOX 
 - fix check in input and QSAR ready (09-20)
+- 508 html
 
 #### Improvement
 - Add distance in the neighbor file to download
@@ -43,6 +44,6 @@
 - 17-9-19: Add version 17-9-19 of molecular descriptors computation
 - 19-9-19: connect chemmaps on DB
 - 20-9-19: Fix case where chemicals uploaded are a mix between in DB and new
-
+- 08-10-19: Update footer and header for interference and chemmaps + connect pfas and tox21 to DB
 
 
