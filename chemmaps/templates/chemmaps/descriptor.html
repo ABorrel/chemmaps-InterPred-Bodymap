@@ -37,7 +37,7 @@ rel="stylesheet" type="text/css"/>
 rel="stylesheet" type="text/css"/> 
 <link href="/static/chemmaps/css/theme.css" rel="stylesheet">
 {% endblock %}
-
+{% block title %} Descriptors - {{map}}{% endblock %}
 {% block content %}
 <script src="/static/chemmaps/js/theme.js"></script>
 
@@ -67,18 +67,18 @@ rel="stylesheet" type="text/css"/>
                 <tr><th>ID</th><th>SMILES</th><th></th></tr>
                 {% for k1, dout in dSMILESOUT.items %}
                 <tr><th>{{k1}}</th>
-                    <th>{{dout.SMILES}}</th><th><img src="/static/{{dout.file}}" width="18"></th>
+                    <th>{{dout.SMILES}}</th><th><img src="/static/{{dout.file}}" width="18" alt="Valide upload"></th>
                 </tr>
                 {% endfor %}
             </table>
         </div>
-        <div class="column" style="background-color:#11a5d3;">
+        <div class="column" style="background-color:#08627e;">
             <h3>Descriptor</h3>
             <table width="100%" border="0">
                 <tr><th>ID</th><th>Descriptor</th><th></th></tr>
                 {% for k1, dout in ddesc.items %}
                 <tr><th>{{k1}}</th>
-                    <th>{{dout.Descriptor}}</th><th><img src="/static/{{dout.desc}}" width="18"></th>
+                    <th>{{dout.Descriptor}}</th><th><img src="/static/{{dout.desc}}" width="18" alt="Valide descriptors"></th>
                 </tr>
                 {% endfor %}
             </table>

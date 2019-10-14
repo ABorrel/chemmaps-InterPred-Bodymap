@@ -40,6 +40,7 @@ rel="stylesheet" type="text/css"/>
 {% endblock %}
 <script src="/static/chemmaps/js/theme.js"></script>
 
+{% block title %} Upload chemical - {{map}}{% endblock %}
 {% block content %}
 <div id = "bg">
     {% include 'chemmaps/includes/navbar.html' %}
@@ -67,7 +68,7 @@ rel="stylesheet" type="text/css"/>
                 <tr><th>ID</th><th>SMILES</th><th></th></tr>
                 {% for k1, dout in dSMILESOUT.items %}
                 <tr><th>{{k1}}</th>
-                    <th>{{dout.SMILES}}</th><th><img src="/static/{{dout.file}}" width="18"></th>
+                    <th>{{dout.SMILES}}</th><th><img src="/static/{{dout.file}}" width="18" alt="Valide upload"></th>
                 </tr>
                 {% endfor %}
 

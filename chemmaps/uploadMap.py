@@ -84,8 +84,15 @@ class loadingMap:
             lneighbor = self.DB.extractColoumn("pfas_neighbors", "inchikey, neighbors_dim3")
             dneighbor = NeighborToDict(lneighbor)
 
+        elif self.map == "Tox21Map":
+            lchem = self.DB.extractColoumn("dsstox_chem", "db_id, smiles_clean, inchikey, qsar_ready", "WHERE tox21=true")
+            lcoord = self.DB.extractColoumn("tox21_coords", "inchikey, dim1d2d, dim3d")
+            dcoord = coordToDict(lcoord)
+            linfo = self.DB.extractColoumn("dsstox_prop", "db_id, prop_value", "WHERE tox21=true")
+            dinfo = propToDict(linfo, self.lallProp)
+            lneighbor = self.DB.extractColoumn("tox21_neighbors", "inchikey, neighbors_dim3")
+            dneighbor = NeighborToDict(lneighbor)
 
-        # add tox21
 
 
 

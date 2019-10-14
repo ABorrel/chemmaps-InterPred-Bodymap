@@ -64,13 +64,15 @@ class JSbuilder:
             cload = loadingMap(self.nameMap, self.ldescMap)
             dmap = cload.loadMap()
             
-        elif self.nameMap == "DSSToxMap":
-            self.IDmap = IDmap
-            dmap = {}
-            dmap["coord"] = loadMap1D2D3D(self.pMap + str(IDmap))
-            # modif with user choose
-            dmap["info"] = loadMatrixInfoToDict(self.pMap + str(IDmap) + "_TableProp.csv", sep="\t", ldesc=ldescMap)
-            dmap["neighbor"] = loadMatrixToDict(self.pMap + str(IDmap) + "_TableNeighbors.csv")
+        #elif self.nameMap == "DSSToxMap":
+        #    self.IDmap = IDmap
+        #    print(IDmap)
+        #    ssss
+        #    dmap = {}
+        #    dmap["coord"] = loadMap1D2D3D(self.pMap + str(IDmap))
+        #    # modif with user choose
+        #    dmap["info"] = loadMatrixInfoToDict(self.pMap + str(IDmap) + "_TableProp.csv", sep="\t", ldesc=ldescMap)
+        #    dmap["neighbor"] = loadMatrixToDict(self.pMap + str(IDmap) + "_TableNeighbors.csv")
         self.map = dmap
 
 

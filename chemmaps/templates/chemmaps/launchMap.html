@@ -11,11 +11,11 @@ rel="stylesheet" type="text/css"/>
 rel="stylesheet" type="text/css"/>
 <link href="/static/chemmaps/css/theme.css" rel="stylesheet">
 {% endblock %}
-
+{% block title %}Launch {{map}}{% endblock %}
 {% block content %}
 <script src="/static/chemmaps/js/theme.js"></script>
 <div id = "bg">
-    {% include 'chemmaps/includes/navbar.html' %}
+    <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
 
     <h1>Generate the {{map}}</h1>
     <p>Select up to 5 features you would like put on the map:</p>
@@ -32,7 +32,7 @@ rel="stylesheet" type="text/css"/>
                 {% if forloop.counter == 1 %} <b>Chemical information</b>{% endif %}
                 {% if forloop.counter == 7 %} <b>Chemical rules</b>{% endif %}
                 {% if forloop.counter == 11 %} <b>Descriptors</b>{% endif %}
-                <div class="checkbox">{{ aa }}</div>
+                <div class="checkbox" id = {{aa.label}} aria-label="DescChoice" aria-labelledby={{aa.label}}>{{ aa }}</div>
                 {%endfor%}
                 <br>
                 <input type='submit' value='Generate DrugMap'>
@@ -104,7 +104,7 @@ rel="stylesheet" type="text/css"/>
     <br>
     <br>
     <br>
-    <button class="collapsible"><h2><img src="/static/chemmaps/img/arrow.png" style="width:30px"> Optional - Upload your list of chemicals (< 100 chemicals)</h2></button>
+    <button class="collapsible"><h2><img src="/static/chemmaps/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Optional - Upload your list of chemicals (< 100 chemicals)</h2></button>
     <div class="content" style="display: none">
         {% if ErrorLine == "1"  %}
         <p class = "Errorform">Please upload < 100 chemicals</p>

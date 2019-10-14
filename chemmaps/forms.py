@@ -1,7 +1,7 @@
 from django import forms
 
 class UploadChemList(forms.Form):
-    content = forms.CharField(widget=forms.Textarea(attrs={"class": "textSMILES"}), label="", error_messages={'required': ''})
+    content = forms.CharField(widget=forms.Textarea(attrs={"class": "textSMILES"}), error_messages={'required': ''})
 
 
 

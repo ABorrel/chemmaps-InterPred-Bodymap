@@ -1,6 +1,6 @@
 #bg {
-    /*background-color: #000;
-    #margin: 0px;
+    background-color: #000;
+    /*#margin: 0px;
     overflow: hidden;*/
     background-image: url('/static/chemmaps/img/background.jpg');
     color:#ffffff;
@@ -143,6 +143,7 @@ p {
     border-radius: 5px;
     padding: 8px 25px;
 }
+
 
 .btn:hover {
     background-color: #e8e8e7;

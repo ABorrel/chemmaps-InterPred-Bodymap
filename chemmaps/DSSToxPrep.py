@@ -1,20 +1,28 @@
 from . import toolbox
 from .JSbuilder import DDESCDSSTOX
+from .DBrequest import DBrequest
 
 from os import path
 from math import sqrt
 from copy import deepcopy
 
+import sys
+sys.path.insert(0, path.abspath('./../MD/'))
+from MD import Chemical
+
 
 class DSSToxPrep:
-    def __init__(self, input):
+    def __init__(self, input, prout):
 
         self.input = input
         self.err = 0
         self.log = ""
-        self.pcentroid = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/MapCentroid.csv"
-        self.pmap = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/mapChem.csv"
-        self.prStaticMaps = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/"
+        self.prout = prout
+        self.cDB = DBrequest()
+        self.cDB.verbose = 0
+        #self.pcentroid = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/MapCentroid.csv"
+        #self.pmap = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/mapChem.csv"
+        #self.prStaticMaps = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/"
 
 
     def loadChemMapbyID(self):
@@ -25,44 +33,78 @@ class DSSToxPrep:
             self.err = 1
             return
 
+        dout = {}
 
-        fmap = open(self.pmap, "r")
-        l = fmap.readline()
+        # prep chem -> transform in inchikey
+        cchem = Chemical.Chemical(self.input, self.prout)
+        cchem.prepChem()
+        inch = cchem.generateInchiKey()
+        self.centerChem = inch
 
-        map = 0
-        while l != "":
+        # find inch in the table
+        # extract 10,000 close chemical
 
-            ll = l.strip().split("\t")
-            if ll[0] == self.input:
-                map = int(ll[1])
-                break
-            l = fmap.readline()
-
-        fmap.close()
-
-        if map == 0:
-            self.err = 1
-            return
-
-
-
+        lcoords = self.cDB.extractColoumn("dsstox_coords", "dim1d2d[1],dim1d2d[2],dim3d[1]", "WHERE inchikey='%s'"%(inch))
+        dout[inch] = lcoords[0]
+        x = dout[inch][0]
+        y = dout[inch][1]
+        z = dout[inch][2]
+        
+        if x < 3 and x >- 3 or y < 3 and y >- 3 or z < 3 and z >- 3:
+            rang_val = 0.025
         else:
-            dchemMap = {}
-            dchemMap.update(toolbox.loadMap1D2D3D(self.prStaticMaps + str(map)))
+            rang_val = 1
+        
+        sum_chem = 0
+        while sum_chem < 10000:
+            cmdSQLCount = "select count(*) from chemmap_coords where map_name = 'dsstox' and dim1d2d[1] < %s \
+                            + (select dim1d2d[1] from dsstox_coords where inchikey = '%s') \
+                            and dim1d2d[1] >  (select dim1d2d[1] from dsstox_coords where inchikey = '%s') - %s \
+                            UNION \
+                            select count(*) from chemmap_coords where  map_name= 'dsstox' and dim1d2d[2] < %s + \
+                            (select dim1d2d[2] from dsstox_coords where inchikey = '%s') \
+                            and dim1d2d[2] >  (select dim1d2d[2] from dsstox_coords where inchikey = '%s') - %s \
+                            UNION \
+                            select count(*) from chemmap_coords where  map_name= 'dsstox' and dim3d[1] < %s + \
+                            (select dim3d[1] from dsstox_coords where inchikey = '%s') \
+                            and dim3d[1] >  (select dim3d[1] from dsstox_coords where inchikey = '%s') - %s" %(rang_val, inch, inch, rang_val, rang_val, inch, 
+                            inch, rang_val, rang_val, inch, inch, rang_val)
+            self.cDB.verbose = 1
+            lcount = self.cDB.execCMD(cmdSQLCount)
+            sum_chem = lcount[0][0] + lcount[1][0] + lcount[2][0]
+            print(sum_chem)
+            rang_val = rang_val + rang_val
+        #print(sum_chem)
 
-            lIDmap = [map]
-            # load map -1 and map +1
-            if path.exists(self.prStaticMaps + str(map - 1) + "_map1D2D.csv"):
-                dchemMap.update(toolbox.loadMap1D2D3D(self.prStaticMaps + str(map-1)))
-                lIDmap.append(map-1)
+        dddd
+        
 
-            if path.exists(self.prStaticMaps + str(map + 1) + "_map1D2D.csv"):
-                dchemMap.update(toolbox.loadMap1D2D3D(self.prStaticMaps + str(map + 1)))
-                lIDmap.append(map+1)
+        # load chem for map
+        dchemMap = {}
+        x = mapx - 1
+        while x <= mapx +1:
+            lchemInMap = self.cDB.extractColoumn("dsstox_coords", "inchikey, dim1d2d[1],dim1d2d[2],dim3d[1]", "WHERE mapx=%s"%(x))
+            for chemInMap in lchemInMap:
+                dchemMap[chemInMap[0]] = [chemInMap[1], chemInMap[2], chemInMap[3]] 
+                #lchemMap.append(chemInMap[0])
+            x = x +1
 
-            self.dchemMap = dchemMap
-            self.lmap = lIDmap
-            self.centerChem = [float(dchemMap[self.input]["DIM1"]), float(dchemMap[self.input]["DIM2"]), float(dchemMap[self.input]["DIM3"])]
+        y = mapy - 1
+        while y <= mapy + 1:
+            lchemInMap = self.cDB.extractColoumn("dsstox_coords", "inchikey, dim1d2d[1],dim1d2d[2],dim3d[1]", "WHERE mapy=%s"%(y))
+            for chemInMap in lchemInMap:
+                dchemMap[chemInMap[0]] = [chemInMap[1], chemInMap[2], chemInMap[3]] 
+            y = y + 1
+        
+        z = mapz - 1
+        while z <= mapz + 1:
+            lchemInMap = self.cDB.extractColoumn("dsstox_coords", "inchikey, dim1d2d[1],dim1d2d[2],dim3d[1]", "WHERE mapz=%s"%(z))
+            for chemInMap in lchemInMap:
+                dchemMap[chemInMap[0]] = [chemInMap[1], chemInMap[2], chemInMap[3]] 
+            z = z + 1
+
+        self.dchemMap = dchemMap
+        #self.centerChem = [float(dchemMap[self.input]["DIM1"]), float(dchemMap[self.input]["DIM2"]), float(dchemMap[self.input]["DIM3"])]
 
 
     def loadChemMapbySession(self):
@@ -131,14 +173,14 @@ class DSSToxPrep:
 
         if not "dchemMap" in self.__dict__:
             print("Load initial Map")
+            self.err = 1
             return
 
-        lcoordcenter = [self.centerChem[0], self.centerChem[1], self.centerChem[2]]
+        lcoordcenter = [self.dchemMap[self.centerChem][0], self.dchemMap[self.centerChem][1], self.dchemMap[self.centerChem][2]]
 
         ddist = {}
         for chemID in self.dchemMap.keys():
-            lcoordID = [float(self.dchemMap[chemID]["DIM1"]), float(self.dchemMap[chemID]["DIM2"]), float(self.dchemMap[chemID]["DIM3"])]
-            ddist[chemID] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(lcoordID, lcoordcenter)]))
+            ddist[chemID] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(self.dchemMap[chemID], lcoordcenter)]))
 
 
         lID = [i[0] for i in sorted(ddist.items(), key=lambda x: x[1])][:nbchemical]
@@ -147,11 +189,12 @@ class DSSToxPrep:
         dout = {}
         for ID in lID:
             if center == 1:
-                dout[ID] = [float(self.dchemMap[ID]["DIM1"]) - self.centerChem[0], float(self.dchemMap[ID]["DIM2"]) - self.centerChem[1], float(self.dchemMap[ID]["DIM3"])- self.centerChem[2]]
+                dout[ID] = [self.dchemMap[ID][0] - self.dchemMap[self.centerChem][0], self.dchemMap[ID][1] - self.dchemMap[self.centerChem][1], self.dchemMap[ID][2] - self.dchemMap[self.centerChem][2]]
             else:
-                dout[ID] = [float(self.dchemMap[ID]["DIM1"]), float(self.dchemMap[ID]["DIM2"]), float(self.dchemMap[ID]["DIM3"])]
-
+                dout[ID] = [float(self.dchemMap[ID][0]), float(self.dchemMap[ID][1]), float(self.dchemMap[ID][2])]
         self.coord = dout
+
+
 
 
     def loadInfo(self, ldesc):

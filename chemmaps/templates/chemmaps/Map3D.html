@@ -5,6 +5,13 @@
         <title>{{map}}-3D</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <meta http-equiv='X-UA-Compatible' content='IE=Edge'></meta>
+        <meta charset='UTF-8'></meta>
+        <meta name='robots' content='NONE,NOARCHIVE'></meta>
+        <link rel="shortcut icon" type="image/x-icon" href="{{STATIC_URL}}img/ntp.ico">
+        <meta name='description' content='{% block meta-description %}{% endblock %}'>
+        <meta name='author' content='{% block meta-author %}{% endblock %}'>
+        <meta name='keywords' content='{% block meta-keywords %}{% endblock %}'>
         <link rel="stylesheet" href="/static/chemmaps/css/chemMap.css">
     </head>
 
@@ -33,7 +40,7 @@
 
             <div class="control">
                 Connect
-                <select onclick="connectNeighbor(this)">
+                <select onclick="connectNeighbor(this)" name="ConnectChem">
                     <option value="1">1</option>
                     <option value="5">5</option>
                     <option value="10">10</option>
@@ -80,7 +87,7 @@
 
 
     <div id="iconhome">
-        <a href="{% url 'chemmaps:home' %}"><img src="/static/chemmaps/img/home-icon.png" width = "50px" height = "50px"></a>
+        <a href="{% url 'chemmaps:home' %}"><img src="/static/chemmaps/img/home-icon.png" width = "50px" height = "50px" alt="Home link"></a>
     </div>
 
     <div id="blockdiv">

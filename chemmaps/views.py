@@ -147,7 +147,7 @@ def launchMap(request, map):
         if map == "DSSToxMap":
 
             chemIn = formDesc.cleaned_data['chem']
-            build = DSSToxPrep(chemIn)
+            build = DSSToxPrep(chemIn, prsession)
             build.loadChemMapbyID()
             if build.err == 1:
                 return render(request, 'chemmaps/launchMap.html', {"form_info": formDesc, "form_smiles": form_smiles,
