@@ -1,5 +1,36 @@
 from .DBrequest import DBrequest
 
+DDESCDRUGMAP = {"JCHEM_ROTATABLE_BOND_COUNT":"Rotable bond", "JCHEM_POLAR_SURFACE_AREA": "Polar surface",
+               "MOLECULAR_WEIGHT": "Molecular weight", "JCHEM_PHYSIOLOGICAL_CHARGE": "Physio charge",
+               "JCHEM_RULE_OF_FIVE": "Rule of five", "JCHEM_VEBER_RULE": "Veber rule", "FORMULA": "Formula",
+               "JCHEM_GHOSE_FILTER": "Ghose filter","GENERIC_NAME": "Generic name",
+               "JCHEM_TRADITIONAL_IUPAC":"IUPAC", "ALOGPS_SOLUBILITY": "Solubility",
+               "JCHEM_MDDR_LIKE_RULE": "MDDR rule", "PRODUCTS": "Product",
+               "ALOGPS_LOGP": "ALogP", "JCHEM_PKA_STRONGEST_BASIC": "Pka Basic",
+               "JCHEM_NUMBER_OF_RINGS": "Number of rings", "JCHEM_PKA": "PKA",
+               "JCHEM_ACCEPTOR_COUNT": "Acceptor count", "JCHEM_PKA_STRONGEST_ACIDIC": "Pka acidic",
+               "EXACT_MASS": "Exact mass", "JCHEM_DONOR_COUNT": "Donor count", "INTERNATIONAL_BRANDS": "Brands",
+               "JCHEM_AVERAGE_POLARIZABILITY": "Polarizability","JCHEM_BIOAVAILABILITY": "Bioavailability",
+               "DATABASE_NAME": "Database", "JCHEM_REFRACTIVITY": "Refractivity", "JCHEM_LOGP": "LogP",
+               "JCHEM_FORMAL_CHARGE": "Formal charge", "SALTS": "Salt", "JCHEM_ATOM_COUNT": "Atom count", "SMILES":"SMILES"}
+
+DDESCDSSTOX = {"EPA_category": "EPA category", "LD50_mgkg": "LD50 (mg/kg)",
+               "CATMoS_VT_pred": "Acute Tox (very toxic)", "CATMoS_NT_pred": "Acute Tox (no toxic)",
+               "CATMoS_EPA_pred": "Acute Tox (EPA)", "CATMoS_GHS_pred": "Acute Tox (GHS)",
+               "CATMoS_LD50_pred": "Acute Tox (LD50)", "CERAPP_Ago_pred": "Estrogen Receptor activity (Agonist)",
+               "CERAPP_Bind_pred": "Estrogen Receptor activity (binding)", "Clint_pred": "Hepatic clearance",
+               "CoMPARA_Anta_pred": "Androgen Receptor Activity (Antogonist)",
+               "CoMPARA_Bind_pred": "Androgen Receptor Activity (binding)",
+               "FUB_pred": "Plasma fraction unbound", "LogHL_pred": "Henry’s Law constant (atm-mol3/mole)",
+               "LogKM_pred": "KM (biotransformation rate)", "LogKOA_pred": "Log Octanol/air partition coefficient",
+               "LogKoc_pred": "Log Soil adsorption coefficient (L/Kg)",
+               "LogBCF_pred": "Log Fish bioconcentration factor",
+               "LogD55_pred": "LogD", "LogP_pred": "LogP", "MP_pred": "Melting Point (C)", "pKa_a_pred": "Pka acid",
+               "pKa_b_pred": "Pka basic", "ReadyBiodeg_pred": "Biodegradability", "RT_pred": "HPLC retention time",
+               "LogVP_pred": "Log vapor pressure (mmHg)", "LogWS_pred": "Log Water solubility", "MolWeight": "MW",
+               "LogOH_pred": "Log Atmospheric constant (cm3/molsec)",
+               "BioDeg_LogHalfLife_pred": "Biodegradation half-life",
+               "BP_pred": "Boiling Point", "nbLipinskiFailures": "Lipinski Failures"}
 
 def propToDict(ldbprop, ldesc):
     dout = {}
@@ -67,75 +98,78 @@ class loadingMap:
         # load chem matrix
 
         if self.map == "DrugMap":
-            lchem = self.DB.extractColoumn("drugbank_chem", "db_id, smiles_clean, inchikey, qsar_ready")
-            lcoord = self.DB.extractColoumn("drugmap_coords", "*")
-            dcoord = coordToDict(lcoord)
-            linfo = self.DB.extractColoumn("drugbank_prop", "db_id, prop_value")
-            dinfo = propToDict(linfo, self.lallProp)
-            lneighbor = self.DB.extractColoumn("drugmap_neighbors", "inchikey, neighbors_dim3")
-            dneighbor = NeighborToDict(lneighbor)
+            self.DB.verbose = 1
+            lchem = self.DB.extractColoumn("mvwchemmap_drugbank", "drugbank_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value")
+            #lchem = self.DB.extractColoumn("drugbank_chem", "db_id, smiles_clean, inchikey, qsar_ready")
+            #lcoord = self.DB.extractColoumn("drugmap_coords", "*")
+            #dcoord = coordToDict(lcoord)
+            #linfo = self.DB.extractColoumn("drugbank_prop", "db_id, prop_value")
+            #dinfo = propToDict(linfo, self.lallProp)
+            #lneighbor = self.DB.extractColoumn("drugmap_neighbors", "inchikey, neighbors_dim3")
+            #dneighbor = NeighborToDict(lneighbor)
 
         elif self.map == "PFASMap":
-            lchem = self.DB.extractColoumn("dsstox_chem", "db_id, smiles_clean, inchikey, qsar_ready", "WHERE pfas=true")
-            lcoord = self.DB.extractColoumn("pfas_coords", "*")
-            dcoord = coordToDict(lcoord)
-            linfo = self.DB.extractColoumn("dsstox_prop", "db_id, prop_value", "WHERE pfas=true")
-            dinfo = propToDict(linfo, self.lallProp)
-            lneighbor = self.DB.extractColoumn("pfas_neighbors", "inchikey, neighbors_dim3")
-            dneighbor = NeighborToDict(lneighbor)
+            lchem = self.DB.extractColoumn("mvwchemmap_mappfas", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value")
 
         elif self.map == "Tox21Map":
-            lchem = self.DB.extractColoumn("dsstox_chem", "db_id, smiles_clean, inchikey, qsar_ready", "WHERE tox21=true")
-            lcoord = self.DB.extractColoumn("tox21_coords", "inchikey, dim1d2d, dim3d")
-            dcoord = coordToDict(lcoord)
-            linfo = self.DB.extractColoumn("dsstox_prop", "db_id, prop_value", "WHERE tox21=true")
-            dinfo = propToDict(linfo, self.lallProp)
-            lneighbor = self.DB.extractColoumn("tox21_neighbors", "inchikey, neighbors_dim3")
-            dneighbor = NeighborToDict(lneighbor)
+            lchem = self.DB.extractColoumn("mvwchemmap_maptox21", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value")
 
-
-
+        # format for JS dictionnary
+        dinch = {}
 
         for chem in lchem:
-            DB_id = chem[0]
-            SMILES = chem[1]
-            inchikey = chem[2]
-            QSAR = chem[3]
-            if QSAR == False:
-                continue
-            # info with prop from DB
-            
-            try:
-                dout["info"][DB_id] = {}
-                for prop in self.lprop:
-                    dout["info"][DB_id][str(prop)] = dinfo[DB_id][str(prop)]
-            except:
+            inch = chem[2]
+            smiles = chem[1]
+            db_id = chem[0]
+            xadd = chem[3]
+            yadd = chem[4]
+            zadd = chem[5]
+            lneighbors = chem[6]
+            lprop = chem[7]
+
+            if lprop == None:
                 continue
 
-            # coords
-            if not inchikey in list(dcoord.keys()):
-                continue
-            else:
-                dout["coord"][DB_id] = [float(dcoord[inchikey][0]), float(dcoord[inchikey][1]), float(dcoord[inchikey][2])]
+            #coords
+            dout["coord"][db_id] = [float(xadd), float(yadd), float(zadd)]
+        
+            # info
+            dout["info"][db_id] = {}
+            for descMap in self.lprop:
+                if self.map == "DrugMap":
+                    try: dout["info"][db_id][DDESCDRUGMAP[descMap]] = round(float(lprop[self.lallProp.index(descMap)]),1)
+                    except: dout["info"][db_id][DDESCDRUGMAP[descMap]] = lprop[self.lallProp.index(descMap)]
+                else:
+                    try: dout["info"][db_id][DDESCDSSTOX[descMap]] = round(float(lprop[self.lallProp.index(descMap)]),1)
+                    except: dout["info"][db_id][DDESCDSSTOX[descMap]] = lprop[self.lallProp.index(descMap)]
+
+            #SMILES
+            dout["SMILESClass"][db_id] = {}
+            dout["SMILESClass"][db_id]["inchikey"] = inch
+            dout["SMILESClass"][db_id]["SMILES"] = smiles
+            try:
+                dout["SMILESClass"][db_id]["GHS_category"] = lprop[self.lallProp.index("GHS_category")]
+            except:
+                dout["SMILESClass"][db_id]["DRUG_GROUPS"] = lprop[self.lallProp.index("DRUG_GROUPS")]
 
             # neighbor
-            dout["neighbor"][DB_id] = {}
-            dout["neighbor"][DB_id] = dneighbor[inchikey]
+            dout["neighbor"][db_id] = {}
+            dout["neighbor"][db_id] = lneighbors
 
-            # SMILES 
-            dout["SMILESClass"][DB_id] = {}
-            dout["SMILESClass"][DB_id]["SMILES"] = SMILES
-            if self.map == "DrugMap":
-                dout["SMILESClass"][DB_id]["DRUG_GROUPS"] = dinfo[DB_id]["DRUG_GROUPS"]
-            else:
-                 dout["SMILESClass"][DB_id]["GHS_category"] = dinfo[DB_id]["GHS_category"]
+            # dictionnary of comparison inch / dsstox
+            dinch[inch] = db_id
 
-            # transform inchikey to ChemID
-            if not inchikey in list(dout["inchikey"].keys()):
-                dout["inchikey"][inchikey] = []
-            dout["inchikey"][inchikey].append(DB_id) 
+        # Change name in the neighbor
+        for chem in dout["neighbor"].keys():
+            lneighbors = []
+            for n in dout["neighbor"][chem]:
+                try: lneighbors.append(dinch[n])
+                except: pass
+            dout["neighbor"][chem] = lneighbors
 
+        dout["inchikey"] = dinch
         return dout
+
 
 
 

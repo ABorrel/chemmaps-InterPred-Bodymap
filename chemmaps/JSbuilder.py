@@ -93,57 +93,17 @@ class JSbuilder:
         ########
         # Info #
         ########
-        if self.nameMap == "DrugMap":
-            # to formate on map
-            dinfo = {}
-            for IDchem in self.map["info"].keys():
-                dinfo[IDchem] = {}
-
-                for k in self.map["info"][IDchem].keys():
-                    dinfo[IDchem][DDESCDRUGMAP[k]] = self.map["info"][IDchem][k]
-
-            # user chem
-            if "dchemAdd" in self.__dict__:
-                for IDadd in self.dchemAdd["info"].keys():
-                    dinfo[IDadd] = {}
-                    for k in self.dchemAdd["info"][IDadd].keys():
-                        dinfo[IDadd][DDESCDRUGMAP[k]] = self.dchemAdd["info"][IDadd][k]
-
-
-        if self.nameMap == "DSSToxMap" or self.nameMap == "PFASMap" or self.nameMap == "Tox21Map":
-            # to formate to map
-            dinfo = {}
-            #map
-            for IDchem in self.map["info"].keys():
-                dinfo[IDchem] = {}
-                for k in self.map["info"][IDchem].keys():
-                    dinfo[IDchem][DDESCDSSTOX[k]] = self.map["info"][IDchem][k]
-
-            # add chem
-            if "dchemAdd" in self.__dict__:
-                for IDadd in self.dchemAdd["info"].keys():
-                    dinfo[IDadd] = {}
-                    for k in self.dchemAdd["info"][IDadd].keys():
-                        dinfo[IDadd][DDESCDSSTOX[k]] = self.dchemAdd["info"][IDadd][k]
-
-
+        if "dchemAdd" in self.__dict__:
+            self.map["info"].update(self.dchemAdd["info"])
 
 
         #############
         # Neighbors #
         #############
 
+        # maybe transform inch to db id
         if "dchemAdd" in self.__dict__:
             self.map["neighbor"].update(self.dchemAdd["neighbor"])
-
-        # map transform inchikey to DBID
-        for IDchem in self.map["neighbor"].keys():
-            lneighbors = deepcopy(self.map["neighbor"][IDchem])
-            self.map["neighbor"][IDchem] = []
-
-            for neighbor in lneighbors:
-                try: self.map["neighbor"][IDchem] = self.map["neighbor"][IDchem] + self.map["inchikey"][neighbor]
-                except: self.map["neighbor"][IDchem].append(neighbor)
 
 
         ####################
@@ -158,7 +118,7 @@ class JSbuilder:
         # exit structure #
         ##################
         dout["coord"] = self.map["coord"]
-        dout["info"] = dinfo
+        dout["info"] = self.map["info"]
         dout["neighbor"] = self.map["neighbor"]
         dout["SMILESClass"] = self.map["SMILESClass"]
 
@@ -177,6 +137,7 @@ class JSbuilder:
         if self.nameMap == "DrugMap":
             table_prop_name = "drugbank_name_prop"
         else:
+            table_prop_name = "dsstox_name_prop"
             print("Add script for dsstox")
 
         lprop = self.cDB.extractColoumn(table_prop_name, "name")
@@ -375,6 +336,8 @@ def downloadCoordsFromDB(map, inchikey, typeCoord):
 
     if map == "DrugMap":
         table = "drugmap_coords"
+    elif map == "pfas":
+        map = ""
 
     lval = cDB.getRow(table, "inchikey='%s'"%(inchikey))
     #print(lval[0][0])

@@ -1,6 +1,7 @@
 from . import toolbox
 from .JSbuilder import DDESCDSSTOX
 from .DBrequest import DBrequest
+from .uploadMap import propToDict
 
 from os import path
 from math import sqrt
@@ -12,20 +13,24 @@ from MD import Chemical
 
 
 class DSSToxPrep:
-    def __init__(self, input, prout):
+    def __init__(self, input, ldesc, prout):
 
         self.input = input
+        self.ldescMap = ldesc
         self.err = 0
         self.log = ""
         self.prout = prout
         self.cDB = DBrequest()
         self.cDB.verbose = 0
+
+        lprop = self.cDB.extractColoumn("dsstox_name_prop", "name")
+        self.lallProp = [prop [0] for prop in lprop]
         #self.pcentroid = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/MapCentroid.csv"
         #self.pmap = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/mapChem.csv"
         #self.prStaticMaps = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/"
 
 
-    def loadChemMapbyID(self):
+    def loadChemMapbyID(self, center, nbChem):
 
         # control input type
         if not type(self.input) == str:
@@ -33,210 +38,315 @@ class DSSToxPrep:
             self.err = 1
             return
 
-        dout = {}
 
+        # check if include in the DB
+        cmd_search = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1] from mvwchemmap_mapdsstox\
+            where dsstox_id = '%s'" %(self.input)
+        
+        chem_center = self.cDB.execCMD(cmd_search)
+        print(chem_center)
+        if chem_center == []:
+            self.err = 1
+            return 
+        x = chem_center[0][3]
+        y = chem_center[0][4]
+        z = chem_center[0][5]
+        inch = chem_center[0][2]
+        
+
+
+        ########### case of new chemical !!!!!!!
         # prep chem -> transform in inchikey
-        cchem = Chemical.Chemical(self.input, self.prout)
-        cchem.prepChem()
-        inch = cchem.generateInchiKey()
-        self.centerChem = inch
+        #cchem = Chemical.Chemical(self.input, self.prout)
+        #cchem.prepChem()
+        #inch = cchem.generateInchiKey()
+        #self.centerChem = inch
 
         # find inch in the table
         # extract 10,000 close chemical
 
-        lcoords = self.cDB.extractColoumn("dsstox_coords", "dim1d2d[1],dim1d2d[2],dim3d[1]", "WHERE inchikey='%s'"%(inch))
-        dout[inch] = lcoords[0]
-        x = dout[inch][0]
-        y = dout[inch][1]
-        z = dout[inch][2]
+        #if x < 3 and x >- 3 or y < 3 and y >- 3 or z < 3 and z >- 3:
+        rang_val = 0.025
+        #else:
+        #    rang_val = 1
         
-        if x < 3 and x >- 3 or y < 3 and y >- 3 or z < 3 and z >- 3:
-            rang_val = 0.025
+        cmdSQLCount = "select count(*) from chemmap_coords where map_name = 'dsstox' and dim1d2d[1] < %s \
+                        + (select dim1d2d[1] from dsstox_coords where inchikey = '%s') \
+                        and dim1d2d[1] >  (select dim1d2d[1] from dsstox_coords where inchikey = '%s') - %s \
+                        UNION \
+                        select count(*) from chemmap_coords where  map_name= 'dsstox' and dim1d2d[2] < %s + \
+                        (select dim1d2d[2] from dsstox_coords where inchikey = '%s') \
+                        and dim1d2d[2] >  (select dim1d2d[2] from dsstox_coords where inchikey = '%s') - %s \
+                        UNION \
+                        select count(*) from chemmap_coords where  map_name= 'dsstox' and dim3d[1] < %s + \
+                        (select dim3d[1] from dsstox_coords where inchikey = '%s') \
+                        and dim3d[1] >  (select dim3d[1] from dsstox_coords where inchikey = '%s') - %s" %(rang_val, inch, inch, rang_val, rang_val, inch, 
+                        inch, rang_val, rang_val, inch, inch, rang_val)
+        self.cDB.verbose = 0
+        lcount = self.cDB.execCMD(cmdSQLCount)
+        sum_chem = lcount[0][0] + lcount[1][0] + lcount[2][0]
+
+        print(sum_chem)
+
+        if sum_chem > nbChem:
+            if x < 3 and x >- 3 or y < 3 and y >- 3 or z < 3 and z >- 3:
+                rang_val = rang_val*12000 / sum_chem
+            else: 
+                while sum_chem > nbChem+(0.15*nbChem):
+                    cmdSQLCount = "select count(*) from chemmap_coords where map_name = 'dsstox' and dim1d2d[1] < %s \
+                        + (select dim1d2d[1] from dsstox_coords where inchikey = '%s') \
+                        and dim1d2d[1] >  (select dim1d2d[1] from dsstox_coords where inchikey = '%s') - %s \
+                        UNION \
+                        select count(*) from chemmap_coords where  map_name= 'dsstox' and dim1d2d[2] < %s + \
+                        (select dim1d2d[2] from dsstox_coords where inchikey = '%s') \
+                        and dim1d2d[2] >  (select dim1d2d[2] from dsstox_coords where inchikey = '%s') - %s \
+                        UNION \
+                        select count(*) from chemmap_coords where  map_name= 'dsstox' and dim3d[1] < %s + \
+                        (select dim3d[1] from dsstox_coords where inchikey = '%s') \
+                        and dim3d[1] >  (select dim3d[1] from dsstox_coords where inchikey = '%s') - %s" %(rang_val, inch, inch, rang_val, rang_val, inch, 
+                        inch, rang_val, rang_val, inch, inch, rang_val)
+                    lcount = self.cDB.execCMD(cmdSQLCount)
+                    sum_chem = lcount[0][0] + lcount[1][0] + lcount[2][0]
+                    rang_val = rang_val - 0.03    
         else:
-            rang_val = 1
+            if abs(x) > 150 or abs(y) > 150 or abs(z) > 150:
+                rang_val = 100
+
+            while sum_chem < (nbChem/2):
+                if abs(x) > 150 or abs(y) > 150 or abs(z) > 150:
+                    rang_val = rang_val + 10
+                else:
+                    rang_val = rang_val + 0.20
+
+                cmdSQLCount = "select count(*) from chemmap_coords where map_name = 'dsstox' and dim1d2d[1] < %s \
+                    + (select dim1d2d[1] from dsstox_coords where inchikey = '%s') \
+                    and dim1d2d[1] >  (select dim1d2d[1] from dsstox_coords where inchikey = '%s') - %s \
+                    UNION \
+                    select count(*) from chemmap_coords where  map_name= 'dsstox' and dim1d2d[2] < %s + \
+                    (select dim1d2d[2] from dsstox_coords where inchikey = '%s') \
+                    and dim1d2d[2] >  (select dim1d2d[2] from dsstox_coords where inchikey = '%s') - %s \
+                    UNION \
+                    select count(*) from chemmap_coords where  map_name= 'dsstox' and dim3d[1] < %s + \
+                    (select dim3d[1] from dsstox_coords where inchikey = '%s') \
+                    and dim3d[1] >  (select dim3d[1] from dsstox_coords where inchikey = '%s') - %s" %(rang_val, inch, inch, rang_val, rang_val, inch, 
+                    inch, rang_val, rang_val, inch, inch, rang_val)
+                lcount = self.cDB.execCMD(cmdSQLCount)
+                sum_chem = lcount[0][0] + lcount[1][0] + lcount[2][0]
+                print(sum_chem)
+
+                
+
+            
+        # retrieve data
+
+        cmdSQL = "Select  dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value  from mvwchemmap_mapdsstox\
+            where dim1d2d[1] < %s + (select dim1d2d[1] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1)\
+            and  dim1d2d[1] >  (select dim1d2d[1] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1) - %s \
+            UNION \
+            select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value from mvwchemmap_mapdsstox where  dim1d2d[2] < %s + \
+            (select dim1d2d[2] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1) \
+            and dim1d2d[2] >  (select dim1d2d[2] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1) - %s \
+            UNION \
+            select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value from mvwchemmap_mapdsstox where dim3d[1] < %s + \
+            (select dim3d[1] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1) \
+            and dim3d[1] >  (select dim3d[1] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1) - %s;" %(rang_val, inch, inch, rang_val, rang_val, inch, 
+            inch, rang_val, rang_val, inch, inch, rang_val)
         
-        sum_chem = 0
-        while sum_chem < 10000:
-            cmdSQLCount = "select count(*) from chemmap_coords where map_name = 'dsstox' and dim1d2d[1] < %s \
-                            + (select dim1d2d[1] from dsstox_coords where inchikey = '%s') \
-                            and dim1d2d[1] >  (select dim1d2d[1] from dsstox_coords where inchikey = '%s') - %s \
-                            UNION \
-                            select count(*) from chemmap_coords where  map_name= 'dsstox' and dim1d2d[2] < %s + \
-                            (select dim1d2d[2] from dsstox_coords where inchikey = '%s') \
-                            and dim1d2d[2] >  (select dim1d2d[2] from dsstox_coords where inchikey = '%s') - %s \
-                            UNION \
-                            select count(*) from chemmap_coords where  map_name= 'dsstox' and dim3d[1] < %s + \
-                            (select dim3d[1] from dsstox_coords where inchikey = '%s') \
-                            and dim3d[1] >  (select dim3d[1] from dsstox_coords where inchikey = '%s') - %s" %(rang_val, inch, inch, rang_val, rang_val, inch, 
-                            inch, rang_val, rang_val, inch, inch, rang_val)
-            self.cDB.verbose = 1
-            lcount = self.cDB.execCMD(cmdSQLCount)
-            sum_chem = lcount[0][0] + lcount[1][0] + lcount[2][0]
-            print(sum_chem)
-            rang_val = rang_val + rang_val
-        #print(sum_chem)
+        lchem = self.cDB.execCMD(cmdSQL)
 
-        dddd
+
+        # format for JS dictionnary
+        if not "coord" in self.__dict__:
+            self.coord = {}
         
-
-        # load chem for map
-        dchemMap = {}
-        x = mapx - 1
-        while x <= mapx +1:
-            lchemInMap = self.cDB.extractColoumn("dsstox_coords", "inchikey, dim1d2d[1],dim1d2d[2],dim3d[1]", "WHERE mapx=%s"%(x))
-            for chemInMap in lchemInMap:
-                dchemMap[chemInMap[0]] = [chemInMap[1], chemInMap[2], chemInMap[3]] 
-                #lchemMap.append(chemInMap[0])
-            x = x +1
-
-        y = mapy - 1
-        while y <= mapy + 1:
-            lchemInMap = self.cDB.extractColoumn("dsstox_coords", "inchikey, dim1d2d[1],dim1d2d[2],dim3d[1]", "WHERE mapy=%s"%(y))
-            for chemInMap in lchemInMap:
-                dchemMap[chemInMap[0]] = [chemInMap[1], chemInMap[2], chemInMap[3]] 
-            y = y + 1
+        if not "dinfo" in self.__dict__:
+            self.dinfo = {}
         
-        z = mapz - 1
-        while z <= mapz + 1:
-            lchemInMap = self.cDB.extractColoumn("dsstox_coords", "inchikey, dim1d2d[1],dim1d2d[2],dim3d[1]", "WHERE mapz=%s"%(z))
-            for chemInMap in lchemInMap:
-                dchemMap[chemInMap[0]] = [chemInMap[1], chemInMap[2], chemInMap[3]] 
-            z = z + 1
+        if not "dSMILES" in self.__dict__:
+            self.dSMILES = {}
 
-        self.dchemMap = dchemMap
-        #self.centerChem = [float(dchemMap[self.input]["DIM1"]), float(dchemMap[self.input]["DIM2"]), float(dchemMap[self.input]["DIM3"])]
+        if not "dneighbor" in self.__dict__:
+            self.dneighbor = {}
+
+        dinch = {}
+
+        for chem in lchem:
+            inch = chem[2]
+            smiles = chem[1]
+            dsstox = chem[0]
+            xadd = chem[3]
+            yadd = chem[4]
+            zadd = chem[5]
+            lneighbors = chem[6]
+            lprop = chem[7]
+
+            if lprop == None:
+                continue
+
+            #coords
+            if center == 1:
+                self.coord[dsstox] = [float(xadd - x), float(yadd - y), float(zadd - z)]
+            else:
+                self.coord[dsstox] = [float(xadd), float(yadd), float(zadd)]
+        
+            # info
+            self.dinfo[dsstox] = {}
+            for descMap in self.ldescMap:
+                try: self.dinfo[dsstox][DDESCDSSTOX[descMap]] = round(float(lprop[self.lallProp.index(descMap)]),1)
+                except: self.dinfo[dsstox][DDESCDSSTOX[descMap]] = lprop[self.lallProp.index(descMap)]
+
+            #SMILES
+            self.dSMILES[dsstox] = {}
+            self.dSMILES[dsstox]["inchikey"] = inch
+            self.dSMILES[dsstox]["SMILES"] = smiles
+            self.dSMILES[dsstox]["GHS_category"] = lprop[self.lallProp.index("GHS_category")]
+
+            # neighbor
+            self.dneighbor[dsstox] = {}
+            self.dneighbor[dsstox] = lneighbors
+
+            # dictionnary of comparison inch / dsstox
+            dinch[inch] = dsstox
+
+        # Change name in the neighbor
+        for chem in self.dneighbor.keys():
+            lneighbors = []
+            for n in self.dneighbor[chem]:
+                try: lneighbors.append(dinch[n])
+                except: pass
+            self.dneighbor[chem] = lneighbors
 
 
-    def loadChemMapbySession(self):
+    #def loadChemMapbySession(self):
 
-        if not path.exists(self.input):
-            print("Check input type")
-            return
+    #    if not path.exists(self.input):
+    #        print("Check input type")
+    #        return
 
         # load coord
-        lIDmap = []
-        dcentroid = toolbox.loadMatrixToDict(self.pcentroid)
-        dcoordUpload = toolbox.loadMap1D2D3D(self.input)
-        for chemID in dcoordUpload.keys():
-            dcoorCenter = [float(dcoordUpload[chemID]["DIM1"]), float(dcoordUpload[chemID]["DIM2"]), float(dcoordUpload[chemID]["DIM3"])]
+    #    lIDmap = []
+    #    dcentroid = toolbox.loadMatrixToDict(self.pcentroid)
+    #    dcoordUpload = toolbox.loadMap1D2D3D(self.input)
+    #    for chemID in dcoordUpload.keys():
+    #        dcoorCenter = [float(dcoordUpload[chemID]["DIM1"]), float(dcoordUpload[chemID]["DIM2"]), float(dcoordUpload[chemID]["DIM3"])]
 
-            ddist = {}
-            for map in dcentroid.keys():
-                dcoordCentroid = [float(dcentroid[map]["X"]), float(dcentroid[map]["Y"]), float(dcentroid[map]["Z"])]
-                ddist[map] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(dcoorCenter, dcoordCentroid)]))
+    #        ddist = {}
+    #        for map in dcentroid.keys():
+    #            dcoordCentroid = [float(dcentroid[map]["X"]), float(dcentroid[map]["Y"]), float(dcentroid[map]["Z"])]
+    #            ddist[map] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(dcoorCenter, dcoordCentroid)]))
 
-            lID = [i[0] for i in sorted(ddist.items(), key=lambda x: x[1])][:3]
+    #        lID = [i[0] for i in sorted(ddist.items(), key=lambda x: x[1])][:3]
             #print(lID)
-            for ID in lID:
-                if not ID in lIDmap:
-                    lIDmap.append(ID)
+    #        for ID in lID:
+    #            if not ID in lIDmap:
+    #                lIDmap.append(ID)
 
 
-        dchemMap = {}
-        for IDmap in lIDmap:
-            dchemMap.update(toolbox.loadMap1D2D3D(self.prStaticMaps + str(IDmap)))
+    #    dchemMap = {}
+    #    for IDmap in lIDmap:
+    #        dchemMap.update(toolbox.loadMap1D2D3D(self.prStaticMaps + str(IDmap)))
 
 
-        self.lmap = lIDmap
-        self.dchemMap = dchemMap
-        self.dcenterChem = dcoordUpload
+    #    self.lmap = lIDmap
+    #    self.dchemMap = dchemMap
+    #    self.dcenterChem = dcoordUpload
 
 
-    def refineChemMapOnSeveralChem(self, nbchemical):
+    #def refineChemMapOnSeveralChem(self, nbchemical):
 
-        if not "dchemMap" in self.__dict__:
-            print("Load initial Map")
-            return
+    #    if not "dchemMap" in self.__dict__:
+    #        print("Load initial Map")
+    #        return
 
-        nbchembycenter = int(nbchemical / len(self.dcenterChem.keys()))
-        dout = {}
+    #    nbchembycenter = int(nbchemical / len(self.dcenterChem.keys()))
+    #    dout = {}
 
-        for chemid in self.dcenterChem:
-            lcoordcenter = [float(self.dcenterChem[chemid]["DIM1"]), float(self.dcenterChem[chemid]["DIM2"]), float(self.dcenterChem[chemid]["DIM3"])]
+    #    for chemid in self.dcenterChem:
+    #        lcoordcenter = [float(self.dcenterChem[chemid]["DIM1"]), float(self.dcenterChem[chemid]["DIM2"]), float(self.dcenterChem[chemid]["DIM3"])]
 
-            ddist = {}
-            for chemID in self.dchemMap.keys():
-                lcoordID = [float(self.dchemMap[chemID]["DIM1"]), float(self.dchemMap[chemID]["DIM2"]), float(self.dchemMap[chemID]["DIM3"])]
-                ddist[chemID] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(lcoordID, lcoordcenter)]))
-            lID = [i[0] for i in sorted(ddist.items(), key=lambda x: x[1])][:nbchembycenter]
+    #        ddist = {}
+    #        for chemID in self.dchemMap.keys():
+    #            lcoordID = [float(self.dchemMap[chemID]["DIM1"]), float(self.dchemMap[chemID]["DIM2"]), float(self.dchemMap[chemID]["DIM3"])]
+    #            ddist[chemID] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(lcoordID, lcoordcenter)]))
+    #        lID = [i[0] for i in sorted(ddist.items(), key=lambda x: x[1])][:nbchembycenter]
 
-            for ID in lID:
-                dout[ID] = [float(deepcopy(self.dchemMap[ID]["DIM1"])), float(deepcopy(self.dchemMap[ID]["DIM2"])), float(deepcopy(self.dchemMap[ID]["DIM3"]))]
-                del self.dchemMap[ID]
-
-
-        self.coord = dout
+    #        for ID in lID:
+    #            dout[ID] = [float(deepcopy(self.dchemMap[ID]["DIM1"])), float(deepcopy(self.dchemMap[ID]["DIM2"])), float(deepcopy(self.dchemMap[ID]["DIM3"]))]
+    #            del self.dchemMap[ID]
 
 
-
-    def refineChemMap(self, center, nbchemical):
-
-        if not "dchemMap" in self.__dict__:
-            print("Load initial Map")
-            self.err = 1
-            return
-
-        lcoordcenter = [self.dchemMap[self.centerChem][0], self.dchemMap[self.centerChem][1], self.dchemMap[self.centerChem][2]]
-
-        ddist = {}
-        for chemID in self.dchemMap.keys():
-            ddist[chemID] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(self.dchemMap[chemID], lcoordcenter)]))
-
-
-        lID = [i[0] for i in sorted(ddist.items(), key=lambda x: x[1])][:nbchemical]
-
-
-        dout = {}
-        for ID in lID:
-            if center == 1:
-                dout[ID] = [self.dchemMap[ID][0] - self.dchemMap[self.centerChem][0], self.dchemMap[ID][1] - self.dchemMap[self.centerChem][1], self.dchemMap[ID][2] - self.dchemMap[self.centerChem][2]]
-            else:
-                dout[ID] = [float(self.dchemMap[ID][0]), float(self.dchemMap[ID][1]), float(self.dchemMap[ID][2])]
-        self.coord = dout
+    #    self.coord = dout
 
 
 
+    #def refineChemMap(self, center, nbchemical):
 
-    def loadInfo(self, ldesc):
+    #    if not "dchemMap" in self.__dict__:
+    #        print("Load initial Map")
+    #        self.err = 1
+    #        return
 
-        self.ldesc = ldesc
+    #    lcoordcenter = [self.dchemMap[self.centerChem][0], self.dchemMap[self.centerChem][1], self.dchemMap[self.centerChem][2]]
 
-        dinfoout = {}
-        dSMILESout = {}
-
-        for IDmap in self.lmap:
-            pinfoMap = self.prStaticMaps + str(IDmap) + "_TableProp.csv"
-            dinfoMap = toolbox.loadMatrixInfoToDict(pinfoMap)
-
-
-            for IDchem in self.coord.keys():
-                if IDchem in dinfoMap.keys():
-                    dinfoout[IDchem] = {}
-                    dSMILESout[IDchem] = {}
-                    for desc in ldesc:
-                        dinfoout[IDchem][DDESCDSSTOX[desc]] = dinfoMap[IDchem][desc]
-                        dSMILESout[IDchem]["inchikey"] = dinfoMap[IDchem]["inchikey"]
-                        dSMILESout[IDchem]["GHS_category"] = dinfoMap[IDchem]["GHS_category"]
-                        dSMILESout[IDchem]["SMILES"] = dinfoMap[IDchem]["SMILES"]
+    #    ddist = {}
+    #    for chemID in self.dchemMap.keys():
+    #        ddist[chemID] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(self.dchemMap[chemID], lcoordcenter)]))
 
 
-        self.dinfo = dinfoout
-        self.dSMILES = dSMILESout
+    #    lID = [i[0] for i in sorted(ddist.items(), key=lambda x: x[1])][:nbchemical]
 
 
-    def loadNeighbor(self):
+    #    dout = {}
+    #    for ID in lID:
+    #        if center == 1:
+    #            dout[ID] = [self.dchemMap[ID][0] - self.dchemMap[self.centerChem][0], self.dchemMap[ID][1] - self.dchemMap[self.centerChem][1], self.dchemMap[ID][2] - self.dchemMap[self.centerChem][2]]
+    #        else:
+    #            dout[ID] = [float(self.dchemMap[ID][0]), float(self.dchemMap[ID][1]), float(self.dchemMap[ID][2])]
+    #    self.coord = dout
 
-        dneighborout = {}
 
-        for IDmap in self.lmap:
-            pneighborMap = self.prStaticMaps + str(IDmap) + "_TableNeighbors.csv"
-            dneighborMap = toolbox.loadMatrixToDict(pneighborMap)
 
-            for IDchem in self.coord.keys():
-                if IDchem in dneighborMap.keys():
-                    dneighborout[IDchem] = dneighborMap[IDchem]["Neighbors"].split(" ")
 
-        self.dneighbor = dneighborout
+    #def loadInfo(self, ldesc):
+
+    #    self.ldesc = ldesc
+
+    #    dinfoout = {}
+    #    dSMILESout = {}
+
+    #    for IDmap in self.lmap:
+    #        pinfoMap = self.prStaticMaps + str(IDmap) + "_TableProp.csv"
+    #        dinfoMap = toolbox.loadMatrixInfoToDict(pinfoMap)
+
+
+    #        for IDchem in self.coord.keys():
+    #            if IDchem in dinfoMap.keys():
+    #                dinfoout[IDchem] = {}
+    #                dSMILESout[IDchem] = {}
+    #                for desc in ldesc:
+    #                    dinfoout[IDchem][DDESCDSSTOX[desc]] = dinfoMap[IDchem][desc]
+    #                    dSMILESout[IDchem]["inchikey"] = dinfoMap[IDchem]["inchikey"]
+    #                    dSMILESout[IDchem]["GHS_category"] = dinfoMap[IDchem]["GHS_category"]
+    #                    dSMILESout[IDchem]["SMILES"] = dinfoMap[IDchem]["SMILES"]
+
+
+    #    self.dinfo = dinfoout
+    #    self.dSMILES = dSMILESout
+
+
+    #def loadNeighbor(self):
+
+    #    dneighborout = {}
+
+    #    for IDmap in self.lmap:
+    #        pneighborMap = self.prStaticMaps + str(IDmap) + "_TableNeighbors.csv"
+    #        dneighborMap = toolbox.loadMatrixToDict(pneighborMap)
+
+    #        for IDchem in self.coord.keys():
+    #            if IDchem in dneighborMap.keys():
+    #                dneighborout[IDchem] = dneighborMap[IDchem]["Neighbors"].split(" ")
+
+    #    self.dneighbor = dneighborout
 
 
 
