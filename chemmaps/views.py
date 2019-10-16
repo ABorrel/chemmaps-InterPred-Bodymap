@@ -148,7 +148,7 @@ def launchMap(request, map):
 
             chemIn = formDesc.cleaned_data['chem']
             build = DSSToxPrep(chemIn, ldescMap, prsession)
-            build.loadChemMapbyID(center = 1, nbChem = 12000)
+            build.loadChemMapbyID(chemIn, center = 1, nbChem = 12000)
             if build.err == 1:
                 return render(request, 'chemmaps/launchMap.html', {"form_info": formDesc, "form_smiles": form_smiles,
                                                                    "from_upload": formUpload, "Error": "0", "map": map,
@@ -191,7 +191,7 @@ def launchDSSToxMap(request, DTXSID):
     ldescMap = ["LD50_mgkg", "CATMoS_VT_pred", "EPA_category", "MolWeight","LogP_pred"]
 
     build = DSSToxPrep(DTXSID, ldescMap, "")
-    build.loadChemMapbyID(center = 1, nbChem = 12000)
+    build.loadChemMapbyID(DTXSID, center = 1, nbChem = 10000)
     if build.err == 1:
         return render(request, 'chemmaps/index.html', {"DTXSID":DTXSID})
 
@@ -208,39 +208,6 @@ def launchDSSToxMap(request, DTXSID):
         return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
                                                              "dSMILESClass":dSMILESClass,
                                                              "ldesc":ldescJS, "map":"DSSToxMap", "mapJS": mapJS,"prSessionJS":prSessionJS })
-
-
-
-
-
-    cMap = DSSToxPrep(DTXSID)
-    cMap.loadChemMapbyID()
-    if cMap.err == 1:
-        return render(request, 'chemmaps/index.html', {"DTXSID":DTXSID})
-
-    cMap.refineChemMap(center=1, nbchemical=10000)
-    cMap.loadInfo(ldesc)
-    cMap.loadNeighbor()
-
-    dcoord = json.dumps(build.coord)
-    dinfo = json.dumps(build.dinfo)
-    dneighbor = json.dumps(build.dneighbor)
-    dSMILESClass = json.dumps(build.dSMILES)
-    ldescJS = list(build.dinfo[list(build.dinfo.keys())[0]].keys())
-
-    dcoord = json.dumps(cMap.coord)
-    dinfo = json.dumps(cMap.dinfo)
-    dneighbor = json.dumps(cMap.dneighbor)
-    dSMILESClass = json.dumps(cMap.dSMILES)
-    mapJS = json.dumps("DSSToxMap")
-    map = "DSSToxMap"
-    prSessionJS = json.dumps("0")
-
-    return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
-                                                   "dSMILESClass": dSMILESClass,
-                                                   "ldesc": list(cMap.dinfo[list(cMap.dinfo.keys())[0]].keys()),
-                                                   "map": map, "mapJS": mapJS, "prSessionJS":prSessionJS})
-
 
 
 
@@ -288,14 +255,10 @@ def computeDescriptor(request, map):
             if map == "DSSToxMap":
 
                 build = JSbuilder(map, prsession)
-                build.generateCoords(lfileDesc[0], lfileDesc[1])
+                build.generateCoords(lfileDesc[0], lfileDesc[1], ldescMap)
 
-                cDSSTox = DSSToxPrep(prsession)
-                cDSSTox.loadChemMapbySession()
-                cDSSTox.refineChemMapOnSeveralChem(1000)
-                cDSSTox.loadInfo(ldescMap)
-                cDSSTox.loadNeighbor()
-                cDSSTox.addChem()
+                cDSSTox = DSSToxPrep(build.dchemAdd, ldescMap, prsession)
+                cDSSTox.loadChemMapAddMap()
 
                 dcoord = json.dumps(cDSSTox.coord)
                 dinfo = json.dumps(cDSSTox.dinfo)

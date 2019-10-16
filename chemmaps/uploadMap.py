@@ -98,15 +98,7 @@ class loadingMap:
         # load chem matrix
 
         if self.map == "DrugMap":
-            self.DB.verbose = 1
-            lchem = self.DB.extractColoumn("mvwchemmap_drugbank", "drugbank_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value")
-            #lchem = self.DB.extractColoumn("drugbank_chem", "db_id, smiles_clean, inchikey, qsar_ready")
-            #lcoord = self.DB.extractColoumn("drugmap_coords", "*")
-            #dcoord = coordToDict(lcoord)
-            #linfo = self.DB.extractColoumn("drugbank_prop", "db_id, prop_value")
-            #dinfo = propToDict(linfo, self.lallProp)
-            #lneighbor = self.DB.extractColoumn("drugmap_neighbors", "inchikey, neighbors_dim3")
-            #dneighbor = NeighborToDict(lneighbor)
+            lchem = self.DB.extractColoumn("mvwchemmap_mapdrugbank", "drugbank_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value")
 
         elif self.map == "PFASMap":
             lchem = self.DB.extractColoumn("mvwchemmap_mappfas", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value")

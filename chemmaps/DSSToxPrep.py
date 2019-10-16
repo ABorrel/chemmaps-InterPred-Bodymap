@@ -30,10 +30,13 @@ class DSSToxPrep:
         #self.prStaticMaps = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/"
 
 
-    def loadChemMapbyID(self, center, nbChem):
+
+
+
+    def loadChemMapbyID(self, dsstoxIn, center, nbChem):
 
         # control input type
-        if not type(self.input) == str:
+        if not type(dsstoxIn) == str:
             print("Check input type")
             self.err = 1
             return
@@ -41,7 +44,7 @@ class DSSToxPrep:
 
         # check if include in the DB
         cmd_search = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1] from mvwchemmap_mapdsstox\
-            where dsstox_id = '%s'" %(self.input)
+            where dsstox_id = '%s'" %(dsstoxIn)
         
         chem_center = self.cDB.execCMD(cmd_search)
         print(chem_center)
@@ -54,106 +57,11 @@ class DSSToxPrep:
         inch = chem_center[0][2]
         
 
-
-        ########### case of new chemical !!!!!!!
-        # prep chem -> transform in inchikey
-        #cchem = Chemical.Chemical(self.input, self.prout)
-        #cchem.prepChem()
-        #inch = cchem.generateInchiKey()
-        #self.centerChem = inch
-
-        # find inch in the table
-        # extract 10,000 close chemical
-
-        #if x < 3 and x >- 3 or y < 3 and y >- 3 or z < 3 and z >- 3:
-        rang_val = 0.025
-        #else:
-        #    rang_val = 1
+        cmdExtract = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value \
+            from mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (select cube (d3_cube) from mvwchemmap_mapdsstox \
+                 where inchikey='%s' limit (1)) limit (%s);"%(inch, nbChem)
         
-        cmdSQLCount = "select count(*) from chemmap_coords where map_name = 'dsstox' and dim1d2d[1] < %s \
-                        + (select dim1d2d[1] from dsstox_coords where inchikey = '%s') \
-                        and dim1d2d[1] >  (select dim1d2d[1] from dsstox_coords where inchikey = '%s') - %s \
-                        UNION \
-                        select count(*) from chemmap_coords where  map_name= 'dsstox' and dim1d2d[2] < %s + \
-                        (select dim1d2d[2] from dsstox_coords where inchikey = '%s') \
-                        and dim1d2d[2] >  (select dim1d2d[2] from dsstox_coords where inchikey = '%s') - %s \
-                        UNION \
-                        select count(*) from chemmap_coords where  map_name= 'dsstox' and dim3d[1] < %s + \
-                        (select dim3d[1] from dsstox_coords where inchikey = '%s') \
-                        and dim3d[1] >  (select dim3d[1] from dsstox_coords where inchikey = '%s') - %s" %(rang_val, inch, inch, rang_val, rang_val, inch, 
-                        inch, rang_val, rang_val, inch, inch, rang_val)
-        self.cDB.verbose = 0
-        lcount = self.cDB.execCMD(cmdSQLCount)
-        sum_chem = lcount[0][0] + lcount[1][0] + lcount[2][0]
-
-        print(sum_chem)
-
-        if sum_chem > nbChem:
-            if x < 3 and x >- 3 or y < 3 and y >- 3 or z < 3 and z >- 3:
-                rang_val = rang_val*12000 / sum_chem
-            else: 
-                while sum_chem > nbChem+(0.15*nbChem):
-                    cmdSQLCount = "select count(*) from chemmap_coords where map_name = 'dsstox' and dim1d2d[1] < %s \
-                        + (select dim1d2d[1] from dsstox_coords where inchikey = '%s') \
-                        and dim1d2d[1] >  (select dim1d2d[1] from dsstox_coords where inchikey = '%s') - %s \
-                        UNION \
-                        select count(*) from chemmap_coords where  map_name= 'dsstox' and dim1d2d[2] < %s + \
-                        (select dim1d2d[2] from dsstox_coords where inchikey = '%s') \
-                        and dim1d2d[2] >  (select dim1d2d[2] from dsstox_coords where inchikey = '%s') - %s \
-                        UNION \
-                        select count(*) from chemmap_coords where  map_name= 'dsstox' and dim3d[1] < %s + \
-                        (select dim3d[1] from dsstox_coords where inchikey = '%s') \
-                        and dim3d[1] >  (select dim3d[1] from dsstox_coords where inchikey = '%s') - %s" %(rang_val, inch, inch, rang_val, rang_val, inch, 
-                        inch, rang_val, rang_val, inch, inch, rang_val)
-                    lcount = self.cDB.execCMD(cmdSQLCount)
-                    sum_chem = lcount[0][0] + lcount[1][0] + lcount[2][0]
-                    rang_val = rang_val - 0.03    
-        else:
-            if abs(x) > 150 or abs(y) > 150 or abs(z) > 150:
-                rang_val = 100
-
-            while sum_chem < (nbChem/2):
-                if abs(x) > 150 or abs(y) > 150 or abs(z) > 150:
-                    rang_val = rang_val + 10
-                else:
-                    rang_val = rang_val + 0.20
-
-                cmdSQLCount = "select count(*) from chemmap_coords where map_name = 'dsstox' and dim1d2d[1] < %s \
-                    + (select dim1d2d[1] from dsstox_coords where inchikey = '%s') \
-                    and dim1d2d[1] >  (select dim1d2d[1] from dsstox_coords where inchikey = '%s') - %s \
-                    UNION \
-                    select count(*) from chemmap_coords where  map_name= 'dsstox' and dim1d2d[2] < %s + \
-                    (select dim1d2d[2] from dsstox_coords where inchikey = '%s') \
-                    and dim1d2d[2] >  (select dim1d2d[2] from dsstox_coords where inchikey = '%s') - %s \
-                    UNION \
-                    select count(*) from chemmap_coords where  map_name= 'dsstox' and dim3d[1] < %s + \
-                    (select dim3d[1] from dsstox_coords where inchikey = '%s') \
-                    and dim3d[1] >  (select dim3d[1] from dsstox_coords where inchikey = '%s') - %s" %(rang_val, inch, inch, rang_val, rang_val, inch, 
-                    inch, rang_val, rang_val, inch, inch, rang_val)
-                lcount = self.cDB.execCMD(cmdSQLCount)
-                sum_chem = lcount[0][0] + lcount[1][0] + lcount[2][0]
-                print(sum_chem)
-
-                
-
-            
-        # retrieve data
-
-        cmdSQL = "Select  dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value  from mvwchemmap_mapdsstox\
-            where dim1d2d[1] < %s + (select dim1d2d[1] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1)\
-            and  dim1d2d[1] >  (select dim1d2d[1] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1) - %s \
-            UNION \
-            select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value from mvwchemmap_mapdsstox where  dim1d2d[2] < %s + \
-            (select dim1d2d[2] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1) \
-            and dim1d2d[2] >  (select dim1d2d[2] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1) - %s \
-            UNION \
-            select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value from mvwchemmap_mapdsstox where dim3d[1] < %s + \
-            (select dim3d[1] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1) \
-            and dim3d[1] >  (select dim3d[1] from mvwchemmap_mapdsstox where inchikey = '%s' limit 1) - %s;" %(rang_val, inch, inch, rang_val, rang_val, inch, 
-            inch, rang_val, rang_val, inch, inch, rang_val)
-        
-        lchem = self.cDB.execCMD(cmdSQL)
-
+        lchem = self.cDB.execCMD(cmdExtract)
 
         # format for JS dictionnary
         if not "coord" in self.__dict__:
@@ -202,8 +110,10 @@ class DSSToxPrep:
             self.dSMILES[dsstox]["GHS_category"] = lprop[self.lallProp.index("GHS_category")]
 
             # neighbor
-            self.dneighbor[dsstox] = {}
-            self.dneighbor[dsstox] = lneighbors
+            if lneighbors != None:
+                self.dneighbor[dsstox] = lneighbors
+            else:
+                self.dneighbor[dsstox] = []
 
             # dictionnary of comparison inch / dsstox
             dinch[inch] = dsstox
@@ -215,6 +125,26 @@ class DSSToxPrep:
                 try: lneighbors.append(dinch[n])
                 except: pass
             self.dneighbor[chem] = lneighbors
+
+    def loadChemMapAddMap(self):
+        
+        nbChemAdd = len(list(self.input["coord"].keys()))
+        nbChemInMap = 10000/nbChemAdd
+        for chem in self.input["SMILESClass"].keys():
+            inch = self.input["SMILESClass"][chem]["inchikey"]
+            cmdSQL = "Select dsstox_id from mvwchemmap_mapdsstox where inchikey='%s'"%(inch)
+            dsstox = self.cDB.execCMD(cmdSQL)
+            if dsstox != []:
+                dsstox = dsstox[0][0]
+                self.loadChemMapbyID(dsstox, 0, nbChemInMap)
+
+                # update with added chemical
+                self.coord[chem] = self.coord[dsstox]
+                self.dinfo[chem] = self.dinfo[dsstox]
+                self.dneighbor[chem] = self.dneighbor[dsstox]
+                self.dSMILES[chem] = self.dSMILES[dsstox]
+                self.dSMILES[chem]["GHS_category"] = "add"
+        
 
 
     #def loadChemMapbySession(self):

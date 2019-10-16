@@ -49,11 +49,12 @@ class JSbuilder:
         self.nameMap = nameMap
         self.prout = prout
         self.cDB = DBrequest()
+        self.pMap = path.abspath("./static/chemmaps/map/" + self.nameMap + "/") + "/"
         self.cDB.verbose = 0
         self.err = 0
 
 
-    def loadMap(self, ldescMap = [], IDmap = 1):
+    def loadMap(self, ldescMap = []):
 
         self.ldescMap = ldescMap# prop in
         #cDB = DBrequest()
@@ -64,18 +65,7 @@ class JSbuilder:
             cload = loadingMap(self.nameMap, self.ldescMap)
             dmap = cload.loadMap()
             
-        #elif self.nameMap == "DSSToxMap":
-        #    self.IDmap = IDmap
-        #    print(IDmap)
-        #    ssss
-        #    dmap = {}
-        #    dmap["coord"] = loadMap1D2D3D(self.pMap + str(IDmap))
-        #    # modif with user choose
-        #    dmap["info"] = loadMatrixInfoToDict(self.pMap + str(IDmap) + "_TableProp.csv", sep="\t", ldesc=ldescMap)
-        #    dmap["neighbor"] = loadMatrixToDict(self.pMap + str(IDmap) + "_TableNeighbors.csv")
         self.map = dmap
-
-
 
     def generateJS(self):
         """Use to combine all of the prop and coords to generate a JS dictionnary"""
@@ -124,12 +114,11 @@ class JSbuilder:
 
         return dout
 
-
     ###################
     # MANAGE ADD file #
     ###################
 
-    def generateCoords(self, p1D2D, p3D):
+    def generateCoords(self, p1D2D, p3D, ldescMap):
 
         self.inDB = 0
 
@@ -195,7 +184,7 @@ class JSbuilder:
                     self.dchemAdd["SMILESClass"][id]["GHS_category"] = "add"
 
 
-                for desc in self.ldescMap:
+                for desc in ldescMap:
                     if desc in list(ddesc.keys()):
                         self.dchemAdd["info"][id][desc] = ddesc[desc]
                     elif desc in list(dinfo.keys()):
@@ -224,7 +213,7 @@ class JSbuilder:
 
             # generate coords
             cmd = "%s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath("./chemmaps/Rscripts"), p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
-            print(cmd)
+            #print(cmd)
             system(cmd)
 
             p1D2Dcoord = self.prout + "coord1D2D.csv"
@@ -236,8 +225,6 @@ class JSbuilder:
             if self.dchemAdd["coord"] == {}:
                 self.err = 1
                 return "ERROR"
-
-
 
     def findneighbor(self, nbneighbor=20):
 
@@ -270,8 +257,6 @@ class JSbuilder:
 
                 lID = [i[0] for i in sorted(ddist[ID].items(), key=lambda x: x[1])][:nbneighbor]
             self.dchemAdd["neighbor"][ID] = lID
-
-
 
     def findinfoTable(self):
 
@@ -328,7 +313,6 @@ class JSbuilder:
                         self.dchemAdd["info"][IDadd][desc] = "NA"
 
 
-
 def downloadCoordsFromDB(map, inchikey, typeCoord):
 
     cDB = DBrequest()
@@ -337,7 +321,9 @@ def downloadCoordsFromDB(map, inchikey, typeCoord):
     if map == "DrugMap":
         table = "drugmap_coords"
     elif map == "pfas":
-        map = ""
+        table = "pfasmap_coords"
+    else:
+        table = "dsstox_coords"
 
     lval = cDB.getRow(table, "inchikey='%s'"%(inchikey))
     #print(lval[0][0])
@@ -349,12 +335,14 @@ def downloadCoordsFromDB(map, inchikey, typeCoord):
     
     return lout
 
-
 def downloadInfoFromDB(cDB, map, inchikey, lprop):
 
     if map == "DrugMap":
         table_chem = "drugbank_chem"
         table_prop = "drugbank_prop"
+    if map == "DSSToxMap":
+        table_chem = "dsstox_chem"
+        table_prop = "dsstox_prop"
     
     # find name chem in DB
     dbID = cDB.extractColoumn(table_chem, "db_id", "WHERE inchikey='%s'"%(inchikey))
@@ -381,6 +369,8 @@ def downloadNeighborsFromDB(map, inchikey):
 
     if map == "DrugMap":
         table_neighbors = "drugmap_neighbors"
+    elif map == "DSSToxMap":
+        table_neighbors = "dsstox_neighbors"
 
     # add condition here !!!!!
     lneighbor  =  cDB.extractColoumn(table_neighbors, "neighbors_dim3", "")
