@@ -173,6 +173,8 @@ def formatLine(linein):
 
 
 
+
+
 from rdkit import Chem
 def convertSMILEStoINCHIKEY(SMILESin):
     molformat = Chem.MolFromSmiles(SMILESin)
@@ -180,5 +182,8 @@ def convertSMILEStoINCHIKEY(SMILESin):
     inchikey = Chem.inchi.InchiToInchiKey(inchi)
 
     return inchikey
+
+
+
 
 

@@ -21,10 +21,12 @@ class bodypartChoice(forms.Form):
                        "class": "column-checkbox"}), required=True)
 
 
+    fold = forms.CharField(label="", error_messages={'required': ''}, required=True)
+
     def clean_run(self):
         if len(self.cleaned_data['bodypart']) == 0:
             return "ERROR"
-        return self.cleaned_data['bodypart']
+        return [self.cleaned_data['bodypart'], self.cleaned_data['fold']]
 
 
 

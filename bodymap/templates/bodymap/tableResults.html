@@ -1,21 +1,32 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
+{% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link href="/static/django_server/css/ntpweb.css" rel="stylesheet">
-<link href="/static/django_server/css/ntpweb-shared.css" rel="stylesheet">
-<link href="/static/django_server/css/base.css" rel="stylesheet">
-<link href="/static/bodymap/css/theme.css" rel="stylesheet">
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
+          rel="stylesheet" type="text/css"/> 
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
+          rel="stylesheet" type="text/css"/>
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
+          rel="stylesheet" type="text/css"/> 
+
 <link href="/static/bodymap/css/table.css" rel="stylesheet">
+<link href="/static/bodymap/css/theme.css" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
+
+{% endblock %}
+{% block title %} Index bodymap{% endblock %}
+{% block content %}
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
 <script src="/static/bodymap/js/table.js"></script>
+<div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
 
-{% include 'bodymap/includes/navbar.html' %}
 
 <h1>Results</h1>
+
+
+
 
 
 Error: {{ Error }}

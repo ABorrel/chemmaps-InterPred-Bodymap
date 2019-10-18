@@ -33,8 +33,10 @@ def mappingAssaysBody(request):
 
     # run map with new chem
     if formBody.is_valid() == True:
-        lBodypart = formBody.clean_run()
-        dmap = assaysMapping(lBodypart, 2)
+        lformout = formBody.clean_run()
+        lBodypart = lformout[0]
+        fold = lformout[1]
+        dmap = assaysMapping(lBodypart, float(fold))
         dmapJS = json.dumps(dmap)
         typeJS = json.dumps("assays")
 
@@ -66,18 +68,18 @@ def mappingChemicalToBody(request):
     # run map with new chem
     if formCAS.is_valid() == True:
         CAS = formCAS.clean_chem()
-        #CAS = "60-35-5"
+        CAS = "60-35-5"
         cmapChem = mapChem(CAS, 5)
         dmap = cmapChem.mapChemToBody()
         dmapJS = json.dumps(dmap)
         typeJS = json.dumps("chem")
 
 
-        return render(request, 'bodymap/tableResults.html', {"dmap": dmapJS, "Error": "0", "Type":"chem", "TypeJS":typeJS, "CAS":CAS})
+        return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "Error": "0", "Type":"chem", "TypeJS":typeJS, "CAS":CAS})
 
     else:
 
-        return render(request, 'bodymap/tableResults.html', {"Error": "1"})
+        return render(request, 'bodymap/ChemMapping.html', {"Error": "1"})
     # add error mapping here
     #else:
     #    return render(request, 'interferences/computeDESC.html', {"map": map, "dSMILESIN": cinput.dclean["IN"],

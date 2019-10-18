@@ -91,3 +91,44 @@ def formatLine(linein):
     return linenew
 
 
+def loadToList(pfilin, sep = "\t"):
+    lout = []
+    filin = open(pfilin, "r")
+    llines = filin.readlines()
+    filin.close()
+    
+    head = llines[0].strip().split(sep)
+
+    for line in llines[1:]:
+        lval = line.strip().split(sep)
+        dtemp = {}
+        i = 0
+        imax = len(head)
+        while i < imax:
+            dtemp[head[i]] = lval[i]
+            i = i + 1
+        lout.append(dtemp)
+    return lout
+
+
+def openGeneExp(pfilin):
+    filin = open(pfilin, "r")
+    llines = filin.readlines()
+    filin.close()
+
+    dout = {}
+    for line in llines[1:]:
+        lelemt = line.strip().split("\t")
+        system = lelemt[0]
+        organ = lelemt[1]
+        exp = float(lelemt[2])
+        control = float(lelemt[3])
+
+        if not system in list(dout.keys()):
+            dout[system] = {}
+        
+        dout[system][organ] = {}
+        dout[system][organ]["exp"] = exp
+        dout[system][organ]["control"] = control
+    
+    return dout

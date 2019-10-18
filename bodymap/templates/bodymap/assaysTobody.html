@@ -1,14 +1,22 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
+{% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link href="/static/django_server/css/ntpweb.css" rel="stylesheet">
-<link href="/static/django_server/css/ntpweb-shared.css" rel="stylesheet">
-<link href="/static/django_server/css/base.css" rel="stylesheet">
-<link href="/static/bodymap/css/theme.css" rel="stylesheet">
-{% include 'bodymap/includes/navbar.html' %}
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
+          rel="stylesheet" type="text/css"/> 
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
+          rel="stylesheet" type="text/css"/>
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
+          rel="stylesheet" type="text/css"/> 
 
+<link href="/static/bodymap/css/theme.css" rel="stylesheet">
+{% endblock %}
+{% block title %} Index bodymap{% endblock %}
+{% block content %}
+
+<div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
+  
 <h1>Load assays on body part</h1>
 
 <br>
@@ -18,6 +26,10 @@
 {% endif %}
 
 <form action='/bodymap/assaysMappingTable/' method='post' onsubmit="ShowLoadingInterferences()">{% csrf_token %}
+    Fold gene expression (> 1):
+                <br>
+                <div style="width: 20%">{{form_body.fold}}</div>
+                <br>
     <div class="row">
         <div class="column">
             {% for aa in form_body.bodypart %}
