@@ -608,6 +608,7 @@ function cameraCenterPoint() {
     istepcamera = 0;
 }
 
+
 function searchID(that) {
     var thatUpper = that.toUpperCase();
     for (ktype in dpoints) {
@@ -625,41 +626,72 @@ function searchID(that) {
                     )
                     //.easing( TWEEN.Easing.Elastic.Out).start();
                     .easing(TWEEN.Easing.Linear.None)
-                    .start();
+                   .start();
                 updateInfoBox(dpoints[ktype][i]);
                 return;
             }
         }
     }
-    var thatlower = that.toLowerCase();
-    for (ktype in dpoints) {
-        for (var i = 0; i < dpoints[ktype].length; i++) {
-            var IDsearch = dpoints[ktype][i].name;
-            var genericlower = dinfo[IDsearch][1].toLowerCase();
-            if (
-                dinfo[IDsearch][5].search(thatlower) != -1 ||
-                genericlower.search(thatlower) != -1
-            ) {
-                ID = IDsearch;
-                new TWEEN.Tween(controls.target)
-                    .to(
-                        {
-                            x: dcoords[ID][0] * fact,
-                            y: dcoords[ID][1] * fact,
-                            z: dcoords[ID][2] * fact,
-                        },
-                        500
-                    )
-                    .easing(TWEEN.Easing.Linear.None)
-                    .start();
-                //    cameraCenterPoint();
-                updateInfoBox(dpoints[ktype][i]);
-                return;
-            }
-        }
-    }
+
     alert(that + ' is not a valide request\nReset the map and/or check your request\n\n');
 }
+
+
+
+
+// rewrite search function
+//function searchID(that) {
+//    var thatUpper = that.toUpperCase();
+//    for (ktype in dpoints) {
+//        for (var i = 0; i < dpoints[ktype].length; i++) {
+//            if (thatUpper == dpoints[ktype][i].name) {
+//                ID = thatUpper;
+//                new TWEEN.Tween(controls.target)
+//                    .to(
+//                        {
+//                            x: dcoords[ID][0] * fact,
+//                            y: dcoords[ID][1] * fact,
+//                            z: dcoords[ID][2] * fact,
+//                        },
+//                        500
+//                    )
+//                    //.easing( TWEEN.Easing.Elastic.Out).start();
+//                    .easing(TWEEN.Easing.Linear.None)
+//                   .start();
+//                updateInfoBox(dpoints[ktype][i]);
+//                return;
+//            }
+//        }
+//    }
+//    var thatlower = that.toLowerCase();
+//    for (ktype in dpoints) {
+//        for (var i = 0; i < dpoints[ktype].length; i++) {
+//            var IDsearch = dpoints[ktype][i].name;
+//            var genericlower = dinfo[IDsearch][1].toLowerCase();
+//            if (
+//                dinfo[IDsearch][5].search(thatlower) != -1 ||
+//                genericlower.search(thatlower) != -1
+//            ) {
+//                ID = IDsearch;
+//                new TWEEN.Tween(controls.target)
+//                    .to(
+//                        {
+//                            x: dcoords[ID][0] * fact,
+//                            y: dcoords[ID][1] * fact,
+//                            z: dcoords[ID][2] * fact,
+//                        },
+//                        500
+//                    )
+//                    .easing(TWEEN.Easing.Linear.None)
+//                    .start();
+//                //    cameraCenterPoint();
+//                updateInfoBox(dpoints[ktype][i]);
+//                return;
+//            }
+//        }
+//    }
+//    alert(that + ' is not a valide request\nReset the map and/or check your request\n\n');
+//}
 
 function searchIDtox(that) {
     var thatUpper = that.toUpperCase();
