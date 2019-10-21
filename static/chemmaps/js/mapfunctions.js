@@ -379,18 +379,20 @@ function drawChemical() {
 function downloadNeighbor() {
     var element = document.createElement('a');
     var filname = ID + '.csv';
-    var textin = 'ID\tSMILES\tinchikey\tGroup\t';
+    var textin = 'ID\tSMILES\tinchikey\tGroup';
 
+    var IDcenter = dneighbors[ID][0];
+    
     var ldesc = Object.keys(dinfo[ID]);
     // write header
     for (var idesc in ldesc) {
         textin = textin + '\t' + ldesc[idesc];
     }
-    textin = textin + '\n';
-
-    textin = textin + createLineWriteForTable(ID, ldesc);
+    textin = textin + '\tdistance\n';
+    //textin = textin + createLineWriteForTable(ID, ldesc);
+    
     for (var i = 0; i < dneighbors[ID].length; i++) {
-        textin = textin + createLineWriteForTable(dneighbors[ID][i], ldesc);
+        textin = textin + createLineWriteForTable(dneighbors[ID][i], IDcenter, ldesc);
     }
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textin));
     element.setAttribute('download', filname);
@@ -400,7 +402,8 @@ function downloadNeighbor() {
     element.click();
     document.body.removeChild(element);
 }
-function createLineWriteForTable(IDchem, ldesc) {
+
+function createLineWriteForTable(IDchem, IDcenter, ldesc) {
     var lineW =
         IDchem +
         '\t' +
@@ -416,8 +419,24 @@ function createLineWriteForTable(IDchem, ldesc) {
     for (var idesc in ldesc) {
         lineW = lineW + '\t' + dinfo[IDchem][ldesc[idesc]];
     }
-    lineW = lineW + '\n';
+    dist = computeEuclidian(IDchem, IDcenter); // add var?
+    lineW = lineW + "\t" + dist + '\n';
+    
     return lineW;
+}
+
+function computeEuclidian(ID1, ID2){
+
+    var x1 = dcoords[ID1][0] * fact;
+    var y1 = dcoords[ID1][1] * fact;
+    var z1 = dcoords[ID1][2] * fact;
+
+    var x2 = dcoords[ID2][0] * fact;
+    var y2 = dcoords[ID2][1] * fact;
+    var z2 = dcoords[ID2][2] * fact;
+
+    var dist = Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2) + Math.pow((z2-z1),2))
+    return dist;
 }
 
 // scale position in case of resize
