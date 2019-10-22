@@ -34,7 +34,6 @@ function updateInfoBox(intersect) {
             lboxes[i].innerHTML = round(dinfo[ID][ldesc[i]], 2);
         }
     }
-    //document.getElementById("Compoundpng2").src = "/static/chemmaps/png/drugbank/" + ID + ".png";
 
     SmilesDrawer.parse(dSMILESClass[ID]['SMILES'], function(tree) {
         // Draw to the canvas

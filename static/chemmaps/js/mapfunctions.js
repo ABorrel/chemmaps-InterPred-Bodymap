@@ -7,8 +7,8 @@ function posCloud(din, dcolorRGB, size, scene) {
     var color = new THREE.Color();
     //console.log(color);
 
-    console.log(color);
-    console.log(din);
+    //console.log(color);
+    //console.log(din);
     var count = 0;
     for (var i in din) {
         console.log(i);
@@ -17,7 +17,7 @@ function posCloud(din, dcolorRGB, size, scene) {
         positions[count * 3 + 2] = parseFloat(din[i][2] * 20);
         sizes[count] = size;
         color.setRGB(dcolorRGB['r'] / 250, dcolorRGB['g'] / 250, dcolorRGB['b'] / 250);
-        console.log(color.r);
+        //console.log(color.r);
         colors[count * 3] = color.r;
         colors[count * 3 + 1] = color.g;
         colors[count * 3 + 2] = color.b;
@@ -545,7 +545,7 @@ function extractNeighbor(that) {
                             var typeChem = 'indev';
                         }
                         var coloradd = dcol[typeChem];
-                    } else if (map == 'DSSToxMap' || map == 'PFASMap') {
+                    } else if (map == 'DSSToxMap' || map == 'PFASMap' || map == 'Tox21Map') {
                         if (dSMILESClass[IDtemp]['GHS_category'] == 'NA') {
                             var typeChem = 'noclassified';
                         } else if (dSMILESClass[IDtemp]['GHS_category'] == 'User') {

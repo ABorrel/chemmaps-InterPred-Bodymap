@@ -1,15 +1,15 @@
 # To do list
 ### ChemMaps
 #### Urgent 
-- Fix JS connect neighbor error when it is a uploaded chemicals
-- Add DSSTOX in the DB and split map
-- Add command to upload a new chemical on the fly in the DB
+- Fix JS connect neighbor error when it is a uploaded chemicals -> done
+- Add DSSTOX in the DB and split map -> done use DB request and not split
+- Add command to upload a new chemical on the fly in the DB -> 50%
 - develop a carciMap choose on the 1600 chemicals and 1600 chemicals on the DSSTOX 
 - fix check in input and QSAR ready (09-20)
 - 508 html
 
 #### Improvement
-- Add distance in the neighbor file to download
+- Add distance in the neighbor file to download -> done
 - Compute the 3D plan with several different plan
 - Connect the DB with the JS to improve speed
 - change background in function of the map
@@ -28,10 +28,12 @@
 
 ### BodyMap
 #### Urgent
-- Add footer and header on each page
-- Update the mapping with the assays mapping
-- Fix a mapping on a body
-
+- Add footer and header on each page -> done
+- Update the mapping with the assays mapping -> done
+- Fix a mapping on a body -> done
+- develop the chemical mapping
+- fix the results page
+- check the 508
 
 
 # Updates 
@@ -45,5 +47,7 @@
 - 19-9-19: connect chemmaps on DB
 - 20-9-19: Fix case where chemicals uploaded are a mix between in DB and new
 - 08-10-19: Update footer and header for interference and chemmaps + connect pfas and tox21 to DB
-
+- 11-10-19: Add Connection to server and optimize the DSSTOX map
+- 18-10-19: Update body map and change statics
+- 21-10-19: Fix Tox21 map error, add distance in the neighbor download and fix search bar error
 
