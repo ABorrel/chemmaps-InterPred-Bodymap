@@ -2,6 +2,7 @@ from .toolbox import loadMatrixToDict
 from .DBrequest import DBrequest
 
 from os import path, remove
+from re import search
 import sys
 sys.path.insert(0, path.abspath('./../MD/'))
 from MD import Chemical
@@ -9,12 +10,12 @@ from MD import Chemical
 
 class uploadSMILES:
 
-    def __init__(self, content, prout):
+    def __init__(self, input, prout):
 
         self.prout = prout
         self.cDB = DBrequest()
         self.cDB.verbose = 0
-        self.input = content
+        self.input = input
         self.err = 0
 
         if type(self.input) == dict:
@@ -28,15 +29,14 @@ class uploadSMILES:
                     doutOUT[int(k)]["file"] = "chemmaps/img/checkNo.png"
                 else:
                     doutOUT[int(k)]["file"] = "chemmaps/img/checkOK.png"
-
             self.dclean = {"IN":doutIN, "OUT":doutOUT}
 
 
     def prepListSMILES(self):
 
-        lSMILES = self.input
-        lSMILES = list(filter(lambda a: a != "", lSMILES))
-        nbSIMLES = len(lSMILES)
+        lchem_input = self.input
+        lchem_input = list(filter(lambda a: a != "", lchem_input))
+        nbSIMLES = len(lchem_input)
 
         if nbSIMLES == 0:
             self.err = 1
@@ -46,14 +46,30 @@ class uploadSMILES:
             doutIN = {}
             doutOUT = {}
             i = 1
-            for SMILES in lSMILES:
+            for chem_input in lchem_input:
                 doutIN[i] = {}
                 doutOUT[i] = {}
-                doutIN[i] = SMILES
-                chemical = Chemical.Chemical(SMILES, self.prout)
-                chemical.prepChem()
-                if chemical.err == 0:
-                    doutOUT[i]["SMILES"] = chemical.smi
+                doutIN[i] = chem_input
+                smiles_clean = []
+                inch = "Error"
+                # Check if in DB => case it has a ID
+                if search("DTXSID", chem_input):
+                    smiles_clean = self.cDB.extractColoumn("chemmapchemicals", "smiles_clean, inchikey", "WHERE dsstox_id = '%s'"%(chem_input))
+                elif search("^DB", chem_input):
+                    smiles_clean = self.cDB.extractColoumn("chemmapchemicals", "smiles_clean, inchikey", "WHERE drugbank_id = '%s'"%(chem_input))
+                
+                if smiles_clean == []:
+                    chemical = Chemical.Chemical(chem_input, self.prout)
+                    chemical.prepChem()
+                    if chemical.err == 0:
+                        smiles_clean = chemical.smi
+                        inch = chemical.generateInchiKey()
+                else:
+                    inch = smiles_clean[0][1]
+                    smiles_clean = smiles_clean[0][0]
+
+                if smiles_clean != []:
+                    doutOUT[i]["SMILES"] = smiles_clean
                     doutOUT[i]["file"] = "chemmaps/img/checkOK.png"
                 else:
                     doutOUT[i]["SMILES"] = 0
@@ -63,9 +79,9 @@ class uploadSMILES:
             # see to pass process
             pfilout = self.prout + "smiClean.csv"
             filout = open(pfilout, "w")
-            filout.write("ID\tSMI_IN\tSMI_CLEAN\n")
+            filout.write("ID\tSMI_IN\tSMI_CLEAN\tINCH\n")
             for k in doutIN.keys():
-                filout.write("%i\t%s\t%s\n"%(k,doutIN[k].strip(), doutOUT[k]["SMILES"]))
+                filout.write("%i\t%s\t%s\t%s\n"%(k,doutIN[k].strip(), doutOUT[k]["SMILES"], inch))
             filout.close()
 
         # control if some SMILES are valid
@@ -84,17 +100,9 @@ class uploadSMILES:
             self.err = 1
             return
 
+        # creat file for downloading
         pfilout2D = self.prout + "2D.csv"
         pfilout3D = self.prout + "3D.csv"
-
-        dout = {}
-        l2D = Chemical.getLdesc("1D2D")
-        l3D = Chemical.getLdesc("3D")
-
-        filout2D = open(pfilout2D, "w")
-        filout3D = open(pfilout3D, "w")
-        filout2D.write("ID\tSMILES\tinchikey\t" + "\t".join(l2D) + "\n")
-        filout3D.write("ID\tSMILES\t" + "\t".join(l3D) + "\n")
 
         # load descriptor names here to avoid repeat
         ldesc1D2D = self.cDB.extractColoumn("desc_1d2d_name", "name")
@@ -103,7 +111,14 @@ class uploadSMILES:
         ldesc3D = self.cDB.extractColoumn("desc_3D_name", "name")
         ldesc3D = [desc [0] for desc in ldesc3D]
 
+        dout = {} # for table in descriptor coloumn
 
+        filout2D = open(pfilout2D, "w")
+        filout3D = open(pfilout3D, "w")
+        filout2D.write("ID\tSMILES\tinchikey\t" + "\t".join(ldesc1D2D) + "\n")
+        filout3D.write("ID\tSMILES\t" + "\t".join(ldesc3D) + "\n")
+
+        a = self.input
         for k in self.dclean["IN"].keys():
             dout[k] = {}
             SMICLEAN = self.dclean["OUT"][k]["SMILES"]
@@ -111,45 +126,42 @@ class uploadSMILES:
                 dout[k]["Descriptor"] = "Error"
                 dout[k]["desc"] = "chemmaps/img/checkNo.png"
                 dout[k]["desc"] = "chemmaps/img/checkNo.png"
-                continue
             else:
-                # prep chemical 
+                inch = self.input[str(k)]["INCH"]
                 chemical = Chemical.Chemical(SMICLEAN, self.prout)
                 chemical.prepChem()
                 chemical.generateInchiKey()
 
                 # check if chemical is in DB for 1D2D
-                d1D2D = downloadDescFromDB(self.cDB, "1D2D", ldesc1D2D, chemical.inchikey)
+                d1D2D = downloadDescFromDB(self.cDB, "1D2D", ldesc1D2D, inch)
+                d3D = downloadDescFromDB(self.cDB, "3D", ldesc3D, inch)
                 if d1D2D == {}:
+                    chemical = Chemical.Chemical(SMICLEAN, self.prout)
+                    chemical.prepChem()
+                    chemical.generateInchiKey()
                     chemical.computeAll2D()
-                else:
-                    # add upload here !!!!!!!!!!
-                    chemical.all2D = d1D2D
-                
-                # for 3D
-                d3D = downloadDescFromDB(self.cDB, "3D", ldesc3D, chemical.inchikey)
-                if d3D == {}:
                     chemical.set3DChemical()
                     chemical.computeAll3D()
+                
+                    if chemical.err == 0:
+                        #print(chemdesc.all2D.keys())
+                        dout[k]["Descriptor"] = "OK"
+                        dout[k]["desc"] = "chemmaps/img/checkOK.png"
+                        filout2D.write("%i\t%s\t%s\t%s\n"%(k, SMICLEAN, chemical.inchikey, "\t".join([str(chemical.all2D[d]) for d in ldesc1D2D])))
+                        filout3D.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(chemical.all3D[d]) for d in ldesc3D])))
+                        # run png generation
+                        prPNG = path.abspath("./static/chemmaps/png") + "/"
+                        chemical.computePNG(prPNG)
+                    else:
+                        dout[k]["desc"] = "chemmaps/img/checkNo.png"
+                        dout[k]["Descriptor"] = "Error"
+                
                 else:
-                    # add upload here !!!!!!!!!!
-                    chemical.all3D = d3D
-                #compute descriptor
-                # have to check case of error
-
-                if chemical.err == 0:
-                    #print(chemdesc.all2D.keys())
                     dout[k]["Descriptor"] = "OK"
                     dout[k]["desc"] = "chemmaps/img/checkOK.png"
-                    filout2D.write("%i\t%s\t%s\t%s\n"%(k, SMICLEAN, chemical.inchikey, "\t".join([str(chemical.all2D[d]) for d in l2D])))
-                    filout3D.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(chemical.all3D[d]) for d in l3D])))
-                    # run png generation
-                    prPNG = path.abspath("./static/chemmaps/png") + "/"
-                    chemical.computePNG(prPNG)
-                else:
-                    dout[k]["desc"] = "chemmaps/img/checkNo.png"
-                    dout[k]["Descriptor"] = "Error"
-
+                    filout2D.write("%i\t%s\t%s\t%s\n"%(k, SMICLEAN, inch, "\t".join([str(d1D2D[d]) for d in ldesc1D2D])))
+                    filout3D.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(d3D[d]) for d in ldesc3D])))
+                       
         filout2D.close()
         filout3D.close()
 

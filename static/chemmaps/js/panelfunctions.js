@@ -335,7 +335,6 @@ function colorbyType(descin) {
                 }
             }
         }
-        console.log(lval);
 
         if (lval.length == 2) {
             lcol = ['#00ff00', '#c11212'];

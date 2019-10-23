@@ -184,7 +184,7 @@ def launchMap(request, map):
                                                            "from_upload": formUpload, "Error": "0", "map":map})
 
 
-
+# case of automatic launch -> Comptox
 def launchDSSToxMap(request, DTXSID):
 
     # fault Ldesc
@@ -273,7 +273,7 @@ def computeDescriptor(request, map):
                 build = JSbuilder(map, prsession)
                 build.loadMap(ldescMap)
                 # manage new chemical for the JS
-                build.generateCoords(lfileDesc[0], lfileDesc[1])# from computed descriptors
+                build.generateCoords(lfileDesc[0], lfileDesc[1], ldescMap)# from computed descriptors
                 build.findinfoTable()
                 build.findneighbor()
 

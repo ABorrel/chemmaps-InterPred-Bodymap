@@ -533,13 +533,14 @@ function extractNeighbor(that) {
                     }
                 }
                 //console.log(dSMILESClass[IDtemp]['GHS_category']);
+                //alert(map);
                 if (flag == 0) {
-                    if (map == 'drugMap') {
-                        if (dinfo[IDtemp]['Drug group'].search('NA') !== -1) {
+                    if (map == 'DrugMap') {
+                        if (dSMILESClass[IDtemp]['DRUG_GROUPS'].search('approved') !== -1) {
                             var typeChem = 'approved';
-                        } else if (dinfo[IDtemp]['Drug group'].search('withdraw') !== -1) {
+                        } else if (dSMILESClass[IDtemp]['DRUG_GROUPS'].search('withdraw') !== -1) {
                             var typeChem = 'withdraw';
-                        } else if (dinfo[IDtemp]['Drug group'].search('User') !== -1) {
+                        } else if (dSMILESClass[IDtemp]['DRUG_GROUPS'] == 'add') {
                             var typeChem = 'add';
                         } else {
                             var typeChem = 'indev';
@@ -548,7 +549,7 @@ function extractNeighbor(that) {
                     } else if (map == 'DSSToxMap' || map == 'PFASMap' || map == 'Tox21Map') {
                         if (dSMILESClass[IDtemp]['GHS_category'] == 'NA') {
                             var typeChem = 'noclassified';
-                        } else if (dSMILESClass[IDtemp]['GHS_category'] == 'User') {
+                        } else if (dSMILESClass[IDtemp]['GHS_category'] == 'add') {
                             var typeChem = 'add';
                         } else if (dSMILESClass[IDtemp]['GHS_category'] !== 'NA') {
                             var typeChem = 'classified';

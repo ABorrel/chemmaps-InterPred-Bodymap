@@ -38,7 +38,7 @@ class DSSToxPrep:
         # control input type
         if not type(dsstoxIn) == str:
             print("Check input type")
-            self.err = 1
+            #self.err = 1
             return
 
 
@@ -49,7 +49,7 @@ class DSSToxPrep:
         chem_center = self.cDB.execCMD(cmd_search)
         print(chem_center)
         if chem_center == []:
-            self.err = 1
+            #self.err = 1
             return 
         x = chem_center[0][3]
         y = chem_center[0][4]
@@ -60,7 +60,8 @@ class DSSToxPrep:
         cmdExtract = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value \
             from mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (select cube (d3_cube) from mvwchemmap_mapdsstox \
                  where inchikey='%s' limit (1)) limit (%s);"%(inch, nbChem)
-        
+
+
         lchem = self.cDB.execCMD(cmdExtract)
 
         # format for JS dictionnary
@@ -88,9 +89,6 @@ class DSSToxPrep:
             lneighbors = chem[6]
             lprop = chem[7]
 
-            if lprop == None:
-                continue
-
             #coords
             if center == 1:
                 self.coord[dsstox] = [float(xadd - x), float(yadd - y), float(zadd - z)]
@@ -110,42 +108,64 @@ class DSSToxPrep:
             self.dSMILES[dsstox]["GHS_category"] = lprop[self.lallProp.index("GHS_category")]
 
             # neighbor
-            if lneighbors != None:
-                self.dneighbor[dsstox] = lneighbors
-            else:
-                self.dneighbor[dsstox] = []
+            self.dneighbor[dsstox] = lneighbors
 
             # dictionnary of comparison inch / dsstox
             dinch[inch] = dsstox
 
         # Change name in the neighbor
-        for chem in self.dneighbor.keys():
+        for chem in dinch.values():
             lneighbors = []
             for n in self.dneighbor[chem]:
-                try: lneighbors.append(dinch[n])
-                except: pass
+                try: 
+                    lneighbors.append(dinch[n])
+                except: 
+                    pass
             self.dneighbor[chem] = lneighbors
+
+
+
 
     def loadChemMapAddMap(self):
         
         nbChemAdd = len(list(self.input["coord"].keys()))
         nbChemInMap = 10000/nbChemAdd
+
+        #ldsstoxAdd = []
         for chem in self.input["SMILESClass"].keys():
-            inch = self.input["SMILESClass"][chem]["inchikey"]
-            cmdSQL = "Select dsstox_id from mvwchemmap_mapdsstox where inchikey='%s'"%(inch)
-            dsstox = self.cDB.execCMD(cmdSQL)
-            if dsstox != []:
-                dsstox = dsstox[0][0]
-                self.loadChemMapbyID(dsstox, 0, nbChemInMap)
-
-                # update with added chemical
-                self.coord[chem] = self.coord[dsstox]
-                self.dinfo[chem] = self.dinfo[dsstox]
-                self.dneighbor[chem] = self.dneighbor[dsstox]
-                self.dSMILES[chem] = self.dSMILES[dsstox]
+            try:
+                dsstoxID = self.input["db_id"][chem]
+                #ldsstoxAdd.append(dsstoxID)
+                self.loadChemMapbyID(dsstoxID, 0, nbChemInMap)
+                
+                self.coord[chem] = deepcopy(self.coord[dsstoxID])
+                self.dinfo[chem] = deepcopy(self.dinfo[dsstoxID])
+                self.dneighbor[chem] = deepcopy(self.dneighbor[dsstoxID])
+                self.dSMILES[chem] = deepcopy(self.dSMILES[dsstoxID])
                 self.dSMILES[chem]["GHS_category"] = "add"
-        
 
+                 # dell already in DB
+                del self.coord[dsstoxID]
+                del self.dinfo[dsstoxID]
+                del self.dneighbor[dsstoxID]
+                del self.dSMILES[dsstoxID]
+
+            except:
+                pass
+
+
+        #for chem in self.input["SMILESClass"].keys():
+        #    if self.input["DSSTOX"][chem] != "":
+        #        dsstox = self.input["DSSTOX"][chem]
+        #        # update with added chemical
+        #        self.coord[chem] = deepcopy(self.coord[dsstox])
+        #        self.dinfo[chem] = deepcopy(self.dinfo[dsstox])
+        #        self.dneighbor[chem] = deepcopy(self.dneighbor[dsstox])
+        #        self.dSMILES[chem] = deepcopy(self.dSMILES[dsstox])
+        #        self.dSMILES[chem]["GHS_category"] = "add"
+
+               
+        
 
     #def loadChemMapbySession(self):
 

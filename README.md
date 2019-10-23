@@ -50,4 +50,5 @@
 - 11-10-19: Add Connection to server and optimize the DSSTOX map
 - 18-10-19: Update body map and change statics
 - 21-10-19: Fix Tox21 map error, add distance in the neighbor download and fix search bar error
+- 23-10-19: Fix extraction for DrugMap, optimize the loading in case of pre existing chemical, add DB interactions 
 
