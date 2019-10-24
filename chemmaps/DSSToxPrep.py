@@ -6,6 +6,7 @@ from .uploadMap import propToDict
 from os import path
 from math import sqrt
 from copy import deepcopy
+from re import search
 
 import sys
 sys.path.insert(0, path.abspath('./../MD/'))
@@ -31,35 +32,44 @@ class DSSToxPrep:
 
 
 
+    
 
 
-    def loadChemMapbyID(self, dsstoxIn, center, nbChem):
+    def loadChemMapCenterChem(self, center_chem, center, nbChem):
 
         # control input type
-        if not type(dsstoxIn) == str:
+        if not type(center_chem) == str:
             print("Check input type")
             #self.err = 1
             return
 
 
-        # check if include in the DB
-        cmd_search = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1] from mvwchemmap_mapdsstox\
-            where dsstox_id = '%s'" %(dsstoxIn)
-        
-        chem_center = self.cDB.execCMD(cmd_search)
-        print(chem_center)
-        if chem_center == []:
-            #self.err = 1
-            return 
-        x = chem_center[0][3]
-        y = chem_center[0][4]
-        z = chem_center[0][5]
-        inch = chem_center[0][2]
-        
+        # case of DTXID
+        if search("DTXSID", center_chem):
+            # check if include in the DB
+            cmd_search = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1] from mvwchemmap_mapdsstox\
+                where dsstox_id = '%s'" %(center_chem)
+            
+            chem_center = self.cDB.execCMD(cmd_search)
+            if chem_center == []:
+                #self.err = 1
+                return 
+            x = chem_center[0][3]
+            y = chem_center[0][4]
+            z = chem_center[0][5]
+            inch = chem_center[0][2]
+            
 
-        cmdExtract = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value \
-            from mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (select cube (d3_cube) from mvwchemmap_mapdsstox \
-                 where inchikey='%s' limit (1)) limit (%s);"%(inch, nbChem)
+            cmdExtract = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value \
+                from mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (select cube (d3_cube) from mvwchemmap_mapdsstox \
+                    where inchikey='%s' limit (1)) limit (%s);"%(inch, nbChem)
+
+
+        else:
+            # have to be a inch
+            cmdExtract = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value \
+                from mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (select cube (d3_cube) from chemmap_coords_user \
+                    where inchikey='%s' and map_name = 'DSSToxMap' limit (1)) limit (%s);"%(inch, nbChem)
 
 
         lchem = self.cDB.execCMD(cmdExtract)
@@ -136,7 +146,7 @@ class DSSToxPrep:
             try:
                 dsstoxID = self.input["db_id"][chem]
                 #ldsstoxAdd.append(dsstoxID)
-                self.loadChemMapbyID(dsstoxID, 0, nbChemInMap)
+                self.loadChemMapCenterChem(dsstoxID, 0, nbChemInMap)
                 
                 self.coord[chem] = deepcopy(self.coord[dsstoxID])
                 self.dinfo[chem] = deepcopy(self.dinfo[dsstoxID])
@@ -151,6 +161,7 @@ class DSSToxPrep:
                 del self.dSMILES[dsstoxID]
 
             except:
+                inch = self.input["SMILESClass"][chem]["inch"]
                 pass
 
 

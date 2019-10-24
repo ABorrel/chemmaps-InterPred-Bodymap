@@ -191,7 +191,7 @@ def launchDSSToxMap(request, DTXSID):
     ldescMap = ["LD50_mgkg", "CATMoS_VT_pred", "EPA_category", "MolWeight","LogP_pred"]
 
     build = DSSToxPrep(DTXSID, ldescMap, "")
-    build.loadChemMapbyID(DTXSID, center = 1, nbChem = 10000)
+    build.loadChemMapCenterChem(DTXSID, center = 1, nbChem = 10000)
     if build.err == 1:
         return render(request, 'chemmaps/index.html', {"DTXSID":DTXSID})
 
@@ -223,7 +223,7 @@ def computeDescriptor(request, map):
     dSMI = loadMatrixToDict(prsession + "smiClean.csv", sep="\t")
 
     cinput = uploadSMILES(dSMI, prsession)
-    lfileDesc = cinput.computeDesc()
+    lfileDesc = cinput.computeDesc(map)
 
     if cinput.err == 1:
         return render(request, 'chemmaps/descriptor.html', {"map": map, "dSMILESIN": cinput.dclean["IN"],
@@ -256,6 +256,8 @@ def computeDescriptor(request, map):
 
                 build = JSbuilder(map, prsession)
                 build.generateCoords(lfileDesc[0], lfileDesc[1], ldescMap)
+                build.findinfoTable()
+                build.findneighbor()
 
                 cDSSTox = DSSToxPrep(build.dchemAdd, ldescMap, prsession)
                 cDSSTox.loadChemMapAddMap()

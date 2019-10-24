@@ -125,7 +125,7 @@ class JSbuilder:
         # load prop from the DB
         lpropDB = self.cDB.extractColoumn(table_prop_name, "name")
         lpropDB = [prop [0] for prop in lpropDB]
-
+        self.lpropDB = lpropDB
 
         # define the all structure here of output
         if not "dchemAdd" in self.__dict__:
@@ -173,6 +173,7 @@ class JSbuilder:
             else:
                 self.cDB.verbose=1
                 lextract = self.cDB.extractColoumn("mvwchemmap_mapdsstox", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value", "WHERE inchikey = '%s' limit (1)"%(inchikey))
+            
             
 
             if lextract != []:
@@ -236,7 +237,94 @@ class JSbuilder:
                 del llines[i]
                 imax = imax - 1
                 continue
+
             else:
+                #Check on the user table
+                lextract = self.cDB.extractColoumn("chemmap_coords_user", "source_id, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, desc_1d2d",  "WHERE inchikey = '%s' and map_name = '%s' limit (1)"%(inchikey, self.nameMap))
+
+                if lextract != [] and not None in lextract[0] != None:
+                    lextract = lextract[0]
+                    inch = lextract[1]
+                    smiles = lextract[0]
+                    xadd = lextract[2]
+                    yadd = lextract[3]
+                    zadd = lextract[4]
+                    lneighbor = lextract[5]
+                    lvaldesc2D = lextract[6]
+
+                    self.dchemAdd["db_id"][id] = ""
+                    self.dchemAdd["coord"][id] = [float(xadd), float(yadd), float(zadd)]
+
+
+                    # take info and neighbor
+
+                    
+                    #info
+                    self.dchemAdd["info"][id] = {}
+                    i = 0
+                    imax = len(lvaldesc2D)
+                    d2Ddesc = {}
+                    while i < imax:
+                        desc = self.lpropDB[i]
+                        val = lvaldesc2D[i]
+                        d2Ddesc[desc] = val
+                        i = i + 1
+                    
+                    for descMap in self.ldescMap:
+                        if descMap == "MOLECULAR_WEIGHT":
+                            self.dchemAdd["info"][id][descMap] = d2Ddesc["MolWt"]
+                        elif descMap == "JCHEM_ROTATABLE_BOND_COUNT":
+                            self.dchemAdd["info"][id][descMap] = d2Ddesc["NumRotatableBonds"]
+                        elif descMap == "JCHEM_POLAR_SURFACE_AREA":
+                            self.dchemAdd["info"][id][descMap] = d2Ddesc["TPSA"]
+                        elif descMap == "JCHEM_ATOM_COUNT":
+                            self.dchemAdd["info"][id][descMap] = d2Ddesc["NumHeteroatoms"]
+                        elif descMap == "ALOGPS_LOGP":
+                            self.dchemAdd["info"][id][descMap] = d2Ddesc["MolLogP"]
+                        elif descMap == "JCHEM_NUMBER_OF_RINGS":
+                            self.dchemAdd["info"][id][descMap] = d2Ddesc["RingCount"]
+                        elif descMap == "JCHEM_ACCEPTOR_COUNT":
+                            self.dchemAdd["info"][id][descMap] = d2Ddesc["NumHAcceptors"]
+                        elif descMap == "JCHEM_DONOR_COUNT":
+                            self.dchemAdd["info"][id][descMap] = d2Ddesc["NumHDonors"]
+                        elif descMap == "JCHEM_REFRACTIVITY":
+                            self.dchemAdd["info"][id][descMap] = d2Ddesc["MolMR"]
+                        else:
+                            self.dchemAdd["info"][id][descMap] = "NA"
+
+
+
+                    # SMILES 
+                    self.dchemAdd["SMILESClass"][id]= {}
+                    self.dchemAdd["SMILESClass"][id]["SMILES"] = smiles
+                    self.dchemAdd["SMILESClass"][id]["inchikey"] = inch
+
+                    if self.nameMap == "DrugMap":
+                        self.dchemAdd["SMILESClass"][id]["DRUG_GROUPS"] = "add"
+                    else:
+                        self.dchemAdd["SMILESClass"][id]["GHS_category"] = "add"
+
+
+                    for desc in ldescMap:
+                        if desc in list(ddesc.keys()):
+                            self.dchemAdd["info"][id][desc] = ddesc[desc]
+                        elif desc in list(dinfo.keys()):
+                            self.dchemAdd["info"][id][desc] = dinfo[desc]
+                        else:
+                            self.dchemAdd["info"][id][desc] = "NA"
+                    
+                    # neighbor
+                    if lneighbor != [] and lneighbor != "Error":
+                        lneighbormap = []
+                        for n in lneighbor:
+                            try:lneighbormap.append(self.map["inchikey"][n])
+                            except: pass
+                        self.dchemAdd["neighbor"][id] = lneighbormap
+
+                    del llines[i]
+                    imax = imax - 1
+                    continue
+
                 i = i + 1 
 
 
@@ -258,11 +346,42 @@ class JSbuilder:
             p3Dcoord = self.prout + "coord3D.csv"
 
             if path.exists(p1D2Dcoord) and path.exists(p3Dcoord):
-                self.dchemAdd["coord"].update(loadMap1D2D3D(self.prout))
+                dcoords = loadMap1D2D3D(p1D2Dcoord, p3Dcoord)
+                if dcoords == {}:
+                    self.err = 1
+                    return "ERROR"
+                ddesc1D2D = loadMatrixToDict(p1D2D)
+                #desc3D = loadMatrixToDict(p3D)
+                for ID in dcoords.keys():
+                    self.dchemAdd["coord"][ID] = {}
+                    self.dchemAdd["coord"][ID] = dcoords[ID]
+                    cmdSQL = "UPDATE chemmap_coords_user SET dim1d2d = '{%s, %s}', dim3d = '{%s}', d3_cube='{%s, %s, %s}'  WHERE inchikey='%s' AND map_name = '%s';"%( dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], ddesc1D2D[ID]["inchikey"],self.nameMap)
+                    self.cDB.execCMD(cmdSQL)
+                    
+                    # add in database
+
+
+                    # class of chemical
+                    #self.dchemAdd["SMILESClass"][ID]= {}
+                    #if self.nameMap == "DrugMap":
+                    #    self.dchemAdd["SMILESClass"][ID]["DRUG_GROUPS"] = "add"
+                    #else:
+                    #    self.dchemAdd["SMILESClass"][ID]["GHS_category"] = "add"
+
+                    #self.dchemAdd["SMILESClass"][ID]["SMILES"] = ddesc[ID]["SMILES"]
+                    #self.dchemAdd["SMILESClass"][ID]["inchikey"] = ddesc[ID]["inchikey"]
+                    
+                    #self.dchemAdd["SMILESClass"][ID]["info"] = {}
+                    
+
+                    
+                #self.dchemAdd["coord"].update(loadMap1D2D3D(self.prout))
+            #else:
+                
             
-            if self.dchemAdd["coord"] == {}:
-                self.err = 1
-                return "ERROR"
+            #if self.dchemAdd["coord"] == {}:
+            #    self.err = 1
+            #    return "ERROR"
 
 
 
@@ -283,20 +402,44 @@ class JSbuilder:
         if not "neighbor" in list(self.dchemAdd.keys()):
             self.dchemAdd["neighbor"] = {}
 
+
+       
+
         for ID in self.dchemAdd["coord"].keys():
             if ID in list(self.dchemAdd["neighbor"].keys()):
                 continue
             else:
-                dcor1 = self.dchemAdd["coord"][ID]
-                ddist = {}
-                ddist[ID] = {}
+                
+                # data search
+                if self.nameMap == "DSSToxMap":
+                    inch = self.dchemAdd["SMILESClass"]["inchikey"]
+                    cmdExtract = "Select dsstox_id from mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (select cube (d3_cube) from chemmap_coords_user \
+                    where inchikey='%s' and map_name = 'DSSToxMap' limit (1)) limit (%s);"%(inch, 20)
+                    lneighbor = self.cDB.execCMD(cmdExtract)
+                    if lneighbor != "Error" or lneighbor != []:
+                        lneighbor = lneighbor[0]
+                        self.dchemAdd["neighbor"][ID] = lneighbor
 
-                for ID2 in self.map["coord"].keys():
-                    dcor2 = self.map["coord"][ID2]
-                    ddist[ID][ID2] = math.sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(dcor1, dcor2)]))
+                # compute on the fly
+                else:
+                    dcor1 = self.dchemAdd["coord"][ID]
+                    ddist = {}
+                    ddist[ID] = {}
 
-                lID = [i[0] for i in sorted(ddist[ID].items(), key=lambda x: x[1])][:nbneighbor]
-            self.dchemAdd["neighbor"][ID] = lID
+                    for ID2 in self.map["coord"].keys():
+                        dcor2 = self.map["coord"][ID2]
+                        ddist[ID][ID2] = math.sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(dcor1, dcor2)]))
+
+                    lID = [i[0] for i in sorted(ddist[ID].items(), key=lambda x: x[1])][:nbneighbor]
+                self.dchemAdd["neighbor"][ID] = lID
+
+            # add in the user DB
+            self.cDB.verbose = 1
+            cmdSQL = "UPDATE chemmap_coords_user SET neighbors_dim3 = '{%s}' WHERE inchikey='%s' AND map_name = '%s';"%(",".join("\"" + ID + "\"" for ID in lID), self.dchemAdd["SMILESClass"][ID]["inchikey"], self.nameMap)
+            self.cDB.execCMD(cmdSQL)
+
+
+
 
 
     def findinfoTable(self):
@@ -324,10 +467,10 @@ class JSbuilder:
 
                 if self.nameMap == "DrugMap":
                     self.dchemAdd["SMILESClass"][IDadd]["DRUG_GROUPS"] = "add"
-                    self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = convertSMILEStoINCHIKEY(d2Ddesc[IDadd]["SMILES"])
+                    self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = d2Ddesc[IDadd]["inchikey"]
                 else:
                     self.dchemAdd["SMILESClass"][IDadd]["GHS_category"] = "add"
-                    self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = convertSMILEStoINCHIKEY(d2Ddesc[IDadd]["SMILES"])
+                    self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = d2Ddesc[IDadd]["inchikey"]
 
                 # info => fix prop with descriptor computed
                 # add to DB HERE for info to put on map

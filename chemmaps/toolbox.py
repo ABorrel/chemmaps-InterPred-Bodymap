@@ -104,15 +104,14 @@ def loadMatrixInfoToDict(pmatrixIn, sep ="\t", ldesc = []):
 
 
 
-def loadMap1D2D3D(pMap):
+def loadMap1D2D3D(pMap1D2D, pMap3D):
 
     dout = {}
     
-    pMap1D2D = pMap + "coord1D2D.csv"
-    pMap3D = pMap + "coord3D.csv"
-
     if not path.exists(pMap1D2D) and not path.exists(pMap3D):
         print("Error in loading coord")
+        return {}
+        
 
     fmap1D2D = open(pMap1D2D, "r")
     fmap3D = open(pMap3D, "r")

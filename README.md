@@ -7,6 +7,7 @@
 - develop a carciMap choose on the 1600 chemicals and 1600 chemicals on the DSSTOX 
 - fix check in input and QSAR ready (09-20)
 - 508 html
+- fix table in case of very long chemical and size of the check figure
 
 #### Improvement
 - Add distance in the neighbor file to download -> done

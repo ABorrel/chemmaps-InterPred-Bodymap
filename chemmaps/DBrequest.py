@@ -69,11 +69,11 @@ class DBrequest:
             except (Exception, psycopg2.DatabaseError) as error:
                 print(error)
                 self.connClose()
-                return "ERROR: " + error
+                return "ERROR"
         else:
             print("Open connection first")
             self.connClose()
-            return "ERROR: open DB"
+            return "ERROR"
 
 
 
