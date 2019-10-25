@@ -38,10 +38,10 @@ rel="stylesheet" type="text/css"/>
 rel="stylesheet" type="text/css"/>
 <link href="/static/chemmaps/css/theme.css" rel="stylesheet">
 {% endblock %}
-<script src="/static/chemmaps/js/theme.js"></script>
 
 {% block title %} Upload chemical - {{map}}{% endblock %}
 {% block content %}
+<script src="/static/chemmaps/js/theme.js"></script>
 <div id = "bg">
     {% include 'chemmaps/includes/navbar.html' %}
     
@@ -55,24 +55,40 @@ rel="stylesheet" type="text/css"/>
     <div class="row">
         <div class="column" style="background-color:#232b5f;">
             <h3>Inputs</h3>
-            <table width="100%" border="0">
-                <tr><th>ID</th><th>Input</th></tr>
-                {% for lk, lv in dSMILESIN.items %}
-                <tr><th>{{lk}}</th><th>{{lv}}</th></tr>
-                {% endfor %}
-            </table>
+            <div class="divTable">
+                    <div class="divTableHeading">
+                        <div class="divTableHead">&nbsp;ID</div>
+                        <div class="divTableHead">&nbsp;Input</div>
+                    </div>
+                    <div class="divTableBody">
+                            {% for lk, lv in dSMILESIN.items %}
+                            <div class="divTableRow">
+                                    <div class="divTableCell">&nbsp;{{lk}}</div>
+                                    <div class="divTableCell">&nbsp;{{lv}}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+            </div>
         </div>
         <div class="column" style="background-color:#232b8b;">
             <h3>QSAR-ready SMILES</h3>
-            <table width="100%" border="0">
-                <tr><th>ID</th><th>SMILES</th><th></th></tr>
-                {% for k1, dout in dSMILESOUT.items %}
-                <tr><th>{{k1}}</th>
-                    <th>{{dout.SMILES}}</th><th><img src="/static/{{dout.file}}" width="18" alt="Valide upload"></th>
-                </tr>
-                {% endfor %}
+            <div class="divTable">
+                    <div class="divTableHeading">
+                        <div class="divTableHead">&nbsp;ID</div>
+                        <div class="divTableHead">&nbsp;SMILES</div>
+                        <div class="divTableHead">&nbsp;</div>
+                    </div>
+                    <div class="divTableBody">
+                            {% for k1, dout in dSMILESOUT.items %}
+                            <div class="divTableRow">
+                                    <div class="divTableCell">&nbsp;{{k1}}</div>
+                                    <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
+                                    <div class="divTableCell"><img src="/static/{{dout.file}}" width="25px" alt="Valide upload"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+            </div>
 
-            </table>
             <br><br>
 
             {% if map == "DrugMap"  %}
@@ -118,7 +134,7 @@ rel="stylesheet" type="text/css"/>
             </form>
             {% endif %}
             {% endif %}
-
+            <br>
         </div>
     </div>
     <br>

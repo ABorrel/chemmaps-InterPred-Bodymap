@@ -131,7 +131,6 @@ class uploadSMILES:
         filout2D.write("ID\tSMILES\tinchikey\t" + "\t".join(ldesc1D2D) + "\n")
         filout3D.write("ID\tSMILES\t" + "\t".join(ldesc3D) + "\n")
 
-        a = self.input
         for k in self.dclean["IN"].keys():
             dout[k] = {}
             SMICLEAN = self.dclean["OUT"][k]["SMILES"]
@@ -150,7 +149,7 @@ class uploadSMILES:
                 
                 # check in the user chemical list
                 if lval1D2D_3D == []:
-                    lval1D2D_3D = downloadDescFromDB(self.cDB, ldesc1D2D, ldesc3D, "user", inch)
+                    lval1D2D_3D = downloadDescFromDB(self.cDB, ldesc1D2D, ldesc3D, "user", inch, mapName)
 
                     # compute desc in case of no where
                     if lval1D2D_3D == []:
@@ -208,13 +207,13 @@ class uploadSMILES:
 
 
 
-def downloadDescFromDB(cDB, ldesc1D2D, ldesc3D, table, inchikey):
+def downloadDescFromDB(cDB, ldesc1D2D, ldesc3D, table, inchikey, mapName=""):
 
     if table == "global":
         cDB.verbose = 0
         lval = cDB.extractColoumn("chemmap_coords", "desc_1d2d, desc_3d","where inchikey='%s'"%(inchikey))
     else:
-        lval = cDB.extractColoumn("chemmap_coords_user", "desc_1d2d, desc_3d","where inchikey='%s'"%(inchikey))
+        lval = cDB.extractColoumn("chemmap_coords_user", "desc_1d2d, desc_3d","where inchikey='%s' and map_name='%s'"%(inchikey, mapName))
     
     if lval == "Error" or lval == []:
         return []

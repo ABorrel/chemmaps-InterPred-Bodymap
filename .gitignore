@@ -1,6 +1,4 @@
 ./static/chemmaps/png/*
-./static/chemmaps/map/*
-./static/chemmaps/img/*
 ./static/bodymap/mapping/*
 ./static/admin/*
 

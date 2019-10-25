@@ -120,6 +120,26 @@ class DBrequest:
         self.connClose()
         return out
 
+    def updateElement(self, cmdSQL):
+        if self.verbose == 1: print(cmdSQL)
+        self.connOpen()
+        if self.conn != None:
+            try:
+                cur = self.conn.cursor()
+                cur.execute(cmdSQL)
+                self.conn.commit()
+                # print(cur)
+                #out = cur.fetchall()
+                #if self.verbose == 1: print(out)
+            except (Exception, psycopg2.DatabaseError) as error:
+                self.connClose()
+                print(error)
+                return "Error"
+        else:
+            print("Open connection first")
+        self.connClose()
+        return 0
+
 
 
 #cmd = 'select * from drugbank_chemicals  limit(10)'

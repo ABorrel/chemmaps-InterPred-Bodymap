@@ -148,7 +148,7 @@ def launchMap(request, map):
 
             chemIn = formDesc.cleaned_data['chem']
             build = DSSToxPrep(chemIn, ldescMap, prsession)
-            build.loadChemMapbyID(chemIn, center = 1, nbChem = 12000)
+            build.loadChemMapCenterChem(chemIn, center = 1, nbChem = 10000)
             if build.err == 1:
                 return render(request, 'chemmaps/launchMap.html', {"form_info": formDesc, "form_smiles": form_smiles,
                                                                    "from_upload": formUpload, "Error": "0", "map": map,
@@ -161,8 +161,8 @@ def launchMap(request, map):
 
 
         else:
-            build = JSbuilder(map)
-            build.loadMap(list(ldescMap))
+            build = JSbuilder(map, list(ldescMap))
+            build.loadMap()
 
             dJS = build.generateJS()
             #   format for JS
@@ -234,7 +234,7 @@ def computeDescriptor(request, map):
     if request.method == 'GET':
         if map == "DrugMap":
             formDesc = descDrugMapChoice()
-        elif map == "PFASMap":
+        elif map == "PFASMap" or map == "Tox21Map":
             formDesc = descDSSToxChoice()
         else:
             formDesc = descDSSToxMapChoice()
@@ -254,8 +254,8 @@ def computeDescriptor(request, map):
         else:
             if map == "DSSToxMap":
 
-                build = JSbuilder(map, prsession)
-                build.generateCoords(lfileDesc[0], lfileDesc[1], ldescMap)
+                build = JSbuilder(map, ldescMap, prsession)
+                build.generateCoords(lfileDesc[0], lfileDesc[1])
                 build.findinfoTable()
                 build.findneighbor()
 
@@ -272,10 +272,10 @@ def computeDescriptor(request, map):
 
             else:
 
-                build = JSbuilder(map, prsession)
-                build.loadMap(ldescMap)
+                build = JSbuilder(map, ldescMap, prsession)
+                build.loadMap()
                 # manage new chemical for the JS
-                build.generateCoords(lfileDesc[0], lfileDesc[1], ldescMap)# from computed descriptors
+                build.generateCoords(lfileDesc[0], lfileDesc[1])# from computed descriptors
                 build.findinfoTable()
                 build.findneighbor()
 

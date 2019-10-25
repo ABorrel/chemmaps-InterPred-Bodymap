@@ -3,16 +3,17 @@
 #### Urgent 
 - Fix JS connect neighbor error when it is a uploaded chemicals -> done
 - Add DSSTOX in the DB and split map -> done use DB request and not split
-- Add command to upload a new chemical on the fly in the DB -> 50%
+- Add command to upload a new chemical on the fly in the DB -> done
 - develop a carciMap choose on the 1600 chemicals and 1600 chemicals on the DSSTOX 
-- fix check in input and QSAR ready (09-20)
+- fix check in input and QSAR ready (09-20) -> done
 - 508 html
-- fix table in case of very long chemical and size of the check figure
+- fix table in case of very long chemical and size of the check figure -> done
+- Add option to load characteristic on the map
+- Fix the help page
 
 #### Improvement
 - Add distance in the neighbor file to download -> done
 - Compute the 3D plan with several different plan
-- Connect the DB with the JS to improve speed
 - change background in function of the map
 
 

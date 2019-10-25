@@ -54,34 +54,62 @@ rel="stylesheet" type="text/css"/>
     <div class="row">
         <div class="column" style="background-color:#232b5f;">
             <h3>Inputs</h3>
-            <table width="100%" border="0">
-                <tr><th>ID</th><th>Input</th></tr>
-                {% for lk, lv in dSMILESIN.items %}
-                <tr><th>{{lk}}</th><th>{{lv}}</th></tr>
-                {% endfor %}
-            </table>
+
+            <div class="divTable">
+                <div class="divTableHeading">
+                    <div class="divTableHead">&nbsp;ID</div>
+                    <div class="divTableHead">&nbsp;Input</div>
+                </div>
+                <div class="divTableBody">
+                    {% for lk, lv in dSMILESIN.items %}
+                        <div class="divTableRow">
+                                <div class="divTableCell">&nbsp;{{lk}}</div>
+                                <div class="divTableCell">&nbsp;{{lv}}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
         </div>
         <div class="column" style="background-color:#232b8b;">
             <h3>QSAR-ready SMILES</h3>
-            <table width="100%" border="0">
-                <tr><th>ID</th><th>SMILES</th><th></th></tr>
-                {% for k1, dout in dSMILESOUT.items %}
-                <tr><th>{{k1}}</th>
-                    <th>{{dout.SMILES}}</th><th><img src="/static/{{dout.file}}" width="18" alt="Valide upload"></th>
-                </tr>
-                {% endfor %}
-            </table>
+            
+            <div class="divTable">
+                    <div class="divTableHeading">
+                        <div class="divTableHead">&nbsp;ID</div>
+                        <div class="divTableHead">&nbsp;SMILES</div>
+                        <div class="divTableHead">&nbsp;</div>
+                    </div>
+                    <div class="divTableBody">
+                            {% for k1, dout in dSMILESOUT.items %}
+                            <div class="divTableRow">
+                                    <div class="divTableCell">&nbsp;{{k1}}</div>
+                                    <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
+                                    <div class="divTableCell"><img src="/static/{{dout.file}}" width="25px" alt="Valide upload"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
         </div>
         <div class="column" style="background-color:#08627e;">
             <h3>Descriptor</h3>
-            <table width="100%" border="0">
-                <tr><th>ID</th><th>Descriptor</th><th></th></tr>
-                {% for k1, dout in ddesc.items %}
-                <tr><th>{{k1}}</th>
-                    <th>{{dout.Descriptor}}</th><th><img src="/static/{{dout.desc}}" width="18" alt="Valide descriptors"></th>
-                </tr>
-                {% endfor %}
-            </table>
+            <div class="divTable">
+                    <div class="divTableHeading">
+                        <div class="divTableHead">&nbsp;ID</div>
+                        <div class="divTableHead">&nbsp;Descriptor</div>
+                        <div class="divTableHead">&nbsp;</div>
+                    </div>
+                    <div class="divTableBody">
+                            {% for k1, dout in ddesc.items %}
+                            <div class="divTableRow">
+                                    <div class="divTableCell">&nbsp;{{k1}}</div>
+                                    <div class="divTableCell">&nbsp;{{dout.Descriptor}}</div>
+                                    <div class="divTableCell"><img src="/static/{{dout.desc}}" width="25px" alt="Valide upload"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            <br>
             {% if ErrorDesc != "1" %}
             <div align="right">
                 <form method="get" action="/chemmaps/2D.csv"><button class="btn"><i class="fa fa-download"></i> Download 2D descriptor table</button></form>

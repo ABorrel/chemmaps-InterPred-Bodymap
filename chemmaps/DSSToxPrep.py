@@ -32,9 +32,6 @@ class DSSToxPrep:
 
 
 
-    
-
-
     def loadChemMapCenterChem(self, center_chem, center, nbChem):
 
         # control input type
@@ -69,7 +66,7 @@ class DSSToxPrep:
             # have to be a inch
             cmdExtract = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value \
                 from mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (select cube (d3_cube) from chemmap_coords_user \
-                    where inchikey='%s' and map_name = 'DSSToxMap' limit (1)) limit (%s);"%(inch, nbChem)
+                    where inchikey='%s' and map_name = 'DSSToxMap' limit (1)) limit (%s);"%(center_chem, nbChem)
 
 
         lchem = self.cDB.execCMD(cmdExtract)
@@ -98,6 +95,9 @@ class DSSToxPrep:
             zadd = chem[5]
             lneighbors = chem[6]
             lprop = chem[7]
+            
+            if lprop == None or lneighbors == None:
+                continue
 
             #coords
             if center == 1:
@@ -106,6 +106,7 @@ class DSSToxPrep:
                 self.coord[dsstox] = [float(xadd), float(yadd), float(zadd)]
         
             # info
+
             self.dinfo[dsstox] = {}
             for descMap in self.ldescMap:
                 try: self.dinfo[dsstox][DDESCDSSTOX[descMap]] = round(float(lprop[self.lallProp.index(descMap)]),1)
@@ -126,6 +127,9 @@ class DSSToxPrep:
         # Change name in the neighbor
         for chem in dinch.values():
             lneighbors = []
+            if not chem in list(self.dneighbor.keys()):
+                continue
+            a = self.dneighbor[chem]
             for n in self.dneighbor[chem]:
                 try: 
                     lneighbors.append(dinch[n])
@@ -143,7 +147,7 @@ class DSSToxPrep:
 
         #ldsstoxAdd = []
         for chem in self.input["SMILESClass"].keys():
-            try:
+            if chem in list(self.input["db_id"].keys()):
                 dsstoxID = self.input["db_id"][chem]
                 #ldsstoxAdd.append(dsstoxID)
                 self.loadChemMapCenterChem(dsstoxID, 0, nbChemInMap)
@@ -160,9 +164,9 @@ class DSSToxPrep:
                 del self.dneighbor[dsstoxID]
                 del self.dSMILES[dsstoxID]
 
-            except:
-                inch = self.input["SMILESClass"][chem]["inch"]
-                pass
+            else:
+                inch = self.input["SMILESClass"][chem]["inchikey"]
+                self.loadChemMapCenterChem(inch, 0, nbChemInMap)
 
 
         #for chem in self.input["SMILESClass"].keys():

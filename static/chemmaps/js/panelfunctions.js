@@ -1,6 +1,6 @@
 function createpanel() {
     var panel = new dat.GUI({ size: 12, left: 20 });
-    var folder1 = panel.addFolder('Select Chemicals');
+    var folder1 = panel.addFolder('Hide Chemicals');
     // folder 2 -> real time update function of information selected by user
     var folder2 = panel.addFolder('Colors by');
     var lchem = Object.keys(dSMILESClass);
@@ -316,10 +316,16 @@ function colorbyType(descin) {
     } else if (descin == 'GHS category') {
         for (ktype in dpoints) {
             for (var i = 0; i < dpoints[ktype].length; i++) {
-                dpoints[ktype][i].material.color.setHex(
-                    dcol[dSMILESClass[dpoints[ktype][i].name]['GHS_category']]
-                );
-                dpoints[ktype][i].col = dcol[dSMILESClass[dpoints[ktype][i].name]['GHS_category']];
+                if (ktype == "add"){
+                    dpoints[ktype][i].material.color.setHex(dcol["NA"]);
+                    dpoints[ktype][i].col = dcol["NA"];
+                }else{
+                    dpoints[ktype][i].material.color.setHex(
+                        dcol[dSMILESClass[dpoints[ktype][i].name]['GHS_category']]
+                    );
+                    dpoints[ktype][i].col = dcol[dSMILESClass[dpoints[ktype][i].name]['GHS_category']];
+                }
+                
                 dpoints[ktype][i].material.map.needsUpdate = true;
             }
         }
