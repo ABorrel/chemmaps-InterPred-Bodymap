@@ -313,8 +313,6 @@ class JSbuilder:
                     for desc in self.ldescMap:
                         if desc in list(ddesc.keys()):
                             self.dchemAdd["info"][id][desc] = ddesc[desc]
-                        elif desc in list(dinfo.keys()):
-                            self.dchemAdd["info"][id][desc] = dinfo[desc]
                         else:
                             self.dchemAdd["info"][id][desc] = "NA"
                     
