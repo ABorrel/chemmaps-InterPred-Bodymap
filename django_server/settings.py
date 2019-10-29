@@ -28,7 +28,7 @@ SECRET_KEY = 'n7)bc%gfm=4jo&xc^nbsg)c@mq)hwloo)mlun&dkgc&sol)kx#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '10.0.2.15']#,'152.1.45.108', 'www.chemmaps.com', "www.alexborrel.com"]
+ALLOWED_HOSTS = ['sandbox.ntp.niehs.nih.gov', 'localhost', '10.0.2.15']#,'152.1.45.108', 'www.chemmaps.com', "www.alexborrel.com"]
 
 
 # Application definition
@@ -123,7 +123,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 #STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/static/'
+STATIC_URL = 'chemmaps/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (

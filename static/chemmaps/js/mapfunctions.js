@@ -31,7 +31,7 @@ function posCloud(din, dcolorRGB, size, scene) {
     geometry.computeBoundingSphere();
     // textures and material
     var textureLoader = new THREE.TextureLoader();
-    var sprite = textureLoader.load('/static/chemmaps/img/aspirin.png');
+    var sprite = textureLoader.load('https://sandbox.ntp.niehs.nih.gov/chemmaps/chemmaps/static/img/aspirin.png');
     //en conssprite.repeat.set( 1, 1 );
     //		sprite.wrapS = sprite.wrapT = THREE.RepeatWrapping;
     //				sprite.format = THREE.RGBFormat;
@@ -58,7 +58,6 @@ function posCloud(din, dcolorRGB, size, scene) {
 
 function posPoint(lcoord, name, colorhexa, sprite, size, fact, scene) {
     var textureLoader = new THREE.TextureLoader();
-    //var sprite = textureLoader.load("/static/chemmaps/img/star.png");
 
     var position = new Float32Array(3);
     var sizes = new Float32Array(1);
@@ -90,7 +89,7 @@ function posMeshs(din, scene, color, rad) {
     var lmesh = [];
     // Texture
     var textureLoader = new THREE.TextureLoader();
-    var texture = textureLoader.load('/static/chemmaps/img/disturb.jpg');
+    var texture = textureLoader.load('https://sandbox.ntp.niehs.nih.gov/chemmaps/chemmaps/static/img/disturb.jpg');
     for (var i in din) {
         var objectGeometry = new THREE.SphereGeometry(rad);
         var objectMaterial = new THREE.MeshLambertMaterial({ map: texture, color: color });
@@ -358,11 +357,11 @@ function drawChemical() {
             if (ID == dpoints[ktype][i].name) {
                 console.log(ktype)
                 var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                ppng = "/static/chemmaps/png/" + namepng + '.png'
+                ppng = "https://sandbox.ntp.niehs.nih.gov/chemmaps/chemmaps/static/png/" + namepng + '.png'
                 //if(fs.exists(ppng) == true){
                     var texture = textureLoader.load(ppng);
                     dpoints[ktype][i].material.map = texture;
-                    console.log('/static/chemmaps/png/' + namepng + '.png')
+                    console.log('https://sandbox.ntp.niehs.nih.gov/chemmaps/chemmaps/static/png/' + namepng + '.png')
                     dpoints[ktype][i].material.size = 15;
                     dpoints[ktype][i].material.color.setHex(0xffffff);
                     dpoints[ktype][i].col = 0xffffff;
