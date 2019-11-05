@@ -2,29 +2,6 @@
     box-sizing: border-box;
 }
 
-/* Create three equal columns that floats next to each other */
-.column {
-    float: left;
-    width: 33.33%;
-    padding: 10px;
-}
-
-/* Clear floats after the columns */
-.row:after {
-    content: '';
-    display: table;
-    clear: both;
-}
-
-/* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 600px) {
-    .column {
-        width: 100%;
-    }
-}
-
-
-
 h1 {
     margin: 25px;
     margin-bottom: 15px;
@@ -49,10 +26,6 @@ h3 {
     font-size: 30px;
 }
 
-.textSMILES,
-textarea {
-    font-size: 20px;
-}
 
 input[type='submit'] {
     font-size: 20px;
@@ -82,7 +55,12 @@ input[type='submit']:hover {
 }
 
 button:hover {
-    background-color: #228B22;
+    border: 2px solid brown;
+    color: #ffffff;
+}
+
+button::after{
+    border: 2px solid white;
     color: #ffffff;
 }
 
@@ -211,22 +189,5 @@ p {
     display: table;
     clear: both;
     background-color: transparent;
-}
-
-/* Expanding image text */
-#imgtext {
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
-    color: white;
-    font-size: 20px;
-}
-
-div.desc {
-    padding: 15px;
-    text-align: center;
-    font-size: 12px;
-    font-size: 22px;
-    /*font-size: 2.5vmin*/
 }
 

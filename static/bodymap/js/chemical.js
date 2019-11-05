@@ -1,0 +1,32 @@
+
+
+
+function chemPanel(dchem) {
+    var sizeCanvas = resizeCanvas();
+    var options = { width: sizeCanvas, height: sizeCanvas };
+    var smilesDrawer = new SmilesDrawer.Drawer(options);
+
+    CASID.innerHTML = dchem.CAS;
+    document.getElementById('CASID').href =
+            'https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=' + dchem.CAS;
+    
+    DSSTOX.innerHTML = dchem.DSSTOX;
+    document.getElementById('DSSTOX').href =
+            'https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=' + dchem.DSSTOX;
+    
+            ChemicalName.innerHTML = dchem.Name;
+    SMILES.innerHTML = dchem.SMILES;
+
+    SmilesDrawer.parse(dchem.SMILES, function(tree) {
+        // Draw to the canvas
+        smilesDrawer.draw(tree, 'Compoundpng2', 'light', false);
+    });
+
+}
+
+
+
+function resizeCanvas() {
+    var con = document.getElementById('pngcompound');
+    return Math.max(con.offsetWidth, con.offsetHeight);
+}
