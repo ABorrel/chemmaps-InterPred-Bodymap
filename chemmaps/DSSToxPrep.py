@@ -36,8 +36,8 @@ class DSSToxPrep:
 
         # control input type
         if not type(center_chem) == str:
-            print("Check input type")
-            #self.err = 1
+            #print("Check input type")
+            self.err = 1
             return
 
 
@@ -49,7 +49,7 @@ class DSSToxPrep:
             
             chem_center = self.cDB.execCMD(cmd_search)
             if chem_center == []:
-                #self.err = 1
+                self.err = 1
                 return 
             x = chem_center[0][3]
             y = chem_center[0][4]
@@ -129,7 +129,7 @@ class DSSToxPrep:
             lneighbors = []
             if not chem in list(self.dneighbor.keys()):
                 continue
-            a = self.dneighbor[chem]
+            #a = self.dneighbor[chem] # for inspect error
             for n in self.dneighbor[chem]:
                 try: 
                     lneighbors.append(dinch[n])

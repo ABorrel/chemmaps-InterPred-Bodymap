@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.core.files.storage import default_storage
 from random import randint
 import json
+from re import search
 
 
 from .forms import UploadChemList, descDrugMapChoice, descDSSToxMapChoice, descDSSToxChoice, uploadList
@@ -148,7 +149,10 @@ def launchMap(request, map):
 
             chemIn = formDesc.cleaned_data['chem']
             build = DSSToxPrep(chemIn, ldescMap, prsession)
-            build.loadChemMapCenterChem(chemIn, center = 1, nbChem = 10000)
+            if not search("DTXSID", chemIn):
+                build.err = 1
+            else:
+                build.loadChemMapCenterChem(chemIn, center = 1, nbChem = 10000)
             if build.err == 1:
                 return render(request, 'chemmaps/launchMap.html', {"form_info": formDesc, "form_smiles": form_smiles,
                                                                    "from_upload": formUpload, "Error": "0", "map": map,
