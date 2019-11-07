@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% block content %}
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -12,6 +11,10 @@ rel="stylesheet" type="text/css"/>
 <link href="/static/interferences/css/theme.css" rel="stylesheet">
 <link href="/static/interferences/css/table.css" rel="stylesheet">
 {% endblock %}
+
+{% block title %}Process Chemicals{% endblock %}
+{% block content %}
+<script src="/static/interferences/js/theme.js"></script>
 {% include 'interferences/includes/navbar.html' %}
 
 <h1>QSAR-ready SMILES</h1>
@@ -23,26 +26,42 @@ rel="stylesheet" type="text/css"/>
 
 
 <div class="row">
-    <div class="column" style="background-color:#004400;">
-        <h3>Inputs</h3>
-        <table width="100%" border="0">
-            <tr><th>ID</th><th>Input</th></tr>
-            {% for lk, lv in dSMILESIN.items %}
-            <tr><th>{{lk}}</th><th>{{lv}}</th></tr>
-            {% endfor %}
-        </table>
-    </div>
-    <div class="column" style="background-color:#04600b;">
-        <h3>QSAR-ready SMILES</h3>
-        <table width="100%" border="0">
-            <tr><th>ID</th><th>SMILES</th><th></th></th></tr>
-            {% for k1, dout in dSMILESOUT.items %}
-            <tr><th>{{k1}}</th>
-                <th>{{dout.SMILES}}</th><th><img src="{{STATIC_URL}}{{dout.file}}" width="18"></th>
-            </tr>
-            {% endfor %}
+        <div class="column" style="background-color:#004400;">
+            <h3 style="color:#ffffff">Inputs</h3>
+            <div class="divTable">
+                    <div class="divTableHeading">
+                        <div class="divTableHead">&nbsp;ID</div>
+                        <div class="divTableHead">&nbsp;Input</div>
+                    </div>
+                    <div class="divTableBody">
+                            {% for lk, lv in dSMILESIN.items %}
+                            <div class="divTableRow">
+                                    <div class="divTableCell">&nbsp;{{lk}}</div>
+                                    <div class="divTableCell">&nbsp;{{lv}}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+            </div>
+        </div>
+        <div class="column" style="background-color:#04600b;">
+            <h3 style="color:#ffffff">QSAR-ready SMILES</h3>
+            <div class="divTable">
+                    <div class="divTableHeading">
+                        <div class="divTableHead">&nbsp;ID</div>
+                        <div class="divTableHead">&nbsp;SMILES</div>
+                        <div class="divTableHead">&nbsp;</div>
+                    </div>
+                    <div class="divTableBody">
+                            {% for k1, dout in dSMILESOUT.items %}
+                            <div class="divTableRow">
+                                    <div class="divTableCell">&nbsp;{{k1}}</div>
+                                    <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
+                                    <div class="divTableCell"><img src="/static/{{dout.file}}" width="25px" alt="Valide upload"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+            </div>
 
-        </table>
         <br><br>
 
         <form action='/interferences/uploadSMILES' method='get'>
@@ -57,7 +76,6 @@ rel="stylesheet" type="text/css"/>
 
     </div>
 </div>
-
 
 
 {% endblock content %}

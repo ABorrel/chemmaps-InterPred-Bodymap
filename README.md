@@ -4,24 +4,34 @@
 - Fix JS connect neighbor error when it is a uploaded chemicals -> done
 - Add DSSTOX in the DB and split map -> done use DB request and not split
 - Add command to upload a new chemical on the fly in the DB -> done
-- develop a carciMap choose on the 1600 chemicals and 1600 chemicals on the DSSTOX 
 - fix check in input and QSAR ready (09-20) -> done
 - 508 html
 - fix table in case of very long chemical and size of the check figure -> done
 - Add option to load characteristic on the map
 - Fix the help page
+- For 508 chage font tab
+- NaN in the panel tab
+- DrugMap png missing
+- 508 add logo NTP on the map
+
 
 #### Improvement
 - Add distance in the neighbor file to download -> done
 - Compute the 3D plan with several different plan
 - change background in function of the map
+- develop a carciMap choose on the 1600 chemicals and 1600 chemicals on the DSSTOX 
 
 
 ### Interferences
 #### Urgent
-- Connect to a DB to increase spead
+- Connect to a DB to increase speed
 - Update the descriptor computation and add a table of name from previous / new version (or reload model)
 - add header and footer for all of the page
+- proof read page
+- check the 508
+- redo table for contrast and connect to the DB to save time of computation
+- remove MD compute inside the interferences code and make a table of connect for version 2.7 descriptor name and 3.6
+
 
 #### Improvement
 - Add in the table if the chemical is included in the trainning set

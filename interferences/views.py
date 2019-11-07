@@ -18,14 +18,13 @@ def index(request):
         request.session.get("name_session", a)
         request.session["name_session"] = a
 
-    print(request.session.get("name_session"))
     return render(request, 'interferences/index.html', {
     })
 
 
 
-def resources(request):
-    return render(request, 'interferences/resources.html', {
+def help(request):
+    return render(request, 'interferences/help.html', {
     })
 
 
@@ -34,7 +33,6 @@ def resources(request):
 def uploadSMILES(request):
 
     name_session = request.session.get("name_session")
-    print(name_session)
 
     if request.method == 'GET':
         form_smiles = UploadChemList()

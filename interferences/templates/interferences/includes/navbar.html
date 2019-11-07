@@ -1,13 +1,13 @@
 <ul class="nav nav-tabs" style="padding: 0.5em 0.5em; font-size: 1.5em; ">
 
     {% url 'interferences:home' as url %}
-    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #31BE04"><i class="fa fa-home fa-lg"></i>&nbsp;Home</a></li>
+    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #04600b"><i class="fa fa-home fa-lg"></i>&nbsp;Interference prediction</a></li>
 
     {% url 'interferences:uploadSMILES' as url %}
-    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #31BE04">Compute interferences</a></li>
+    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #04600b">Compute interferences</a></li>
 
     {% url 'interferences:resources' as url %}
-    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #31BE04">Help</a></li>
+    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #04600b">Help</a></li>
     
     
 </ul>
