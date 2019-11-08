@@ -23,6 +23,7 @@
 <script src="/static/bodymap/js/table.js"></script>
 <script src="/static/bodymap/js/theme.js"></script>
 <script src="/static/bodymap/js/chemical.js"></script>
+<script src="/static/bodymap/js/mappingCanvas.js"></script>
 <script src="/static/bodymap/js/plotFunctions.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
@@ -56,12 +57,16 @@
    
         <div class="rowChem">
             <div class="columnChem">
-                <img src="/static/bodymap/img/body.png" alt="Body outline">
-                <canvas id="canvas" width="200" height="150"></canvas>
+                
+                    <canvas id="bodymap" style="background: url('/static/bodymap/img/body.png')" width="660" height="802">
+                    Your browser does not support the canvas element.
+                    </canvas>
+
                 <span>
-                change the total area size
-                <input type="range" min="250" max="5000000" steps="250" value="5000" id="range" />
+                Value AC50: <span id="AC50_val"></span> Micro M
+                <input type="range" min=0 max=1000 steps=5 value=5 id="cutAC50"/>
                 </span>
+                
             </div>
             <div class="columnChem">
                 <div id="dotplot"></div>
@@ -80,7 +85,7 @@
 <br>
 <button class="collapsible"><h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> 
     Gene Mapping</h2></button>
-<div class="content" style="display: none">
+<div class="content" style="display: true">
     Error: {{ Error }}
     {% if Type == "chem" %}
     <p>Chemical (CAS): {{CAS}}</p>
@@ -106,6 +111,18 @@ console.log(dchem);
 
 chemPanel(dchem);
 
+var slider = document.getElementById("cutAC50");
+var output = document.getElementById("AC50_val");
+output.innerHTML = slider.value;
+var cutAC50 = this.value
+slider.oninput = function() {
+  output.innerHTML = this.value;
+  mapbody(dmap, this.value);
+}
+
+
+
+//calibratePosition();
 
 if (typeTable == "assays"){
     var nameGrid = '#myGrid'

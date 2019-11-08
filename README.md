@@ -18,6 +18,7 @@
 - DrugMap png missing
 - 508 add logo NTP on the map
 - ~~07-11: error in load DSSTOXMAP~~ 
+- change contact information
 
 
 #### Improvement
@@ -54,6 +55,10 @@
 - Add the body mapping 
 - fix legend barplot and inspect color
 
+
+#### Improvement
+- Map on organ picture not in body shape
+- Develop a new scrolling bar
 
 # Updates 
 - 7-8-19: init ncsu git
