@@ -54,6 +54,9 @@
 - check the 508
 - Add the body mapping 
 - fix legend barplot and inspect color
+- change body pictures
+- develop css for range bar
+- fix highlight tab opened
 
 
 #### Improvement

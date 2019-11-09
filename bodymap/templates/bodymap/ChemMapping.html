@@ -23,7 +23,9 @@
 <script src="/static/bodymap/js/table.js"></script>
 <script src="/static/bodymap/js/theme.js"></script>
 <script src="/static/bodymap/js/chemical.js"></script>
+
 <script src="/static/bodymap/js/mappingCanvas.js"></script>
+
 <script src="/static/bodymap/js/plotFunctions.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
@@ -54,32 +56,37 @@
     Body mapping</h2></button>
 
     <div class="content" style="display: true">
-   
         <div class="rowChem">
             <div class="columnChem">
                 
-                    <canvas id="bodymap" style="background: url('/static/bodymap/img/body.png')" width="660" height="802">
-                    Your browser does not support the canvas element.
-                    </canvas>
-
+                <canvas id="bodymap" style="background: url('/static/bodymap/img/body2.png')" width="1050" height="700">
+                Your browser does not support the canvas element.
+                </canvas>
+            </div>
+            <div class="columnChem">
                 <span>
                 Value AC50: <span id="AC50_val"></span> Micro M
                 <input type="range" min=0 max=1000 steps=5 value=5 id="cutAC50"/>
-                </span>
+                </span> 
+                <br>
                 
+                <span>
+                    Gene Expression factor: <span id="exp_val"></span> *folds control
+                    <input type="range" min=0 max=100 steps=1 value=1 id="cutExp"/>
+                </span> 
+
             </div>
+        </div>
+        <br>
+        <br>
+        <div class="rowChem">
             <div class="columnChem">
                 <div id="dotplot"></div>
             </div>
-        </div>
-        <div class="rowChem">
             <div class="columnChem">
-              <div id="myGrid" style="height: 500px; width: 400px" class="ag-theme-balham"></div>
-            </div>
+                <div id="myGrid" style="height: 500px; width: 400px" class="ag-theme-balham"></div>
+              </div>
         </div>
-
-
-
     </div>
 <br>
 <br>
@@ -107,22 +114,40 @@ var typeTable = {{ TypeJS | safe }};
 var dmap = {{ dmap | safe }};
 var dchem = {{dchem | safe }}
 
-console.log(dchem);
+// define default values for mapping
+var cutAC50 = 0;
+var cutExp = 1;
 
+// load chemical panel
 chemPanel(dchem);
 
-var slider = document.getElementById("cutAC50");
-var output = document.getElementById("AC50_val");
-output.innerHTML = slider.value;
-var cutAC50 = this.value
-slider.oninput = function() {
-  output.innerHTML = this.value;
-  mapbody(dmap, this.value);
+// slider for AC50
+var sliderAC50 = document.getElementById("cutAC50");
+var outputAC50 = document.getElementById("AC50_val");
+
+calibratePosition();
+
+outputAC50.innerHTML = sliderAC50.value;
+sliderAC50.oninput = function() {
+    outputAC50.innerHTML = this.value;
+    cutAC50 = this.value;
+    mapOnBody(dmap, this.value, cutExp);
+}
+
+// Slider for expression
+var sliderExp = document.getElementById("cutExp");
+var outputExp = document.getElementById("exp_val");
+
+outputExp.innerHTML = sliderExp.value;
+sliderExp.oninput = function() {
+    outputExp.innerHTML = this.value;
+    cutExp = this.value;
+    mapOnBody(dmap, cutAC50, cutExp);
 }
 
 
 
-//calibratePosition();
+
 
 if (typeTable == "assays"){
     var nameGrid = '#myGrid'

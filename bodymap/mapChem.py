@@ -75,22 +75,19 @@ class mapChem :
                                         dout[assays][system] = {}
                                     for organ in dgenetemp[system].keys():
                                     
-                                        if dgenetemp[system][organ]["control"] == 0.0: 
-                                            exp = dgenetemp[system][organ]["exp"]
-                                        else:
-                                            exp = dgenetemp[system][organ]["exp"] / dgenetemp[system][organ]["control"]
+                                        exp = dgenetemp[system][organ]["exp"] / dgenetemp[system][organ]["control"]
                                     
-                                        if exp >= self.foldExp:
-                                            if not organ in list(dout[assays][system].keys()):
-                                                dout[assays][system][organ] = {}
-                                                dout[assays][system][organ]["AC50"] = 100000.0
-                                                dout[assays][system][organ]["gene"] = []
+                                        if not organ in list(dout[assays][system].keys()):
+                                            dout[assays][system][organ] = {}
+                                            dout[assays][system][organ]["AC50"] = 100000.0
+                                            dout[assays][system][organ]["gene"] = []
+                                            dout[assays][system][organ]["exp"] = []
 
-                                            if dout[assays][system][organ]["AC50"] > float(dresultAssays[assays]):
-                                                dout[assays][system][organ]["AC50"] = float(dresultAssays[assays])
+                                        if dout[assays][system][organ]["AC50"] > float(dresultAssays[assays]):
+                                            dout[assays][system][organ]["AC50"] = float(dresultAssays[assays])
                                         
-                                            if not gene in dout[assays][system][organ]["gene"]:
-                                                dout[assays][system][organ]["gene"].append(gene)
-
+                                        if not gene in dout[assays][system][organ]["gene"]:
+                                            dout[assays][system][organ]["gene"].append(gene)
+                                            dout[assays][system][organ]["exp"].append(exp)
             return dout
 
