@@ -1,18 +1,18 @@
 var dmappingBody = {};
-dmappingBody["Uterus"] = [640, 520];
-dmappingBody["Vagina"] = [640, 640];
-dmappingBody["Urethra"] = [890, 640];
-dmappingBody["Testes"] = [840, 650];
-dmappingBody["Kidney"] = [280, 420];
+dmappingBody["Uterus"] = [645, 520];
+dmappingBody["Vagina"] = [645, 640];
+dmappingBody["Urethra"] = [896, 630];
+dmappingBody["Testes"] = [845, 650];
+dmappingBody["Kidney"] = [280, 415];
 dmappingBody["Prostate gland"] = [900, 560];
 dmappingBody["Placenta"] = [1000,500];
-dmappingBody["Ovary"] = [520, 530];
-dmappingBody["Penis"] = [900, 670];
-dmappingBody["Bladder"] = [220, 560];
-dmappingBody[" Mammary gland"] = [160, 320];
-dmappingBody["Peritoneum"] = [241, 460];
-dmappingBody["Colon"] = [170, 460];
-dmappingBody["Tongue"] = [260, 160];
+dmappingBody["Ovary"] = [530, 530];
+dmappingBody["Penis"] = [900, 675];
+dmappingBody["Bladder"] = [240, 550];
+dmappingBody["Mammary gland"] = [170, 320];
+dmappingBody["Peritoneum"] = [270, 460];
+dmappingBody["Colon"] = [170, 470];
+dmappingBody["Tongue"] = [240, 160];
 dmappingBody["Liver"] = [180, 360];
 dmappingBody["Pancreas"] = [240, 400];
 dmappingBody["Salivary gland"] = [240, 120];
@@ -23,20 +23,19 @@ dmappingBody["Skeletal Muscle"] = [100, 240];
 dmappingBody["Joint"] = [100, 420];
 dmappingBody["Heart"] = [230, 300];
 dmappingBody["Vascular"] = [220, 240];
-dmappingBody["Nervous System"] = [220, 50];
-dmappingBody["Pituitary gland"] = [220, 80];
+dmappingBody["Nervous System"] = [210, 40];
+dmappingBody["Pituitary gland"] = [210, 80];
 dmappingBody["Adrenal gland"] = [350, 200];
 dmappingBody["Adipose tissue"] = [320, 460];
 dmappingBody["Thyroid"] = [750, 60];
 dmappingBody["Immune System"] = [730, 150];
 dmappingBody["Lung"] = [250, 270];
-dmappingBody["Skin"] = [280, 120];
-dmappingBody["Eye"] = [250, 65];
+dmappingBody["Skin"] = [290, 120];
+dmappingBody["Eye"] = [255, 75];
 
 
 
 
-console.log(dmappingBody);
 
 function calibratePosition(){
     var valAC50 =document.getElementById("cutAC50");
@@ -82,11 +81,37 @@ function defineDictOrgan(dmap,valAC50, valExp){
     return dout;
 }
 
+function tellpos(p){
+    var posX = p.offsetX - 25;
+    var posY = p.offsetY - 25;
+    var maxposX = p.offsetX + 25;
+    var maxposY = p.offsetY + 25;
 
+    while(posX <= maxposX){
+        while(posY <= maxposY){
+            try{
+                org = dpos[posX][posY];
+                if(org != undefined){
+                    ctx.fillStyle = "#000000";
+                    ctx.fillText(org, dmappingBody[org][0] + 10, dmappingBody[org][1] + 5); 
+                    posX = posX + 50;
+                    posY = posY + 50;
+                }
+            }catch{
+            }
+            
+            posY = posY + 1;
+        }
+        posX = posX + 1;
+    }
+}       
+
+
+function labelOrgan(){
+    canvas.addEventListener("mousemove", tellpos, false);
+}
 
 function mapOnBody(dmap, valAC50, valExp){
-    var canvas = document.getElementById("bodymap");
-    var ctx = canvas.getContext("2d");
     
     ctx.fillStyle = "#1ee844";
 
@@ -98,18 +123,34 @@ function mapOnBody(dmap, valAC50, valExp){
     for(organ in dorgan){
         if(dorgan[organ] == "Draw"){
             ctx.beginPath();
-            ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 12, 0, 2 * Math.PI);
+            ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 10, 0, 2 * Math.PI);
             ctx.fill();
         }else{
             ctx.beginPath();
-            ctx.clearRect(dmappingBody[organ][0] - 20 - 1, dmappingBody[organ][1] - 20 - 1, 20 * 2 + 2, 20 * 2 + 2);
+            ctx.clearRect(dmappingBody[organ][0] - 10 - 1, dmappingBody[organ][1] - 10 - 1, 10 * 2 + 2, 10 * 2 + 2);
             ctx.closePath();
         }
     }
 }
 
+
+
 function cutCircle (context, x, y, radius){
     context.globalCompositeOperation = 'destination-out'
     context.arc(x, y, radius, 0, Math.PI*2, true);
     context.fill();
+}
+
+
+function definePosDict(){
+    var dout = {};
+    for(org in dmappingBody){
+        var x = dmappingBody[org][0];
+        var y = dmappingBody[org][1];
+        if (!(x in dout)){
+            dout[x] = {}
+        }
+        dout[x][y] = org;
+    };
+    return(dout);
 }

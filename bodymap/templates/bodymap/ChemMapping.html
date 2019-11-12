@@ -58,7 +58,6 @@
     <div class="content" style="display: true">
         <div class="rowChem">
             <div class="columnChem">
-                
                 <canvas id="bodymap" style="background: url('/static/bodymap/img/body2.png')" width="1050" height="700">
                 Your browser does not support the canvas element.
                 </canvas>
@@ -118,14 +117,22 @@ var dchem = {{dchem | safe }}
 var cutAC50 = 0;
 var cutExp = 1;
 
+// map on body
+
+
 // load chemical panel
+var canvas = document.getElementById("bodymap");
+var ctx = canvas.getContext("2d");
+var dpos = definePosDict();
+
 chemPanel(dchem);
+labelOrgan();
 
 // slider for AC50
 var sliderAC50 = document.getElementById("cutAC50");
 var outputAC50 = document.getElementById("AC50_val");
 
-calibratePosition();
+//calibratePosition();
 
 outputAC50.innerHTML = sliderAC50.value;
 sliderAC50.oninput = function() {
