@@ -151,7 +151,7 @@ class formatSMILES:
                 # check in the user chemical list
                 if lval1D2D_OPERA == []:
 
-                    # add here some user see in futur
+                    # add here some user see in futur or put in the same DB
                     ###lval1D2D_OPERA = downloadDescFromDB(self.cDB, ldesc1D2D, ldescOPERA, inch)
 
                     # compute desc in case of no where
@@ -184,14 +184,14 @@ class formatSMILES:
 
 
                             # in opera
-                            out = self.cDB.execCMD("select count(*) from interference_chemicals where inchikey='%s'"%(inch))
+                            out = self.cDB.execCMD("select count(*) from interference_chemicals_test where inchikey='%s'"%(inch))
                             out = [0][0]
 
                             if out == 0:
                                 valDescOPERA = [dopera[descOPERA] for descOPERA in ldescOPERA]
                                 valDescOPERA = ['-9999' if desc == "NA" or desc == "NaN" else desc for desc in valDescOPERA]
                                 wOPERA = "{" + ",".join(["\"%s\"" % (desc) for desc in valDescOPERA]) + "}"
-                                self.cDB.addElement("interference_chemicals", ["inchikey", "opera_desc"], [inch, wOPERA])
+                                self.cDB.addElement("interference_chemicals_test", ["inchikey", "opera_desc"], [inch, wOPERA])
                 
                 if lval1D2D_OPERA != []:
                     dout[k]["Descriptor"] = "OK"
@@ -221,11 +221,9 @@ class formatSMILES:
 
 def downloadDescFromDB(cDB, ldesc1D2D, ldescOPERA, inchikey):
 
-    return []
-
     cDB.verbose = 0
     lval1D2D = cDB.extractColoumn("desc_1d2d", "desc_value","where inchikey='%s'"%(inchikey))
-    lvalOPERA = cDB.extractColoumn("interference_prediction", "opera_desc", "where inchikey='%s'"%(inchikey))
+    lvalOPERA = cDB.extractColoumn("interference_chemicals_test", "opera_desc", "where inchikey='%s'"%(inchikey))
 
     if lval1D2D == "Error" or lval1D2D == [] or lvalOPERA == "Error" or lvalOPERA == []:
         return []

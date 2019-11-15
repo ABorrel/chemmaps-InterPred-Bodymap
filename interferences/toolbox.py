@@ -98,7 +98,7 @@ def formatModelName(nameIn):
     if lelem[0] == "AUTOFLUORESCENCE":
         lname.append("A")
     else:
-        lname.append("Luciferace")
+        lname.append("Luciferase")
 
     for elem in lelem[1:]:
         if elem == "CELL":
@@ -120,3 +120,16 @@ def formatModelName(nameIn):
         nameOut = lname[0]
 
     return nameOut
+
+
+def uploadNameModel():
+    from DBrequest import DBrequest
+    cDB = DBrequest()
+    lmodel = ["AUTOFLUORESCENCE_ALL", "AUTOFLUORESCENCE_GREEN", "AUTOFLUORESCENCE_RED_HEK293_CELL", "AUTOFLUORESCENCE_BLUE", "AUTOFLUORESCENCE_GREEN_HEK293_CELL", "AUTOFLUORESCENCE_RED_HEK293_FREE", "AUTOFLUORESCENCE_BLUE_HEK293_CELL", "AUTOFLUORESCENCE_GREEN_HEK293_FREE", "AUTOFLUORESCENCE_RED_HEPG2_CELL", "AUTOFLUORESCENCE_BLUE_HEK293_FREE", "AUTOFLUORESCENCE_GREEN_HEPG2_CELL", "AUTOFLUORESCENCE_RED_HEPG2_FREE", "AUTOFLUORESCENCE_BLUE_HEPG2_CELL", "AUTOFLUORESCENCE_GREEN_HEPG2_FREE", "LUCIFERASE", "AUTOFLUORESCENCE_BLUE_HEPG2_FREE", "AUTOFLUORESCENCE_RED"]
+
+    i = 1
+
+    imax = len(lmodel) + 1
+    while i < imax:
+        cDB.addElement("interference_prediction_name", ["id", "name"], [i, lmodel[i]])
+        i += 1

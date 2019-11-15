@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% block content %}
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -14,16 +13,19 @@ rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css"> 
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
 {% endblock %}
-
+{% block title %}Result Prediction{% endblock %}
+{% block content %}
+<script src="/static/interferences/js/theme.js"></script>
+{% include 'interferences/includes/navbar.html' %}
 
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
 <script src="/static/interferences/js/table.js"></script>
 
-{% include 'interferences/includes/navbar.html' %}
 <h1>Interference prediction results</h1>
 <br>
 <p>The score is a probability for a chemical to interfere with the technology, cell culture and condition related to the model. A score close to 1 signifies that the chemical has a high chance to interfere with that particular technology and experimental condition. The standard deviation is derived from the deviation of the ten random forest model predictions.</p>
 <br>
+
 
 <div id="myGrid" style="height: 600px;" class="ag-theme-balham"></div>
 <span style="font-size: 12px">A: autofluorescence; M: mean of ten interference probabilities; SD: mean of ten interference probabilities</span>
