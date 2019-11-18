@@ -52,7 +52,7 @@ function calibratePosition(){
 }
 
 
-function defineDictOrgan(dmap,valAC50, valExp){
+function defineDictOrgan(dmap, valAC50, valExp){
 
     var dout = {};
 
@@ -116,21 +116,32 @@ function mapOnBody(dmap, valAC50, valExp){
     ctx.fillStyle = "#1ee844";
 
     var dorgan = defineDictOrgan(dmap, valAC50, valExp);
-    console.log(dmap);
-    console.log(valAC50);
-    console.log(valExp);
-
-    for(organ in dorgan){
+    //console.log(dmap);
+    //console.log(valAC50);
+    //console.log(valExp);
+    var lorgani="";
+    for(var organ in dorgan){
         if(dorgan[organ] == "Draw"){
-            ctx.beginPath();
-            ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 10, 0, 2 * Math.PI);
-            ctx.fill();
+            try {ctx.beginPath();
+                ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 10, 0, 2 * Math.PI);
+                ctx.fill();
+                lorgani = lorgani + organ + "; ";
+            }catch{
+                continue;
+            }
         }else{
-            ctx.beginPath();
+            try {ctx.beginPath();
             ctx.clearRect(dmappingBody[organ][0] - 10 - 1, dmappingBody[organ][1] - 10 - 1, 10 * 2 + 2, 10 * 2 + 2);
             ctx.closePath();
+            }catch{
+                continue;
+            }
         }
     }
+
+    console.log(lorgani);
+    var outputOrgan = document.getElementById("organ_active");
+    outputOrgan.innerHTML = lorgani;
 }
 
 

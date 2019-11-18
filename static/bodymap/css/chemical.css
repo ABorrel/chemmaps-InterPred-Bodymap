@@ -1,17 +1,19 @@
 #pngcompound {
-    max-height: 100%;
-    max-width: 50%;
+    max-height: 400px;
+    max-width: 400px;
     height: auto;
     width: auto;
     display: flex;
     align-items: center;
+    margin: 0px auto;
+    border: 1px solid black;
 }
 
 
 
 .rowChem {
     display: flex;
-    margin: 27px;
+    margin: 15px;
     font-size: 20px
   }
   

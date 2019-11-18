@@ -36,67 +36,66 @@
 <h1>CAS-RN: <a id="CASID" target="_blank"></a></h1>
 <br>
 <div class="rowChem">
-  <div class="columnChem">
-    <br>
-    <b>DSSTOX ID: </b><a id="DSSTOX"></a><br>
-    <b>Chemical name: </b><text id="ChemicalName"></text><br>
-    <b>SMILES: </b><text id="SMILES"></text><br>
-  </div>
-  <div class="columnChem">
-      <div id="pngcompound">
-        <canvas id="Compoundpng2"></canvas>
-      </div>
-  </div>
-</div>
-<br>
-
-
-
-<button class="collapsible"><h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> 
-    Body mapping</h2></button>
-
-    <div class="content" style="display: true">
-        <div class="rowChem">
-            <div class="columnChem">
-                <canvas id="bodymap" style="background: url('/static/bodymap/img/body2.png')" width="1050" height="700">
-                Your browser does not support the canvas element.
-                </canvas>
-            </div>
-            <div class="columnChem">
-                <span>
-                Value AC50: <span id="AC50_val"></span> Micro M
-                <input type="range" min=0 max=1000 steps=5 value=5 id="cutAC50"/>
-                </span> 
-                <br>
-                
-                <span>
-                    Gene Expression factor: <span id="exp_val"></span> *folds control
-                    <input type="range" min=0 max=100 steps=1 value=1 id="cutExp"/>
-                </span> 
-
-            </div>
-        </div>
-        <br>
-        <br>
-        <div class="rowChem">
-            <div class="columnChem">
-                <div id="dotplot"></div>
-            </div>
-            <div class="columnChem">
-                <div id="myGrid" style="height: 500px; width: 400px" class="ag-theme-balham"></div>
-              </div>
+    <div class="columnChem">
+        <div id="pngcompound">
+            <canvas id="Compoundpng2" style="position: relative"></canvas>
         </div>
     </div>
-<br>
-<br>
-<button class="collapsible"><h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> 
-    Gene Mapping</h2></button>
-<div class="content" style="display: true">
-    Error: {{ Error }}
-    {% if Type == "chem" %}
-    <p>Chemical (CAS): {{CAS}}</p>
-    {% endif %}
+    <div class="columnChem">
+        <br>
+        <b>DSSTOX ID: </b><a id="DSSTOX"></a><br>
+        <b>Chemical name: </b><text id="ChemicalName"></text><br>
+        <b>SMILES: </b><text id="SMILES"></text><br>
+    </div>
 </div>
+<br>
+
+
+
+<h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Body mapping</h2></button>
+<br>
+<div class="rowChem">
+    <div class="columnChem">
+        <canvas id="bodymap" style="background: url('/static/bodymap/img/body2.png')" width="1050" height="700">
+            Your browser does not support the canvas element.
+        </canvas>
+    </div>
+    <div class="columnChem" style="margin-left: 20px">
+        <br>
+        Chemical concentration and gene expression:        
+        <br>
+        <br>
+
+        AC50 value: <span id="AC50_val"></span> Micro M
+        <input type="range" min=0 max=1000 steps=1 value=1 id="cutAC50"/>
+        <br>
+        <br>    
+        Gene Expression factor: <span id="exp_val"></span> *fold(s) control
+        <input type="range" min=0 max=50 steps=1 value=1 id="cutExp"/>
+        <br>
+        <font size="2">List of organ: <span id="organ_active"></span></font>
+
+    </div>
+</div>
+<br>
+<br>
+<div class="rowChem">
+    <div class="columnChem">
+
+        <div id="dotplot"></div>
+    </div>
+    <div class="columnChem">
+        <br>
+        <div id="myGrid" style="height: 500px; width: 600px" class="ag-theme-balham"></div>
+    </div>
+</div>
+<br>
+<br>
+<h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page">Gene Mapping</h2></button>
+Error: {{ Error }}
+{% if Type == "chem" %}
+<p>Chemical (CAS): {{CAS}}</p>
+{% endif %}
 
 
 <p>
@@ -132,6 +131,7 @@ labelOrgan();
 var sliderAC50 = document.getElementById("cutAC50");
 var outputAC50 = document.getElementById("AC50_val");
 
+
 //calibratePosition();
 
 outputAC50.innerHTML = sliderAC50.value;
@@ -139,6 +139,7 @@ sliderAC50.oninput = function() {
     outputAC50.innerHTML = this.value;
     cutAC50 = this.value;
     mapOnBody(dmap, this.value, cutExp);
+    
 }
 
 // Slider for expression
@@ -151,8 +152,6 @@ sliderExp.oninput = function() {
     cutExp = this.value;
     mapOnBody(dmap, cutAC50, cutExp);
 }
-
-
 
 
 
@@ -169,25 +168,7 @@ if (typeTable == "assays"){
 }
 ;
 
-
-
-
-var coll = document.getElementsByClassName("collapsible");
-var i;
-
-for (i = 0; i < coll.length; i++) {
-    coll[i].addEventListener("click", function () {
-        this.classList.toggle("active");
-        var content = this.nextElementSibling;
-        if (content.style.display === "block") {
-            content.style.display = "none";
-        } else {
-            content.style.display = "block";
-        }
-    });
-}
-
-
+//var lorg = mapOnBody(dmap, cutAC50, cutExp);
 
 
 

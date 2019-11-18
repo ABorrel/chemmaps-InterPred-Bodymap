@@ -132,6 +132,8 @@ class Predict:
             for modelPart in self.resultPred[modelInt].keys():
                 for chemIn in self.resultPred[modelInt][modelPart].keys():
                     chemID = self.resultPred[modelInt][modelPart][chemIn]["ID"]
+                    if self.resultPred[modelInt][modelPart][chemIn]["pred"] == "NA":
+                        continue
                     if not chemID in self.dpred.keys():
                         self.dpred[chemID] = {}
                     if not modelInt in self.dpred[chemID].keys():

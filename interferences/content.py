@@ -143,6 +143,11 @@ class formatSMILES:
                 inch = self.input[str(k)]["INCH"]
                 chemical = Chemical.Chemical(SMICLEAN, self.prout)
                 chemical.prepChem()
+                if chemical.err == 1:
+                    dout[k]["Descriptor"] = "Error"
+                    dout[k]["desc"] = "interferences/img/checkNo.png"
+                    dout[k]["desc"] = "interferences/img/checkNo.png"
+                    continue
                 chemical.generateInchiKey()
 
                 # check if chemical is in DB for 1D2D
