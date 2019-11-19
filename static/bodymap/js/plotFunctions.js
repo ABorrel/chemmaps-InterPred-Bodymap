@@ -21,7 +21,7 @@ function dotPlot(dmap){
         for (var assay in dmap){
             if (Object.keys(dmap[assay]).includes(lsystem[i]) == true){
                 for(var organ in dmap[assay][lsystem[i]]){
-                    var val = - Math.log10(dmap[assay][lsystem[i]][organ]["AC50"]);
+                    var val = -Math.log10(dmap[assay][lsystem[i]][organ]["AC50"]);
                     lval.push(val);
                     lass.push(assay);
                 }
@@ -55,8 +55,10 @@ function dotPlot(dmap){
 
     var layout = {
         title: dchem.CAS,
+        
+        
         xaxis: {
-          showgrid: false,
+          showgrid: true,
           showline: true,
           linecolor: 'rgb(102, 102, 102)',
           titlefont: {
@@ -69,11 +71,19 @@ function dotPlot(dmap){
               color: 'rgb(102, 102, 102)'
             }
           },
+          title: {
+            text: "-log10(AC50)",
+            standoff: 20
+          },
           autotick: false,
-          dtick: 10,
           ticks: 'outside',
-          tickcolor: 'rgb(102, 102, 102)'
+          tick0: 0,
+          dtick: 0.25,
+          ticklen: 8,
+          tickwidth: 4,
+          tickcolor: '#000'
         },
+
         margin: {
           l: 140,
           r: 40,

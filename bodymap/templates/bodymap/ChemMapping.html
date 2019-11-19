@@ -13,18 +13,22 @@
 <link href="/static/bodymap/css/table.css" rel="stylesheet">
 <link href="/static/bodymap/css/theme.css" rel="stylesheet">
 <link href="/static/bodymap/css/chemical.css" rel="stylesheet">
+<link href="/static/bodymap/css/network.css" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
 
 {% endblock %}
 {% block title %}Chemical mapping{% endblock %}
 {% block content %}
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
 <script src="/static/bodymap/js/table.js"></script>
 <script src="/static/bodymap/js/theme.js"></script>
 <script src="/static/bodymap/js/chemical.js"></script>
 
 <script src="/static/bodymap/js/mappingCanvas.js"></script>
+<script src="/static/bodymap/js/network.js"></script>
 
 <script src="/static/bodymap/js/plotFunctions.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -66,48 +70,49 @@
         <br>
         <br>
 
-        AC50 value: <span id="AC50_val"></span> Micro M
-        <input type="range" min=0 max=1000 steps=1 value=1 id="cutAC50"/>
+        AC50 cutoff: <span id="AC50_val"></span> &#956;M
+        <input type="range" min=0 max=300 steps=1 value=1 id="cutAC50"/>
         <br>
         <br>    
-        Gene Expression factor: <span id="exp_val"></span> *fold(s) control
-        <input type="range" min=0 max=50 steps=1 value=1 id="cutExp"/>
+        Tissue expression threshold: <span id="exp_val"></span> *fold(s) control
+        <input type="range" min=1 max=50 steps=1 value=1 id="cutExp"/>
         <br>
-        <font size="2">List of organ: <span id="organ_active"></span></font>
+        <font size="2">List of organ(s): <span id="organ_active"></span></font>
 
     </div>
 </div>
 <br>
+<br>
+
+<h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Assays mapping</h2></button>
 <br>
 <div class="rowChem">
-    <div class="columnChem">
-
+    <div class="columnChem" style="margin-left: 25px">
         <div id="dotplot"></div>
+        Assays mapping on organ system in function of the log10(AC50).
     </div>
-    <div class="columnChem">
+    <div class="columnChem" style="margin-left: 10px">
         <br>
-        <div id="myGrid" style="height: 500px; width: 600px" class="ag-theme-balham"></div>
+        Assays mapping on gene and body part 
+        <br>
+        <br>
+        <div id="myGrid" style="height: 500px; width: 90%" class="ag-theme-balham"></div>
+        <br>
+        <form method="get" action="/bodymap/2D.csv"><button class="btn"><i class="fa fa-download"></i> Download assays mapping on body part</button></form>
     </div>
 </div>
 <br>
 <br>
-<h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page">Gene Mapping</h2></button>
-Error: {{ Error }}
-{% if Type == "chem" %}
-<p>Chemical (CAS): {{CAS}}</p>
-{% endif %}
-
-
-<p>
-    End Page
-</p>
-
+<h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Network representation</h2>
+<br>
+<div id="mapnetwork"></div>
+<br>
+<br>
 
 
 
 <script>
-// create the grid passing in the div to use together with the columns & data we want to use
-
+// load mapping
 var typeTable = {{ TypeJS | safe }};
 var dmap = {{ dmap | safe }};
 var dchem = {{dchem | safe }}
@@ -116,8 +121,13 @@ var dchem = {{dchem | safe }}
 var cutAC50 = 0;
 var cutExp = 1;
 
-// map on body
+// Develop the network
+var containerNetwork = document.getElementById("mapnetwork");
+builtNetwork(containerNetwork, dmap, dchem);
 
+
+
+// body mapping
 
 // load chemical panel
 var canvas = document.getElementById("bodymap");
