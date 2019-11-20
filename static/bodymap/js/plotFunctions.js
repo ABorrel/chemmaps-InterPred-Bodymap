@@ -14,7 +14,6 @@ function dotPlot(dmap){
         }
     }
 
-    console.log(lsystem);
     for (var i=0; i<lsystem.length; i++){
         var lval = [];
         var lass = []

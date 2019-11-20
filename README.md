@@ -15,7 +15,7 @@
 - Fix the help page
 - ~~For 508 change font tab~~
 - NaN in the panel tab
-- DrugMap png missing
+- ~~DrugMap png missing~~
 - 508 add logo NTP on the map
 - ~~07-11: error in load DSSTOXMAP~~ 
 - change contact information
@@ -30,13 +30,13 @@
 
 ### Interferences
 #### Urgent
-- Connect to a DB to increase speed
-- Update the descriptor computation and add a table of name from previous / new version (or reload model)
+- ~~Connect to a DB to increase speed~~
+- ~~Update the descriptor computation and add a table of name from previous / new version (or reload model)~~
 - ~~add header and footer for all of the page -> done~~
 - proof read page
 - check the 508
 - redo table for contrast and connect to the DB to save time of computation
-- remove MD compute inside the interferences code and make a table of connect for version 2.7 descriptor name and 3.6
+- ~~remove MD compute inside the interferences code and make a table of connect for version 2.7 descriptor name and 3.6~~
 
 
 #### Improvement
@@ -49,19 +49,25 @@
 - ~~Add footer and header on each page -> done~~
 - ~~Update the mapping with the assays mapping -> done~~
 - ~~Fix a mapping on a body -> done~~
-- develop the chemical mapping
-- fix the results page
+- ~~develop network mapping~~
+- ~~fix the results page to generalize table~~
 - check the 508
-- Add the body mapping 
-- fix legend barplot and inspect color
+- ~~Add the body mapping~~ 
+- ~~fix legend barplot and inspect color => no real solution~~
 - change body pictures
-- develop css for range bar
 - fix highlight tab opened
+- ~~fix download table~~
+- color dot on mapping gene map vs tissue map
+- add gene expression on table
+- add legend for network and bodymap dot
+- add link to chemmaps
+- add a tool tip: <em>"Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity"</em>
+- write home and help pages
+- label organs directly on the png
 
 
 #### Improvement
-- Map on organ picture not in body shape
-- Develop a new scrolling bar
+- ~~Develop a new scrolling bar~~
 
 # Updates 
 - 7-8-19: init ncsu git
@@ -79,4 +85,4 @@
 - 21-10-19: Fix Tox21 map error, add distance in the neighbor download and fix search bar error
 - 23-10-19: Fix extraction for DrugMap, optimize the loading in case of pre existing chemical, add DB interactions 
 - 5-11-19: Update barplot for AC50 and added chemical informatio
-
+- 20-11-19: Update bodymap results pages

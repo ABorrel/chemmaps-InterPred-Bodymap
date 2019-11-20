@@ -136,7 +136,7 @@ function defineColumnChem(din) {
                     lockVisible: true
                 },
                 {
-                    headerName: 'Organ',
+                    headerName: 'System',
                     field: 'organ',
                     sortable: true,
                     filter: true,
@@ -144,7 +144,7 @@ function defineColumnChem(din) {
                     width: 150
                 },
                 {
-                    headerName: 'Suborgan',
+                    headerName: 'Organ',
                     field: 'subbody',
                     sortable: true,
                     filter: true,
@@ -158,6 +158,20 @@ function defineColumnChem(din) {
                     filter: true,
                     resizable: true,
                     width: 300
+                },
+                {
+                    headerName: 'Tissue expression threshold',
+                    field: "exp",
+                    width: 150,
+                    sortable: true,
+                    filter: true,
+                    resizable: true,
+                    valueParser: numberParser,
+                    cellClassRules: {
+                        'rag-red': 'x < 5',
+                        'rag-orange': 'x >= 5 && x < 10',
+                        'rag-yellow': 'x >= 10 && x < 25',
+                        'rag-green': 'x >= 25'}
                 }
             ]
         }
@@ -210,12 +224,26 @@ function defineRowChem(din) {
     for (var assay in din) {
         for (var organ in din[assay]) {
             for (var suborgan in din[assay][organ]) {
-                var add = {name: assay};
-                add['organ'] = organ;
-                add['subbody'] = suborgan;
-                add['gene'] = din[assay][organ][suborgan]["gene"];
-                add['AC50'] = din[assay][organ][suborgan]["AC50"];
-                rowData.push(add);
+                if(din[assay][organ][suborgan]["gene"][0] != "NA"){
+                    if(din[assay][organ][suborgan]["exp"][0] < 2.0){
+                        continue;
+                    }
+                    ;
+                    var add = {name: assay};
+                    add['organ'] = organ;
+                    add['subbody'] = suborgan;
+                    add['gene'] = din[assay][organ][suborgan]["gene"][0];
+                    add['exp'] = din[assay][organ][suborgan]["exp"][0];
+                    add['AC50'] = din[assay][organ][suborgan]["AC50"];
+                    rowData.push(add);
+                }else{
+                    var add = {name: assay};
+                    add['organ'] = organ;
+                    add['subbody'] = suborgan;
+                    add['AC50'] = din[assay][organ][suborgan]["AC50"];
+                    rowData.push(add);
+                }
+                ;
             }
             ;
         }
@@ -224,5 +252,7 @@ function defineRowChem(din) {
     ;
     return rowData;
 }
+
+
 
 

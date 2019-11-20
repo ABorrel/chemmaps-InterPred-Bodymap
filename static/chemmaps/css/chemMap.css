@@ -89,7 +89,7 @@ a:hover {
 
 #searchbar {
     position: absolute;
-    top: 2%;
+    top: 8%;
     left: 1%;
 }
 
@@ -98,6 +98,14 @@ a:hover {
     top: 93%;
     left: 1%;
 }
+
+#iconNTP {
+    position: absolute;
+    top: 1%;
+    left: 1%;
+}
+
+
 
 .control {
     font-size: 1.6vmin;

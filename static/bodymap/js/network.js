@@ -4,7 +4,6 @@ function builtNetwork(container, dmap, dchem ){
     var lnodes = [{ id: 1, label: dchem.CAS, color: "red" }]
     var inode = 2;
     var ledges = [];
-    console.log(dmap);
 
     var flagnode = 0;
 
@@ -69,8 +68,8 @@ function builtNetwork(container, dmap, dchem ){
                         inode = inode + 1;
                     }
                     var inledges = edgeIncludes(igene, IDassay, ledges)
-                    var exp =  Math.round(dmap[assay][system][organ]["exp"][0]);
-                    if(exp < 1.0 ){
+                    var exp = dmap[assay][system][organ]["exp"][0];
+                    if(exp < 2.0 ){
                         continue;
                     }
                     var exp =  Math.round(exp);
@@ -95,8 +94,8 @@ function builtNetwork(container, dmap, dchem ){
             }
         }
     }
-    console.log(ledges);
-    console.log(lnodes);
+    //console.log(ledges);
+    //console.log(lnodes);
     var data = {
         nodes: lnodes,
         edges: ledges

@@ -74,8 +74,8 @@
         <input type="range" min=0 max=300 steps=1 value=1 id="cutAC50"/>
         <br>
         <br>    
-        Tissue expression threshold: <span id="exp_val"></span> *fold(s) control
-        <input type="range" min=1 max=50 steps=1 value=1 id="cutExp"/>
+        Tissue expression threshold: <span id="exp_val"></span> *folds control
+        <input type="range" min=2 max=50 steps=1 value=1 id="cutExp"/>
         <br>
         <font size="2">List of organ(s): <span id="organ_active"></span></font>
 
@@ -98,7 +98,7 @@
         <br>
         <div id="myGrid" style="height: 500px; width: 90%" class="ag-theme-balham"></div>
         <br>
-        <form method="get" action="/bodymap/2D.csv"><button class="btn"><i class="fa fa-download"></i> Download assays mapping on body part</button></form>
+        <button id="downloadlink" onclick="downloadTable()" class="btn"><i class="fa fa-download"></i> Download assays mapping on body part</button>
     </div>
 </div>
 <br>
@@ -135,7 +135,7 @@ var ctx = canvas.getContext("2d");
 var dpos = definePosDict();
 
 chemPanel(dchem);
-labelOrgan();
+//labelOrgan();
 
 // slider for AC50
 var sliderAC50 = document.getElementById("cutAC50");
@@ -180,11 +180,43 @@ if (typeTable == "assays"){
 
 //var lorg = mapOnBody(dmap, cutAC50, cutExp);
 
-
-
-
-
 dotPlot(dmap);
+
+// to download table
+function downloadTable(){
+    var element = document.createElement('a');
+    var filname = dchem.CAS + '.csv';
+    var textin = 'assay_name\tSytem\tOrgan\tGene\ttissue_expression\tAC50\n';
+
+    for (var assay in dmap) {
+        for (var organ in dmap[assay]) {
+            for (var suborgan in dmap[assay][organ]) {
+                if(dmap[assay][organ][suborgan]["gene"][0] != "NA"){
+                    if(dmap[assay][organ][suborgan]["exp"][0] < 2.0){
+                        continue;
+                    }
+                    ;
+                    textin = textin + assay + "\t" + organ + "\t" + suborgan + "\t" + dmap[assay][organ][suborgan]["gene"][0] + "\t" + dmap[assay][organ][suborgan]["exp"][0] + "\t" + dmap[assay][organ][suborgan]["AC50"] + "\n"
+                }else{
+                    textin = textin + assay + "\t" + organ + "\t" + suborgan + "\tNA\tNA\t" + dmap[assay][organ][suborgan]["AC50"] + "\n"
+                }
+                ;
+            }
+            ;
+        }
+        ;
+    }
+    ;
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textin));
+    element.setAttribute('download', filname);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+
+}
+
 
 
 </script>

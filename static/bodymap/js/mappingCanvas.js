@@ -39,7 +39,6 @@ dmappingBody["Eye"] = [255, 75];
 
 function calibratePosition(){
     var valAC50 =document.getElementById("cutAC50");
-    console.log(valAC50); 
     var canvas = document.getElementById("bodymap");
     var ctx = canvas.getContext("2d");
 
@@ -62,16 +61,16 @@ function defineDictOrgan(dmap, valAC50, valExp){
                 if(!(organ in dout)){
                     dout[organ] = "No";
                 }
-                if(dout[organ] == "Draw"){
+                if(dout[organ] == "Draw-green" || dout[organ] == "Draw-blue"){
                     continue;
                 }
 
                 if(dmap[assay][system][organ]["AC50"] <= valAC50){
                     if(dmap[assay][system][organ]["gene"][0] == "NA"){
-                        dout[organ] = "Draw";
+                        dout[organ] = "Draw-blue";
                     }else{
                         if (dmap[assay][system][organ]["exp"][0] >= valExp){
-                            dout[organ] = "Draw";
+                            dout[organ] = "Draw-green";
                         }
                     }
                 }
@@ -113,7 +112,7 @@ function labelOrgan(){
 
 function mapOnBody(dmap, valAC50, valExp){
     
-    ctx.fillStyle = "#1ee844";
+    
 
     var dorgan = defineDictOrgan(dmap, valAC50, valExp);
     //console.log(dmap);
@@ -121,7 +120,17 @@ function mapOnBody(dmap, valAC50, valExp){
     //console.log(valExp);
     var lorgani="";
     for(var organ in dorgan){
-        if(dorgan[organ] == "Draw"){
+        if(dorgan[organ] == "Draw-green"){
+            ctx.fillStyle = "#1ee844";
+            try {ctx.beginPath();
+                ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 10, 0, 2 * Math.PI);
+                ctx.fill();
+                lorgani = lorgani + organ + "; ";
+            }catch{
+                continue;
+            }
+        }else if(dorgan[organ] == "Draw-blue"){
+            ctx.fillStyle = "#282ab5";
             try {ctx.beginPath();
                 ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 10, 0, 2 * Math.PI);
                 ctx.fill();
@@ -139,7 +148,6 @@ function mapOnBody(dmap, valAC50, valExp){
         }
     }
 
-    console.log(lorgani);
     var outputOrgan = document.getElementById("organ_active");
     outputOrgan.innerHTML = lorgani;
 }
