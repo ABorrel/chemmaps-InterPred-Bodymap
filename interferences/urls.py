@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.views.generic import TemplateView
-
+from django.conf.urls.static import static
+from django.conf import settings
 from . import views
 
 app_name = "interferences"
@@ -46,5 +47,5 @@ urlpatterns = [
         views.help,
         name='help'
     ),
-    ]
+    ]+ static(settings.STATIC_URL, document_root="/home/sandbox/ChemMap2Site/static/interferences/")
 
