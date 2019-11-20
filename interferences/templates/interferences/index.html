@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% block content %}
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -13,6 +12,8 @@ rel="stylesheet" type="text/css"/>
 <link href="/static/interferences/css/table.css" rel="stylesheet">
 {% endblock %}
 
+{% block title %}Interference prediction{% endblock %}
+{% block content %}
 
 {% include 'interferences/includes/navbar.html' %}
 

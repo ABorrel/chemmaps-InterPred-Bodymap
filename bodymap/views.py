@@ -6,6 +6,7 @@ import json
 from .forms import bodypartChoice, CASUpload
 from .loadMapping import assaysMapping
 from .mapChem import mapChem
+from .prepInputChem import prepChem
 
 
 # Create your views here.
@@ -68,14 +69,19 @@ def mappingChemicalToBody(request):
     # run map with new chem
     if formCAS.is_valid() == True:
         CAS = formCAS.clean_chem()
-        CAS = "60-35-5"
+        #CAS = "10190-99-5"
+        dchem = prepChem(CAS)
+        if dchem == 1:
+            return render(request, 'bodymap/ChemMapping.html', {"Error": "1"})
+
         cmapChem = mapChem(CAS, 5)
         dmap = cmapChem.mapChemToBody()
         dmapJS = json.dumps(dmap)
+        dchemJS = json.dumps(dchem)
         typeJS = json.dumps("chem")
 
 
-        return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "Error": "0", "Type":"chem", "TypeJS":typeJS, "CAS":CAS})
+        return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS})
 
     else:
 

@@ -22,12 +22,15 @@ pout = args[4]
 
 load(pmodel)
 model = outmodel$model
-
+#print (model)
 # open 2D
 din2D = read.csv(pdesc2D, sep = "\t", header = TRUE)
 rownames(din2D) = din2D[,1]
 # del SMILES colunm
-din2D =din2D[,-which(colnames(din2D) == "SMILES")]
+din2D = din2D[,-which(colnames(din2D) == "SMILES")]
+din2D = din2D[,-which(colnames(din2D) == "inchikey")]
+#print(colnames(din2D))
+
 
 #open OPERA
 dinOPERA = read.csv(pdescOPERA, sep = "\t", header = TRUE)

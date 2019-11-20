@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% block content %}
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -13,76 +12,85 @@ rel="stylesheet" type="text/css"/>
 <link href="/static/interferences/css/table.css" rel="stylesheet">
 {% endblock %}
 
+{% block title %}Chemical descriptors{% endblock %}
+{% block content %}
+<script src="/static/interferences/js/theme.js"></script>
 {% include 'interferences/includes/navbar.html' %}
 <h1>Chemical descriptors</h1>
 <br>
 
 <div class="row">
-    <div class="column" style="background-color:#004400;">
-        <h3>Inputs</h3>
-        <table width="100%" border="0">
-            <tr>
-                <th>ID</th>
-                <th>Input</th>
-            </tr>
-            {% for lk, lv in dSMILESIN.items %}
-            <tr>
-                <th>{{lk}}</th>
-                <th>{{lv}}</th>
-            </tr>
-            {% endfor %}
-            <br>
-        </table>
-    </div>
-    <div class="column" style="background-color:#04600b;">
-        <h3>QSAR-ready SMILES</h3>
-        <table width="100%" border="0">
-            <tr>
-                <th>ID</th>
-                <th>QSAR-ready SMILES</th>
-                <th></th>
-            </tr>
-            {% for k1, dout in dSMILESOUT.items %}
-            <tr>
-                <th>{{k1}}</th>
-                <th>{{dout.SMILES}}</th>
-                <th><img src="{{STATIC_URL}}{{dout.file}}" width="18"></th>
-            </tr>
-            {% endfor %}
-            <br>
-        </table>
-    </div>
-    <div class="column" style="background-color:#0dd61c;">
-        <h3>Descriptor computation</h3>
-        <table width="100%" border="0">
-            <tr>
-                <th>ID</th>
-                <th>Chemical descriptors</th>
-                <th></th>
-            </tr>
-            {% for k1, dout in ddesc.items %}
-            <tr>
-                <th>{{k1}}</th>
-                <th>{{dout.Descriptor}}</th>
-                <th><img src="{{STATIC_URL}}{{dout.desc}}" width="18"></th>
-            </tr>
-            {% endfor %}
-            <br>
-        </table>
-
-        {% if ErrorDesc != "1" %}
-        <div align="right">
-            <form method="get" action="/interferences/2D.csv"><button class="btn"><i class="fa fa-download"></i> Download 2D descriptor table</button></form>
-            <form method="get" action="/interferences/OPERA.csv"><button class="btn"><i class="fa fa-download"></i> Download OPERA descriptor table</button></form>
+        <div class="column" style="background-color:#004400;">
+            <h3 style="color:#ffffff">Inputs</h3>
+            <div class="divTable">
+                    <div class="divTableHeading">
+                        <div class="divTableHead">&nbsp;ID</div>
+                        <div class="divTableHead">&nbsp;Input</div>
+                    </div>
+                    <div class="divTableBody">
+                            {% for lk, lv in dSMILESIN.items %}
+                            <div class="divTableRow">
+                                    <div class="divTableCell">&nbsp;{{lk}}</div>
+                                    <div class="divTableCell">&nbsp;{{lv}}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+            </div>
         </div>
-        {% endif %}
+        <div class="column" style="background-color:#04600b;">
+            <h3 style="color:#ffffff">QSAR-ready SMILES</h3>
+            <div class="divTable">
+                    <div class="divTableHeading">
+                        <div class="divTableHead">&nbsp;ID</div>
+                        <div class="divTableHead">&nbsp;QSAR-ready SMILES</div>
+                        <div class="divTableHead">&nbsp;</div>
+                    </div>
+                    <div class="divTableBody">
+                            {% for k1, dout in dSMILESOUT.items %}
+                            <div class="divTableRow">
+                                    <div class="divTableCell">&nbsp;{{k1}}</div>
+                                    <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
+                                    <div class="divTableCell"><img src="/static/{{dout.file}}" width="25px" alt="Valide upload"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+            </div>
+        </div>
 
+        <div class="column" style="background-color:#0dd61c;">
+            <h3>Descriptor computation</h3>
+            <div class="divTable">
+                    <div class="divTableHeading">
+                        <div class="divTableHead">&nbsp;ID</div>
+                        <div class="divTableHead">&nbsp;hemical descriptors</div>
+                        <div class="divTableHead">&nbsp;</div>
+                    </div>
+                    <div class="divTableBody">
+                            {% for k1, dout in ddesc.items %}
+                            <div class="divTableRow">
+                                    <div class="divTableCell">&nbsp;{{k1}}</div>
+                                    <div class="divTableCell">&nbsp;{{dout.Descriptor}}</div>
+                                    <div class="divTableCell"><img src="/static/{{dout.desc}}" width="25px" alt="Valide upload"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+            </div>
+            <br>
+            {% if ErrorDesc != "1" %}
+            <div align="right">
+                <form method="get" action="/interferences/2D.csv"><button class="btn"><i class="fa fa-download"></i> Download 2D descriptor table</button></form>
+                <form method="get" action="/interferences/OPERA.csv"><button class="btn"><i class="fa fa-download"></i> Download OPERA descriptor table</button></form>
+            </div>
+            {% endif %}
     </div>
 </div>
+
+
+
 <br><br>
 
-<h2>Choose model to prediction interferences</h2>
-
+<h2>Choose models to prediction interferences</h2>
+<br>
 {% if Error == "1" %}
 <p class = "Errorform"> Please choose at least one model</p>
 {% endif %}

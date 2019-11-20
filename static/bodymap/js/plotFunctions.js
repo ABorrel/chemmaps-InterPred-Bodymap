@@ -1,14 +1,10 @@
 
 
-
-
-
 function dotPlot(dmap){
 
     var lsystem = [];
     var llval = [];
-
-    console.log("ddd");
+    var llassays = [];
 
     for(var assay in dmap){
         for(var system in dmap[assay]){
@@ -18,19 +14,20 @@ function dotPlot(dmap){
         }
     }
 
-    console.log(lsystem);
     for (var i=0; i<lsystem.length; i++){
         var lval = [];
+        var lass = []
         for (var assay in dmap){
-            
             if (Object.keys(dmap[assay]).includes(lsystem[i]) == true){
                 for(var organ in dmap[assay][lsystem[i]]){
-                    console.log(organ)
-                    var val = dmap[assay][lsystem[i]][organ]["AC50"];
-                    lval.push(dmap[assay][lsystem[i]][organ]["AC50"]);
+                    var val = -Math.log10(dmap[assay][lsystem[i]][organ]["AC50"]);
+                    lval.push(val);
+                    lass.push(assay);
                 }
             }
             llval.push(lval);
+            llassays.push(lass);
+            
         }
     }
 
@@ -39,9 +36,11 @@ function dotPlot(dmap){
         var trace = {
             x: llval[i],
             y: lsystem,
+            name: llassays[i],
             mode: 'markers',
+            text: llassays[i],
+            hoverinfo: 'text',
             marker: {
-              color: 'rgba(204, 204, 204, 0.95)',
               line: {
                 color: 'rgba(217, 217, 217, 1.0)',
                 width: 1,
@@ -54,9 +53,11 @@ function dotPlot(dmap){
     }
 
     var layout = {
-        title: 'AAAA',
+        title: dchem.CAS,
+        
+        
         xaxis: {
-          showgrid: false,
+          showgrid: true,
           showline: true,
           linecolor: 'rgb(102, 102, 102)',
           titlefont: {
@@ -69,11 +70,19 @@ function dotPlot(dmap){
               color: 'rgb(102, 102, 102)'
             }
           },
+          title: {
+            text: "-log10(AC50)",
+            standoff: 20
+          },
           autotick: false,
-          dtick: 10,
           ticks: 'outside',
-          tickcolor: 'rgb(102, 102, 102)'
+          tick0: 0,
+          dtick: 0.25,
+          ticklen: 8,
+          tickwidth: 4,
+          tickcolor: '#000'
         },
+
         margin: {
           l: 140,
           r: 40,
@@ -84,14 +93,17 @@ function dotPlot(dmap){
           font: {
             size: 10,
           },
-          yanchor: 'middle',
+          yanchor: 'top',
           xanchor: 'right'
         },
+        showlegend: false,
+        howerinfo:name,
         width: 600,
         height: 600,
-        paper_bgcolor: 'rgb(254, 247, 234)',
-        plot_bgcolor: 'rgb(254, 247, 234)',
-        hovermode: 'closest'
+        paper_bgcolor: 'rgb(255, 255, 255)',
+        plot_bgcolor: 'rgb(255, 255, 255)',
+        hovermode: 'closest',
+        
       };
 
 

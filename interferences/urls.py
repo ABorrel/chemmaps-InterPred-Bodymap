@@ -42,9 +42,9 @@ urlpatterns = [
         views.download, {"name": "predict"}, name="predict",
     ),
     url(
-        r'^resources/$',
-        views.resources,
-        name='resources'
+        r'^help/$',
+        views.help,
+        name='help'
     ),
     ]
 

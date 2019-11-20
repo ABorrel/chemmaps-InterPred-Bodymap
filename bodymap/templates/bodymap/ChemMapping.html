@@ -12,93 +12,156 @@
 
 <link href="/static/bodymap/css/table.css" rel="stylesheet">
 <link href="/static/bodymap/css/theme.css" rel="stylesheet">
+<link href="/static/bodymap/css/chemical.css" rel="stylesheet">
+<link href="/static/bodymap/css/network.css" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
 
 {% endblock %}
 {% block title %}Chemical mapping{% endblock %}
 {% block content %}
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
 <script src="/static/bodymap/js/table.js"></script>
 <script src="/static/bodymap/js/theme.js"></script>
+<script src="/static/bodymap/js/chemical.js"></script>
+
+<script src="/static/bodymap/js/mappingCanvas.js"></script>
+<script src="/static/bodymap/js/network.js"></script>
+
 <script src="/static/bodymap/js/plotFunctions.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
 
 <div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
 
 
-<h1>Results</h1>
-
-
-<!--<button class="collapsible"><h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> 
-    Chemical information</h2></button>
-<div class="content" style="display: none">
-    <div id="info">
-        <div style="font-size: 1px;">'</div>
+<h1>CAS-RN: <a id="CASID" target="_blank"></a></h1>
+<br>
+<div class="rowChem">
+    <div class="columnChem">
         <div id="pngcompound">
-            <canvas id="Compoundpng2"></canvas>
-        </div>
-
-        <div id="infotext">
-            Compound ID: <a id="CompoundID" target="_blank"></a><br>
-            {% if map == "DrugMap" %}
-            Group: <text id="Group"></text><br>
-            {% else %}
-            GHS category: <text id="GHS"></text><br>
-            {% endif %}
-            {{ ldesc.0 }}: <text id="box1"></text><br>
-            {{ ldesc.1 }}: <text id="box2"></text><br>
-            {{ ldesc.2 }}: <text id="box3"></text><br>
-            {{ ldesc.3 }}: <text id="box4"></text><br>
-            {{ ldesc.4 }}: <text id="box5"></text><br>
+            <canvas id="Compoundpng2" style="position: relative"></canvas>
         </div>
     </div>
-
-
-
-
-    Error: {{ Error }}
-    {% if Type == "chem" %}
-    <p>Chemical (CAS): {{CAS}}</p>
-    {% endif %}
+    <div class="columnChem">
+        <br>
+        <b>DSSTOX ID: </b><a id="DSSTOX"></a><br>
+        <b>Chemical name: </b><text id="ChemicalName"></text><br>
+        <b>SMILES: </b><text id="SMILES"></text><br>
+    </div>
 </div>
 <br>
 
-<button class="collapsible"><h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> 
-    Body mapping</h2></button> -->
-
-    <p>Table Mapping</p>
-
-    <div id="myGrid" style="height: 800px;" class="ag-theme-balham"></div>
-    <div id="histPlot"></div>
-
-    <div id="dotplot"></div>
 
 
+<h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Body mapping</h2></button>
 <br>
-<button class="collapsible"><h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> 
-    Gene Mapping</h2></button>
-<div class="content" style="display: none">
-    Error: {{ Error }}
-    {% if Type == "chem" %}
-    <p>Chemical (CAS): {{CAS}}</p>
-    {% endif %}
+<div class="rowChem">
+    <div class="columnChem">
+        <canvas id="bodymap" style="background: url('/static/bodymap/img/body2.png')" width="1050" height="700">
+            Your browser does not support the canvas element.
+        </canvas>
+    </div>
+    <div class="columnChem" style="margin-left: 20px">
+        <br>
+        Chemical concentration and gene expression:        
+        <br>
+        <br>
+
+        AC50 cutoff: <span id="AC50_val"></span> &#956;M
+        <input type="range" min=0 max=300 steps=1 value=1 id="cutAC50"/>
+        <br>
+        <br>    
+        Tissue expression threshold: <span id="exp_val"></span> *folds control
+        <input type="range" min=2 max=50 steps=1 value=1 id="cutExp"/>
+        <br>
+        <font size="2">List of organ(s): <span id="organ_active"></span></font>
+
+    </div>
 </div>
+<br>
+<br>
 
-
-
-<p>
-    End Page
-</p>
-
+<h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Assays mapping</h2></button>
+<br>
+<div class="rowChem">
+    <div class="columnChem" style="margin-left: 25px">
+        <div id="dotplot"></div>
+        Assays mapping on organ system in function of the log10(AC50).
+    </div>
+    <div class="columnChem" style="margin-left: 10px">
+        <br>
+        Assays mapping on gene and body part 
+        <br>
+        <br>
+        <div id="myGrid" style="height: 500px; width: 90%" class="ag-theme-balham"></div>
+        <br>
+        <button id="downloadlink" onclick="downloadTable()" class="btn"><i class="fa fa-download"></i> Download assays mapping on body part</button>
+    </div>
+</div>
+<br>
+<br>
+<h2><img src="/static/bodymap/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Network representation</h2>
+<br>
+<div id="mapnetwork"></div>
+<br>
+<br>
 
 
 
 <script>
-// create the grid passing in the div to use together with the columns & data we want to use
-
+// load mapping
 var typeTable = {{ TypeJS | safe }};
 var dmap = {{ dmap | safe }};
+var dchem = {{dchem | safe }}
+
+// define default values for mapping
+var cutAC50 = 0;
+var cutExp = 1;
+
+// Develop the network
+var containerNetwork = document.getElementById("mapnetwork");
+builtNetwork(containerNetwork, dmap, dchem);
+
+
+
+// body mapping
+
+// load chemical panel
+var canvas = document.getElementById("bodymap");
+var ctx = canvas.getContext("2d");
+var dpos = definePosDict();
+
+chemPanel(dchem);
+//labelOrgan();
+
+// slider for AC50
+var sliderAC50 = document.getElementById("cutAC50");
+var outputAC50 = document.getElementById("AC50_val");
+
+
+//calibratePosition();
+
+outputAC50.innerHTML = sliderAC50.value;
+sliderAC50.oninput = function() {
+    outputAC50.innerHTML = this.value;
+    cutAC50 = this.value;
+    mapOnBody(dmap, this.value, cutExp);
+    
+}
+
+// Slider for expression
+var sliderExp = document.getElementById("cutExp");
+var outputExp = document.getElementById("exp_val");
+
+outputExp.innerHTML = sliderExp.value;
+sliderExp.oninput = function() {
+    outputExp.innerHTML = this.value;
+    cutExp = this.value;
+    mapOnBody(dmap, cutAC50, cutExp);
+}
 
 
 
@@ -115,113 +178,45 @@ if (typeTable == "assays"){
 }
 ;
 
-
-
-
-var coll = document.getElementsByClassName("collapsible");
-var i;
-
-for (i = 0; i < coll.length; i++) {
-    coll[i].addEventListener("click", function () {
-        this.classList.toggle("active");
-        var content = this.nextElementSibling;
-        if (content.style.display === "block") {
-            content.style.display = "none";
-        } else {
-            content.style.display = "block";
-        }
-    });
-}
-
-
-
-
-
-var country = ['Switzerland (2011)', 'Chile (2013)', 'Japan (2014)', 'United States (2012)', 'Slovenia (2014)', 'Canada (2011)', 'Poland (2010)', 'Estonia (2015)', 'Luxembourg (2013)', 'Portugal (2011)'];
-
-var votingPop = [40, 45.7, 52, 53.6, 54.1, 54.2, 54.5, 54.7, 55.1, 56.6];
-
-var regVoters = [49.1, 42, 52.7, 84.3, 51.7, 61.1, 55.3, 64.2, 91.1, 58.9];
-
-var trace1 = {
-  type: 'scatter',
-  x: votingPop,
-  y: country,
-  mode: 'markers',
-  name: 'Percent of estimated voting age population',
-  marker: {
-    color: 'rgba(156, 165, 196, 0.95)',
-    line: {
-      color: 'rgba(156, 165, 196, 1.0)',
-      width: 1,
-    },
-    symbol: 'circle',
-    size: 16
-  }
-};
-
-var trace2 = {
-  x: regVoters,
-  y: country,
-  mode: 'markers',
-  name: 'Percent of estimated registered voters',
-  marker: {
-    color: 'rgba(204, 204, 204, 0.95)',
-    line: {
-      color: 'rgba(217, 217, 217, 1.0)',
-      width: 1,
-    },
-    symbol: 'circle',
-    size: 16
-  }
-};
-
-var data = [trace1, trace2];
-
-var layout = {
-  title: 'Votes cast for ten lowest voting age population in OECD countries',
-  xaxis: {
-    showgrid: false,
-    showline: true,
-    linecolor: 'rgb(102, 102, 102)',
-    titlefont: {
-      font: {
-        color: 'rgb(204, 204, 204)'
-      }
-    },
-    tickfont: {
-      font: {
-        color: 'rgb(102, 102, 102)'
-      }
-    },
-    autotick: false,
-    dtick: 10,
-    ticks: 'outside',
-    tickcolor: 'rgb(102, 102, 102)'
-  },
-  margin: {
-    l: 140,
-    r: 40,
-    b: 50,
-    t: 80
-  },
-  legend: {
-    font: {
-      size: 10,
-    },
-    yanchor: 'middle',
-    xanchor: 'right'
-  },
-  width: 600,
-  height: 600,
-  paper_bgcolor: 'rgb(254, 247, 234)',
-  plot_bgcolor: 'rgb(254, 247, 234)',
-  hovermode: 'closest'
-};
-
-
+//var lorg = mapOnBody(dmap, cutAC50, cutExp);
 
 dotPlot(dmap);
+
+// to download table
+function downloadTable(){
+    var element = document.createElement('a');
+    var filname = dchem.CAS + '.csv';
+    var textin = 'assay_name\tSytem\tOrgan\tGene\ttissue_expression\tAC50\n';
+
+    for (var assay in dmap) {
+        for (var organ in dmap[assay]) {
+            for (var suborgan in dmap[assay][organ]) {
+                if(dmap[assay][organ][suborgan]["gene"][0] != "NA"){
+                    if(dmap[assay][organ][suborgan]["exp"][0] < 2.0){
+                        continue;
+                    }
+                    ;
+                    textin = textin + assay + "\t" + organ + "\t" + suborgan + "\t" + dmap[assay][organ][suborgan]["gene"][0] + "\t" + dmap[assay][organ][suborgan]["exp"][0] + "\t" + dmap[assay][organ][suborgan]["AC50"] + "\n"
+                }else{
+                    textin = textin + assay + "\t" + organ + "\t" + suborgan + "\tNA\tNA\t" + dmap[assay][organ][suborgan]["AC50"] + "\n"
+                }
+                ;
+            }
+            ;
+        }
+        ;
+    }
+    ;
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textin));
+    element.setAttribute('download', filname);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+
+}
+
 
 
 </script>

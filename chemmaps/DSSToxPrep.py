@@ -26,9 +26,6 @@ class DSSToxPrep:
 
         lprop = self.cDB.extractColoumn("dsstox_name_prop", "name")
         self.lallProp = [prop [0] for prop in lprop]
-        #self.pcentroid = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/MapCentroid.csv"
-        #self.pmap = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/mapChem.csv"
-        #self.prStaticMaps = "/home/aborrel/django_server/django_server/chemmaps/static/chemmaps/map/DSSToxMap/"
 
 
 
@@ -36,8 +33,8 @@ class DSSToxPrep:
 
         # control input type
         if not type(center_chem) == str:
-            print("Check input type")
-            #self.err = 1
+            #print("Check input type")
+            self.err = 1
             return
 
 
@@ -49,7 +46,7 @@ class DSSToxPrep:
             
             chem_center = self.cDB.execCMD(cmd_search)
             if chem_center == []:
-                #self.err = 1
+                self.err = 1
                 return 
             x = chem_center[0][3]
             y = chem_center[0][4]
@@ -129,7 +126,7 @@ class DSSToxPrep:
             lneighbors = []
             if not chem in list(self.dneighbor.keys()):
                 continue
-            a = self.dneighbor[chem]
+            #a = self.dneighbor[chem] # for inspect error
             for n in self.dneighbor[chem]:
                 try: 
                     lneighbors.append(dinch[n])
@@ -167,152 +164,6 @@ class DSSToxPrep:
             else:
                 inch = self.input["SMILESClass"][chem]["inchikey"]
                 self.loadChemMapCenterChem(inch, 0, nbChemInMap)
-
-
-        #for chem in self.input["SMILESClass"].keys():
-        #    if self.input["DSSTOX"][chem] != "":
-        #        dsstox = self.input["DSSTOX"][chem]
-        #        # update with added chemical
-        #        self.coord[chem] = deepcopy(self.coord[dsstox])
-        #        self.dinfo[chem] = deepcopy(self.dinfo[dsstox])
-        #        self.dneighbor[chem] = deepcopy(self.dneighbor[dsstox])
-        #        self.dSMILES[chem] = deepcopy(self.dSMILES[dsstox])
-        #        self.dSMILES[chem]["GHS_category"] = "add"
-
-               
-        
-
-    #def loadChemMapbySession(self):
-
-    #    if not path.exists(self.input):
-    #        print("Check input type")
-    #        return
-
-        # load coord
-    #    lIDmap = []
-    #    dcentroid = toolbox.loadMatrixToDict(self.pcentroid)
-    #    dcoordUpload = toolbox.loadMap1D2D3D(self.input)
-    #    for chemID in dcoordUpload.keys():
-    #        dcoorCenter = [float(dcoordUpload[chemID]["DIM1"]), float(dcoordUpload[chemID]["DIM2"]), float(dcoordUpload[chemID]["DIM3"])]
-
-    #        ddist = {}
-    #        for map in dcentroid.keys():
-    #            dcoordCentroid = [float(dcentroid[map]["X"]), float(dcentroid[map]["Y"]), float(dcentroid[map]["Z"])]
-    #            ddist[map] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(dcoorCenter, dcoordCentroid)]))
-
-    #        lID = [i[0] for i in sorted(ddist.items(), key=lambda x: x[1])][:3]
-            #print(lID)
-    #        for ID in lID:
-    #            if not ID in lIDmap:
-    #                lIDmap.append(ID)
-
-
-    #    dchemMap = {}
-    #    for IDmap in lIDmap:
-    #        dchemMap.update(toolbox.loadMap1D2D3D(self.prStaticMaps + str(IDmap)))
-
-
-    #    self.lmap = lIDmap
-    #    self.dchemMap = dchemMap
-    #    self.dcenterChem = dcoordUpload
-
-
-    #def refineChemMapOnSeveralChem(self, nbchemical):
-
-    #    if not "dchemMap" in self.__dict__:
-    #        print("Load initial Map")
-    #        return
-
-    #    nbchembycenter = int(nbchemical / len(self.dcenterChem.keys()))
-    #    dout = {}
-
-    #    for chemid in self.dcenterChem:
-    #        lcoordcenter = [float(self.dcenterChem[chemid]["DIM1"]), float(self.dcenterChem[chemid]["DIM2"]), float(self.dcenterChem[chemid]["DIM3"])]
-
-    #        ddist = {}
-    #        for chemID in self.dchemMap.keys():
-    #            lcoordID = [float(self.dchemMap[chemID]["DIM1"]), float(self.dchemMap[chemID]["DIM2"]), float(self.dchemMap[chemID]["DIM3"])]
-    #            ddist[chemID] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(lcoordID, lcoordcenter)]))
-    #        lID = [i[0] for i in sorted(ddist.items(), key=lambda x: x[1])][:nbchembycenter]
-
-    #        for ID in lID:
-    #            dout[ID] = [float(deepcopy(self.dchemMap[ID]["DIM1"])), float(deepcopy(self.dchemMap[ID]["DIM2"])), float(deepcopy(self.dchemMap[ID]["DIM3"]))]
-    #            del self.dchemMap[ID]
-
-
-    #    self.coord = dout
-
-
-
-    #def refineChemMap(self, center, nbchemical):
-
-    #    if not "dchemMap" in self.__dict__:
-    #        print("Load initial Map")
-    #        self.err = 1
-    #        return
-
-    #    lcoordcenter = [self.dchemMap[self.centerChem][0], self.dchemMap[self.centerChem][1], self.dchemMap[self.centerChem][2]]
-
-    #    ddist = {}
-    #    for chemID in self.dchemMap.keys():
-    #        ddist[chemID] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(self.dchemMap[chemID], lcoordcenter)]))
-
-
-    #    lID = [i[0] for i in sorted(ddist.items(), key=lambda x: x[1])][:nbchemical]
-
-
-    #    dout = {}
-    #    for ID in lID:
-    #        if center == 1:
-    #            dout[ID] = [self.dchemMap[ID][0] - self.dchemMap[self.centerChem][0], self.dchemMap[ID][1] - self.dchemMap[self.centerChem][1], self.dchemMap[ID][2] - self.dchemMap[self.centerChem][2]]
-    #        else:
-    #            dout[ID] = [float(self.dchemMap[ID][0]), float(self.dchemMap[ID][1]), float(self.dchemMap[ID][2])]
-    #    self.coord = dout
-
-
-
-
-    #def loadInfo(self, ldesc):
-
-    #    self.ldesc = ldesc
-
-    #    dinfoout = {}
-    #    dSMILESout = {}
-
-    #    for IDmap in self.lmap:
-    #        pinfoMap = self.prStaticMaps + str(IDmap) + "_TableProp.csv"
-    #        dinfoMap = toolbox.loadMatrixInfoToDict(pinfoMap)
-
-
-    #        for IDchem in self.coord.keys():
-    #            if IDchem in dinfoMap.keys():
-    #                dinfoout[IDchem] = {}
-    #                dSMILESout[IDchem] = {}
-    #                for desc in ldesc:
-    #                    dinfoout[IDchem][DDESCDSSTOX[desc]] = dinfoMap[IDchem][desc]
-    #                    dSMILESout[IDchem]["inchikey"] = dinfoMap[IDchem]["inchikey"]
-    #                    dSMILESout[IDchem]["GHS_category"] = dinfoMap[IDchem]["GHS_category"]
-    #                    dSMILESout[IDchem]["SMILES"] = dinfoMap[IDchem]["SMILES"]
-
-
-    #    self.dinfo = dinfoout
-    #    self.dSMILES = dSMILESout
-
-
-    #def loadNeighbor(self):
-
-    #    dneighborout = {}
-
-    #    for IDmap in self.lmap:
-    #        pneighborMap = self.prStaticMaps + str(IDmap) + "_TableNeighbors.csv"
-    #        dneighborMap = toolbox.loadMatrixToDict(pneighborMap)
-
-    #        for IDchem in self.coord.keys():
-    #            if IDchem in dneighborMap.keys():
-    #                dneighborout[IDchem] = dneighborMap[IDchem]["Neighbors"].split(" ")
-
-    #    self.dneighbor = dneighborout
-
 
 
     def addChem(self):
