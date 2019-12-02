@@ -7,6 +7,8 @@ function builtNetwork(container, dmap, dchem ){
 
     var flagnode = 0;
 
+    console.log(dmap);
+    console.log("dkldkdl");
     for(var assay in dmap){
         var IDassay = searchNodeID(assay, lnodes);
         if(IDassay == 0){
@@ -16,24 +18,7 @@ function builtNetwork(container, dmap, dchem ){
             inode = inode + 1;
         }
         for(var system in dmap[assay]){
-            var IDsystem = searchNodeID(system, lnodes);
-            if(IDsystem == 0){
-                var node = {id: inode, label: system, color: "orange"};
-                lnodes.push(node);
-                inode = inode + 1;
-            }
             for(var organ in dmap[assay][system]){
-                var IDorgan = searchNodeID(organ, lnodes);
-                if(IDorgan == 0){
-                    var node = {id: inode, label: organ, color: "blue"};
-                    lnodes.push(node);
-                    //connect to system
-                    var IDsystem = searchNodeID(system, lnodes);
-                    edge = { from: IDsystem, to: inode};
-                    ledges.push(edge);
-                    inode = inode + 1;
-                }
-                
                 // control assays to chemical
                 var inledge = edgeIncludes(1, IDassay, ledges);
                 if(inledge == 0){
@@ -42,17 +27,33 @@ function builtNetwork(container, dmap, dchem ){
                     //console.log(AC50);
                     var edge =  { from: 1, to: IDassay, label: AC50, color: "red" };
                     ledges.push(edge);
-                    inode = inode + 1;
+                    //inode = inode + 1;
                 }
 
                 // add assays node to chemical
                 
-
                 //gene
                 var gene = dmap[assay][system][organ]["gene"];
                 var gene = gene[0];
                 if(gene == "NA"){
                     var iorgan = searchNodeID(organ, lnodes);
+                    if(iorgan == 0){
+                        var node = {id: inode, label: organ, color: "blue"};
+                        lnodes.push(node);
+                        iorgan = inode;
+                        inode = inode + 1;
+                        //connect to system
+                        var IDsystem = searchNodeID(system, lnodes);
+                        if(IDsystem == 0){
+                            var node = {id: inode, label: system, color: "orange"};
+                            lnodes.push(node);
+                            IDsystem = inode;
+                            inode = inode + 1;
+                        }
+                        edge = { from: IDsystem, to: iorgan};
+                        ledges.push(edge);
+                    }
+
                     var inledges = edgeIncludes(IDassay, iorgan, ledges);
                     if(inledges == 0){
                         var edge = { from: iorgan , to: IDassay, color:"blue"};
@@ -61,23 +62,38 @@ function builtNetwork(container, dmap, dchem ){
                 }else{
                     var igene =  searchNodeID(gene, lnodes);
                     var iorgan = searchNodeID(organ, lnodes);
+                    var exp = dmap[assay][system][organ]["exp"][0];
+                    if(exp < 2.0 ){
+                        continue;
+                    }
+                    
                     if (igene == 0){
                         var node = {id: inode, label: gene, color: "green"};
                         lnodes.push(node);
                         igene = inode;
                         inode = inode + 1;
                     }
+                    if(iorgan == 0){
+                        var node = {id: inode, label: organ, color: "blue"};
+                        lnodes.push(node);
+                        iorgan = inode;
+                        inode = inode + 1;
+                        //connect to system
+                        var IDsystem = searchNodeID(system, lnodes);
+                        if(IDsystem == 0){
+                            var node = {id: inode, label: system, color: "orange"};
+                            lnodes.push(node);
+                            IDsystem = inode;
+                            inode = inode + 1;
+                        }
+                        edge = { from: IDsystem, to: iorgan};
+                        ledges.push(edge);
+                    }
+
                     var inledges = edgeIncludes(igene, IDassay, ledges)
-                    var exp = dmap[assay][system][organ]["exp"][0];
-                    if(exp < 2.0 ){
-                        continue;
-                    }
+                   
                     var exp =  Math.round(exp);
-                    if(exp == 1){
-                        var exp = exp.toString() + " fold";
-                    }else{
-                        var exp = exp.toString() + " folds";
-                    }
+                    var exp = exp.toString() + " fold";
                    
                     if (inledges == 0){
                         var edge = { from: igene, to: IDassay, color:"green"};

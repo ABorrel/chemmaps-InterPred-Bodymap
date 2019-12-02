@@ -69,7 +69,7 @@ def mappingChemicalToBody(request):
     # run map with new chem
     if formCAS.is_valid() == True:
         CAS = formCAS.clean_chem()
-        #CAS = "10190-99-5"
+        CAS = "10190-99-5"
         dchem = prepChem(CAS)
         if dchem == 1:
             return render(request, 'bodymap/ChemMapping.html', {"Error": "1"})
