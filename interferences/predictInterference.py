@@ -34,9 +34,9 @@ class Predict:
         dresult = {}
         while i < imax:
             inch = dchem2D[lchem[i]]["inchikey"]
-            lpred = self.cDB.extractColoumn("interference_chemicals_test", "interference_prediction", "WHERE inchikey='%s'"%(inch))
+            lpred = self.cDB.extractColoumn("interference_chemicals", "interference_prediction", "WHERE inchikey='%s'"%(inch))
             if type(lpred) == list and lpred != []: 
-                lpred = self.cDB.extractColoumn("interference_chemicals_test", "interference_prediction", "WHERE inchikey='%s'"%(inch))
+                lpred = self.cDB.extractColoumn("interference_chemicals", "interference_prediction", "WHERE inchikey='%s'"%(inch))
                 lpred = lpred[0]
                 if lpred[0] == None:
                     i = i + 1
@@ -164,7 +164,7 @@ class Predict:
                     model = "_".join(kmodel.split("_")[1:])
                     valM = kmodel.split("_")[0]
                     wdb.append(str(self.dpred[chem][model][valM]))
-                cmdSQL = "UPDATE interference_chemicals_test SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
+                cmdSQL = "UPDATE interference_chemicals SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
                 self.cDB.updateElement(cmdSQL)
                 
 

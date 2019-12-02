@@ -272,6 +272,9 @@ class Chemical:
         if "smi" in self.__dict__:
             if not "inchikey" in self.__dict__:
                 self.generateInchiKey()
+            if self.inchikey == None:
+                self.err = 1
+                return
             ppadel_desc = prPadelDesc + self.inchikey + ".csv"
             ppadel_FP = prPadelFp + self.inchikey + ".csv"
             if path.exists(ppadel_desc) and path.exists(ppadel_FP):
@@ -295,6 +298,8 @@ class Chemical:
         if not "ppadel_desc" in self.__dict__:
             self.computePADEL2DandFP(pxml)
 
+        if self.err == 1:
+            return
         prOPERA = functionToolbox.createFolder(self.prdesc + "OPERA/")
         pfilout = prOPERA + self.inchikey + ".csv"
         functionToolbox.runOPERA(self.ppadel_desc, self.ppadel_FP, pfilout, POPERA, PMATLAB)

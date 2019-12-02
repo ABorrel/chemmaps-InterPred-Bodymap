@@ -3,8 +3,8 @@
     {% url 'bodymap:home' as url %}
     <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A"><i class="fa fa-home fa-lg"></i>&nbsp;BodyMap</a></li>
 
-    {% url 'bodymap:assaysMapping' as url %}
-    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Assays mapping</a></li>
+    <!--{% url 'bodymap:assaysMapping' as url %}
+    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Assays mapping</a></li>-->
 
     {% url 'bodymap:chemMapping' as url %}
     <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Chemicals mapping</a></li>

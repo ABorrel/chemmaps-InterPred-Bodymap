@@ -8,13 +8,13 @@ rel="stylesheet" type="text/css"/>
 rel="stylesheet" type="text/css"/>
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
 rel="stylesheet" type="text/css"/>
-<link href="/static/interferences/css/theme.css" rel="stylesheet">
-<link href="/static/interferences/css/table.css" rel="stylesheet">
+<link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/theme.css" rel="stylesheet">
+<link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/table.css" rel="stylesheet">
 {% endblock %}
 
 {% block title %}Chemical descriptors{% endblock %}
 {% block content %}
-<script src="/static/interferences/js/theme.js"></script>
+<script src="https://sandbox.ntp.niehs.nih.gov/interferences/static/js/theme.js"></script>
 {% include 'interferences/includes/navbar.html' %}
 <h1>Chemical descriptors</h1>
 <br>
@@ -50,7 +50,7 @@ rel="stylesheet" type="text/css"/>
                             <div class="divTableRow">
                                     <div class="divTableCell">&nbsp;{{k1}}</div>
                                     <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
-                                    <div class="divTableCell"><img src="/static/{{dout.file}}" width="25px" alt="Valide upload"></div>
+                                    <div class="divTableCell"><img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/{{dout.file}}" width="25px" alt="Valide upload"></div>
                             </div>
                         {% endfor %}
                     </div>
@@ -62,7 +62,7 @@ rel="stylesheet" type="text/css"/>
             <div class="divTable">
                     <div class="divTableHeading">
                         <div class="divTableHead">&nbsp;ID</div>
-                        <div class="divTableHead">&nbsp;hemical descriptors</div>
+                        <div class="divTableHead">&nbsp;Chemical descriptors</div>
                         <div class="divTableHead">&nbsp;</div>
                     </div>
                     <div class="divTableBody">
@@ -70,7 +70,7 @@ rel="stylesheet" type="text/css"/>
                             <div class="divTableRow">
                                     <div class="divTableCell">&nbsp;{{k1}}</div>
                                     <div class="divTableCell">&nbsp;{{dout.Descriptor}}</div>
-                                    <div class="divTableCell"><img src="/static/{{dout.desc}}" width="25px" alt="Valide upload"></div>
+                                    <div class="divTableCell"><img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/{{dout.desc}}" width="25px" alt="Valide upload"></div>
                             </div>
                         {% endfor %}
                     </div>

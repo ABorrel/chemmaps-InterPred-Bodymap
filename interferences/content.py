@@ -27,9 +27,9 @@ class formatSMILES:
                 doutOUT[int(k)] = {}
                 doutOUT[int(k)]["SMILES"] = self.input[k]["SMI_CLEAN"]
                 if doutOUT[int(k)]["SMILES"] == "0" or doutOUT[int(k)]["SMILES"] == "ERROR":
-                    doutOUT[int(k)]["file"] = "interferences/img/checkNo.png"
+                    doutOUT[int(k)]["file"] = "checkNo.png"
                 else:
-                    doutOUT[int(k)]["file"] = "interferences/img/checkOK.png"
+                    doutOUT[int(k)]["file"] = "checkOK.png"
             self.dclean = {"IN":doutIN, "OUT":doutOUT}
 
 
@@ -82,11 +82,11 @@ class formatSMILES:
 
                 if smiles_clean != [] and smiles_clean != "ERROR" :
                     doutOUT[i]["SMILES"] = smiles_clean
-                    doutOUT[i]["file"] = "interferences/img/checkOK.png"
+                    doutOUT[i]["file"] = "checkOK.png"
                     doutOUT[i]["inchikey"] = inch
                 else:
                     doutOUT[i]["SMILES"] = 0
-                    doutOUT[i]["file"] = "interferences/img/checkNo.png"
+                    doutOUT[i]["file"] = "checkNo.png"
                     doutOUT[i]["inchikey"] = "ERROR"
                 i = i + 1
 
@@ -137,16 +137,14 @@ class formatSMILES:
             SMICLEAN = self.dclean["OUT"][k]["SMILES"]
             if SMICLEAN == "0":
                 dout[k]["Descriptor"] = "Error"
-                dout[k]["desc"] = "interferences/img/checkNo.png"
-                dout[k]["desc"] = "interferences/img/checkNo.png"
+                dout[k]["desc"] = "checkNo.png"
             else:
                 inch = self.input[str(k)]["INCH"]
                 chemical = Chemical.Chemical(SMICLEAN, self.prout)
                 chemical.prepChem()
                 if chemical.err == 1:
                     dout[k]["Descriptor"] = "Error"
-                    dout[k]["desc"] = "interferences/img/checkNo.png"
-                    dout[k]["desc"] = "interferences/img/checkNo.png"
+                    dout[k]["desc"] = "checkNo.png"
                     continue
                 chemical.generateInchiKey()
 
@@ -169,7 +167,7 @@ class formatSMILES:
                         chemical.computeOperaDesc(path.abspath("./MD/doc/desc_fp.xml"))
 
                         if chemical.err == 1:
-                            dout[k]["desc"] = "interferences/img/checkNo.png"
+                            dout[k]["desc"] = "checkNo.png"
                             dout[k]["Descriptor"] = "Error"
                             continue
                         else:
@@ -189,18 +187,18 @@ class formatSMILES:
 
 
                             # in opera
-                            out = self.cDB.execCMD("select count(*) from interference_chemicals_test where inchikey='%s'"%(inch))
+                            out = self.cDB.execCMD("select count(*) from interference_chemicals where inchikey='%s'"%(inch))
                             out = [0][0]
 
                             if out == 0:
                                 valDescOPERA = [dopera[descOPERA] for descOPERA in ldescOPERA]
                                 valDescOPERA = ['-9999' if desc == "NA" or desc == "NaN" else desc for desc in valDescOPERA]
                                 wOPERA = "{" + ",".join(["\"%s\"" % (desc) for desc in valDescOPERA]) + "}"
-                                self.cDB.addElement("interference_chemicals_test", ["inchikey", "opera_desc"], [inch, wOPERA])
+                                self.cDB.addElement("interference_chemicals", ["inchikey", "opera_desc"], [inch, wOPERA])
                 
                 if lval1D2D_OPERA != []:
                     dout[k]["Descriptor"] = "OK"
-                    dout[k]["desc"] = "interferences/img/checkOK.png"
+                    dout[k]["desc"] = "checkOK.png"
                     filout2D.write("%i\t%s\t%s\t%s\n"%(k, SMICLEAN, inch, "\t".join([str(lval1D2D_OPERA[0][d]) for d in ldesc1D2D])))
                     filoutOPERA.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(lval1D2D_OPERA[1][d]) for d in ldescOPERA])))
                 
@@ -228,7 +226,7 @@ def downloadDescFromDB(cDB, ldesc1D2D, ldescOPERA, inchikey):
 
     cDB.verbose = 0
     lval1D2D = cDB.extractColoumn("desc_1d2d", "desc_value","where inchikey='%s'"%(inchikey))
-    lvalOPERA = cDB.extractColoumn("interference_chemicals_test", "opera_desc", "where inchikey='%s'"%(inchikey))
+    lvalOPERA = cDB.extractColoumn("interference_chemicals", "opera_desc", "where inchikey='%s'"%(inchikey))
 
     if lval1D2D == "Error" or lval1D2D == [] or lvalOPERA == "Error" or lvalOPERA == []:
         return []
