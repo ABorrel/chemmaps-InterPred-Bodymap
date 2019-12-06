@@ -10,15 +10,18 @@
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
           rel="stylesheet" type="text/css"/> 
 
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
+<!--<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">-->
+<link href="/static/bodymap/css/theme.css" rel="stylesheet">
+
 {% endblock %}
 {% block title %} Index bodymap{% endblock %}
 {% block content %}
 
 <div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
     
-<h1>BodyMap</h1>
+<h1>Tox21BodyMap</h1>
 
+<div class="tooltipBM">Tissue expression threshold: <span class="tooltipBMtext">Tooltip text</span></div> *folds control
 
 
 {% endblock content %}

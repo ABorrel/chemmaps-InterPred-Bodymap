@@ -11,9 +11,13 @@
           rel="stylesheet" type="text/css"/> 
 
 <link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/table.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
+<!--<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
 <link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/chemical.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/network.css" rel="stylesheet">
+<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/network.css" rel="stylesheet">-->
+<link href="/static/bodymap/css/theme.css" rel="stylesheet">
+<link href="/static/bodymap/css/chemical.css" rel="stylesheet">
+<link href="/static/bodymap/css/network.css" rel="stylesheet">
+
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
@@ -42,7 +46,7 @@
 <div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
 
 
-<h1>CAS-RN: <a id="CASID" target="_blank"></a></h1>
+<h1><text id="ChemicalNametop"></text> | <a id="CASIDtop" target="_blank"></a></h1>
 <br>
 <div class="rowChem">
     <div class="columnChem">
@@ -52,9 +56,15 @@
     </div>
     <div class="columnChem">
         <br>
-        <b>DSSTOX ID: </b><a id="DSSTOX"></a><br>
+        <h3>Chemical information</h3>
         <b>Chemical name: </b><text id="ChemicalName"></text><br>
+        <b>DSSTOX ID: </b><a id="DSSTOX"></a><br>
+        <b>CASN: </b><a id="CASID"></a><br>
         <b>SMILES: </b><text id="SMILES"></text><br>
+        <b>Chemial space: </b>Explore on <a href="https://sandbox.ntp.niehs.nih.gov/chemmaps/">chemmaps.com</a> <br>
+        <b>Chemical annotation: </b>Explore on <a href="http://134.129.166.26:8080/tox21enricher/">Tox21 Enricher</a> 
+        
+        
     </div>
 </div>
 <br>
@@ -63,6 +73,8 @@
 
 <h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Body mapping</h2></button>
 <br>
+<p>Target tissues mapping where the chemical is more likely to produce effects in the human body. User can play with gene expression and activity concentration cutoffs.</p>
+<br>    
 <div class="rowChem">
     <div class="columnChem">
         <canvas id="bodymap" style="background: url('https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/body2.png')" width="1050" height="700">
@@ -78,12 +90,18 @@
         AC50 cutoff: <span id="AC50_val"></span> &#956;M
         <input type="range" min=0 max=300 steps=1 value=1 id="cutAC50"/>
         <br>
-        <br>    
-        Tissue expression threshold: <span id="exp_val"></span> *folds control
+        <div class="tooltipBM">Tissue expression threshold:&nbsp;<span class="tooltipBMtext">Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity</span> </div><span id="exp_val"></span> *folds control
         <input type="range" min=2 max=50 steps=1 value=1 id="cutExp"/>
         <br>
-        <font size="2">List of organ(s): <span id="organ_active"></span></font>
-
+        <div id="circle" style="background: #1ee844"></div>&nbsp;&nbsp;map using assay gene target
+        <br>
+        <div id="circle" style="background: #282ab5"></div>&nbsp;&nbsp;map using assay tissue
+        <br>
+        <br>
+        <font size="3">List of organ(s): <span id="organ_active"></span></font>
+        <br>
+        <br>
+        
     </div>
 </div>
 <br>
@@ -110,10 +128,16 @@
 <br>
 <h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Network representation</h2>
 <br>
+<p>Network where chemical-assay activity, target gene expression, and body mapping are connected in a data-driven representation.</p>
+<br>
 <div id="mapnetwork"></div>
 <br>
+<div id="circle" style="background: red"></div>&nbsp;&nbsp;chemical (CASN);&nbsp; 
+<div id="circle" style="background: pink"></div>&nbsp;&nbsp;assay;&nbsp;
+<div id="circle" style="background: green"></div>&nbsp;&nbsp;gene;&nbsp;
+<div id="circle" style="background: blue"></div>&nbsp;&nbsp;organ;&nbsp;
+<div id="circle" style="background: orange"></div>&nbsp;&nbsp;system;&nbsp;
 <br>
-
 
 
 <script>

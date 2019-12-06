@@ -55,15 +55,17 @@
 - ~~Add the body mapping~~ 
 - ~~fix legend barplot and inspect color => no real solution~~
 - change body pictures
-- fix highlight tab opened
+- ~~fix highlight tab opened~~
 - ~~fix download table~~
-- color dot on mapping gene map vs tissue map
-- add gene expression on table
-- add legend for network and bodymap dot
-- add link to chemmaps
-- add a tool tip: <em>"Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity"</em>
+- ~~color dot on mapping gene map vs tissue map~~
+- ~~add gene expression on table~~
+- ~~add legend for network and bodymap dot~~
+- ~~add link to chemmaps~~
+- ~~add a tool tip: <em>"Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity"</em>~~
+- make a autocomplete form
 - write home and help pages
 - label organs directly on the png
+- add name of the chemical on the network
 
 
 #### Improvement

@@ -26,11 +26,25 @@
 
 
 <p>Chemical (CAS):</p>
-<form action='/bodymap/chemMappingTable/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-    <div style="margin-right: 80%; margin-left: 30px">{{formCAS.chem}}</div>
+<form autocomplete="off" action='/bodymap/chemMappingTable/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+    <div class="autocomplete" style="width:300px;">
+            <input id="myInput" type="text" name="mychem" placeholder="CASN">
+        <!--<div style="margin-right: 80%; margin-left: 30px">{{formCAS.chem}}</div>-->
+    </div>
     <br>
     <input style="margin-left: 20px" type='submit' value='Uplad Chemical'>
 </form>
 
+
+
+<script>
+// load mapping
+var lchem = {{ lchemJS | safe }};
+
+  
+/*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
+autocomplete(document.getElementById("myInput"), lchem);
+
+</script>
 
 {% endblock content %}
