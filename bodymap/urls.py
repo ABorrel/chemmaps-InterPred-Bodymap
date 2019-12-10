@@ -30,8 +30,15 @@ urlpatterns = [
         name='chemMapping'
     ),
     url(
-        r'^chemMappingTable/$',
+        r'^chemMappingCASNResult/$',
         views.mappingChemicalToBody,
+        {"typeChem":"CASN"},
+        name='chemMappingCAS'
+    ),
+    url(
+        r'^chemMappingNameResult/$',
+        views.mappingChemicalToBody,
+        {"typeChem":"name"},
         name='chemMappingTable'
 
     ),

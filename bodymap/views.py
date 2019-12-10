@@ -55,7 +55,7 @@ def mappingAssaysBody(request):
 
 
 
-def mappingChemicalToBody(request):
+def mappingChemicalToBody(request, typeChem=""):
 
 
     # form for bodypart
@@ -65,27 +65,28 @@ def mappingChemicalToBody(request):
     else:
         formCAS = CASUpload(request.POST)
 
-
     # run map with new chem
-    if formCAS.is_valid() == True:
-        CAS = formCAS.clean_chem()
-        #CAS = "10190-99-5"
-        dchem = prepChem(CAS)
-        if dchem == 1:
-            return render(request, 'bodymap/ChemMapping.html', {"Error": "1"})
-
-        cmapChem = mapChem(CAS, 5)
-        dmap = cmapChem.mapChemToBody()
-        dmapJS = json.dumps(dmap)
-        dchemJS = json.dumps(dchem)
-        typeJS = json.dumps("chem")
-
-
-        return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS})
-
+    if typeChem == "name":
+        CAS = formCAS.clean_name()
     else:
+        CAS = formCAS.clean_CAS()
 
+    dchem = prepChem(CAS)
+    if dchem == 1:
         return render(request, 'bodymap/ChemMapping.html', {"Error": "1"})
+
+    cmapChem = mapChem(CAS, 5)
+    dmap = cmapChem.mapChemToBody()
+    dmapJS = json.dumps(dmap)
+    dchemJS = json.dumps(dchem)
+    typeJS = json.dumps("chem")
+
+
+    return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS})
+
+    #else:
+
+    #    return render(request, 'bodymap/chemTobody.html', {"formCAS": formCAS, "Error": "1"})
     # add error mapping here
     #else:
     #    return render(request, 'interferences/computeDESC.html', {"map": map, "dSMILESIN": cinput.dclean["IN"],

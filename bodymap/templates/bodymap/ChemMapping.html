@@ -31,15 +31,17 @@
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/theme.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/chemical.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/mappingCanvas.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/network.js"></script>-->
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/network.js"></script>
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script>-->
 
 <script src="/static/bodymap/js/table.js"></script>
 <script src="/static/bodymap/js/theme.js"></script>
 <script src="/static/bodymap/js/chemical.js"></script>
 <script src="/static/bodymap/js/mappingCanvas.js"></script>
 <script src="/static/bodymap/js/network.js"></script>
+<script src="/static/bodymap/js/plotFunctions.js"></script>
 
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script>
+
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
 
@@ -111,8 +113,8 @@
 <br>
 <div class="rowChem">
     <div class="columnChem" style="margin-left: 25px">
-        <div id="dotplot"></div>
-        Assays mapping on organ system in function of the log10(AC50).
+        <div id="dotplot" style="margin-bottom: 10px;"></div>
+        Assays mapping on organ system in function of the -log10(AC50).
     </div>
     <div class="columnChem" style="margin-left: 10px">
         <br>

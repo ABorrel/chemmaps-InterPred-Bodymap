@@ -2,35 +2,51 @@
 
 function dotPlot(dmap){
 
+    console.log(dmap);
+    console.log("In plot");
+
     var lsystem = [];
     var llval = [];
-    var llassays = [];
+    //var llassays = [];
 
     for(var assay in dmap){
         for(var system in dmap[assay]){
-            if(lsystem.includes(system) ==false){
+            if(lsystem.includes(system) == false){
                 lsystem.push(system);
             }
         }
     }
+    ;
 
-    for (var i=0; i<lsystem.length; i++){
-        var lval = [];
-        var lass = []
-        for (var assay in dmap){
-            if (Object.keys(dmap[assay]).includes(lsystem[i]) == true){
-                for(var organ in dmap[assay][lsystem[i]]){
-                    var val = -Math.log10(dmap[assay][lsystem[i]][organ]["AC50"]);
-                    lval.push(val);
-                    lass.push(assay);
-                }
-            }
-            llval.push(lval);
-            llassays.push(lass);
-            
-        }
+    var llassays = Object.keys(dmap); 
+
+    
+    for (var j=0; j<llassays.length; j++){
+      var lval = [];
+      for (var i=0; i<lsystem.length; i++){
+        if(Object.keys(dmap[llassays[j]]).includes(lsystem[i]) == true){
+          var lvaltemp = [];
+          for(var organ in dmap[llassays[j]][lsystem[i]]){
+            var val = -Math.log10(dmap[llassays[j]][lsystem[i]][organ]["AC50"]);
+            // add random fact in ac50
+            //var r = Math.random()*0.01;
+            //console.log(r);
+            lvaltemp.push(val);
+            //lass.push(assay);
+          }
+          lval.push(Math.min(lvaltemp));
+        }else{
+          lval.push();
+        }  
+      }
+      ;
+      llval.push(lval)
     }
-
+    
+    ;  
+      
+    console.log(llassays);
+    console.log(llval);
     ltrace = []
     for (var i=0; i<llval.length; i++){
         var trace = {
@@ -46,7 +62,7 @@ function dotPlot(dmap){
                 width: 1,
               },
               symbol: 'circle',
-              size: 16
+              size: 9
             }
         };
         ltrace.push(trace);
@@ -70,14 +86,11 @@ function dotPlot(dmap){
               color: 'rgb(102, 102, 102)'
             }
           },
-          title: {
-            text: "-log10(AC50)",
-            standoff: 20
-          },
+          
           autotick: false,
           ticks: 'outside',
           tick0: 0,
-          dtick: 0.25,
+          dtick: 0.50,
           ticklen: 8,
           tickwidth: 4,
           tickcolor: '#000'
@@ -91,7 +104,7 @@ function dotPlot(dmap){
         },
         legend: {
           font: {
-            size: 10,
+            size: 7,
           },
           yanchor: 'top',
           xanchor: 'right'
@@ -104,6 +117,17 @@ function dotPlot(dmap){
         plot_bgcolor: 'rgb(255, 255, 255)',
         hovermode: 'closest',
         
+        annotations: [
+          {
+            x: 1,
+            y: 0.0,
+            xref: 'paper',
+            yref: 'paper',
+            text: '-log10(AC50)',
+            showarrow: false,
+          }
+        ]
+
       };
 
 
