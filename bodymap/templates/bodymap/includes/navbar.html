@@ -7,7 +7,7 @@
     <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Assays mapping</a></li>-->
 
     {% url 'bodymap:chemMapping' as url %}
-    <li {% if request.path == url or  request.path == "/bodymap/chemMappingTable/" %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Chemicals mapping</a></li>
+    <li {% if request.path == url or  request.path == "/bodymap/chemMappingCASNResult/" or request.path == "/bodymap/chemMappingNameResult/"%} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Chemicals mapping</a></li>
 
     {% url 'bodymap:help' as url %}
     <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Help</a></li>

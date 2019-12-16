@@ -10,13 +10,15 @@
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
           rel="stylesheet" type="text/css"/> 
 
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/table.css" rel="stylesheet">
+<!--<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/table.css" rel="stylesheet">
 <link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
 <link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/chemical.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/network.css" rel="stylesheet">
-<!--<link href="/static/bodymap/css/theme.css" rel="stylesheet">
+<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/network.css" rel="stylesheet">-->
+
+<link href="/static/bodymap/css/table.css" rel="stylesheet">
+<link href="/static/bodymap/css/theme.css" rel="stylesheet">
 <link href="/static/bodymap/css/chemical.css" rel="stylesheet">
-<link href="/static/bodymap/css/network.css" rel="stylesheet">-->
+<link href="/static/bodymap/css/network.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
@@ -27,19 +29,19 @@
 {% block content %}
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
+<!--<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/theme.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/chemical.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/mappingCanvas.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/network.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script>-->
 
-<!--<script src="/static/bodymap/js/table.js"></script>
+<script src="/static/bodymap/js/table.js"></script>
 <script src="/static/bodymap/js/theme.js"></script>
 <script src="/static/bodymap/js/chemical.js"></script>
 <script src="/static/bodymap/js/mappingCanvas.js"></script>
 <script src="/static/bodymap/js/network.js"></script>
-<script src="/static/bodymap/js/plotFunctions.js"></script>-->
+<script src="/static/bodymap/js/plotFunctions.js"></script>
 
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -79,7 +81,8 @@
 <br>    
 <div class="rowChem">
     <div class="columnChem">
-        <canvas id="bodymap" style="background: url('https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/body2.png')" width="1050" height="700">
+        <!--<canvas id="bodymap" style="background: url('https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/body2.png')" width="1050" height="700"> -->
+            <canvas id="bodymap" style="background: url('/static/bodymap/img/Human_Body_V23.png')" width="825" height="720">
             Your browser does not support the canvas element.
         </canvas>
     </div>
@@ -92,7 +95,8 @@
         AC50 cutoff: <span id="AC50_val"></span> &#956;M
         <input type="range" min=0 max=300 steps=1 value=1 id="cutAC50"/>
         <br>
-        <div class="tooltipBM">Tissue expression threshold:&nbsp;<span class="tooltipBMtext">Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity</span> </div><span id="exp_val"></span> *folds control
+        <div class="tooltipBM">Tissue expression threshold <eM><sup >?</sup></eM>:&nbsp;<span class="tooltipBMtext">Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity</span> </div><span id="exp_val"></span> *folds control
+        <br>
         <input type="range" min=2 max=50 steps=1 value=1 id="cutExp"/>
         <br>
         <div id="circle" style="background: #1ee844"></div>&nbsp;&nbsp;map using assay gene target
@@ -166,6 +170,7 @@ var ctx = canvas.getContext("2d");
 var dpos = definePosDict();
 
 chemPanel(dchem);
+//calibratePosition();
 //labelOrgan();
 
 // slider for AC50

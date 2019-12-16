@@ -298,7 +298,6 @@ input[type=range]::-ms-thumb {
 .tooltipBM {
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black;
 }
   
 .tooltipBM .tooltipBMtext {

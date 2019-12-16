@@ -56,7 +56,7 @@ function builtNetwork(container, dmap, dchem ){
 
                     var inledges = edgeIncludes(IDassay, iorgan, ledges);
                     if(inledges == 0){
-                        var edge = { from: iorgan , to: IDassay, color:"blue"};
+                        var edge = { from: IDassay, to: iorgan, color:"blue"};
                         ledges.push(edge)
                     }
                 }else{
@@ -96,7 +96,7 @@ function builtNetwork(container, dmap, dchem ){
                     var exp = exp.toString() + " fold";
                    
                     if (inledges == 0){
-                        var edge = { from: igene, to: IDassay, color:"green"};
+                        var edge = { from: IDassay, to: igene, color:"green"};
                         ledges.push(edge)
                     }
                     var inledges = edgeIncludes(igene, iorgan, ledges)

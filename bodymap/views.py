@@ -75,7 +75,8 @@ def mappingChemicalToBody(request, typeChem=""):
     if dchem == 1:
         return render(request, 'bodymap/ChemMapping.html', {"Error": "1"})
 
-    cmapChem = mapChem(CAS, 5)
+    cmapChem = mapChem(CAS)
+    cmapChem.loadFromDB("bodymap_assay_mapping_new", "bodymap_assay_ac50", "bodymap_genemap")
     dmap = cmapChem.mapChemToBody()
     dmapJS = json.dumps(dmap)
     dchemJS = json.dumps(dchem)
@@ -84,12 +85,3 @@ def mappingChemicalToBody(request, typeChem=""):
 
     return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS})
 
-    #else:
-
-    #    return render(request, 'bodymap/chemTobody.html', {"formCAS": formCAS, "Error": "1"})
-    # add error mapping here
-    #else:
-    #    return render(request, 'interferences/computeDESC.html', {"map": map, "dSMILESIN": cinput.dclean["IN"],
-    #                                                              "dSMILESOUT": cinput.dclean["OUT"],
-    #                                                              "ddesc": cinput.ddesc,
-    #                                                              "form_model": formModel, "Error": "1"})

@@ -35,7 +35,7 @@
 - ~~add header and footer for all of the page -> done~~
 - proof read page
 - check the 508
-- redo table for contrast and connect to the DB to save time of computation
+- ~~redo table for contrast and connect to the DB to save time of computation~~
 - ~~remove MD compute inside the interferences code and make a table of connect for version 2.7 descriptor name and 3.6~~
 
 
@@ -54,7 +54,7 @@
 - check the 508
 - ~~Add the body mapping~~ 
 - ~~fix legend barplot and inspect color => no real solution~~
-- change body pictures
+- ~~change body pictures~~
 - ~~fix highlight tab opened~~
 - ~~fix download table~~
 - ~~color dot on mapping gene map vs tissue map~~
@@ -62,10 +62,10 @@
 - ~~add legend for network and bodymap dot~~
 - ~~add link to chemmaps~~
 - ~~add a tool tip: <em>"Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity"</em>~~
-- make a autocomplete form
+- ~~make a autocomplete form~~
 - write home and help pages
-- label organs directly on the png
-- add name of the chemical on the network
+- ~~label organs directly on the png~~
+- ~~add name of the chemical on the network => added name in the autocompletion form~~
 
 
 #### Improvement
@@ -88,3 +88,5 @@
 - 23-10-19: Fix extraction for DrugMap, optimize the loading in case of pre existing chemical, add DB interactions 
 - 5-11-19: Update barplot for AC50 and added chemical informatio
 - 20-11-19: Update bodymap results pages
+- 01-12-19: Update bodymap
+- 16-12-19: connected bodymap to DB
