@@ -1,0 +1,72 @@
+version: '3.4'
+
+
+# #------- VOLUMES --------#
+# volumes:
+#   chemmaps_db:
+#     name: cm_db
+#     external: true
+    #- compose/postgres/data:/var/lib/postgresql/data
+#   fiveday-documents:
+#------- NETWORKS -------#
+networks:
+  chemmaps_backend:
+
+
+services:
+
+  #####################
+  # POSTGRES DATABASE #
+  #####################
+  db:
+
+    container_name: cm_db
+    build:
+      context: .
+      dockerfile: compose/postgres/Dockerfile
+    volumes:
+      - ./compose/postgres/data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    networks:
+      - chemmaps_backend
+  
+  
+  ##################
+  # DJANGO WEB APP #
+  ##################
+  chemmaps:
+
+    container_name: chemmaps
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+    # volumes:
+    #   - fiveday-documents:/code/report/document/docs
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - chemmaps_backend
+    # command: gunicorn django_server.wsgi:application --bind 0.0.0.0:8000
+
+
+  # ###################
+  # # NGINX WEBSERVER #
+  # ###################
+  # nginx:
+
+  #   container_name: proxy-manager
+
+  #   build:
+  #     context: ../proxy-manager/nginx
+  #     dockerfile: ./Dockerfile
+
+  #   ports:
+  #     - 80:80
+
+  #   networks:
+  #     - cebs_backend

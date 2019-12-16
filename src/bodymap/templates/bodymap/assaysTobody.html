@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra-css %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
+          rel="stylesheet" type="text/css"/> 
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
+          rel="stylesheet" type="text/css"/>
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
+          rel="stylesheet" type="text/css"/> 
+
+<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
+{% endblock %}
+{% block title %} Index bodymap{% endblock %}
+{% block content %}
+
+<div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
+  
+<h1>Load assays on body part</h1>
+
+<br>
+
+{% if Error == "1" %}
+<p class = "Errorform"> Please choose at least one body part</p>
+{% endif %}
+
+<form action='/bodymap/assaysMappingTable/' method='post' onsubmit="ShowLoadingInterferences()">{% csrf_token %}
+    Fold gene expression (> 1):
+                <br>
+                <div style="width: 20%">{{form_body.fold}}</div>
+                <br>
+    <div class="row">
+        <div class="column">
+            {% for aa in form_body.bodypart %}
+            {% if forloop.counter0|divisibleby:6 %}  </div><div class="column"> {% endif %}
+            <div class="checkbox">{{ aa }}</div>
+            {%endfor%}
+            <br>
+            <input type='submit' value='Compute mapping'>
+        </div>
+    </div>
+</form>
+
+
+
+{% endblock content %}

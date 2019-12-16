@@ -1,0 +1,35 @@
+system	organ	exp	control
+Nervous System	Nervous System	3560.0	899.0
+Digestive System	Colon	3270.0	899.0
+Digestive System	Small intestine	2230.0	899.0
+Digestive System	Tongue	1910.0	899.0
+Digestive System	Liver	1500.0	899.0
+Digestive System	Pancreas	1240.0	899.0
+Digestive System	Peritoneum	1240.0	476.0
+Digestive System	Salivary gland	1190.0	899.0
+Digestive System	Stomach	1050.0	899.0
+Digestive System	Esophagus	490.0	899.0
+Visual System	Eye	2730.0	476.0
+Cardiovascular System	Heart	2050.0	899.0
+Cardiovascular System	Vascular	801.0	899.0
+Urogenital System	Uterus	1730.0	899.0
+Urogenital System	Kidney	1550.0	899.0
+Urogenital System	Testes	1470.0	899.0
+Urogenital System	Bladder	1450.0	899.0
+Urogenital System	Placenta	1430.0	899.0
+Urogenital System	Vagina	956.0	899.0
+Urogenital System	Urethra	783.0	476.0
+Urogenital System	Ovary	753.0	899.0
+Urogenital System	Prostate gland	595.0	899.0
+Urogenital System	Penis	521.0	476.0
+Endocrine System	Thyroid gland	1720.0	899.0
+Endocrine System	Adrenal gland	1250.0	899.0
+Endocrine System	Adipose tissue	1100.0	899.0
+Endocrine System	Pituitary gland	964.0	899.0
+Respiratory System	Lung	1620.0	899.0
+Musculoskeletal System	Skeletal Muscle	1440.0	899.0
+Musculoskeletal System	Joint	1330.0	476.0
+Immune System	Immune System	1410.0	899.0
+Olfactory System	Nervous System	1260.0	899.0
+Exocrine System	Mammary gland	984.0	899.0
+Integumentary System	Skin	907.0	476.0

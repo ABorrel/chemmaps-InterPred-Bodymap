@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra-css %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
+          rel="stylesheet" type="text/css"/> 
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
+          rel="stylesheet" type="text/css"/>
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
+          rel="stylesheet" type="text/css"/> 
+
+<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/table.css" rel="stylesheet">
+<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
+<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/chemical.css" rel="stylesheet">
+<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/network.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+
+{% endblock %}
+{% block title %}Chemical mapping{% endblock %}
+{% block content %}
+<script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/theme.js"></script>
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/chemical.js"></script>
+
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/mappingCanvas.js"></script>
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/network.js"></script>
+
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
+
+<div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
+
+
+<h1>CAS-RN: <a id="CASID" target="_blank"></a></h1>
+<br>
+<div class="rowChem">
+    <div class="columnChem">
+        <div id="pngcompound">
+            <canvas id="Compoundpng2" style="position: relative"></canvas>
+        </div>
+    </div>
+    <div class="columnChem">
+        <br>
+        <b>DSSTOX ID: </b><a id="DSSTOX"></a><br>
+        <b>Chemical name: </b><text id="ChemicalName"></text><br>
+        <b>SMILES: </b><text id="SMILES"></text><br>
+    </div>
+</div>
+<br>
+
+
+
+<h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Body mapping</h2></button>
+<br>
+<div class="rowChem">
+    <div class="columnChem">
+        <canvas id="bodymap" style="background: url('https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/body2.png')" width="1050" height="700">
+            Your browser does not support the canvas element.
+        </canvas>
+    </div>
+    <div class="columnChem" style="margin-left: 20px">
+        <br>
+        Chemical concentration and gene expression:        
+        <br>
+        <br>
+
+        AC50 cutoff: <span id="AC50_val"></span> &#956;M
+        <input type="range" min=0 max=300 steps=1 value=1 id="cutAC50"/>
+        <br>
+        <br>    
+        Tissue expression threshold: <span id="exp_val"></span> *folds control
+        <input type="range" min=2 max=50 steps=1 value=1 id="cutExp"/>
+        <br>
+        <font size="2">List of organ(s): <span id="organ_active"></span></font>
+
+    </div>
+</div>
+<br>
+<br>
+
+<h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Assays mapping</h2></button>
+<br>
+<div class="rowChem">
+    <div class="columnChem" style="margin-left: 25px">
+        <div id="dotplot"></div>
+        Assays mapping on organ system in function of the log10(AC50).
+    </div>
+    <div class="columnChem" style="margin-left: 10px">
+        <br>
+        Assays mapping on gene and body part 
+        <br>
+        <br>
+        <div id="myGrid" style="height: 500px; width: 90%" class="ag-theme-balham"></div>
+        <br>
+        <button id="downloadlink" onclick="downloadTable()" class="btn"><i class="fa fa-download"></i> Download assays mapping on body part</button>
+    </div>
+</div>
+<br>
+<br>
+<h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Network representation</h2>
+<br>
+<div id="mapnetwork"></div>
+<br>
+<br>
+
+
+
+<script>
+// load mapping
+var typeTable = {{ TypeJS | safe }};
+var dmap = {{ dmap | safe }};
+var dchem = {{dchem | safe }}
+
+// define default values for mapping
+var cutAC50 = 0;
+var cutExp = 1;
+
+// Develop the network
+var containerNetwork = document.getElementById("mapnetwork");
+builtNetwork(containerNetwork, dmap, dchem);
+
+
+
+// body mapping
+
+// load chemical panel
+var canvas = document.getElementById("bodymap");
+var ctx = canvas.getContext("2d");
+var dpos = definePosDict();
+
+chemPanel(dchem);
+//labelOrgan();
+
+// slider for AC50
+var sliderAC50 = document.getElementById("cutAC50");
+var outputAC50 = document.getElementById("AC50_val");
+
+
+//calibratePosition();
+
+outputAC50.innerHTML = sliderAC50.value;
+sliderAC50.oninput = function() {
+    outputAC50.innerHTML = this.value;
+    cutAC50 = this.value;
+    mapOnBody(dmap, this.value, cutExp);
+    
+}
+
+// Slider for expression
+var sliderExp = document.getElementById("cutExp");
+var outputExp = document.getElementById("exp_val");
+
+outputExp.innerHTML = sliderExp.value;
+sliderExp.oninput = function() {
+    outputExp.innerHTML = this.value;
+    cutExp = this.value;
+    mapOnBody(dmap, cutAC50, cutExp);
+}
+
+
+
+if (typeTable == "assays"){
+    var nameGrid = '#myGrid'
+    var eGridDiv = document.querySelector(nameGrid);
+    gridOptions = defineGridAssays(dmap);
+    new agGrid.Grid(eGridDiv, gridOptions);
+}else{
+    var nameGrid = '#myGrid'
+    var eGridDiv = document.querySelector(nameGrid);
+    gridOptions = defineGridChem(dmap);
+    new agGrid.Grid(eGridDiv, gridOptions);
+}
+;
+
+//var lorg = mapOnBody(dmap, cutAC50, cutExp);
+
+dotPlot(dmap);
+
+// to download table
+function downloadTable(){
+    var element = document.createElement('a');
+    var filname = dchem.CAS + '.csv';
+    var textin = 'assay_name\tSytem\tOrgan\tGene\ttissue_expression\tAC50\n';
+
+    for (var assay in dmap) {
+        for (var organ in dmap[assay]) {
+            for (var suborgan in dmap[assay][organ]) {
+                if(dmap[assay][organ][suborgan]["gene"][0] != "NA"){
+                    if(dmap[assay][organ][suborgan]["exp"][0] < 2.0){
+                        continue;
+                    }
+                    ;
+                    textin = textin + assay + "\t" + organ + "\t" + suborgan + "\t" + dmap[assay][organ][suborgan]["gene"][0] + "\t" + dmap[assay][organ][suborgan]["exp"][0] + "\t" + dmap[assay][organ][suborgan]["AC50"] + "\n"
+                }else{
+                    textin = textin + assay + "\t" + organ + "\t" + suborgan + "\tNA\tNA\t" + dmap[assay][organ][suborgan]["AC50"] + "\n"
+                }
+                ;
+            }
+            ;
+        }
+        ;
+    }
+    ;
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textin));
+    element.setAttribute('download', filname);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+
+}
+
+
+
+</script>
+
+
+
+{% endblock content %}

@@ -1,0 +1,228 @@
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Create three equal columns that floats next to each other */
+    .column {
+        float: left;
+        width: 33.33%;
+        padding: 10px;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+    @media screen and (max-width: 600px) {
+        .column {
+            width: 100%;
+        }
+    }
+</style>
+{% extends "base.html" %}
+{% load static %}
+{% block extra-css %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
+rel="stylesheet" type="text/css"/>
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
+rel="stylesheet" type="text/css"/>
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
+rel="stylesheet" type="text/css"/>
+<link href="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/css/theme.css" rel="stylesheet">
+{% endblock %}
+{% block title %} Descriptors - {{map}}{% endblock %}
+{% block content %}
+<script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/theme.js"></script>
+
+<div id = "bg">
+    {% include 'chemmaps/includes/navbar.html' %}
+    <br>
+    <h1>Descriptor computation</h1>
+    <br>
+
+    {% if ErrorDesc == "1" %}
+    <p class = "Errorform" style="margin-right: 0px"> No descriptor computed.</p>
+    {% endif %}
+
+    <div class="row">
+        <div class="column" style="background-color:#232b5f;">
+            <h3>Inputs</h3>
+
+            <div class="divTable">
+                <div class="divTableHeading">
+                    <div class="divTableHead">&nbsp;ID</div>
+                    <div class="divTableHead">&nbsp;Input</div>
+                </div>
+                <div class="divTableBody">
+                    {% for lk, lv in dSMILESIN.items %}
+                        <div class="divTableRow">
+                                <div class="divTableCell">&nbsp;{{lk}}</div>
+                                <div class="divTableCell">&nbsp;{{lv}}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+        <div class="column" style="background-color:#232b8b;">
+            <h3>QSAR-ready SMILES</h3>
+            
+            <div class="divTable">
+                    <div class="divTableHeading">
+                        <div class="divTableHead">&nbsp;ID</div>
+                        <div class="divTableHead">&nbsp;SMILES</div>
+                        <div class="divTableHead">&nbsp;</div>
+                    </div>
+                    <div class="divTableBody">
+                            {% for k1, dout in dSMILESOUT.items %}
+                            <div class="divTableRow">
+                                    <div class="divTableCell">&nbsp;{{k1}}</div>
+                                    <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
+                                    <div class="divTableCell"><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/{{dout.file}}" width="25px" alt="Valide upload"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+        </div>
+        <div class="column" style="background-color:#08627e;">
+            <h3>Descriptor</h3>
+            <div class="divTable">
+                    <div class="divTableHeading">
+                        <div class="divTableHead">&nbsp;ID</div>
+                        <div class="divTableHead">&nbsp;Descriptor</div>
+                        <div class="divTableHead">&nbsp;</div>
+                    </div>
+                    <div class="divTableBody">
+                            {% for k1, dout in ddesc.items %}
+                            <div class="divTableRow">
+                                    <div class="divTableCell">&nbsp;{{k1}}</div>
+                                    <div class="divTableCell">&nbsp;{{dout.Descriptor}}</div>
+                                    <div class="divTableCell"><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/{{dout.desc}}" width="25px" alt="Valide upload"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            <br>
+            {% if ErrorDesc != "1" %}
+            <div align="right">
+                <form method="get" action="/chemmaps/2D.csv"><button class="btn"><i class="fa fa-download"></i> Download 2D descriptor table</button></form>
+                <form method="get" action="/chemmaps/3D.csv"><button class="btn"><i class="fa fa-download"></i> Download 3D descriptor table</button></form>
+            </div>
+            {% endif %}
+            {% if ErrorDesc == "1" %}
+            {% if map == "DrugMap"  %}
+            <form action='/chemmaps/DrugMap' method='get'>
+                <input type='submit' value='Resubmit SMILES' />
+            </form>
+            {% endif %}
+            {% if map == "DSSToxMap"  %}
+            <form action='/chemmaps/DSSToxMap' method='get'>
+                <input type='submit' value='Resubmit SMILES' />
+            </form>
+            {% endif %}
+            {% if map == "PFASMap"  %}
+            <form action='/chemmaps/PFASMap' method='get'>
+                <input type='submit' value='Resubmit SMILES' />
+            </form>
+            {% endif %}
+            {% if map == "Tox21Map"  %}
+            <form action='/chemmaps/Tox21Map' method='get'>
+                <input type='submit' value='Resubmit SMILES' />
+            </form>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <br><br>
+
+    {% if ErrorDesc != "1" %}
+
+    <h1>Generate the {{map}}</h1>
+    <p>Select up to 5 features you would like put on the map</p>
+
+    {% if Error == "1" %}
+    <p class = "Errorform"> Please choose only 5 categories</p>
+    {% endif %}
+    {% if map == "DrugMap"  %}
+    <form action='/chemmaps/DrugMapAdd/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+        <div class="row">
+            <div class="column">
+                {% for aa in form_info.desc %}
+                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
+                {% if forloop.counter == 1 %} <b>Chemical information</b>{% endif %}
+                {% if forloop.counter == 7 %} <b>Chemical rules</b>{% endif %}
+                {% if forloop.counter == 11 %} <b>Descriptors</b>{% endif %}
+                <div class="checkbox">{{ aa }}</div>
+                {%endfor%}
+                <br>
+                <input type='submit' value='Generate DrugMap'>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+    {% if map == "PFASMap"%}
+    <form action='/chemmaps/PFASMapAdd/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+        <div class="row">
+            <div class="column">
+                {% for aa in form_info.desc %}
+                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
+                {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
+                {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
+                {% if forloop.counter == 12 %} <b>Physicochemical prediction</b>{% endif %}
+                {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
+                <div class="checkbox">{{ aa }}</div>
+                {%endfor%}
+                <br>
+                <input type='submit' value='Generate PFASMap'>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+    {% if map == "Tox21Map"%}
+    <form action='/chemmaps/Tox21MapAdd/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+        <div class="row">
+            <div class="column">
+                {% for aa in form_info.desc %}
+                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
+                {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
+                {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
+                {% if forloop.counter == 12 %} <b>Physicochemical prediction</b>{% endif %}
+                {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
+                <div class="checkbox">{{ aa }}</div>
+                {%endfor%}
+                <br>
+                <input type='submit' value='Generate Tox21Map'>
+            </div>
+        </div>
+    </form>
+    {% endif %}   
+    {% if map == "DSSToxMap"%}
+    <form action='/chemmaps/DSSToxMapAdd/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+        <div class="row">
+            <div class="column">
+                {% for aa in form_info.desc %}
+                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
+                {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
+                {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
+                {% if forloop.counter == 12 %} <b>Physicochemical prediction</b>{% endif %}
+                {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
+                <div class="checkbox">{{ aa }}</div>
+                {%endfor%}
+                <br>
+                <input type='submit' value='Generate DSSToxMap'>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+    {% endif %}
+</div>
+
+{% endblock content %}
+
