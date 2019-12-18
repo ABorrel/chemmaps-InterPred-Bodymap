@@ -152,6 +152,7 @@ class DSSToxPrep:
                 self.coord[chem] = deepcopy(self.coord[dsstoxID])
                 self.dinfo[chem] = deepcopy(self.dinfo[dsstoxID])
                 self.dneighbor[chem] = deepcopy(self.dneighbor[dsstoxID])
+                self.dSMILES[chem] = {}
                 self.dSMILES[chem]["SMILESClass"] = deepcopy(self.dSMILES[dsstoxID])
                 self.dSMILES[chem]["GHS_category"] = "add"
 
@@ -169,7 +170,7 @@ class DSSToxPrep:
                 self.dinfo[chem] = deepcopy(self.input["info"][chem])
                 self.dneighbor[chem] = deepcopy(self.input["neighbor"][chem])
                 self.dSMILES[chem] = {}
-                self.dSMILES[chem]["SMILES"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
+                self.dSMILES[chem]["SMILESClass"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
                 self.dSMILES[chem]["GHS_category"] = "add"
 
 
