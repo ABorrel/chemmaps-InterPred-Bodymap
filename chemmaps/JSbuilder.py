@@ -351,11 +351,12 @@ class JSbuilder:
 
             # run R script
             cmd = "%s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath("./chemmaps/Rscripts"), p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
-            print(cmd)
+            #print(cmd)
             system(cmd)
 
             if path.exists(p1D2Dcoord) and path.exists(p3Dcoord):
                 dcoords = loadMap1D2D3D(p1D2Dcoord, p3Dcoord)
+                print(dcoords)
                 if dcoords == {}:
                     self.err = 1
                     self.inDB = 1
@@ -365,8 +366,14 @@ class JSbuilder:
                 for ID in dcoords.keys():
                     self.dchemAdd["coord"][ID] = {}
                     self.dchemAdd["coord"][ID] = dcoords[ID]
-                    cmdSQL = "UPDATE chemmap_coords_user SET dim1d2d = '{%s, %s}', dim3d = '{%s}', d3_cube='{%s, %s, %s}'  WHERE inchikey='%s' AND map_name = '%s';"%( dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], ddesc1D2D[ID]["inchikey"],self.nameMap)
-                    self.cDB.updateElement(cmdSQL)
+                    cmdInclude = "SELECT count(*) WHERE inchikey='%s' AND map_name = '%s';"%( ddesc1D2D[ID]["inchikey"], self.nameMap)
+                    included = self.cDB.execCMD(cmdInclude)
+                    if included == "Error": 
+                        self.cDB.verbose = 0
+                        self.cDB.addElement("chemmap_coords_user", ["dim1d2d", "dim3d", "d3_cube", "inchikey", "map_name"], ['{%s, %s}'%(dcoords[ID][0],dcoords[ID][1]), '{%s}'%(dcoords[ID][2]), '{%s, %s, %s}'%(dcoords[ID][0],dcoords[ID][1], dcoords[ID][2]),ddesc1D2D[ID]["inchikey"],self.nameMap])
+                    else:
+                        cmdSQL = "UPDATE chemmap_coords_user SET dim1d2d = '{%s, %s}', dim3d = '{%s}', d3_cube='{%s, %s, %s}'  WHERE inchikey='%s' AND map_name = '%s';"%( dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], ddesc1D2D[ID]["inchikey"],self.nameMap)
+                        err = self.cDB.updateElement(cmdSQL)
                     
 
     def findneighbor(self, nbneighbor=20):

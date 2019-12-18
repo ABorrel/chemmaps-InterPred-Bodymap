@@ -152,7 +152,7 @@ class DSSToxPrep:
                 self.coord[chem] = deepcopy(self.coord[dsstoxID])
                 self.dinfo[chem] = deepcopy(self.dinfo[dsstoxID])
                 self.dneighbor[chem] = deepcopy(self.dneighbor[dsstoxID])
-                self.dSMILES[chem] = deepcopy(self.dSMILES[dsstoxID])
+                self.dSMILES[chem]["SMILESClass"] = deepcopy(self.dSMILES[dsstoxID])
                 self.dSMILES[chem]["GHS_category"] = "add"
 
                  # dell already in DB
@@ -164,6 +164,13 @@ class DSSToxPrep:
             else:
                 inch = self.input["SMILESClass"][chem]["inchikey"]
                 self.loadChemMapCenterChem(inch, 0, nbChemInMap)
+
+                self.coord[chem] = deepcopy(self.input["coord"][chem])
+                self.dinfo[chem] = deepcopy(self.input["info"][chem])
+                self.dneighbor[chem] = deepcopy(self.input["neighbor"][chem])
+                self.dSMILES[chem] = {}
+                self.dSMILES[chem]["SMILES"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
+                self.dSMILES[chem]["GHS_category"] = "add"
 
 
     def addChem(self):

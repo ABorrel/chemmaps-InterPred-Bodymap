@@ -10,6 +10,7 @@ class mapChem :
     def __init__(self, CASin):
         self.CASin = CASin
         self.cDB = DBrequest()
+        self.cDB.verbose = 0
         
     
     def loadFromDB(self, tableAssayMap, tableAC50, tableGene):

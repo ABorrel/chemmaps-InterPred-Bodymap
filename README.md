@@ -90,3 +90,4 @@
 - 20-11-19: Update bodymap results pages
 - 01-12-19: Update bodymap
 - 16-12-19: connected bodymap to DB
+- 18-12-19: Fix error in chemmaps with user DB
