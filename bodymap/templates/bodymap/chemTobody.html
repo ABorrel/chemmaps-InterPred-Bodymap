@@ -29,14 +29,14 @@
 <form action='/bodymap/chemMappingNameResult/' method='post'>{% csrf_token %}
     <div style="margin-right: 80%; margin-left: 30px">{{formCAS.name}}</div>
     <br>
-    <input style="margin-left: 230px" type='submit' value='Uplad by name'>
+    <input style="margin-left: 230px" type='submit' value='Upload by name'>
 </form>
 
-<p><b>or select a Tox21 chemical by CASN:</b></p>
+<p><b>or select a Tox21 chemical by CASRN:</b></p>
 <form action='/bodymap/chemMappingCASNResult/' method='post'>{% csrf_token %}
     <div style="margin-right: 80%; margin-left: 30px">{{formCAS.cas}}</div>
     <br>
-    <input style="margin-left: 230px" type='submit' value='Uplad by CASN'>
+    <input style="margin-left: 230px" type='submit' value='Upload by CASN'>
 </form>
 
 

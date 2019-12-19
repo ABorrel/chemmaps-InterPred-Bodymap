@@ -345,3 +345,8 @@ input[type=range]::-ms-thumb {
     background: red;
     display:inline-block;
   }
+
+
+a:link {
+    color: darkred;
+}

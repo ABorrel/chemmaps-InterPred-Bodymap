@@ -19,40 +19,9 @@ def index(request):
     return render(request, 'bodymap/index.html', {
     })
 
-
-
-def mappingAssaysBody(request):
-
-
-    # form for bodypart
-    if request.method == 'GET':
-        formBody = bodypartChoice()
-        return render(request, 'bodymap/assaysTobody.html', {"form_body": formBody, "Error": "0"})
-    else:
-        formBody = bodypartChoice(request.POST)
-
-
-    # run map with new chem
-    if formBody.is_valid() == True:
-        lformout = formBody.clean_run()
-        lBodypart = lformout[0]
-        fold = lformout[1]
-        dmap = assaysMapping(lBodypart, float(fold))
-        dmapJS = json.dumps(dmap)
-        typeJS = json.dumps("assays")
-
-        return render(request, 'bodymap/tableResults.html', {"dmap": dmapJS, "Error": "0", "Type":"assays", "TypeJS":typeJS,})
-
-    else:
-
-        return render(request, 'bodymap/tableResults.html', {"Error": "1"})
-    # add error mapping here
-    #else:
-    #    return render(request, 'interferences/computeDESC.html', {"map": map, "dSMILESIN": cinput.dclean["IN"],
-    #                                                              "dSMILESOUT": cinput.dclean["OUT"],
-    #                                                              "ddesc": cinput.ddesc,
-    #                                                              "form_model": formModel, "Error": "1"})
-
+def help(request):
+    return render(request, 'bodymap/help.html', {
+    })
 
 
 def mappingChemicalToBody(request, typeChem=""):

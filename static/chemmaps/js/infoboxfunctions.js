@@ -26,12 +26,16 @@ function updateInfoBox(intersect) {
             if (dinfo[ID][ldesc[i]].length > 50) {
                 lboxes[i].innerHTML = dinfo[ID][ldesc[i]].substring(0, 60) + '...';
             } else {
-                lboxes[i].innerHTML = dinfo[ID][ldesc[i]];
+                lboxes[i].innerHTML = dinfo[ID][ldesc[i]].toString();
             }
         } else if (desctype[ldesc[i]] == 'class') {
-            lboxes[i].innerHTML = dinfo[ID][ldesc[i]];
+            lboxes[i].innerHTML = dinfo[ID][ldesc[i]].toString();
         } else if (desctype[ldesc[i]] == 'range') {
-            lboxes[i].innerHTML = round(dinfo[ID][ldesc[i]], 2);
+            if(dinfo[ID][ldesc[i]] == "NA"){
+                lboxes[i].innerHTML = "NA";
+            }else{
+                lboxes[i].innerHTML = round(dinfo[ID][ldesc[i]], 2).toString();
+            }
         }
     }
 

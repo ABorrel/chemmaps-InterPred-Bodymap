@@ -10,15 +10,15 @@
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
           rel="stylesheet" type="text/css"/> 
 
-<!--<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/table.css" rel="stylesheet">
+<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/table.css" rel="stylesheet">
 <link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
 <link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/chemical.css" rel="stylesheet">
 <link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/network.css" rel="stylesheet">-->
 
-<link href="/static/bodymap/css/table.css" rel="stylesheet">
+<!--<link href="/static/bodymap/css/table.css" rel="stylesheet">
 <link href="/static/bodymap/css/theme.css" rel="stylesheet">
 <link href="/static/bodymap/css/chemical.css" rel="stylesheet">
-<link href="/static/bodymap/css/network.css" rel="stylesheet">
+<link href="/static/bodymap/css/network.css" rel="stylesheet">-->
 
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
@@ -29,19 +29,19 @@
 {% block content %}
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
-<!--<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/theme.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/chemical.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/mappingCanvas.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/network.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script>-->
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script>
 
-<script src="/static/bodymap/js/table.js"></script>
+<!--<script src="/static/bodymap/js/table.js"></script>
 <script src="/static/bodymap/js/theme.js"></script>
 <script src="/static/bodymap/js/chemical.js"></script>
 <script src="/static/bodymap/js/mappingCanvas.js"></script>
 <script src="/static/bodymap/js/network.js"></script>
-<script src="/static/bodymap/js/plotFunctions.js"></script>
+<script src="/static/bodymap/js/plotFunctions.js"></script>-->
 
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -63,7 +63,7 @@
         <h3>Chemical information</h3>
         <b>Chemical name: </b><text id="ChemicalName"></text><br>
         <b>DSSTOX ID: </b><a id="DSSTOX"></a><br>
-        <b>CASN: </b><a id="CASID"></a><br>
+        <b>CASRN: </b><a id="CASID"></a><br>
         <b>SMILES: </b><text id="SMILES"></text><br>
         <b>Chemial space: </b>Explore on <a href="https://sandbox.ntp.niehs.nih.gov/chemmaps/">chemmaps.com</a> <br>
         <b>Chemical annotation: </b>Explore on <a href="http://134.129.166.26:8080/tox21enricher/">Tox21 Enricher</a> 
@@ -77,12 +77,12 @@
 
 <h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Body mapping</h2></button>
 <br>
-<p>Target tissues mapping where the chemical is more likely to produce effects in the human body. User can play with gene expression and activity concentration cutoffs.</p>
+<p>Target tissues mapping where the chemical is more likely to produce effects in the human body. User can adjust gene expression and activity concentration cutoffs.</p>
 <br>    
 <div class="rowChem">
     <div class="columnChem">
-        <!--<canvas id="bodymap" style="background: url('https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/body2.png')" width="1050" height="700"> -->
-            <canvas id="bodymap" style="background: url('/static/bodymap/img/Human_Body_V23.png')" width="825" height="720">
+        <canvas id="bodymap" style="background: url('https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/Human_Body_V23.png')" width="825" height="720"> 
+            <!--<canvas id="bodymap" style="background: url('/static/bodymap/img/Human_Body_V23.png')" width="825" height="720">-->
             Your browser does not support the canvas element.
         </canvas>
     </div>
@@ -99,9 +99,9 @@
         <br>
         <input type="range" min=2 max=50 steps=1 value=1 id="cutExp"/>
         <br>
-        <div id="circle" style="background: #1ee844"></div>&nbsp;&nbsp;map using assay gene target
+        <div id="circle" style="background: #1ee844"></div>&nbsp;&nbsp;mapped using assay gene target
         <br>
-        <div id="circle" style="background: #282ab5"></div>&nbsp;&nbsp;map using assay tissue
+        <div id="circle" style="background: #282ab5"></div>&nbsp;&nbsp;mapped using assay tissue
         <br>
         <br>
         <font size="3">List of organ(s): <span id="organ_active"></span></font>

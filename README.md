@@ -51,7 +51,7 @@
 - ~~Fix a mapping on a body -> done~~
 - ~~develop network mapping~~
 - ~~fix the results page to generalize table~~
-- check the 508
+- check the 508 -> email to beth
 - ~~Add the body mapping~~ 
 - ~~fix legend barplot and inspect color => no real solution~~
 - ~~change body pictures~~
@@ -63,7 +63,7 @@
 - ~~add link to chemmaps~~
 - ~~add a tool tip: <em>"Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity"</em>~~
 - ~~make a autocomplete form~~
-- write home and help pages
+- ~~write home and help pages~~
 - ~~label organs directly on the png~~
 - ~~add name of the chemical on the network => added name in the autocompletion form~~
 
@@ -91,3 +91,5 @@
 - 01-12-19: Update bodymap
 - 16-12-19: connected bodymap to DB
 - 18-12-19: Fix error in chemmaps with user DB
+- 19-12-19: Fix error meighbor dl + fix NaN in the info panel
+- 19-12-19: add help and index pages for bodymap

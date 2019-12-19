@@ -14,15 +14,9 @@ urlpatterns = [
         name='home'
     ),
     url(
-        r'^assaysMapping/$',
-        views.mappingAssaysBody,
-        name='assaysMapping'
-    ),
-    url(
-        r'^assaysMappingTable/$',
-        views.mappingAssaysBody,
-        name='assaysMappingTable'
-
+        r'^help$',
+        views.help,
+        name='help'
     ),
     url(
         r'^chemMapping/$',
