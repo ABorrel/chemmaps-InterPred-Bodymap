@@ -472,8 +472,10 @@ function intersectCompound() {
 }
 
 function connectNeighbor(that) {
+
     var lneighbor = Object.assign([], dneighbors[ID]);
     console.log(lneighbor);
+    console.log(dneighbors);
     lneighbor = lneighbor.splice(0, that.value);
     if (ID in dlines) {
         for (var i = 0; i < dlines[ID].length; i++) {

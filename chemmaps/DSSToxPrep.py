@@ -31,6 +31,7 @@ class DSSToxPrep:
 
     def loadChemMapCenterChem(self, center_chem, center, nbChem):
 
+        #a = self.input # for control
         # control input type
         if not type(center_chem) == str:
             #print("Check input type")
@@ -103,7 +104,6 @@ class DSSToxPrep:
                 self.coord[dsstox] = [float(xadd), float(yadd), float(zadd)]
         
             # info
-
             self.dinfo[dsstox] = {}
             for descMap in self.ldescMap:
                 try: self.dinfo[dsstox][DDESCDSSTOX[descMap]] = round(float(lprop[self.lallProp.index(descMap)]),1)
@@ -144,16 +144,18 @@ class DSSToxPrep:
 
         #ldsstoxAdd = []
         for chem in self.input["SMILESClass"].keys():
-            if chem in list(self.input["db_id"].keys()):
+            if chem in list(self.input["db_id"].keys()) and search("DTXSID", chem):
                 dsstoxID = self.input["db_id"][chem]
                 #ldsstoxAdd.append(dsstoxID)
                 self.loadChemMapCenterChem(dsstoxID, 0, nbChemInMap)
                 
                 self.coord[chem] = deepcopy(self.coord[dsstoxID])
-                self.dinfo[chem] = deepcopy(self.dinfo[dsstoxID])
+                self.dinfo[chem] = {}
+                for desc in self.dinfo[dsstoxID].keys():
+                    self.dinfo[chem][DDESCDSSTOX[desc]] = self.dinfo[dsstoxID][desc]
                 self.dneighbor[chem] = deepcopy(self.dneighbor[dsstoxID])
                 self.dSMILES[chem] = {}
-                self.dSMILES[chem]["SMILESClass"] = deepcopy(self.dSMILES[dsstoxID])
+                self.dSMILES[chem]["SMILES"] = deepcopy(self.dSMILES[dsstoxID])
                 self.dSMILES[chem]["GHS_category"] = "add"
 
                  # dell already in DB
@@ -167,10 +169,12 @@ class DSSToxPrep:
                 self.loadChemMapCenterChem(inch, 0, nbChemInMap)
 
                 self.coord[chem] = deepcopy(self.input["coord"][chem])
-                self.dinfo[chem] = deepcopy(self.input["info"][chem])
+                self.dinfo[chem] = {}
+                for desc in self.input["info"][chem]:
+                    self.dinfo[chem][DDESCDSSTOX[desc]] = self.input["info"][chem][desc]
                 self.dneighbor[chem] = deepcopy(self.input["neighbor"][chem])
                 self.dSMILES[chem] = {}
-                self.dSMILES[chem]["SMILESClass"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
+                self.dSMILES[chem]["SMILES"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
                 self.dSMILES[chem]["GHS_category"] = "add"
 
 

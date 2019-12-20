@@ -5,6 +5,7 @@ from .uploadMap import loadingMap
 
 import math
 from copy import deepcopy
+from re import search
 
 
 # to format desc for map
@@ -210,13 +211,13 @@ class JSbuilder:
 
                 if self.nameMap == "DrugMap":
                     self.dchemAdd["SMILESClass"][id]["DRUG_GROUPS"] = "add"
+
                 else:
                     self.dchemAdd["SMILESClass"][id]["GHS_category"] = "add"
 
-
                 for desc in self.ldescMap:
                     if desc in list(ddesc.keys()):
-                        self.dchemAdd["info"][id][desc] = ddesc[desc]
+                        self.dchemAdd["info"][id][desc] = float(ddesc[desc])
                     elif desc in list(dinfo.keys()):
                         self.dchemAdd["info"][id][desc] = dinfo[desc]
                     else:
@@ -280,27 +281,31 @@ class JSbuilder:
                         d2Ddesc[desc] = val
                         desc_i = desc_i + 1
                     
+                    #a = self.ldescMap
+                    #b = d2Ddesc["MolWt"]
+                    #sss
+
                     for descMap in self.ldescMap:
                         if descMap == "MOLECULAR_WEIGHT":
-                            self.dchemAdd["info"][id][descMap] = d2Ddesc["MolWt"]
+                            self.dchemAdd["info"][id][descMap] = float(d2Ddesc["MolWt"])
                         elif descMap == "MolWeight":
-                            self.dchemAdd["info"][id][descMap] = d2Ddesc["MolWt"]    
+                            self.dchemAdd["info"][id][descMap] = float(d2Ddesc["MolWt"])    
                         elif descMap == "JCHEM_ROTATABLE_BOND_COUNT":
-                            self.dchemAdd["info"][id][descMap] = d2Ddesc["NumRotatableBonds"]
+                            self.dchemAdd["info"][id][descMap] = float(d2Ddesc["NumRotatableBonds"])
                         elif descMap == "JCHEM_POLAR_SURFACE_AREA":
-                            self.dchemAdd["info"][id][descMap] = d2Ddesc["TPSA"]
+                            self.dchemAdd["info"][id][descMap] = float(d2Ddesc["TPSA"])
                         elif descMap == "JCHEM_ATOM_COUNT":
-                            self.dchemAdd["info"][id][descMap] = d2Ddesc["NumHeteroatoms"]
+                            self.dchemAdd["info"][id][descMap] = float(d2Ddesc["NumHeteroatoms"])
                         elif descMap == "ALOGPS_LOGP":
-                            self.dchemAdd["info"][id][descMap] = d2Ddesc["MolLogP"]
+                            self.dchemAdd["info"][id][descMap] = float(d2Ddesc["MolLogP"])
                         elif descMap == "JCHEM_NUMBER_OF_RINGS":
-                            self.dchemAdd["info"][id][descMap] = d2Ddesc["RingCount"]
+                            self.dchemAdd["info"][id][descMap] = float(d2Ddesc["RingCount"])
                         elif descMap == "JCHEM_ACCEPTOR_COUNT":
-                            self.dchemAdd["info"][id][descMap] = d2Ddesc["NumHAcceptors"]
+                            self.dchemAdd["info"][id][descMap] = float(d2Ddesc["NumHAcceptors"])
                         elif descMap == "JCHEM_DONOR_COUNT":
-                            self.dchemAdd["info"][id][descMap] = d2Ddesc["NumHDonors"]
+                            self.dchemAdd["info"][id][descMap] = float(d2Ddesc["NumHDonors"])
                         elif descMap == "JCHEM_REFRACTIVITY":
-                            self.dchemAdd["info"][id][descMap] = d2Ddesc["MolMR"]
+                            self.dchemAdd["info"][id][descMap] = float(d2Ddesc["MolMR"])
                         else:
                             self.dchemAdd["info"][id][descMap] = "NA"
 
@@ -313,20 +318,18 @@ class JSbuilder:
 
                     if self.nameMap == "DrugMap":
                         self.dchemAdd["SMILESClass"][id]["DRUG_GROUPS"] = "add"
+
                     else:
                         self.dchemAdd["SMILESClass"][id]["GHS_category"] = "add"
-
-
-                    for desc in self.ldescMap:
-                        if desc in list(ddesc.keys()):
-                            self.dchemAdd["info"][id][desc] = ddesc[desc]
-                        else:
-                            self.dchemAdd["info"][id][desc] = "NA"
+                        
                     
                     # neighbor
                     if lneighbor != [] and lneighbor != "Error":
                         lneighbormap = []
                         for n in lneighbor:
+                            if search("^DTXSID", n) or search("^DB", n):
+                                lneighbormap.append(n)
+                                continue
                             try:lneighbormap.append(self.map["inchikey"][n])
                             except: pass
                         self.dchemAdd["neighbor"][id] = lneighbormap
@@ -377,7 +380,7 @@ class JSbuilder:
                     included = self.cDB.execCMD(cmdInclude)
                     if included == "Error": 
                         self.cDB.verbose = 0
-                        self.cDB.addElement("chemmap_coords_user", ["dim1d2d", "dim3d", "d3_cube", "inchikey", "map_name"], ['{%s, %s}'%(dcoords[ID][0],dcoords[ID][1]), '{%s}'%(dcoords[ID][2]), '{%s, %s, %s}'%(dcoords[ID][0],dcoords[ID][1], dcoords[ID][2]),ddesc1D2D[ID]["inchikey"],self.nameMap])
+                        self.cDB.addElement("chemmap_coords_user", ["source_id", "dim1d2d", "dim3d", "d3_cube", "inchikey", "map_name"], [ddesc1D2D[ID]["SMILES"], '{%s, %s}'%(dcoords[ID][0],dcoords[ID][1]), '{%s}'%(dcoords[ID][2]), '{%s, %s, %s}'%(dcoords[ID][0],dcoords[ID][1], dcoords[ID][2]),ddesc1D2D[ID]["inchikey"],self.nameMap])
                     else:
                         cmdSQL = "UPDATE chemmap_coords_user SET dim1d2d = '{%s, %s}', dim3d = '{%s}', d3_cube='{%s, %s, %s}'  WHERE inchikey='%s' AND map_name = '%s';"%( dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], ddesc1D2D[ID]["inchikey"],self.nameMap)
                         err = self.cDB.updateElement(cmdSQL)
@@ -470,23 +473,23 @@ class JSbuilder:
                 # add to DB HERE for info to put on map
                 for desc in self.ldescMap:
                     if desc == "MOLECULAR_WEIGHT":
-                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["MolWt"]
+                        self.dchemAdd["info"][IDadd][desc] = float(d2Ddesc[IDadd]["MolWt"])
                     elif desc == "JCHEM_ROTATABLE_BOND_COUNT":
-                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["NumRotatableBonds"]
+                        self.dchemAdd["info"][IDadd][desc] = float(d2Ddesc[IDadd]["NumRotatableBonds"])
                     elif desc == "JCHEM_POLAR_SURFACE_AREA":
-                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["TPSA"]
+                        self.dchemAdd["info"][IDadd][desc] = float(d2Ddesc[IDadd]["TPSA"])
                     elif desc == "JCHEM_ATOM_COUNT":
-                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["NumHeteroatoms"]
+                        self.dchemAdd["info"][IDadd][desc] = float(d2Ddesc[IDadd]["NumHeteroatoms"])
                     elif desc == "ALOGPS_LOGP":
-                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["MolLogP"]
+                        self.dchemAdd["info"][IDadd][desc] = float(d2Ddesc[IDadd]["MolLogP"])
                     elif desc == "JCHEM_NUMBER_OF_RINGS":
-                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["RingCount"]
+                        self.dchemAdd["info"][IDadd][desc] = float(d2Ddesc[IDadd]["RingCount"])
                     elif desc == "JCHEM_ACCEPTOR_COUNT":
-                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["NumHAcceptors"]
+                        self.dchemAdd["info"][IDadd][desc] = float(d2Ddesc[IDadd]["NumHAcceptors"])
                     elif desc == "JCHEM_DONOR_COUNT":
-                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["NumHDonors"]
+                        self.dchemAdd["info"][IDadd][desc] = float(d2Ddesc[IDadd]["NumHDonors"])
                     elif desc == "JCHEM_REFRACTIVITY":
-                        self.dchemAdd["info"][IDadd][desc] = d2Ddesc[IDadd]["MolMR"]
+                        self.dchemAdd["info"][IDadd][desc] = float(d2Ddesc[IDadd]["MolMR"])
                     else:
                         self.dchemAdd["info"][IDadd][desc] = "NA"
 
