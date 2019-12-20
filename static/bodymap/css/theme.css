@@ -347,6 +347,11 @@ input[type=range]::-ms-thumb {
   }
 
 
-a:link {
+
+.aurl{
+    color: darkred;
+}
+
+.aurl:hover{
     color: darkred;
 }
