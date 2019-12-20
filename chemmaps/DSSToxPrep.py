@@ -143,19 +143,22 @@ class DSSToxPrep:
         nbChemInMap = 10000/nbChemAdd
 
         #ldsstoxAdd = []
+        #s = self.input
+
         for chem in self.input["SMILESClass"].keys():
-            if chem in list(self.input["db_id"].keys()) and search("DTXSID", chem):
+            if chem in list(self.input["db_id"].keys()) and search("DTXSID", self.input["db_id"][chem]):
                 dsstoxID = self.input["db_id"][chem]
                 #ldsstoxAdd.append(dsstoxID)
                 self.loadChemMapCenterChem(dsstoxID, 0, nbChemInMap)
                 
                 self.coord[chem] = deepcopy(self.coord[dsstoxID])
                 self.dinfo[chem] = {}
-                for desc in self.dinfo[dsstoxID].keys():
-                    self.dinfo[chem][DDESCDSSTOX[desc]] = self.dinfo[dsstoxID][desc]
+                for desc in self.input["info"][chem]:
+                    self.dinfo[chem][DDESCDSSTOX[desc]] = self.input["info"][chem][desc]
                 self.dneighbor[chem] = deepcopy(self.dneighbor[dsstoxID])
                 self.dSMILES[chem] = {}
-                self.dSMILES[chem]["SMILES"] = deepcopy(self.dSMILES[dsstoxID])
+                self.dSMILES[chem]["SMILES"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
+                self.dSMILES[chem]["inchikey"] = deepcopy(self.input["SMILESClass"][chem]["inchikey"])
                 self.dSMILES[chem]["GHS_category"] = "add"
 
                  # dell already in DB
@@ -175,6 +178,7 @@ class DSSToxPrep:
                 self.dneighbor[chem] = deepcopy(self.input["neighbor"][chem])
                 self.dSMILES[chem] = {}
                 self.dSMILES[chem]["SMILES"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
+                self.dSMILES[chem]["inchikey"] = deepcopy(self.input["SMILESClass"][chem]["inchikey"])
                 self.dSMILES[chem]["GHS_category"] = "add"
 
 

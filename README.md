@@ -19,6 +19,7 @@
 - 508 add logo NTP on the map
 - ~~07-11: error in load DSSTOXMAP~~ 
 - change contact information
+- check case of chemical on drugmap and other map
 
 
 #### Improvement
@@ -93,3 +94,5 @@
 - 18-12-19: Fix error in chemmaps with user DB
 - 19-12-19: Fix error meighbor dl + fix NaN in the info panel
 - 19-12-19: add help and index pages for bodymap
+- 20-12-19: Fix color link bodymap + error upload chemmaps
+- 20-12-19: Fix error replicate in chemmaps user DB

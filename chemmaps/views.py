@@ -290,6 +290,9 @@ def computeDescriptor(request, map):
                 dneighbor = json.dumps(dJS["neighbor"])
                 dSMILESClass = json.dumps(dJS["SMILESClass"])
                 ldesc = list(dJS["info"][list(dJS["info"].keys())[0]].keys())
+            #a = cDSSTox.dinfo
+            #b = cDSSTox.dinfo["1"]
+            #dddd
 
             prSessionJS = json.dumps(prsession[1:])
             mapJS = json.dumps(map)
