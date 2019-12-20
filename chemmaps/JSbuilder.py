@@ -245,7 +245,8 @@ class JSbuilder:
                 #Check on the user table
                 lextract = self.cDB.extractColoumn("chemmap_coords_user", "source_id, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, desc_1d2d",  "WHERE inchikey = '%s' and map_name = '%s' limit (1)"%(inchikey, self.nameMap))
 
-                if lextract != [] and not None in lextract[0] != None:
+
+                if lextract != [] and lextract != "ERROR" and lextract[0] != None:
                     lextract = lextract[0]
                     inch = lextract[1]
                     smiles = lextract[0]
@@ -258,8 +259,14 @@ class JSbuilder:
                     self.dchemAdd["db_id"][id] = ""
                     self.dchemAdd["coord"][id] = [float(xadd), float(yadd), float(zadd)]
 
-
-                    # take info and neighbor
+                    # in case where descriptor is in the main chemmapchemicals 
+                    if lvaldesc2D == None:
+                        lvaldesc2D = self.cDB.extractColoumn("desc_1d2d", "desc_value",  "WHERE inchikey = '%s' limit (1)"%(inchikey))
+                        if lvaldesc2D == "ERROR":
+                            i = i + 1
+                            continue
+                        else:
+                            lvaldesc2D = lvaldesc2D[0][0]
 
                     
                     #info
