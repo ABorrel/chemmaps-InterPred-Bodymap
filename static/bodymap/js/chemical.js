@@ -12,6 +12,9 @@ function chemPanel(dchem) {
     document.getElementById('CASID').href =
             'https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=' + dchem.CAS;
     
+    document.getElementById('CASIDtop').href =
+            'https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=' + dchem.CAS
+
     DSSTOX.innerHTML = dchem.DSSTOX;
     document.getElementById('DSSTOX').href =
             'https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=' + dchem.DSSTOX;

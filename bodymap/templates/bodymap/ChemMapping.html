@@ -29,12 +29,13 @@
 {% block content %}
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/theme.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/chemical.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/mappingCanvas.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/network.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script>
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script> 
 
 <!--<script src="/static/bodymap/js/table.js"></script>
 <script src="/static/bodymap/js/theme.js"></script>
@@ -50,7 +51,7 @@
 <div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
 
 
-<h1><text id="ChemicalNametop"></text> | <a id="CASIDtop" target="_blank"></a></h1>
+<h1><text id="ChemicalNametop"></text> | <a class = "aurl" id="CASIDtop"></a></h1>
 <br>
 <div class="rowChem">
     <div class="columnChem">
@@ -62,11 +63,11 @@
         <br>
         <h3>Chemical information</h3>
         <b>Chemical name: </b><text id="ChemicalName"></text><br>
-        <b>DSSTOX ID: </b><a id="DSSTOX"></a><br>
-        <b>CASRN: </b><a id="CASID"></a><br>
+        <b>DSSTOX ID: </b><a class = "aurl" id="DSSTOX"></a><br>
+        <b>CASRN: </b><a class = "aurl" id="CASID"></a><br>
         <b>SMILES: </b><text id="SMILES"></text><br>
-        <b>Chemial space: </b>Explore on <a href="https://sandbox.ntp.niehs.nih.gov/chemmaps/">chemmaps.com</a> <br>
-        <b>Chemical annotation: </b>Explore on <a href="http://134.129.166.26:8080/tox21enricher/">Tox21 Enricher</a> 
+        <b>Chemial space: </b>Explore on <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/">chemmaps.com</a> <br>
+        <b>Chemical annotation: </b>Explore on <a class = "aurl" href="http://134.129.166.26:8080/tox21enricher/">Tox21 Enricher</a> 
         
         
     </div>
