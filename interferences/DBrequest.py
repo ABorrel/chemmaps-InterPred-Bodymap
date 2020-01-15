@@ -4,7 +4,7 @@ from os import path
 
 class DBrequest:
     def __init__(self, verbose=1):
-        self.dbconfig = path.abspath("./chemmaps/database.ini")
+        self.dbconfig = path.abspath("./database.ini")
         self.conn = None
         self.verbose = verbose
 
@@ -114,7 +114,7 @@ class DBrequest:
             except (Exception, psycopg2.DatabaseError) as error:
                 self.connClose()
                 print(error)
-                return "Error"
+                return "ERROR"
         else:
             print("Open connection first")
         self.connClose()
@@ -134,7 +134,7 @@ class DBrequest:
             except (Exception, psycopg2.DatabaseError) as error:
                 self.connClose()
                 print(error)
-                return "Error"
+                return "ERROR"
         else:
             print("Open connection first")
         self.connClose()

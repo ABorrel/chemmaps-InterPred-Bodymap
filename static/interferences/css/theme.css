@@ -252,7 +252,10 @@ div.desc {
 }
 .divTableCell, .divTableHead {
 	display: table-cell;
-	padding: 3px 10px;
+    padding: 3px 10px;
+    max-width: 180px;
+    text-wrap: normal;
+    word-wrap: break-word;
 }
 .divTableFoot {
 	background-color: #EEE;

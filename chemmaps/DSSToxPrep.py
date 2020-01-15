@@ -24,7 +24,7 @@ class DSSToxPrep:
         self.cDB = DBrequest()
         self.cDB.verbose = 0
 
-        lprop = self.cDB.extractColoumn("dsstox_name_prop", "name")
+        lprop = self.cDB.extractColoumn("chem_prop_dsstox_name", "name")
         self.lallProp = [prop [0] for prop in lprop]
 
 

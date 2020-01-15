@@ -23,7 +23,7 @@ class Predict:
     def predictAll(self):
 
         # Load model
-        lallmodel = self.cDB.extractColoumn("interference_prediction_name", "name")
+        lallmodel = self.cDB.extractColoumn("chem_interference_prediction_name", "name")
         lallmodel = [prop [0] for prop in lallmodel]
         self.allmodels = lallmodel
         
@@ -34,7 +34,10 @@ class Predict:
         dresult = {}
         while i < imax:
             inch = dchem2D[lchem[i]]["inchikey"]
-            lpred = self.cDB.extractColoumn("interference_chemicals", "interference_prediction", "WHERE inchikey='%s'"%(inch))
+            lpred = self.cDB.extractColoumn("chemical_description", "interference_prediction", "WHERE inchikey='%s' limit(1)"%(inch))
+            if type(lpred) != list:
+                 lpred = self.cDB.extractColoumn("chemical_description_user", "interference_prediction", "WHERE inchikey='%s' limit(1)"%(inch))
+            
             if type(lpred) == list and lpred != []: 
                 #lpred = self.cDB.extractColoumn("interference_chemicals", "interference_prediction", "WHERE inchikey='%s'"%(inch))
                 lpred = lpred[0]
@@ -164,7 +167,14 @@ class Predict:
                     model = "_".join(kmodel.split("_")[1:])
                     valM = kmodel.split("_")[0]
                     wdb.append(str(self.dpred[chem][model][valM]))
-                cmdSQL = "UPDATE interference_chemicals SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
+                
+                # choose the table
+                out = self.cDB.execCMD("select count(*) from chemical_description where inchikey='%s'"%(d2D[chem]["inchikey"]))
+                out = [0][0]
+                if out != 0:
+                    cmdSQL = "UPDATE chemical_description SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
+                else:
+                    cmdSQL = "UPDATE chemical_description_user SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
                 self.cDB.updateElement(cmdSQL)
                 
 

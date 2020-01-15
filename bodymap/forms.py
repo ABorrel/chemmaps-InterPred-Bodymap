@@ -35,8 +35,8 @@ class CASUpload(forms.Form):
 
     # extract list of available chemical from DB
     cDB = DBrequest(verbose=0)
-    lname = cDB.execCMD("SELECT casn, name from chemmapchemicals where casn is not NULL ORDER BY name")
-    lcas = cDB.execCMD("SELECT casn, casn from chemmapchemicals where casn is not NULL ORDER BY casn")
+    lname = cDB.execCMD("SELECT casn, name from chemicals where casn is not NULL ORDER BY name and map_name = 'Tox21Map'")
+    lcas = cDB.execCMD("SELECT casn, casn from chemicals where casn is not NULL ORDER BY casn and map_name = 'Tox21Map'")
     
 
     #for CAS in lCAS:

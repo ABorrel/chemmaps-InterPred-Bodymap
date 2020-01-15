@@ -4,7 +4,7 @@ from os import path
 
 class DBrequest:
     def __init__(self, verbose=1):
-        self.dbconfig = path.abspath("./chemmaps/database.ini")
+        self.dbconfig = path.abspath("./database.ini")
         self.conn = None
         self.verbose = verbose
 

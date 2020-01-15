@@ -112,6 +112,10 @@ class Chemical:
 
     def generateInchiKey(self):
 
+        if not "mol" in self.__dict__:
+            self.err = 1
+            return 0
+
         if not "inchikey" in self.__dict__:
             self.inchi = Chem.inchi.MolToInchi(self.mol)
             self.inchikey = Chem.inchi.InchiToInchiKey(self.inchi)
@@ -175,6 +179,8 @@ class Chemical:
 
     def set3DChemical(self, psdf3D = ""):
 
+        if self.err == 1:
+            return 
         if "psdf3D" in self.__dict__ or psdf3D != "":
             self.coords = functionToolbox.parseSDFfor3DdescComputation(psdf3D)
             return

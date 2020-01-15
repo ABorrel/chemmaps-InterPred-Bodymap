@@ -70,7 +70,7 @@ class loadingMap:
 
         # load order prop
         if map == "DrugMap":
-            lprop = self.DB.extractColoumn("drugbank_name_prop", "name")
+            lprop = self.DB.extractColoumn("chem_prop_drugbank_name", "name")
             #self.lallProp = lprop
             self.lallProp = [prop [0] for prop in lprop]
             
@@ -79,7 +79,7 @@ class loadingMap:
                 self.lprop = self.lallProp
         
         else:
-            lprop = self.DB.extractColoumn("dsstox_name_prop", "name")
+            lprop = self.DB.extractColoumn("chem_prop_dsstox_name", "name")
             #self.lallProp = lprop
             self.lallProp = [prop [0] for prop in lprop]
             

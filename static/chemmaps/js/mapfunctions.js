@@ -474,21 +474,40 @@ function intersectCompound() {
 function connectNeighbor(that) {
 
     var lneighbor = Object.assign([], dneighbors[ID]);
-    console.log(lneighbor);
-    console.log(dneighbors);
     lneighbor = lneighbor.splice(0, that.value);
+    // clean the connect
     if (ID in dlines) {
         for (var i = 0; i < dlines[ID].length; i++) {
             scene.remove(dlines[ID][i]);
         }
         dlines[ID] = [];
     }
+
+    // find origin
+    var flagID = 0;
+    for (ktype in dpoints) {
+        if(flagID == 1){
+            break;
+        }
+        for (var i = 0; i < dpoints[ktype].length; i++) {
+            var IDtemp = dpoints[ktype][i].name;
+            if (IDtemp == ID){
+                var Xor = dcoords[dpoints[ktype][i].name][0] * fact;
+                var Yor = dcoords[dpoints[ktype][i].name][1] * fact;
+                var Zor = dcoords[dpoints[ktype][i].name][2] * fact;
+                flagID = 1;
+                break;
+            }
+        }
+    }
+
+    // draw line
     for (ktype in dpoints) {
         for (var i = 0; i < dpoints[ktype].length; i++) {
             var IDtemp = dpoints[ktype][i].name;
             if (lneighbor.indexOf(IDtemp) != -1) {
                 line = buildLine(
-                    new THREE.Vector3(coorblock['x'], coorblock['y'], coorblock['z']),
+                    new THREE.Vector3(Xor, Yor, Zor),
                     new THREE.Vector3(
                         dcoords[dpoints[ktype][i].name][0] * fact,
                         dcoords[dpoints[ktype][i].name][1] * fact,

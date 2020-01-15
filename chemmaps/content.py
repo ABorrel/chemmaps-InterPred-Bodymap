@@ -54,17 +54,17 @@ class uploadSMILES:
                 inch = "Error"
                 # Check if in DB => case it has a ID
                 if search("DTXSID", chem_input):
-                    smiles_clean = self.cDB.extractColoumn("chemmapchemicals", "smiles_clean, inchikey", "WHERE dsstox_id = '%s'"%(chem_input))
+                    smiles_clean = self.cDB.extractColoumn("chemicals", "smiles_clean, inchikey", "WHERE dsstox_id = '%s'"%(chem_input))
                 elif search("^DB", chem_input):
-                    smiles_clean = self.cDB.extractColoumn("chemmapchemicals", "smiles_clean, inchikey", "WHERE drugbank_id = '%s'"%(chem_input))
+                    smiles_clean = self.cDB.extractColoumn("chemicals", "smiles_clean, inchikey", "WHERE drugbank_id = '%s'"%(chem_input))
                 
                 # inspect the DB with SMILES from users
                 if smiles_clean == [] or smiles_clean == "ERROR":
                     # search in chemical DB and chemical_user
-                    smiles_clean = self.cDB.extractColoumn("chemmapchemicals", "smiles_clean, inchikey", "WHERE smiles_origin = '%s' or smiles_clean = '%s'" %(chem_input, chem_input))
+                    smiles_clean = self.cDB.extractColoumn("chemicals", "smiles_clean, inchikey", "WHERE smiles_origin = '%s' or smiles_clean = '%s'" %(chem_input, chem_input))
 
                     if smiles_clean == [] or smiles_clean == "ERROR":
-                        smiles_clean = self.cDB.extractColoumn("chemmapchemicals_user", "smiles_clean, inchikey", "WHERE smiles_origin = '%s' or smiles_clean = '%s'" %(chem_input, chem_input))
+                        smiles_clean = self.cDB.extractColoumn("chemicals_user", "smiles_clean, inchikey", "WHERE smiles_origin = '%s' or smiles_clean = '%s'" %(chem_input, chem_input))
 
                 # process the chemicals
                 if smiles_clean == []  or smiles_clean == "ERROR":
@@ -74,7 +74,7 @@ class uploadSMILES:
                         smiles_clean = chemical.smi
                         inch = chemical.generateInchiKey()
                         # add in the DB
-                        self.cDB.addElement("chemmapchemicals_user", ["smiles_origin", "smiles_clean", "inchikey"], [chem_input, smiles_clean, inch])
+                        self.cDB.addElement("chemicals_user", ["smiles_origin", "smiles_clean", "inchikey"], [chem_input, smiles_clean, inch])
                 else:
                     inch = smiles_clean[0][1]
                     smiles_clean = smiles_clean[0][0]
@@ -118,10 +118,10 @@ class uploadSMILES:
         pfilout3D = self.prout + "3D.csv"
 
         # load descriptor names here to avoid repeat
-        ldesc1D2D = self.cDB.extractColoumn("desc_1d2d_name", "name")
+        ldesc1D2D = self.cDB.extractColoumn("chem_descriptor_1d2d_name", "name")
         ldesc1D2D = [desc [0] for desc in ldesc1D2D]
 
-        ldesc3D = self.cDB.extractColoumn("desc_3D_name", "name")
+        ldesc3D = self.cDB.extractColoumn("chem_descriptor_3d_name", "name")
         ldesc3D = [desc [0] for desc in ldesc3D]
 
         dout = {} # for table in descriptor coloumn
@@ -175,7 +175,7 @@ class uploadSMILES:
                             valDesc3D = [chemical.all3D[desc3D] for desc3D in ldesc3D]
                             valDesc3D = ['-9999' if desc == "NA" else desc for desc in valDesc3D]
                             w3D = "{" + ",".join(["\"%s\"" % (desc) for desc in valDesc3D]) + "}"
-                            self.cDB.addElement("chemmap_coords_user", ["inchikey", "source_id", "map_name", "desc_1d2d", "desc_3d"], [inch, SMICLEAN, mapName, w1D2D, w3D])
+                            self.cDB.addElement("chemical_description_user", ["inchikey", "source_id", "map_name", "desc_1d2d", "desc_3d"], [inch, SMICLEAN, mapName, w1D2D, w3D])
                 
                 if lval1D2D_3D != []:
                     dout[k]["Descriptor"] = "OK"
@@ -211,9 +211,9 @@ def downloadDescFromDB(cDB, ldesc1D2D, ldesc3D, table, inchikey, mapName=""):
 
     if table == "global":
         cDB.verbose = 0
-        lval = cDB.extractColoumn("chemmap_coords", "desc_1d2d, desc_3d","where inchikey='%s'"%(inchikey))
+        lval = cDB.extractColoumn("chemical_description", "desc_1d2d, desc_3d","where inchikey='%s' limit(1)"%(inchikey))
     else:
-        lval = cDB.extractColoumn("chemmap_coords_user", "desc_1d2d, desc_3d","where inchikey='%s' and map_name='%s'"%(inchikey, mapName))
+        lval = cDB.extractColoumn("chemical_description_user", "desc_1d2d, desc_3d","where inchikey='%s' and map_name='%s' limit(1)"%(inchikey, mapName))
     
     if lval == "Error" or lval == []:
         return []

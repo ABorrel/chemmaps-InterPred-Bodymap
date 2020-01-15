@@ -14,12 +14,13 @@
 - Add option to load characteristic on the map
 - Fix the help page
 - ~~For 508 change font tab~~
-- NaN in the panel tab
+- ~~NaN in the panel tab~~
 - ~~DrugMap png missing~~
-- 508 add logo NTP on the map
+- ~~508 add logo NTP on the map~~
 - ~~07-11: error in load DSSTOXMAP~~ 
 - change contact information
 - check case of chemical on drugmap and other map
+- Fix error with metal
 
 
 #### Improvement
@@ -34,8 +35,8 @@
 - ~~Connect to a DB to increase speed~~
 - ~~Update the descriptor computation and add a table of name from previous / new version (or reload model)~~
 - ~~add header and footer for all of the page -> done~~
-- proof read page
-- check the 508
+- ~~proof read page~~
+- ~~check the 508~~
 - ~~redo table for contrast and connect to the DB to save time of computation~~
 - ~~remove MD compute inside the interferences code and make a table of connect for version 2.7 descriptor name and 3.6~~
 
