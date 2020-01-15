@@ -19,43 +19,12 @@ def index(request):
     return render(request, 'bodymap/index.html', {
     })
 
+def help(request):
+    return render(request, 'bodymap/help.html', {
+    })
 
 
-def mappingAssaysBody(request):
-
-
-    # form for bodypart
-    if request.method == 'GET':
-        formBody = bodypartChoice()
-        return render(request, 'bodymap/assaysTobody.html', {"form_body": formBody, "Error": "0"})
-    else:
-        formBody = bodypartChoice(request.POST)
-
-
-    # run map with new chem
-    if formBody.is_valid() == True:
-        lformout = formBody.clean_run()
-        lBodypart = lformout[0]
-        fold = lformout[1]
-        dmap = assaysMapping(lBodypart, float(fold))
-        dmapJS = json.dumps(dmap)
-        typeJS = json.dumps("assays")
-
-        return render(request, 'bodymap/tableResults.html', {"dmap": dmapJS, "Error": "0", "Type":"assays", "TypeJS":typeJS,})
-
-    else:
-
-        return render(request, 'bodymap/tableResults.html', {"Error": "1"})
-    # add error mapping here
-    #else:
-    #    return render(request, 'interferences/computeDESC.html', {"map": map, "dSMILESIN": cinput.dclean["IN"],
-    #                                                              "dSMILESOUT": cinput.dclean["OUT"],
-    #                                                              "ddesc": cinput.ddesc,
-    #                                                              "form_model": formModel, "Error": "1"})
-
-
-
-def mappingChemicalToBody(request):
+def mappingChemicalToBody(request, typeChem=""):
 
 
     # form for bodypart
@@ -65,30 +34,23 @@ def mappingChemicalToBody(request):
     else:
         formCAS = CASUpload(request.POST)
 
-
     # run map with new chem
-    if formCAS.is_valid() == True:
-        CAS = formCAS.clean_chem()
-        #CAS = "10190-99-5"
-        dchem = prepChem(CAS)
-        if dchem == 1:
-            return render(request, 'bodymap/ChemMapping.html', {"Error": "1"})
-
-        cmapChem = mapChem(CAS, 5)
-        dmap = cmapChem.mapChemToBody()
-        dmapJS = json.dumps(dmap)
-        dchemJS = json.dumps(dchem)
-        typeJS = json.dumps("chem")
-
-
-        return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS})
-
+    if typeChem == "name":
+        CAS = formCAS.clean_name()
     else:
+        CAS = formCAS.clean_CAS()
 
+    dchem = prepChem(CAS)
+    if dchem == 1:
         return render(request, 'bodymap/ChemMapping.html', {"Error": "1"})
-    # add error mapping here
-    #else:
-    #    return render(request, 'interferences/computeDESC.html', {"map": map, "dSMILESIN": cinput.dclean["IN"],
-    #                                                              "dSMILESOUT": cinput.dclean["OUT"],
-    #                                                              "ddesc": cinput.ddesc,
-    #                                                              "form_model": formModel, "Error": "1"})
+
+    cmapChem = mapChem(CAS)
+    cmapChem.loadFromDB("bodymap_assay_mapping_new", "bodymap_assay_ac50", "bodymap_genemap")
+    dmap = cmapChem.mapChemToBody()
+    dmapJS = json.dumps(dmap)
+    dchemJS = json.dumps(dchem)
+    typeJS = json.dumps("chem")
+
+
+    return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS})
+

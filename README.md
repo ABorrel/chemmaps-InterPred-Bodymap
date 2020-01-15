@@ -86,3 +86,4 @@
 - 23-10-19: Fix extraction for DrugMap, optimize the loading in case of pre existing chemical, add DB interactions 
 - 5-11-19: Update barplot for AC50 and added chemical informatio
 - 20-11-19: Update bodymap results pages
+- 15-01-20: Kyle committed docker related commits to Gitlab. Still WIP after receving QA feedback from Beth + Alex

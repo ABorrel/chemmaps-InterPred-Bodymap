@@ -1,20 +1,21 @@
 {% extends "base.html" %}
+{% load static %}
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
-rel="stylesheet" type="text/css"/> 
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
-rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
-rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/theme.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/table.css" rel="stylesheet">
+<link href="{% static 'django_server/css/ntpweb-shared.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/base.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/ntpweb.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'interferences/css/theme.css' %}" rel="stylesheet">
+<link href="{% static 'interferences/css/table.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block title %}Process Chemicals{% endblock %}
 {% block content %}
-<script src="https://sandbox.ntp.niehs.nih.gov/interferences/static/js/theme.js"></script>
+<script src="{% static 'interferences/js/theme.js' %}"></script>
 {% include 'interferences/includes/navbar.html' %}
 
 <h1>QSAR-ready SMILES</h1>
@@ -56,7 +57,7 @@ rel="stylesheet" type="text/css"/>
                             <div class="divTableRow">
                                     <div class="divTableCell">&nbsp;{{k1}}</div>
                                     <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
-                                    <div class="divTableCell"><img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/{{dout.file}}" width="25px" alt="Valide upload"></div>
+                                    <div class="divTableCell"><img src="{% static 'interferences/img/{{dout.file}}' %}" width="25px" alt="Valide upload"></div>
                             </div>
                         {% endfor %}
                     </div>

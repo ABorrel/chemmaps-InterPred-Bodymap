@@ -89,7 +89,7 @@ def launchMap(request, map):
         content = content.replace("\r", "")
         content = content.split("\n")
         content = list(dict.fromkeys(content))
-        if len(content) > 100:
+        if len(content) > 200:
             return render(request, 'chemmaps/launchMap.html', {"form_info":formDesc, "form_smiles":form_smiles,
                                                            "from_upload": formUpload, "ErrorLine": "1", "map":map})
 
@@ -290,10 +290,12 @@ def computeDescriptor(request, map):
                 dneighbor = json.dumps(dJS["neighbor"])
                 dSMILESClass = json.dumps(dJS["SMILESClass"])
                 ldesc = list(dJS["info"][list(dJS["info"].keys())[0]].keys())
+            #a = cDSSTox.dinfo
+            #b = cDSSTox.dinfo["1"]
+            #dddd
 
             prSessionJS = json.dumps(prsession[1:])
             mapJS = json.dumps(map)
-
 
 
         return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,

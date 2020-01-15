@@ -19,7 +19,7 @@ h2 {
 }
 
 h3 {
-    margin: 20px;
+    margin: 0px;
     margin-bottom: 15px;
     color: #000000;
     /*font-size: 3.6vmin;*/
@@ -28,7 +28,7 @@ h3 {
 
 
 input[type='submit'] {
-    font-size: 20px;
+    font-size: 15px;
     margin-top: 1px;
     margin-bottom: 2px;
     border: 1.5px solid #999999;
@@ -116,7 +116,9 @@ li {
 }
 
 p {
-    margin: 20px;
+    margin: 15px;
+    font-size: 20px;
+    width: 100%;
 }
 
 .div-table {
@@ -214,7 +216,7 @@ input[type='range']::-webkit-slider-runnable-track {
 input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
     border-radius: 100%;
-    background-color: #037cd5;
+    background-color: #d52d03;
     box-shadow: inset 0 0 0 4px #CCC, inset 0 0 4px #CCC, inset 0 0 0 4px #CCC;
     height: 22px;
     width: 22px;
@@ -243,7 +245,7 @@ input[type='range']::-moz-range-track{
 input[type='range']::-moz-range-thumb {
     -moz-appearance: none ;
     border-radius: 100%;
-    background-color: #037cd5;
+    background-color: #d52d03;
     box-shadow: inset 0 0 0 4px #CCC, inset 0 0 4px #CCC, inset 0 0 0 4px #CCC;
     height: 22px;
     width: 22px;
@@ -286,7 +288,70 @@ input[type=range]::-ms-thumb {
     height: 22px;
     width: 22px;
     border-radius: 100%;
-    background: #037cd5;
+    background: #d52d03;
     cursor: pointer;
     margin-top: -2px;	
+}
+
+
+
+.tooltipBM {
+    position: relative;
+    display: inline-block;
+}
+  
+.tooltipBM .tooltipBMtext {
+    visibility: hidden;
+    width: 240px;
+    background-color: #555;
+    font-size: 15px;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+  
+.tooltipBM .tooltipBMtext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+  
+.tooltipBM:hover .tooltipBMtext {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+
+#circle {
+    width: 30px;
+    height: 30px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    background: red;
+    display:inline-block;
+  }
+
+
+
+.aurl{
+    color: darkred;
+}
+
+.aurl:hover{
+    color: darkred;
 }

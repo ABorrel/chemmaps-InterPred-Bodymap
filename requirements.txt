@@ -13,6 +13,7 @@ scipy==0.19.0
 pyRserve==0.9.1
 gunicorn==20.0.4
 molvs==0.1.1
+python-decouple==3.3
 # pypdf2==1.26.0
 # ca-certificates==2019.9.11
 # ncurses==6.1

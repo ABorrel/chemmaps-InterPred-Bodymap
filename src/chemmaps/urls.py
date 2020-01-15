@@ -204,5 +204,5 @@ urlpatterns = [
     )
 
 
-] + static(settings.STATIC_URL, document_root="/home/sandbox/ChemMap2Site/static/chemmaps/")
+] + static(settings.STATIC_URL, document_root="{}/chemmaps/".format(settings.STATIC_ROOT))
 

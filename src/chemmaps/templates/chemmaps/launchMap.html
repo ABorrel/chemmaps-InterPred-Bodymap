@@ -3,17 +3,17 @@
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
-rel="stylesheet" type="text/css"/> 
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
-rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
-rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/css/theme.css" rel="stylesheet">
+<link href="{% static 'django_server/css/ntpweb-shared.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/base.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/ntpweb.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'chemmaps/css/theme.css' %}" rel="stylesheet">
 {% endblock %}
 {% block title %}Launch {{map}}{% endblock %}
 {% block content %}
-<script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/theme.js"></script>
+<script src="{% static 'chemmaps/js/theme.js' %}"></script>
 <div id = "bg">
     <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
 
@@ -104,7 +104,7 @@ rel="stylesheet" type="text/css"/>
     <br>
     <br>
     <br>
-    <button class="collapsible"><h2><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Optional - Upload your list of chemicals (< 100 chemicals)</h2></button>
+    <button class="collapsible"><h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Optional - Upload your list of chemicals (< 100 chemicals)</h2></button>
     <div class="content" style="display: none">
         {% if ErrorLine == "1"  %}
         <p class = "Errorform">Please upload < 100 chemicals</p>
@@ -149,7 +149,7 @@ rel="stylesheet" type="text/css"/>
 
             <button type="submit" class="upload_button">Upload list of chemicals</button>
         </form>
-        <p>Example of input: <a class = "aurl" style="color:#00ccff" target="_blank" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/test.txt">Test input</a></p>
+        <p>Example of input: <a class = "aurl" style="color:#00ccff" target="_blank" href="{% static 'chemmaps/test.txt' %}">Test input</a></p>
         {% endif %}
         {% if map == "DSSToxMap"  %}
         <form method="post" enctype="multipart/form-data" action='/chemmaps/DSSToxMapSmilesUploaded/' onsubmit="ShowLoading()">
@@ -160,7 +160,7 @@ rel="stylesheet" type="text/css"/>
             <br>
             <button type="submit" class="upload_button">Upload list of chemicals</button>
         </form>
-        <p>Example of input: <a class = "aurl" style="color:#00ccff" target="_blank" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/test.txt">Test input</a></p>
+        <p>Example of input: <a class = "aurl" style="color:#00ccff" target="_blank" href="{% static 'chemmaps/test.txt' %}">Test input</a></p>
         {% endif %}
         {% if map == "PFASMap"  %}
         <form method="post" enctype="multipart/form-data" action='/chemmaps/PFASMapSmilesUploaded/' onsubmit="ShowLoading()">
@@ -171,7 +171,7 @@ rel="stylesheet" type="text/css"/>
             <br>
             <button type="submit" class="upload_button">Upload list of chemicals</button>
         </form>
-        <p>Example of input: <a class = "aurl" style="color:#00ccff" target="_blank" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/test.txt">Test input</a></p>
+        <p>Example of input: <a class = "aurl" style="color:#00ccff" target="_blank" href="{% static 'chemmaps/test.txt' %}">Test input</a></p>
         {% endif %}
         {% if map == "Tox21Map"  %}
         <form method="post" enctype="multipart/form-data" action='/chemmaps/Tox21MapSmilesUploaded/' onsubmit="ShowLoading()">
@@ -182,7 +182,7 @@ rel="stylesheet" type="text/css"/>
             <br>
             <button type="submit" class="upload_button">Upload list of chemicals</button>
         </form>
-        <p>Example of input: <a class = "aurl" style="color:#00ccff" target="_blank" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/test.txt">Test input</a></p>
+        <p>Example of input: <a class = "aurl" style="color:#00ccff" target="_blank" href="{% static 'chemmaps/test.txt' %}">Test input</a></p>
         {% endif %}
 
     </div>

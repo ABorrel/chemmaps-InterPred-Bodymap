@@ -303,7 +303,7 @@ def runPadelfp(prin=""):
     if prin == "":
         return "ERROR - Padel Input"
     else:
-        cmd = "java -jar %s -fingerprints -descriptortypes /app/project/django_server/interferences/descriptor/desc_fp.xml -removesalt -standardizenitro -detectaromaticity -retainorder -maxruntime 10000 -dir %s -file %s"%(PADEL, str(prin), pfilout)
+        cmd = "java -jar %s -fingerprints -descriptortypes /home/aborrel/django_server/django_server/interferences/descriptor/desc_fp.xml -removesalt -standardizenitro -detectaromaticity -retainorder -maxruntime 10000 -dir %s -file %s"%(PADEL, str(prin), pfilout)
         print(cmd)
         system(cmd)
 

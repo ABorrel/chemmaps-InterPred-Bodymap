@@ -1,37 +1,22 @@
 version: '3.4'
 
-
-# #------- VOLUMES --------#
-# volumes:
-#   chemmaps_db:
-#     name: cm_db
-#     external: true
-    #- compose/postgres/data:/var/lib/postgresql/data
-#   fiveday-documents:
-#------- NETWORKS -------#
-networks:
-  chemmaps_backend:
-
-
 services:
 
   #####################
   # POSTGRES DATABASE #
   #####################
-  db:
+  chemmaps_db:
 
-    container_name: cm_db
+    container_name: chemmaps_db
     build:
       context: .
       dockerfile: compose/postgres/Dockerfile
     volumes:
-      - ./compose/postgres/data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+      - chem_db_vol:/var/lib/postgresql/data
     env_file:
-      - .env
-    networks:
-      - chemmaps_backend
+      - .env.db
+    ports:
+      - 5433:5432
   
   
   ##################
@@ -43,30 +28,41 @@ services:
     build:
       context: .
       dockerfile: compose/django/Dockerfile
-    # volumes:
-    #   - fiveday-documents:/code/report/document/docs
     depends_on:
-      - db
+      - chemmaps_db
     env_file:
       - .env
-    networks:
-      - chemmaps_backend
-    # command: gunicorn django_server.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./src:/app/project
+      - type: volume
+        source: static_volume
+        target: /app/project/static/
 
 
-  # ###################
-  # # NGINX WEBSERVER #
-  # ###################
-  # nginx:
+  ###################
+  # NGINX WEBSERVER #
+  ###################
+  chem_ws:
 
-  #   container_name: proxy-manager
+    container_name: chem_ws
+    build:
+      context: .
+      dockerfile: compose/nginx/Dockerfile
+    ports:
+      - 8003:8003
+    depends_on:
+      - chemmaps
+    volumes:
+      - type: volume
+        source: static_volume
+        target: /static
 
-  #   build:
-  #     context: ../proxy-manager/nginx
-  #     dockerfile: ./Dockerfile
+#------- VOLUMES --------#
+volumes:
+  chem_db_vol:
+    external: true
+  static_volume:
 
-  #   ports:
-  #     - 80:80
-
-  #   networks:
-  #     - cebs_backend
+#------- NETWORKS -------#
+# networks:
+#   chemmaps_backend:

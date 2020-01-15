@@ -11,5 +11,6 @@ cmd="$@"
 
 /opt/conda/envs/chemmaps/bin/gunicorn django_server.wsgi:application \
      --workers 8 \
-     --bind 0.0.0.0:8000 \
+     --reload \
+     --bind 0.0.0.0:8001 \
      --chdir /app/project

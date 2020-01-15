@@ -12,7 +12,7 @@ body {
     background-color: #000;
     margin: 0px;
     overflow: hidden;
-    background-image: url('https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/background.jpg');
+    background-image: url('img/background.jpg');
     /*background-image: url('/static/chemmaps/img/water.jpg');*/
 }
 
@@ -127,7 +127,7 @@ input[type='text'] {
     border-radius: 4px;
     font-size: 12px;
     background-color: white;
-    background-image: url('https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/searchicon.png');
+    background-image: url('img/searchicon.png');
     background-position: 2px 3px;
     background-size: 18px;
     background-repeat: no-repeat;

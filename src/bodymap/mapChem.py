@@ -1,93 +1,125 @@
 from django.contrib.staticfiles import finders
 from os import path
-
-
 from .toolbox import loadMatrixToDict, loadToList, openGeneExp
+from .DBrequest import DBrequest
+
 
 
 
 class mapChem :
-    def __init__(self, CASin, foldExp):
+    def __init__(self, CASin):
         self.CASin = CASin
-        self.foldExp = foldExp
-        self.pToxCast = finders.find("bodymap/mapping/chemicals/%s.csv"%(CASin))
-        self.pmapBody = finders.find("bodymap/mapping/preMapping.csv")
+        self.cDB = DBrequest()
+        self.cDB.verbose = 0
+        
+    
+    def loadFromDB(self, tableAssayMap, tableAC50, tableGene):
+
+        dac50 = self.cDB.execCMD("SELECT assay, ac50 from %s where casn='%s'"%(tableAC50, self.CASin))
+        self.dac50 = dac50
+
+        # load premap
+        lassayMapped = self.cDB.execCMD("SELECT assay, gene, type_map, organ, system from %s"%(tableAssayMap))
+        dassayMapped = {}
+        for assayMapped in lassayMapped:
+            assay = assayMapped[0]
+            gene = assayMapped[1]
+            typeMap =  assayMapped[2]
+            organ = assayMapped[3]
+            system = assayMapped[4]
+            dassayMapped[assay] = {}
+            dassayMapped[assay]["type"] = typeMap
+            dassayMapped[assay]["gene"] = gene
+            dassayMapped[assay]["organ"] = organ
+            dassayMapped[assay]["system"] = system
+        
+        self.dassayMapped = dassayMapped
+        self.tableGene = tableGene
+
 
 
     def mapChemToBody(self):
 
-        dAC50 = loadMatrixToDict(self.pToxCast)
-        prmap = finders.find("bodymap/mapping/")
-        
-        if not self.CASin in list(dAC50.keys()):
-            return "Error"
-        else:
+        dvia = {"Immune System": "Immune System", "Digestive System": "Liver", "Respiratory System": "Lung", "Digestive System":"Stomach"}
+        dout = {}
+        for lassaysAc50 in self.dac50:
+            assay = lassaysAc50[0]
+            ac50 = lassaysAc50[1]
+            if not assay in list(self.dassayMapped.keys()):
+                continue
+            
 
-            dout = {}
-            dgene = {}
-            dresultAssays = dAC50[self.CASin]
-            del dresultAssays["CASRN"]
-            lassays_mapped = loadToList(self.pmapBody)
+            typeMap = self.dassayMapped[assay]["type"]
+            if typeMap == "tissue":
+                system = self.dassayMapped[assay]["system"]
+                organ = self.dassayMapped[assay]["organ"]
+                gene = "NA"
+                
+                if not assay in list(dout.keys()):
+                    dout[assay] = {}
 
-            for assays in dresultAssays.keys():
-                if dresultAssays[assays] != "NA" and dresultAssays[assays] != "1000000":
-                    for assay_mapped in lassays_mapped:
-                        if assay_mapped['Assays'] == assays:
-                            if assay_mapped["type mapping"] != "gene target":
-                                organ = assay_mapped["organ"]
-                                system = assay_mapped["system"]
-                                gene = assay_mapped["gene"]
+                if not system in list(dout[assay].keys()):
+                    dout[assay][system] = {}
+
+                if not organ in list(dout[assay][system].keys()):
+                    dout[assay][system][organ] = {}
+                    dout[assay][system][organ]["AC50"] = 100000.0
+                    dout[assay][system][organ]["gene"] = []
+
+                if dout[assay][system][organ]["AC50"] > float(ac50):
+                    dout[assay][system][organ]["AC50"] = float(ac50)
                                 
-                                if not assays in list(dout.keys()):
-                                    dout[assays] = {}
-                                
-                                if not system in list(dout[assays].keys()):
-                                    dout[assays][system] = {}
+                if not gene in dout[assay][system][organ]["gene"]:
+                    dout[assay][system][organ]["gene"].append(gene)
 
-                                if not organ in list(dout[assays][system].keys()):
-                                    dout[assays][system][organ] = {}
-                                    dout[assays][system][organ]["AC50"] = 100000.0
-                                    dout[assays][system][organ]["gene"] = []
-                                
-                                if dout[assays][system][organ]["AC50"] > float(dresultAssays[assays]):
-                                    dout[assays][system][organ]["AC50"] = float(dresultAssays[assays])
-                                
-                                if not gene in dout[assays][system][organ]["gene"]:
-                                    dout[assays][system][organ]["gene"].append(gene)
-                        
-                            else:
-                                gene = assay_mapped["gene"]
-                                if gene in list(dgene.keys()):
-                                    dgenetemp = dgene[gene]
-                                else:
-                                    pgene = prmap + "/geneExp/" + str(gene) + ".csv" 
-                                    if not path.exists(pgene):
-                                        continue
-                                    else:
-                                        dgenetemp = openGeneExp(pgene)
-                                        dgene[gene] = dgenetemp
+            elif typeMap == "viability":
+                for system in dvia.keys():
+                    organ = dvia[system]
+                    gene = "NA"
 
-                                if not assays in list(dout.keys()):
-                                        dout[assays] = {}
+                    if not assay in list(dout.keys()):
+                        dout[assay] = {}
 
-                                for system in dgenetemp.keys():
-                                    if not system in list(dout[assays].keys()):
-                                        dout[assays][system] = {}
-                                    for organ in dgenetemp[system].keys():
+                    if not system in list(dout[assay].keys()):
+                        dout[assay][system] = {}
+
+                    if not organ in list(dout[assay][system].keys()):
+                        dout[assay][system][organ] = {}
+                        dout[assay][system][organ]["AC50"] = 100000.0
+                        dout[assay][system][organ]["gene"] = []
+
+                    if dout[assay][system][organ]["AC50"] > float(ac50):
+                        dout[assay][system][organ]["AC50"] = float(ac50)
                                     
-                                        exp = dgenetemp[system][organ]["exp"] / dgenetemp[system][organ]["control"]
-                                    
-                                        if not organ in list(dout[assays][system].keys()):
-                                            dout[assays][system][organ] = {}
-                                            dout[assays][system][organ]["AC50"] = 100000.0
-                                            dout[assays][system][organ]["gene"] = []
-                                            dout[assays][system][organ]["exp"] = []
+                    if not gene in dout[assay][system][organ]["gene"]:
+                        dout[assay][system][organ]["gene"].append(gene)
 
-                                        if dout[assays][system][organ]["AC50"] > float(dresultAssays[assays]):
-                                            dout[assays][system][organ]["AC50"] = float(dresultAssays[assays])
+            elif typeMap == "gene":
+                gene = self.dassayMapped[assay]["gene"]
+                llexp = self.cDB.execCMD("SELECT gene, system, organ, expression, control from %s WHERE gene='%s'"%(self.tableGene, self.dassayMapped[assay]["gene"]))
+                for lexp in llexp:
+                    exp = float(lexp[3]) / float(lexp[4])
+                    if exp < 2.0:
+                        continue
+                    system = lexp[1]
+                    organ = lexp[2]
+                    if not assay in list(dout.keys()):
+                        dout[assay] = {}
+                    if not system in list(dout[assay].keys()):
+                        dout[assay][system] = {}
+
+                    if not organ in list(dout[assay][system].keys()):
+                        dout[assay][system][organ] = {}
+                        dout[assay][system][organ]["AC50"] = 100000.0
+                        dout[assay][system][organ]["gene"] = []
+                        dout[assay][system][organ]["exp"] = []
+
+                        if dout[assay][system][organ]["AC50"] > float(ac50):
+                            dout[assay][system][organ]["AC50"] = float(ac50)
                                         
-                                        if not gene in dout[assays][system][organ]["gene"]:
-                                            dout[assays][system][organ]["gene"].append(gene)
-                                            dout[assays][system][organ]["exp"].append(exp)
-            return dout
+                        if not gene in dout[assay][system][organ]["gene"]:
+                            dout[assay][system][organ]["gene"].append(gene)
+                            dout[assay][system][organ]["exp"].append(exp)
 
+                                        
+        return dout

@@ -31,7 +31,7 @@ function posCloud(din, dcolorRGB, size, scene) {
     geometry.computeBoundingSphere();
     // textures and material
     var textureLoader = new THREE.TextureLoader();
-    var sprite = textureLoader.load('https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/aspirin.png');
+    var sprite = textureLoader.load('chemmaps/img/aspirin.png');
     //en conssprite.repeat.set( 1, 1 );
     //		sprite.wrapS = sprite.wrapT = THREE.RepeatWrapping;
     //				sprite.format = THREE.RGBFormat;
@@ -89,7 +89,7 @@ function posMeshs(din, scene, color, rad) {
     var lmesh = [];
     // Texture
     var textureLoader = new THREE.TextureLoader();
-    var texture = textureLoader.load('https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/disturb.jpg');
+    var texture = textureLoader.load('chemmaps/img/disturb.jpg');
     for (var i in din) {
         var objectGeometry = new THREE.SphereGeometry(rad);
         var objectMaterial = new THREE.MeshLambertMaterial({ map: texture, color: color });
@@ -357,11 +357,11 @@ function drawChemical() {
             if (ID == dpoints[ktype][i].name) {
                 console.log(ktype)
                 var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                ppng = "https://sandbox.ntp.niehs.nih.gov/chemmaps/static/png/" + namepng + '.png'
+                ppng = "chemmaps/png/" + namepng + '.png'
                 //if(fs.exists(ppng) == true){
                     var texture = textureLoader.load(ppng);
                     dpoints[ktype][i].material.map = texture;
-                    console.log('https://sandbox.ntp.niehs.nih.gov/chemmaps/static/png/' + namepng + '.png')
+                    console.log('chemmaps/png/' + namepng + '.png')
                     dpoints[ktype][i].material.size = 15;
                     dpoints[ktype][i].material.color.setHex(0xffffff);
                     dpoints[ktype][i].col = 0xffffff;
@@ -380,19 +380,24 @@ function downloadNeighbor() {
     var filname = ID + '.csv';
     var textin = 'ID\tSMILES\tinchikey\tGroup';
 
-    var IDcenter = dneighbors[ID][0];
+    var IDcenter = ID;
+    //console.log(ID);
     
     var ldesc = Object.keys(dinfo[ID]);
+    console.log(ldesc);
+    console.log(dSMILESClass[ID]);
     // write header
     for (var idesc in ldesc) {
         textin = textin + '\t' + ldesc[idesc];
     }
     textin = textin + '\tdistance\n';
-    //textin = textin + createLineWriteForTable(ID, ldesc);
+    textin = textin + createLineWriteForTable(IDcenter, IDcenter, ldesc);
     
-    for (var i = 0; i < dneighbors[ID].length; i++) {
-        textin = textin + createLineWriteForTable(dneighbors[ID][i], IDcenter, ldesc);
+    //console.log(dneighbors[IDcenter]);
+    for (var p = 0; p < dneighbors[IDcenter].length; p++) {
+        textin = textin + createLineWriteForTable(dneighbors[IDcenter][p], IDcenter, ldesc);
     }
+    //console.log(textin);
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textin));
     element.setAttribute('download', filname);
 
@@ -404,35 +409,39 @@ function downloadNeighbor() {
 
 function createLineWriteForTable(IDchem, IDcenter, ldesc) {
     var lineW =
-        IDchem +
+        IDchem.toString() +
         '\t' +
         dSMILESClass[IDchem]['SMILES'] +
         '\t' +
         dSMILESClass[IDchem]['inchikey'] +
         '\t';
+    
     if (map == 'DrugMap') {
         lineW = lineW + dSMILESClass[IDchem]['DRUG_GROUPS'];
     } else {
         lineW = lineW + dSMILESClass[IDchem]['GHS_category'];
     }
     for (var idesc in ldesc) {
-        lineW = lineW + '\t' + dinfo[IDchem][ldesc[idesc]];
+        lineW = lineW + '\t' + dinfo[IDchem][ldesc[idesc]].toString();
     }
     dist = computeEuclidian(IDchem, IDcenter); // add var?
-    lineW = lineW + "\t" + dist + '\n';
+    lineW = lineW + "\t" + dist.toString() + '\n';
     
     return lineW;
 }
 
 function computeEuclidian(ID1, ID2){
 
-    var x1 = dcoords[ID1][0] * fact;
-    var y1 = dcoords[ID1][1] * fact;
-    var z1 = dcoords[ID1][2] * fact;
+    //console.log(ID1);
+    //console.log(ID2);
 
-    var x2 = dcoords[ID2][0] * fact;
-    var y2 = dcoords[ID2][1] * fact;
-    var z2 = dcoords[ID2][2] * fact;
+    var x1 = dcoords[ID1][0];
+    var y1 = dcoords[ID1][1];
+    var z1 = dcoords[ID1][2];
+
+    var x2 = dcoords[ID2][0];
+    var y2 = dcoords[ID2][1];
+    var z2 = dcoords[ID2][2];
 
     var dist = Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2) + Math.pow((z2-z1),2))
     return dist;
@@ -463,8 +472,10 @@ function intersectCompound() {
 }
 
 function connectNeighbor(that) {
+
     var lneighbor = Object.assign([], dneighbors[ID]);
     console.log(lneighbor);
+    console.log(dneighbors);
     lneighbor = lneighbor.splice(0, that.value);
     if (ID in dlines) {
         for (var i = 0; i < dlines[ID].length; i++) {

@@ -1,37 +1,37 @@
 var dmappingBody = {};
-dmappingBody["Uterus"] = [645, 520];
-dmappingBody["Vagina"] = [645, 640];
-dmappingBody["Urethra"] = [896, 630];
-dmappingBody["Testes"] = [845, 650];
-dmappingBody["Kidney"] = [280, 415];
-dmappingBody["Prostate gland"] = [900, 560];
-dmappingBody["Placenta"] = [1000,500];
-dmappingBody["Ovary"] = [530, 530];
-dmappingBody["Penis"] = [900, 675];
-dmappingBody["Bladder"] = [240, 550];
-dmappingBody["Mammary gland"] = [170, 320];
-dmappingBody["Peritoneum"] = [270, 460];
-dmappingBody["Colon"] = [170, 470];
-dmappingBody["Tongue"] = [240, 160];
-dmappingBody["Liver"] = [180, 360];
-dmappingBody["Pancreas"] = [240, 400];
-dmappingBody["Salivary gland"] = [240, 120];
-dmappingBody["Small intestine"] = [220, 460];
-dmappingBody["Stomach"] = [240, 350];
-dmappingBody["Esophagus"] = [220, 200];
-dmappingBody["Skeletal Muscle"] = [100, 240];
-dmappingBody["Joint"] = [100, 420];
-dmappingBody["Heart"] = [230, 300];
-dmappingBody["Vascular"] = [220, 240];
-dmappingBody["Nervous System"] = [210, 40];
-dmappingBody["Pituitary gland"] = [210, 80];
-dmappingBody["Adrenal gland"] = [350, 200];
-dmappingBody["Adipose tissue"] = [320, 460];
-dmappingBody["Thyroid"] = [750, 60];
-dmappingBody["Immune System"] = [730, 150];
-dmappingBody["Lung"] = [250, 270];
-dmappingBody["Skin"] = [290, 120];
-dmappingBody["Eye"] = [255, 75];
+dmappingBody["Uterus"] = [400, 560];
+dmappingBody["Placenta"] = [400, 550];
+dmappingBody["Vagina"] = [400, 602];
+dmappingBody["Urethra"] = [415, 600];
+dmappingBody["Testes"] = [425, 625];
+dmappingBody["Kidney"] = [440, 475];
+dmappingBody["Prostate gland"] = [415, 595];
+dmappingBody["Ovary"] = [370, 560];
+dmappingBody["Penis"] = [415, 615];
+dmappingBody["Bladder"] = [427, 585];
+dmappingBody["Mammary gland"] = [355, 355];
+dmappingBody["Peritoneum"] = [352, 322];
+dmappingBody["Colon"] = [405, 615];
+dmappingBody["Tongue"] = [403, 205];
+dmappingBody["Liver"] = [360, 427];
+dmappingBody["Pancreas"] = [395, 462];
+dmappingBody["Salivary gland"] = [415, 214];
+dmappingBody["Small intestine"] = [430, 520];
+dmappingBody["Stomach"] = [430, 432];
+dmappingBody["Esophagus"] = [408, 270];
+dmappingBody["Skeletal Muscle"] = [465, 270];
+dmappingBody["Joint"] = [345, 575];
+dmappingBody["Heart"] = [410, 350];
+dmappingBody["Vascular"] = [320, 385];
+dmappingBody["Nervous System"] = [375, 160];
+dmappingBody["Pituitary gland"] = [411, 145];
+dmappingBody["Adrenal gland"] = [380, 463];
+dmappingBody["Adipose tissue"] = [360, 460];
+dmappingBody["Thyroid"] = [408, 250]
+dmappingBody["Immune System"] = [440, 145];
+dmappingBody["Lung"] = [446, 326];
+dmappingBody["Skin"] = [345, 285];
+dmappingBody["Eye"] = [386, 168];
 
 
 
@@ -42,8 +42,8 @@ function calibratePosition(){
     var canvas = document.getElementById("bodymap");
     var ctx = canvas.getContext("2d");
 
-    for(var i=0; i<1050; i=i+40){
-        for(var j=0; j<700; j=j+40){
+    for(var i=0; i<720; i=i+40){
+        for(var j=0; j<825; j=j+40){
             ctx.font = "8px Arial";
             ctx.fillText(String(i) + "-" + String(j), i, j); 
         }
@@ -123,7 +123,7 @@ function mapOnBody(dmap, valAC50, valExp){
         if(dorgan[organ] == "Draw-green"){
             ctx.fillStyle = "#1ee844";
             try {ctx.beginPath();
-                ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 10, 0, 2 * Math.PI);
+                ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 7, 0, 2 * Math.PI);
                 ctx.fill();
                 lorgani = lorgani + organ + "; ";
             }catch{
@@ -132,7 +132,7 @@ function mapOnBody(dmap, valAC50, valExp){
         }else if(dorgan[organ] == "Draw-blue"){
             ctx.fillStyle = "#282ab5";
             try {ctx.beginPath();
-                ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 10, 0, 2 * Math.PI);
+                ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 7, 0, 2 * Math.PI);
                 ctx.fill();
                 lorgani = lorgani + organ + "; ";
             }catch{
@@ -140,7 +140,7 @@ function mapOnBody(dmap, valAC50, valExp){
             }
         }else{
             try {ctx.beginPath();
-            ctx.clearRect(dmappingBody[organ][0] - 10 - 1, dmappingBody[organ][1] - 10 - 1, 10 * 2 + 2, 10 * 2 + 2);
+            ctx.clearRect(dmappingBody[organ][0] - 7 - 1, dmappingBody[organ][1] - 7 - 1, 7 * 2 + 2, 7 * 2 + 2);
             ctx.closePath();
             }catch{
                 continue;

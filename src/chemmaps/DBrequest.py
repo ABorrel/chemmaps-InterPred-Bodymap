@@ -1,5 +1,6 @@
 import psycopg2
 from configparser import ConfigParser
+from decouple import config
 from os import path
 
 class DBrequest:
@@ -17,8 +18,6 @@ class DBrequest:
             params = parser.items(section)
             for param in params:
                 dparams[param[0]] = param[1]
-        else:
-            raise Exception('Section {0} not found in the {1} file'.format(section, self.dbconfig))
 
         self.params = dparams
 
@@ -27,7 +26,14 @@ class DBrequest:
         try:
             self.config()
             if self.verbose: print('Connecting to the PostgreSQL database...')
-            self.conn = psycopg2.connect(** self.params)
+            conn = {
+                'host': config('POSTGRES_HOST'),
+                'port': config('POSTGRES_PORT'),
+                'database': config('POSTGRES_DATABASE'),
+                'user': config('POSTGRES_USER'),
+                'password': config('POSTGRES_PASSWORD')
+            }
+            self.conn = psycopg2.connect(**conn)
 
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
@@ -155,5 +161,6 @@ class DBrequest:
 
 
 #print(out[0][0][4])
+
 
 

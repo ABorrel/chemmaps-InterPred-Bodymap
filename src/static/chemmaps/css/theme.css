@@ -2,7 +2,7 @@
     background-color: #000;
     /*#margin: 0px;
     overflow: hidden;*/
-    background-image: url('https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/background.jpg');
+    background-image: url('../img/background.jpg');
     color:#ffffff;
     margin-top: 15px
 }

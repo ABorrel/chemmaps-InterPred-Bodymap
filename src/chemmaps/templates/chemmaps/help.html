@@ -3,13 +3,13 @@
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
+<link href="{% static 'django_server/css/ntpweb-shared.css' %}"
 rel="stylesheet" type="text/css"/> 
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
+<link href="{% static 'django_server/css/base.css' %}"
 rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
+<link href="{% static 'django_server/css/ntpweb.css' %}"
 rel="stylesheet" type="text/css"/> 
-<link href="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/css/theme.css" rel="stylesheet">
+<link href="{% static 'chemmaps/css/theme.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -38,21 +38,21 @@ rel="stylesheet" type="text/css"/>
             <br><br>
 
             <br>
-            <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/methods.png" style="width: 80%" class="marginauto">
+            <img src="{% static 'chemmaps/img/methods.png' %}" style="width: 80%" class="marginauto">
 
 
         <div class="row">
             <div class="column">
 
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/stargreen.png" style="opacity: 1" alttext="Green star for approved drug">
+                <img src="{% static 'chemmaps/img/stargreen.png' %}" style="opacity: 1" alttext="Green star for approved drug">
                 <div class="desc">Approved drug</div>
             </div>
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/starviolet.png" alttext="Violet star for withdrawn drug" style="opacity: 1">
+                <img src="{% static 'chemmaps/img/starviolet.png' %}" alttext="Violet star for withdrawn drug" style="opacity: 1">
                 <div class="desc">Approved drug</div>
             </div>
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/planet.png" alttext="Planet for drug in development" style="opacity: 1">
+                <img src="{% static 'chemmaps/img/planet.png' %}" alttext="Planet for drug in development" style="opacity: 1">
                 <div class="desc">Investigational drug</div>
             </div>
         </div>
@@ -67,7 +67,7 @@ rel="stylesheet" type="text/css"/>
             and non-organic compounds were removed.
             <br><br>
             <a href="https://www.drugbank.ca/">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/DrugBank.png" style="width: 60%" class="marginauto">
+                <img src="{% static 'chemmaps/img/DrugBank.png' %}" style="width: 60%" class="marginauto">
             </a>
         </p>
         <br>
@@ -121,23 +121,23 @@ rel="stylesheet" type="text/css"/>
 
         <div class="row">
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/starGHS1.png" style="opacity: 1">
+                <img src="{% static 'chemmaps/img/starGHS1.png' %}" style="opacity: 1">
                 <div class="desc">GHS = 1</div>
             </div>
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/starGHS2.png"  style="opacity: 1">
+                <img src="{% static 'chemmaps/img/starGHS2.png' %}"  style="opacity: 1">
                 <div class="desc">GHS = 2</div>
             </div>
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/starGHS3.png"  style="opacity: 1">
+                <img src="{% static 'chemmaps/img/starGHS3.png' %}"  style="opacity: 1">
                 <div class="desc">GHS = 3</div>
             </div>
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/starGHS4.png"  style="opacity: 1">
+                <img src="{% static 'chemmaps/img/starGHS4.png' %}"  style="opacity: 1">
                 <div class="desc">GHS = 4</div>
             </div>
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/starGHS5.png"  style="opacity: 1">
+                <img src="{% static 'chemmaps/img/starGHS5.png' %}"  style="opacity: 1">
                 <div class="desc">GHS = 5</div>
             </div>
         </div>
@@ -145,19 +145,19 @@ rel="stylesheet" type="text/css"/>
 
         <div class="row">
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/starEPA1.png" style="opacity: 1">
+                <img src="{% static 'chemmaps/img/starEPA1.png' %}" style="opacity: 1">
                 <div class="desc">EPA = 1</div>
             </div>
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/starEPA2.png"  style="opacity: 1">
+                <img src="{% static 'chemmaps/img/starEPA2.png' %}"  style="opacity: 1">
                 <div class="desc">EPA = 2</div>
             </div>
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/starEPA3.png"  style="opacity: 1">
+                <img src="{% static 'chemmaps/img/starEPA3.png' %}"  style="opacity: 1">
                 <div class="desc">EPA = 3</div>
             </div>
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/starEPA4.png"  style="opacity: 1">
+                <img src="{% static 'chemmaps/img/starEPA4.png' %}"  style="opacity: 1">
                 <div class="desc">EPA = 4</div>
             </div>
         </div>
@@ -166,11 +166,11 @@ rel="stylesheet" type="text/css"/>
 
         <div class="row">
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/star.png" style="opacity: 1">
+                <img src="{% static 'chemmaps/img/star.png' %}" style="opacity: 1">
                 <div class="desc">No tox information</div>
             </div>
             <div class="column">
-                <img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/starred.png"  style="opacity: 1">
+                <img src="{% static 'chemmaps/img/starred.png' %}"  style="opacity: 1">
                 <div class="desc">Selected Chemical</div>
             </div>
         </div>
@@ -183,7 +183,7 @@ rel="stylesheet" type="text/css"/>
             defined by all chemicals from the EPA DSSTox library
             with ~700,000 compounds (release dated 01-2019).
             <br><br>
-            <a href="https://comptox.epa.gov/dashboard/"><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/EPA-dashboard.png" class="marginauto"></a>
+            <a href="https://comptox.epa.gov/dashboard/"><img src="{% static 'chemmaps/img/EPA-dashboard.png' %}" class="marginauto"></a>
         </p>
         <p><br></p>
 

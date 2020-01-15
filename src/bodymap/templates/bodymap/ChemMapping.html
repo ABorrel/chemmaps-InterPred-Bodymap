@@ -3,17 +3,17 @@
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
-          rel="stylesheet" type="text/css"/> 
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
+<link href="{% static 'django_server/css/ntpweb-shared.css' %}"
           rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
+<link href="{% static 'django_server/css/base.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/ntpweb.css' %}"
           rel="stylesheet" type="text/css"/> 
 
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/table.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/chemical.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/network.css" rel="stylesheet">
+<link href="{% static 'bodymap/css/table.css' %}" rel="stylesheet">
+<link href="{% static 'bodymap/css/theme.css' %}" rel="stylesheet">
+<link href="{% static 'bodymap/css/chemical.css' %}" rel="stylesheet">
+<link href="{% static 'bodymap/css/network.css' %}" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
@@ -23,21 +23,23 @@
 {% block content %}
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/theme.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/chemical.js"></script>
 
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/mappingCanvas.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/network.js"></script>
+<script src="{% static 'bodymap/js/table.js' %}"></script>
+<script src="{% static 'bodymap/js/theme.js' %}"></script>
+<script src="{% static 'bodymap/js/chemical.js' %}"></script>
+<script src="{% static 'bodymap/js/mappingCanvas.js' %}"></script>
+<script src="{% static 'bodymap/js/network.js' %}"></script>
+<script src="{% static 'bodymap/js/plotFunctions.js"></script>
 
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script>
+
+
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
 
 <div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
 
 
-<h1>CAS-RN: <a id="CASID" target="_blank"></a></h1>
+<h1><text id="ChemicalNametop"></text> | <a class = "aurl" id="CASIDtop"></a></h1>
 <br>
 <div class="rowChem">
     <div class="columnChem">
@@ -47,20 +49,29 @@
     </div>
     <div class="columnChem">
         <br>
-        <b>DSSTOX ID: </b><a id="DSSTOX"></a><br>
+        <h3>Chemical information</h3>
         <b>Chemical name: </b><text id="ChemicalName"></text><br>
+        <b>DSSTOX ID: </b><a class = "aurl" id="DSSTOX"></a><br>
+        <b>CASRN: </b><a class = "aurl" id="CASID"></a><br>
         <b>SMILES: </b><text id="SMILES"></text><br>
+        <b>Chemial space: </b>Explore on <a class = "aurl" href="{% url chemMapping %}">ChemMaps</a> <br>
+        <!--<b>Chemical annotation: </b>Explore on <a class = "aurl" href="http://134.129.166.26:8080/tox21enricher/">Tox21 Enricher</a> -->
+        
+        
     </div>
 </div>
 <br>
 
 
 
-<h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Body mapping</h2></button>
+<h2><img src="{% static 'bodymap/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Body mapping</h2></button>
+<br>
+<p>Target tissues mapping where the chemical is more likely to produce effects in the human body. User can adjust gene expression and activity concentration cutoffs.</p>
 <br>
 <div class="rowChem">
     <div class="columnChem">
-        <canvas id="bodymap" style="background: url('https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/body2.png')" width="1050" height="700">
+        <canvas id="bodymap" style="background: url('bodymap/img/Human_Body_V23.png')" width="825" height="720"> 
+            <!--<canvas id="bodymap" style="background: url('/static/bodymap/img/Human_Body_V23.png')" width="825" height="720">-->
             Your browser does not support the canvas element.
         </canvas>
     </div>
@@ -73,23 +84,30 @@
         AC50 cutoff: <span id="AC50_val"></span> &#956;M
         <input type="range" min=0 max=300 steps=1 value=1 id="cutAC50"/>
         <br>
-        <br>    
-        Tissue expression threshold: <span id="exp_val"></span> *folds control
+        <div class="tooltipBM">Tissue expression threshold <eM><sup >?</sup></eM>:&nbsp;<span class="tooltipBMtext">Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity</span> </div><span id="exp_val"></span> *folds control
+        <br>
         <input type="range" min=2 max=50 steps=1 value=1 id="cutExp"/>
         <br>
-        <font size="2">List of organ(s): <span id="organ_active"></span></font>
-
+        <div id="circle" style="background: #1ee844"></div>&nbsp;&nbsp;mapped using assay gene target
+        <br>
+        <div id="circle" style="background: #282ab5"></div>&nbsp;&nbsp;mapped using assay tissue
+        <br>
+        <br>
+        <font size="3">List of organ(s): <span id="organ_active"></span></font>
+        <br>
+        <br>
+        
     </div>
 </div>
 <br>
 <br>
 
-<h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Assays mapping</h2></button>
+<h2><img src="{% static 'bodymap/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Assays mapping</h2></button>
 <br>
 <div class="rowChem">
     <div class="columnChem" style="margin-left: 25px">
-        <div id="dotplot"></div>
-        Assays mapping on organ system in function of the log10(AC50).
+        <div id="dotplot" style="margin-bottom: 10px;"></div>
+        Assays mapping on organ system in function of the -log10(AC50).
     </div>
     <div class="columnChem" style="margin-left: 10px">
         <br>
@@ -103,12 +121,18 @@
 </div>
 <br>
 <br>
-<h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Network representation</h2>
+<h2><img src="{% static 'bodymap/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Network representation</h2>
+<br>
+<p>Network where chemical-assay activity, target gene expression, and body mapping are connected in a data-driven representation.</p>
 <br>
 <div id="mapnetwork"></div>
 <br>
+<div id="circle" style="background: red"></div>&nbsp;&nbsp;chemical (CASN);&nbsp; 
+<div id="circle" style="background: pink"></div>&nbsp;&nbsp;assay;&nbsp;
+<div id="circle" style="background: green"></div>&nbsp;&nbsp;gene;&nbsp;
+<div id="circle" style="background: blue"></div>&nbsp;&nbsp;organ;&nbsp;
+<div id="circle" style="background: orange"></div>&nbsp;&nbsp;system;&nbsp;
 <br>
-
 
 
 <script>
@@ -135,6 +159,7 @@ var ctx = canvas.getContext("2d");
 var dpos = definePosDict();
 
 chemPanel(dchem);
+//calibratePosition();
 //labelOrgan();
 
 // slider for AC50

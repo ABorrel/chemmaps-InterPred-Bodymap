@@ -15,19 +15,10 @@ RUN apt-get update && \
         dirmngr \
     && apt-get clean
 
-COPY ./compose/django/marvin_linux_19.11.deb /marvin_linux_19.11.deb
-
-#RUN wget https://github.com/kmansouri/OPERA/releases/download/v2.4-beta5/OPERA2.4_CL_mcr.tar.gz && \
-#    tar -xzvf OPERA2.3_CL_mcr.tar.gz
-
 COPY compose/django/OPERA2.4_CL_mcr.tar.gz /OPERA2.4_CL_mcr.tar.gz
     
 RUN tar -xzvf /OPERA2.4_CL_mcr.tar.gz && \
     /OPERA2_CL_mcr/OPERA2.4_CL_mcr.install -mode silent -agreeToLicense yes
-
-#RUN apt install /marvin_linux_19.11.deb -y
-#RUN rm -R OPERA2_CL_mcr && \
-#    rm marvin_linux_19.11.deb
 
 RUN echo "LD_LIBRARY='/usr/local/MATLAB/MATLAB_Runtime/v94/'" >> ~/.bashrc && \
     echo "alias opera='/usr/local/bin/OPERA/application/run_OPERA.sh $LD_LIBRARY'"
@@ -45,7 +36,7 @@ RUN mkdir -p /app/logs && mkdir /app/project && \
     mkdir -p /tmp/interferences/ && groupadd -r django && \
     useradd -r -g django django
 
-COPY compose/django/entrypoint.sh /app/project/entrypoint.sh
+COPY compose/django/entrypoint.sh /entrypoint.sh
 COPY requirements.txt ./requirements.txt
 COPY conda.env /conda.env
 
@@ -54,21 +45,11 @@ RUN conda env create --name chemmaps -f /conda.env  && \
     conda activate chemmaps && \
     pip install -U pip && \
     pip install -r /requirements.txt && \
-    chmod +x /app/project/entrypoint.sh && \
-    chown django /app/project/entrypoint.sh
+    chmod +x /entrypoint.sh && \
+    chown django:django /entrypoint.sh
 
-# RUN chmod +x /app/project/entrypoint.sh && \
-#     chown django /app/project/entrypoint.sh && \
-#     pip install -U pip && \
-#     pip install -r /requirements.txt
-
-COPY src /app/project
-
-RUN chown -R django /app
+RUN chown -R django:django /app
 #USER django
-
 WORKDIR /app/project
-
-EXPOSE 8000
-
-ENTRYPOINT ["/app/project/entrypoint.sh"]
+EXPOSE 8001
+ENTRYPOINT ["/entrypoint.sh"]

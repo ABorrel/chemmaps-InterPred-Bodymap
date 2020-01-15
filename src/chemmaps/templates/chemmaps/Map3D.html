@@ -11,7 +11,7 @@
         <meta name='description' content='{% block meta-description %}{% endblock %}'>
         <meta name='author' content='{% block meta-author %}{% endblock %}'>
         <meta name='keywords' content='{% block meta-keywords %}{% endblock %}'>
-        <link rel="stylesheet" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/css/chemMap.css">
+        <link rel="stylesheet" href="{% static 'chemmaps/css/chemMap.css' %}">
     </head>
 
     <div id="container"></div>
@@ -86,11 +86,11 @@
 
 
     <div id="iconhome">
-        <a href="{% url 'chemmaps:home' %}"><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/icon_chemmaps_full_white.png" height = "30px" alt="Home link"></a>
+        <a href="{% url 'chemmaps:home' %}"><img src="{% static 'chemmaps/img/icon_chemmaps_full_white.png' %}" height = "30px" alt="Home link"></a>
     </div>
 
     <div id="iconNTP">
-            <a href="https://ntp.niehs.nih.gov""><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/icon_ntp_full_white.png" height = "47px" alt="NTP link"></a>
+            <a href="https://ntp.niehs.nih.gov"><img src="{% static 'chemmaps/img/icon_ntp_full_white.png' %}" height = "47px" alt="NTP link"></a>
         </div>
 
     <div id="blockdiv">
@@ -98,23 +98,23 @@
     </div>
 
 
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/three.js/three.min.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/three.js/libs/TrackballControls.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/three.js/libs/GeometryUtils.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/three.js/libs/Detector.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/three.js/libs/stats.min.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/three.js/libs/tween.min.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/three.js/libs/dat.gui.min.js"></script>
+    <script src="{% static 'chemmaps/js/three.js/three.min.js' %}"></script>
+    <script src="{% static 'chemmaps/js/three.js/libs/TrackballControls.js' %}"></script>
+    <script src="{% static 'chemmaps/js/three.js/libs/GeometryUtils.js' %}"></script>
+    <script src="{% static 'chemmaps/js/three.js/libs/Detector.js' %}"></script>
+    <script src="{% static 'chemmaps/js/three.js/libs/stats.min.js' %}"></script>
+    <script src="{% static 'chemmaps/js/three.js/libs/tween.min.js' %}"></script>
+    <script src="{% static 'chemmaps/js/three.js/libs/dat.gui.min.js' %}"></script>
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
 
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/panelfunctions.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/infoboxfunctions.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/mapfunctions.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/toolbox.js"></script>
+    <script src="{% static 'chemmaps/js/panelfunctions.js' %}"></script>
+    <script src="{% static 'chemmaps/js/infoboxfunctions.js' %}"></script>
+    <script src="{% static 'chemmaps/js/mapfunctions.js' %}"></script>
+    <script src="{% static 'chemmaps/js/toolbox.js' %}"></script>
 
 
     <script>
@@ -173,14 +173,22 @@
                     var dcol = {"approved": 0x00ff00, "indev": 0xffffff, "withdraw": 0x663399, "add":0Xffffff};
                     var dsize = {"approved": 20, "indev": 2.5, "withdraw": 10, "add": 7};
                     var nbcol = 20;
-                    var fact = 20;
+                    var fact = 22;
                 
                     // textures and material
                     var textureLoader = new THREE.TextureLoader();
-                    var spriteApp = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/star.png");
-                    var spriteWithdraw = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/star.png");
-                    var spriteDev = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/planet2.png");
-                    var spriteAdd = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/rocket.png");
+                    var spriteApp = textureLoader.load("{% static 'chemmaps/img/star.png' %}");
+                    var spriteWithdraw = textureLoader.load("{% static 'chemmaps/img/star.png' %}");
+                    var spriteDev = textureLoader.load("{% static 'chemmaps/img/planet2.png' %}");
+                    var spriteAdd = textureLoader.load("{% static 'chemmaps/img/rocket.png' %}");
+                    
+                    // for developmemt
+                    //var textureLoader = new THREE.TextureLoader();
+                    //var spriteApp = textureLoader.load("/static/chemmaps/img/star.png");
+                    //var spriteWithdraw = textureLoader.load("/static/chemmaps/img/star.png");
+                    //var spriteDev = textureLoader.load("/static/chemmaps/img/planet2.png");
+                    //var spriteAdd = textureLoader.load("/static/chemmaps/img/rocket.png")
+                    
                     var dsprite = {"approved":spriteApp, "withdraw":spriteWithdraw, "indev":spriteDev, "add":spriteAdd}
                     
                 }else{
@@ -198,10 +206,18 @@
                     
                     // textures and material
                     var textureLoader = new THREE.TextureLoader();
-                    var spriteClassified = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/star.png");
-                    var spriteNoClassified = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/planet2.png");
-                    var spriteAdd = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/rocket.png");
+                    var spriteClassified = textureLoader.load("{% static 'chemmaps/img/star.png' %}");
+                    var spriteNoClassified = textureLoader.load("{% static 'chemmaps/img/planet2.png' %}");
+                    var spriteAdd = textureLoader.load("{% static 'chemmaps/img/rocket.png' %}");
+
+                    // for developmemt
+                    //var textureLoader = new THREE.TextureLoader();
+                    //var spriteClassified = textureLoader.load("/static/chemmaps/img/star.png");
+                    //var spriteNoClassified = textureLoader.load("/static/chemmaps/img/planet2.png");
+                    //var spriteAdd = textureLoader.load("/static/chemmaps/img/rocket.png")
+
                     var dsprite = {"classified":spriteClassified, "noclassified":spriteNoClassified, "add":spriteAdd};
+
                 }
                 ;
                 
@@ -275,3 +291,4 @@
     </script>
 </body>
 </html>
+

@@ -3,34 +3,42 @@
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
-          rel="stylesheet" type="text/css"/> 
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
+<link href="{% static 'django_server/css/ntpweb-shared.css' %}"
           rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
+<link href="{% static 'django_server/css/base.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/ntpweb.css' %}"
           rel="stylesheet" type="text/css"/> 
 
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
+<link href="{% static 'bodymap/css/theme.css' %}" rel="stylesheet">
 {% endblock %}
 {% block title %}Chemical mapping{% endblock %}
 {% block content %}
 
 <div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
-
 <h1>Map a chemical activities on body</h1>
 <br>
+<p>Please choose the chemical you would like to map on the human body.</p>
 
 {% if Error == "1" %}
-<p class = "Errorform"> Please choose a valid CAS</p>
+<p class = "Errorform"> Please choose a valid chemical</p>
 {% endif %}
 
 
-<p>Chemical (CAS):</p>
-<form action='/bodymap/chemMappingTable/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-    <div style="margin-right: 80%; margin-left: 30px">{{formCAS.chem}}</div>
+<p><b>By name:</b></p>
+<form action='/bodymap/chemMappingNameResult/' method='post'>{% csrf_token %}
+    <div style="margin-right: 80%; margin-left: 30px">{{formCAS.name}}</div>
     <br>
-    <input style="margin-left: 20px" type='submit' value='Uplad Chemical'>
+    <input style="margin-left: 230px" type='submit' value='Upload by name'>
 </form>
+
+<p><b>or select a Tox21 chemical by CASRN:</b></p>
+<form action='/bodymap/chemMappingCASNResult/' method='post'>{% csrf_token %}
+    <div style="margin-right: 80%; margin-left: 30px">{{formCAS.cas}}</div>
+    <br>
+    <input style="margin-left: 230px" type='submit' value='Upload by CASN'>
+</form>
+
 
 
 {% endblock content %}

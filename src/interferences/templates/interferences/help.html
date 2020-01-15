@@ -3,14 +3,14 @@
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
-rel="stylesheet" type="text/css"/> 
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
-rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
-rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/theme.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/table.css" rel="stylesheet">
+<link href="{% static 'django_server/css/ntpweb-shared.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/base.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/ntpweb.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'interferences/css/theme.css' %}" rel="stylesheet">
+<link href="{% static 'interferences/css/table.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% include 'interferences/includes/navbar.html' %}
@@ -23,13 +23,13 @@ In the first step users can upload up to 100 chemicals using SMILES string forma
 
 <div class="row">
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_1.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_1.png" style="width:100%" alt="Example of upload SMILES page">
+            <a href="{% static 'interferences/img/interference_1.png' %}">
+                <img src="{% static 'interferences/img/interference_1.png' %}" style="width:100%" alt="Example of upload SMILES page">
             </a>
         </div>
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_2.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_2.png" style="width:100%" alt="SMILES clean process results">
+            <a href="{% static 'interferences/img/interference_2.png' %}">
+                <img src="{% static 'interferences/img/interference_2.png' %}" style="width:100%" alt="SMILES clean process results">
             </a>
     </div>
 </div>
@@ -45,13 +45,13 @@ For each chemical a set of 677 structural descriptors is computed including 1D a
 </p>
 <div class="row">
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/RDKIT.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/RDKIT.png" style="width:30%" alt="RDKIT logo for illustration">
+            <a href="{% static 'interferences/img/RDKIT.png' %}">
+                <img src="{% static 'interferences/img/RDKIT.png' %}" style="width:30%" alt="RDKIT logo for illustration">
             </a>
         </div>
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/OPERA.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/OPERA.png" style="width:30%" alt="OPERA logo for illustration">
+            <a href="{% static 'interferences/img/OPERA.png">
+                <img src="{% static 'interferences/img/OPERA.png' %}" style="width:30%" alt="OPERA logo for illustration">
             </a>
     </div>
 </div>
@@ -61,8 +61,8 @@ For each chemical a set of 677 structural descriptors is computed including 1D a
 
 <div class="row">
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_3.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_3.png" style="width:100%" alt="Example of descriptor computation results">
+            <a href="{% static 'interferences/img/interference_3.png' %}">
+                <img src="{% static 'interferences/img/interference_3.png' %}" style="width:100%" alt="Example of descriptor computation results">
             </a>
     </div>
 </div>
@@ -207,8 +207,8 @@ It takes around 1-2s per chemical and per model to compute the predictions.
 </p>
 <div class="row">
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_5.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_5.png" style="width:100%" alt="Form to choose QSAR models">
+            <a href="{% static 'interferences/img/interference_5.png' %}">
+                <img src="{% static 'interferences/img/interference_5.png' %}" style="width:100%" alt="Form to choose QSAR models">
             </a>
         </div>
 </div>
@@ -220,8 +220,8 @@ Results are presented in a dynamic table. For each model selected a score betwee
 </p>
 <div class="row">
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_6.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_6.png" style="width:100%" alt="Results table">
+            <a href="{% static 'interferences/img/interference_6.png' %}">
+                <img src="{% static 'interferences/img/interference_6.png' %}" style="width:100%" alt="Results table">
             </a>
         </div>
 </div>

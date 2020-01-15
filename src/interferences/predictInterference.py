@@ -36,7 +36,7 @@ class Predict:
             inch = dchem2D[lchem[i]]["inchikey"]
             lpred = self.cDB.extractColoumn("interference_chemicals", "interference_prediction", "WHERE inchikey='%s'"%(inch))
             if type(lpred) == list and lpred != []: 
-                lpred = self.cDB.extractColoumn("interference_chemicals", "interference_prediction", "WHERE inchikey='%s'"%(inch))
+                #lpred = self.cDB.extractColoumn("interference_chemicals", "interference_prediction", "WHERE inchikey='%s'"%(inch))
                 lpred = lpred[0]
                 if lpred[0] == None:
                     i = i + 1

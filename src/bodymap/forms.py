@@ -1,5 +1,5 @@
 from django import forms
-
+from .DBrequest import DBrequest
 
 
 class bodypartChoice(forms.Form):
@@ -31,9 +31,26 @@ class bodypartChoice(forms.Form):
 
 
 class CASUpload(forms.Form):
-    chem = forms.CharField(label="", error_messages={'required': ''}, required=True)
 
-    def clean_chem(self):
-        if len(self.cleaned_data['chem']) == "":
-            return "ERROR"
-        return self.cleaned_data['chem'].upper()
+    # extract list of available chemical from DB
+    cDB = DBrequest(verbose=0)
+    lname = cDB.execCMD("SELECT casn, name from chemmapchemicals where casn is not NULL ORDER BY name")
+    lcas = cDB.execCMD("SELECT casn, casn from chemmapchemicals where casn is not NULL ORDER BY casn")
+    
+
+    #for CAS in lCAS:
+    #    print(CAS)
+
+    name = forms.CharField(label='name', widget=forms.Select(choices=lname))
+    cas = forms.CharField(label='cas', widget=forms.Select(choices=lcas))
+    #chem = forms.CharField(label="", error_messages={'required': ''}, required=True, )
+
+    def clean_name(self):
+        return str(self.data['name'])
+    
+    def clean_CAS(self):
+        return str(self.data['cas'])
+
+
+
+

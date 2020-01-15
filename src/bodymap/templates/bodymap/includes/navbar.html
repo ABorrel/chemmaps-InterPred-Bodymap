@@ -1,13 +1,13 @@
 <ul class="nav nav-tabs" style="padding: 0.5em 0.5em; font-size: 1.5em; ">
 
     {% url 'bodymap:home' as url %}
-    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A"><i class="fa fa-home fa-lg"></i>&nbsp;BodyMap</a></li>
+    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A"><i class="fa fa-home fa-lg"></i>&nbsp;Tox21BodyMap</a></li>
 
     <!--{% url 'bodymap:assaysMapping' as url %}
     <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Assays mapping</a></li>-->
 
     {% url 'bodymap:chemMapping' as url %}
-    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Chemicals mapping</a></li>
+    <li {% if request.path == url or  request.path == "/bodymap/chemMappingCASNResult/" or request.path == "/bodymap/chemMappingNameResult/"%} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Chemicals mapping</a></li>
 
     {% url 'bodymap:help' as url %}
     <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #DE3C1A">Help</a></li>

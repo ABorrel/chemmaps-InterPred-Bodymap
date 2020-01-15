@@ -14,15 +14,9 @@ urlpatterns = [
         name='home'
     ),
     url(
-        r'^assaysMapping/$',
-        views.mappingAssaysBody,
-        name='assaysMapping'
-    ),
-    url(
-        r'^assaysMappingTable/$',
-        views.mappingAssaysBody,
-        name='assaysMappingTable'
-
+        r'^help$',
+        views.help,
+        name='help'
     ),
     url(
         r'^chemMapping/$',
@@ -30,10 +24,17 @@ urlpatterns = [
         name='chemMapping'
     ),
     url(
-        r'^chemMappingTable/$',
+        r'^chemMappingCASNResult/$',
         views.mappingChemicalToBody,
+        {"typeChem":"CASN"},
+        name='chemMappingCAS'
+    ),
+    url(
+        r'^chemMappingNameResult/$',
+        views.mappingChemicalToBody,
+        {"typeChem":"name"},
         name='chemMappingTable'
 
     ),
-    ]+ static(settings.STATIC_URL, document_root="/home/sandbox/ChemMap2Site/static/bodymap/")
+    ]+ static(settings.STATIC_URL, document_root="{}/bodymap/".format(settings.STATIC_ROOT))
 
