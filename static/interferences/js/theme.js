@@ -14,3 +14,11 @@ function ShowLoadingInterferences(e) {
     //window.event.cancelBubble = true;
     //e.stopPropagation();
 }
+
+
+function alertSubmit(form) {
+    var txt;
+    if (confirm("Please note that a new chemical not included in the DSSTOX database will be add at our intern database for reproduction/speed purposes.")) {
+        form.submit();
+    } 
+  }

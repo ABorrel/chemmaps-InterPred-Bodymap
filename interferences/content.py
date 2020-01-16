@@ -61,11 +61,13 @@ class formatSMILES:
                 
                 # inspect the DB with SMILES from users
                 if smiles_clean == [] or smiles_clean == "ERROR":
-                    # search in chemical DB and chemical_user
-                    smiles_clean = self.cDB.extractColoumn("chemicals", "smiles_clean, inchikey", "WHERE smiles_origin = '%s' or smiles_clean = '%s'" %(chem_input, chem_input))
+                    if not search(",", chem_input) and not search("'", chem_input) and not search("`", chem_input):
+                        print(chem_input)
+                        # search in chemical DB and chemical_user
+                        smiles_clean = self.cDB.extractColoumn("chemicals", "smiles_clean, inchikey", "WHERE smiles_origin = '%s' or smiles_clean = '%s'" %(chem_input, chem_input))
 
-                    if smiles_clean == [] or smiles_clean == "ERROR":
-                        smiles_clean = self.cDB.extractColoumn("chemicals_user", "smiles_clean, inchikey", "WHERE smiles_origin = '%s' or smiles_clean = '%s'" %(chem_input, chem_input))
+                        if smiles_clean == [] or smiles_clean == "ERROR":
+                            smiles_clean = self.cDB.extractColoumn("chemicals_user", "smiles_clean, inchikey", "WHERE smiles_origin = '%s' or smiles_clean = '%s'" %(chem_input, chem_input))
 
                 # process the chemicals
                 if smiles_clean == []  or smiles_clean == "ERROR":
@@ -177,7 +179,6 @@ class formatSMILES:
                         valDescOPERA = [dopera[descOPERA] for descOPERA in ldescOPERA]
                         valDescOPERA = ['-9999' if desc == "NA" or desc == "NaN" else desc for desc in valDescOPERA]
                         wOPERA = "{" + ",".join(["\"%s\"" % (desc) for desc in valDescOPERA]) + "}"
-
                         # add to DB
                         # find if it is on DB
                         out = self.cDB.execCMD("select count(*) from chemical_description where inchikey='%s'"%(inch))
@@ -185,11 +186,11 @@ class formatSMILES:
 
                         # add everything in user
                         if out == 0:
-                            self.cDB.updateElement("UPDATE chemical_description_user SET desc_opera = '{%s}' WHERE inchikey='%s';"%(",".join(wOPERA), inch))
-                            self.cDB.updateElement("UPDATE chemical_description_user SET desc_1d2d = '{%s}' WHERE inchikey='%s';"%(",".join(w1D2D), inch))
+                            self.cDB.updateElement("UPDATE chemical_description_user SET desc_opera = '%s' WHERE inchikey='%s';"%(wOPERA, inch))
+                            self.cDB.updateElement("UPDATE chemical_description_user SET desc_1d2d = '%s' WHERE inchikey='%s';"%(w1D2D, inch))
                         else:
-                            self.cDB.updateElement("UPDATE chemical_description SET desc_opera = '{%s}' WHERE inchikey='%s';"%(",".join(wOPERA), inch))
-                            self.cDB.updateElement("UPDATE chemical_description SET desc_1d2d = '{%s}' WHERE inchikey='%s';"%(",".join(w1D2D), inch))
+                            self.cDB.updateElement("UPDATE chemical_description SET desc_opera = '%s' WHERE inchikey='%s';"%(wOPERA, inch))
+                            self.cDB.updateElement("UPDATE chemical_description SET desc_1d2d = '%s' WHERE inchikey='%s';"%(w1D2D, inch))
 
                 
                 if lval1D2D_OPERA != []:
@@ -227,12 +228,14 @@ def downloadDescFromDB(cDB, ldesc1D2D, ldescOPERA, inchikey):
     if lval1D2D == "ERROR" or lval1D2D == [] or lvalOPERA == "ERROR" or lvalOPERA == []:
         lval1D2D = cDB.extractColoumn("chemical_description_user", "desc_1d2d","where inchikey='%s' limit(1)"%(inchikey))
         lvalOPERA = cDB.extractColoumn("chemical_description_user", "desc_opera", "where inchikey='%s' limit(1)"%(inchikey))
-        if lval1D2D == "ERROR" or lval1D2D == [] or lvalOPERA == "ERROR" or lvalOPERA == []:
+
+        if lval1D2D == "ERROR" or lval1D2D == [] or lvalOPERA == "ERROR" or lvalOPERA == [] or lvalOPERA == [(None)]:
             return []
         
     lval1D2D = lval1D2D[0][0]
-    lvalO= lvalOPERA
     lvalOPERA = lvalOPERA[0][0]
+    if lvalOPERA == None or lval1D2D == None:
+        return []
 
     d1D2D = {}
     i = 0

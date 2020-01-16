@@ -49,7 +49,7 @@ def uploadSMILES(request):
         content = content.replace("\r", "")
         content = content.split("\n")
         content = list(dict.fromkeys(content))
-        if len(content) > 10000:
+        if len(content) > 120:
             return render(request, 'interferences/uploadSMILES.html', {"form_smiles":form_smiles,
                                                            "from_upload": formUpload, "ErrorLine": "1"})
 

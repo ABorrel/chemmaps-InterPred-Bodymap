@@ -1,7 +1,7 @@
 # To do list
 
 ### For all projects
-- Update the MD directory
+- ~~Update the MD directory => created an alternative branch~~
 
 ### ChemMaps
 #### Urgent 
@@ -19,8 +19,9 @@
 - ~~508 add logo NTP on the map~~
 - ~~07-11: error in load DSSTOXMAP~~ 
 - change contact information
-- check case of chemical on drugmap and other map
-- Fix error with metal
+- ~~Fix error with connect neighboor => change intersect JS~~
+- ~~check case of chemical on drugmap and other map~~
+- ~~Fix error with metal~~
 
 
 #### Improvement
@@ -39,7 +40,10 @@
 - ~~check the 508~~
 - ~~redo table for contrast and connect to the DB to save time of computation~~
 - ~~remove MD compute inside the interferences code and make a table of connect for version 2.7 descriptor name and 3.6~~
-
+- ~~Fix error reach several time the DB~~
+- ~~case of name in input => add a regex before reach the DB~~
+- ~~Add pop up for revision~~
+- ~~Add link to Rmodel compressed and script R~~ 
 
 #### Improvement
 - Add in the table if the chemical is included in the trainning set

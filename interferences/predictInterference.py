@@ -35,9 +35,12 @@ class Predict:
         while i < imax:
             inch = dchem2D[lchem[i]]["inchikey"]
             lpred = self.cDB.extractColoumn("chemical_description", "interference_prediction", "WHERE inchikey='%s' limit(1)"%(inch))
-            if type(lpred) != list:
+            if type(lpred) != list or lpred == []:
                  lpred = self.cDB.extractColoumn("chemical_description_user", "interference_prediction", "WHERE inchikey='%s' limit(1)"%(inch))
             
+
+            #print(lpred)
+
             if type(lpred) == list and lpred != []: 
                 #lpred = self.cDB.extractColoumn("interference_chemicals", "interference_prediction", "WHERE inchikey='%s'"%(inch))
                 lpred = lpred[0]
@@ -107,7 +110,7 @@ class Predict:
 
         pRpredict = path.abspath("./interferences/Rscripts") + "/predictfromModel.R"
         cmd = "%s %s %s %s %s" % (pRpredict, pdesc2D, pOPERA, pmodel, pout)
-        print(cmd)
+        #print(cmd)
         system(cmd)
 
 

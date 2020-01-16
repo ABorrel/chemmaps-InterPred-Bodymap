@@ -19,6 +19,10 @@ rel="stylesheet" type="text/css"/>
 <h1>Chemical descriptors</h1>
 <br>
 
+{% if ErrorDesc == "1" %}
+    <p class = "Errorform" style="margin-right: 0px"> No descriptor computed.</p>
+{% endif %}
+
 <div class="row">
         <div class="column" style="background-color:#004400;">
             <h3 style="color:#ffffff">Inputs</h3>
@@ -76,6 +80,12 @@ rel="stylesheet" type="text/css"/>
                     </div>
             </div>
             <br>
+            {% if ErrorDesc == "1" %}
+            <form action='/interferences/uploadSMILES/' method='get'>
+                <input type='submit' value='Resubmit SMILES' />
+            </form>
+            {% endif %}
+
             {% if ErrorDesc != "1" %}
             <div align="right">
                 <form method="get" action="/interferences/2D.csv"><button class="btn"><i class="fa fa-download"></i> Download 2D descriptor table</button></form>
@@ -86,9 +96,8 @@ rel="stylesheet" type="text/css"/>
 </div>
 
 
-
 <br><br>
-
+{% if ErrorDesc != "1" %}
 <h2>Choose models to prediction interferences</h2>
 <br>
 {% if Error == "1" %}
@@ -111,7 +120,7 @@ rel="stylesheet" type="text/css"/>
         </div>
     </div>
 </form>
-
+{% endif %}
 
 {% endblock content %}
 

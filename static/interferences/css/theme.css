@@ -81,6 +81,22 @@ input[type='submit']:hover {
     padding: 8px 25px;
 }
 
+.inputButton{
+    font-size: 20px;
+    margin-top: 1px;
+    margin-bottom: 2px;
+    border: 1.5px solid #999999;
+    color: #333333;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.inputButton:hover{
+    background-color: #228B22;
+    color: #ffffff;
+}
+
+
 button:hover {
     background-color: #228B22;
     color: #ffffff;

@@ -11,10 +11,16 @@ rel="stylesheet" type="text/css"/>
 rel="stylesheet" type="text/css"/>
 <link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/theme.css" rel="stylesheet">
 <link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/table.css" rel="stylesheet">
+
+<!--<link href="/static/interferences/css/theme.css" rel="stylesheet">
+<link href="/static/css/table.css" rel="stylesheet">-->
+
 {% endblock %}
 {% block title %}Upload chemicals{% endblock %}
 {% block content %}
 <script src="https://sandbox.ntp.niehs.nih.gov/interferences/static/js/theme.js"></script>
+<!--<script src="/static/interferences/js/theme.js"></script>-->
+
 {% include 'interferences/includes/navbar.html' %}
 
 
@@ -23,23 +29,22 @@ rel="stylesheet" type="text/css"/>
     <p class = "Errorform">Please upload < 100 chemicals</p>
     {% endif %}
     <p>From a list including SMILES, CAS or DTXSID:</p>
-    <form style="margin:20px" action='/interferences/cleanSMILES/' method='post' onsubmit="ShowLoadingInterferences()">{% csrf_token %}
+    <form style="margin:20px" method='post' action='/interferences/cleanSMILES/'>{% csrf_token %}
         {{ form_smiles.as_p }}
-        <input type='submit' value='Submit chemicals'/>
+        <input class="inputButton" type='button' value='Submit chemicals' onclick="alertSubmit(this.form)"/>
     </form>
     <br>
     <p>From a file:</p>
     {% if ErrorFile == "1"  %}
     <p class = "Errorform">Please upload a text file with one chemical by line (< 100 lines)</p>
     {% endif %}
-    <form style="margin:20px" method="post" enctype="multipart/form-data" action='/interferences/cleanSMILES/' onsubmit="ShowLoadingInterferences()">
+    <form style="margin:20px" method="post" enctype="multipart/form-data" action='/interferences/cleanSMILES/' >
         {% csrf_token %}
         {% for field in from_upload %}
         <div id="UploadBox">{{field}}</div>
         {% endfor %}
         <br>
-
-       <button type="submit" class="upload_button">Upload list of chemicals</button>
+       <button type="submit" class="upload_button" onclick="alertSubmit(this.form)" >Upload list of chemicals</button>
     </form>
     <p>Example of input: <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/test.txt">Test input</a></p>
 
