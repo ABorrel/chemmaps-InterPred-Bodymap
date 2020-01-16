@@ -18,7 +18,7 @@ function ShowLoadingInterferences(e) {
 
 function alertSubmit(form) {
     var txt;
-    if (confirm("Please note that a new chemical not included in the DSSTOX database will be add at our intern database for reproduction/speed purposes.")) {
+    if (confirm("Please note by default a new chemical not included in the DSSTOX database will be add at our intern database for reproduction/speed purposes.\n")) {
         form.submit();
     } 
   }

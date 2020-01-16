@@ -119,6 +119,11 @@ rel="stylesheet" type="text/css"/>
             <input type='submit' value='Compute predictions'>
         </div>
     </div>
+    <br>
+    <p>
+        For quality check and speed purpose, each chemical no included in the DSSTox database will be add in our internal database by default. <br>
+        Check this box to not save your chemicals in the database: &nbsp;&nbsp;{{ form_model.INDB }}
+    </p>
 </form>
 {% endif %}
 

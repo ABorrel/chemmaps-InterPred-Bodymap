@@ -71,7 +71,7 @@ For each chemical a set of 677 structural descriptors is computed including 1D a
 <p>
 Once descriptors have been computed, users can predict chemical interference activity by choosing one or several of the 17 interreference models proposed. Each model is an average of 10 different random forest models built to cover the full set of chemicals (cf. publication). The table below describes the available models. 
 </p>
-<p>All random forest models used can be downloaded in a <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/modelsInterferences.tar.gz">tar.gz archive</a> with the assciated <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/modelsInterferences.tar.gz">Rscript</a> to run them individually.</p>
+<p>All random forest models used can be downloaded in a <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/modelsInterferences.tar.gz">tar.gz archive</a> with the assciated <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/predictfromModel.R">Rscript</a> to run them individually.</p>
 
 <br>
 <div class="div-table">
@@ -214,7 +214,10 @@ It takes around 1-2s per chemical and per model to compute the predictions.
             </a>
         </div>
 </div>
-
+<p>
+    For quality check and speed purpose, each chemical no included in the DSSTox database will be add in our internal database by default.
+    Users can choose to not save chemicals in the databse at this step.
+</p>
 
 <h2>Results</h2>
 <p>

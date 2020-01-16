@@ -66,7 +66,7 @@ def uploadSMILES(request):
 
     elif formUpload.is_valid() == True:
 
-        prSession = "/home/aborrel/django_server/django_server/interferences/temp/" + str(name_session) + "/"
+        prSession = path.abspath("./temp") + "/" + str(name_session) + "/"
         createFolder(prSession, 1)
 
         pfileserver = prSession + "upload.txt"
@@ -133,8 +133,10 @@ def computeDesc(request):
     # run map with new chem
     if formModel.is_valid() == True:
         ldescMap = formModel.clean_desc()
+        inDB = ldescMap[1]
+        ldescMap = ldescMap[0]
 
-        cPred = Predict(ldescMap, prsession)
+        cPred = Predict(ldescMap, inDB, prsession)
         cPred.predictAll()
         dpred = cPred.processResult()
         #print(dpred)

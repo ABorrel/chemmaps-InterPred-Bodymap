@@ -44,6 +44,7 @@
 - ~~case of name in input => add a regex before reach the DB~~
 - ~~Add pop up for revision~~
 - ~~Add link to Rmodel compressed and script R~~ 
+- ~~Fix upload file path fail~~
 
 #### Improvement
 - Add in the table if the chemical is included in the trainning set

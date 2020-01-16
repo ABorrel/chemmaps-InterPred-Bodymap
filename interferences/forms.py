@@ -10,7 +10,6 @@ class uploadList(forms.Form):
 
 
 
-
 class QSARModelChoice(forms.Form):
 
     CHOICES = (("LUCIFERASE","Luciferase"),
@@ -31,10 +30,14 @@ class QSARModelChoice(forms.Form):
                ("AUTOFLUORESCENCE_RED_HEPG2_FREE", "Autofluorescence Red HepG2 Cell Free"),
                ("AUTOFLUORESCENCE_RED_HEK293_FREE", "Autofluorescence Red HEK293 Cell Free"))
 
+
+
     modelQSAR = forms.MultipleChoiceField(choices=CHOICES, widget=forms.CheckboxSelectMultiple(attrs={
                        "class": "column-checkbox"}), required=True)
+
+    INDB = forms.BooleanField(required=False)
 
     def clean_desc(self):
         if len(self.cleaned_data['modelQSAR']) == 0:
             return "ERROR"
-        return self.cleaned_data['modelQSAR']
+        return [self.cleaned_data['modelQSAR'], self.cleaned_data['INDB']]

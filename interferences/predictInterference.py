@@ -10,7 +10,7 @@ PMODEL = path.abspath("./static/interferences/models") + "/"
 
 
 class Predict:
-    def __init__(self, lmodels, prSession):
+    def __init__(self, lmodels, noDB, prSession):
 
         self.lmodels = lmodels
         self.pdes2D = prSession + "2D.csv"
@@ -18,6 +18,7 @@ class Predict:
         self.prSession = prSession
         self.err = 0
         self.cDB = DBrequest()
+        self.noDB = noDB
         self.cDB.verbose = 0
 
     def predictAll(self):
@@ -177,7 +178,10 @@ class Predict:
                 if out != 0:
                     cmdSQL = "UPDATE chemical_description SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
                 else:
-                    cmdSQL = "UPDATE chemical_description_user SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
+                    if self.noDB == True:
+                        cmdSQL = "DELETE from chemical_description_user WHERE inchikey='%s';"%(d2D[chem]["inchikey"])
+                    else:
+                        cmdSQL = "UPDATE chemical_description_user SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
                 self.cDB.updateElement(cmdSQL)
                 
 

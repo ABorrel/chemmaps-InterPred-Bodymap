@@ -186,8 +186,7 @@ class formatSMILES:
 
                         # add everything in user
                         if out == 0:
-                            self.cDB.updateElement("UPDATE chemical_description_user SET desc_opera = '%s' WHERE inchikey='%s';"%(wOPERA, inch))
-                            self.cDB.updateElement("UPDATE chemical_description_user SET desc_1d2d = '%s' WHERE inchikey='%s';"%(w1D2D, inch))
+                            self.cDB.addElement("chemical_description_user", ["desc_opera", "desc_1d2d", "inchikey", "source_id"], [wOPERA, w1D2D, inch, SMICLEAN])
                         else:
                             self.cDB.updateElement("UPDATE chemical_description SET desc_opera = '%s' WHERE inchikey='%s';"%(wOPERA, inch))
                             self.cDB.updateElement("UPDATE chemical_description SET desc_1d2d = '%s' WHERE inchikey='%s';"%(w1D2D, inch))
