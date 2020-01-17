@@ -117,12 +117,14 @@ rel="stylesheet" type="text/css"/>
             {%endfor%}
             <br>
             <input type='submit' value='Compute predictions'>
+            <br>
+            <br>
+            {{ form_model.INDB }}&nbsp;&nbsp; Check this box to opt out of saving your chemical information in the database*
         </div>
     </div>
     <br>
     <p>
-        For quality and speed purposes, each chemical not already included in the DSSTox Database will be added to our internal database by default. <br>
-        Check this box to opt out of saving your chemical information in the database: &nbsp;&nbsp;{{ form_model.INDB }}
+        *For quality and speed purposes, each chemical not already included in the DSSTox Database will be added to our internal database by default. <br>
     </p>
 </form>
 {% endif %}
