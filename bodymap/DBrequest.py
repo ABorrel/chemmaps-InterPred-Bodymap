@@ -117,6 +117,7 @@ class DBrequest:
                 return "Error"
         else:
             print("Open connection first")
+            return "Error"
         self.connClose()
         return out
 
