@@ -395,7 +395,10 @@ function downloadNeighbor() {
     
     //console.log(dneighbors[IDcenter]);
     for (var p = 0; p < dneighbors[IDcenter].length; p++) {
-        textin = textin + createLineWriteForTable(dneighbors[IDcenter][p], IDcenter, ldesc);
+        if(dneighbors[IDcenter][p] in dSMILESClass){
+            textin = textin + createLineWriteForTable(dneighbors[IDcenter][p], IDcenter, ldesc);
+        }
+        ;
     }
     //console.log(textin);
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textin));
@@ -408,6 +411,7 @@ function downloadNeighbor() {
 }
 
 function createLineWriteForTable(IDchem, IDcenter, ldesc) {
+    
     var lineW =
         IDchem.toString() +
         '\t' +
