@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra-css %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="{% static 'django_server/css/ntpweb-shared.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/base.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/ntpweb.css' %}"
+          rel="stylesheet" type="text/css"/> 
+
+<link href="{% static 'bodymap/css/theme.css' %}" rel="stylesheet"> 
+<!--<link href="/static/bodymap/css/theme.css" rel="stylesheet">-->
+
+{% endblock %}
+{% block content %}
+
+<div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
+
+<h2>Select a chemical</h2>
+<p>
+    To start, the user can select a chemical included in the Tox21 chemical library (9,270 chemicals) using chemical name or CASRN via the drop down selection windows.
+</p>
+
+<div class="row">
+    <div class="column">
+            <a href="{% static 'bodymap/img/help_1.png' %}">
+                <img src="{% static 'bodymap/img/help_1.png' %}" style="width:70%" alt="Example of chemical selection by name or by CASRN">
+            </a>
+    </div>
+</div>
+
+<h2>Chemical information</h2>
+<p>
+    Chemical information is linked to the <a class = "aurl" href="https://comptox.epa.gov/dashboard">EPA chemical dashboard</a>
+     where the user can access a full chemical description and additional detailed data. 
+     In addition user can link the selected chemical to <a class = "aurl" href="cebsd2:8003/chemmaps">chemmaps</a>
+      and <a class = "aurl" href="http://134.129.166.26:8080/tox21enricher/">Tox21 enricher</a>, two National Toxicology Program (NTP) tools allowing user to explore the chemical structural space and further analyze assay results.
+</p>
+
+<div class="row">
+    <div class="column">
+            <a href="{% static 'bodymap/img/help_2.png' %}">
+                <img src="{% static 'bodymap/img/help_2.png' %}" style="width:100%" alt="Bisphenol A example of chemical information">
+            </a>
+    </div>
+</div>
+
+<p>Chemical structure is represented using the JS library <a class = "aurl" href="http://doc.gdb.tools/smilesDrawer/">SmilesDrawer.</a></p>
+<br>
+<h2>Bodymap</h2>
+<p>Using an approach that combines expert knowledge with tissue-specific gene expression levels to map assay targets to organ systems, the user can visualize where in the human body a selected chemical is more likely to produce effects.
+    Two different mapping are considered: 
+    <ul style="margin-left:40px" >
+        <li style="font-size: 20px;">using assay gene target</li>
+        <li style="font-size: 20px;">using assay tissue (where specific gene targets were not available).</li>
+    </ul></p>
+    <p>The preliminary <a href="cebsd2:8003/static/bodymap/mapping/preMapping.csv">assay tissue mapping is available for download.</a>
+    The type of mapping is represented in green for the assays gene target mapping and in blue for the assay tissue mapping, 
+    where the assay cell type dictated the target organ mapping in lieu of a specific gene target.
+</p>
+
+<div class="row">
+    <div class="column">
+            <a href="{% static 'bodymap/img/help_3.png' %}">
+                <img src="{% static 'bodymap/img/help_3.png' %}" style="width:100%" alt="Example of Bisphenol A body mapping">
+            </a>
+    </div>
+</div>
+
+<p>
+    Chemical activity by assays for the Tox21 chemical library have been extracted from the <a class = "aurl" href= "https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data/">EPA ToxCast data, invitroDBv3.2.</a>
+     The AC50 is the activity concentration at half-maximal activity, and the cutoff represents an upper limit on the chemical activity that will be displayed on the BodyMap. 
+</p>
+
+<br>
+<h2>Assays mapping</h2>
+<p>
+    Chemical assay activities are represented by grouping into target organ systems of the human body e.g.: cardiovascular system, nervous system, endocrine system, etc. For each system and target organ the chemical -log10 AC50 (µM) by assay is reported. Colored dots represent active assays.
+This part includes also a browsable, downloadable table with all mapped data used i.e.: gene expression, assays mapped, target organ systems, and AC50 values.  
+</p>
+
+<div class="row">
+    <div class="column">
+            <a href="{% static 'bodymap/img/help_4.png' %}">
+                <img src="{% static 'bodymap/img/help_4.png' %}" style="width:100%" alt="Example of Bisphenol A assay results">
+            </a>
+    </div>
+</div>
+
+<p>
+    Graphs and tables are represented using the JS libraries <a href="https://plot.ly/javascript/">plotly</a> and <a href="https://github.com/ag-grid/ag-grid">ag-grid.</a>
+</p>
+
+<br>
+<h2>Network representation</h2>
+<p>
+    A dynamic, data-driven network representation is used to convey network gene expression, chemical activity and body mapping. The chemical is represented as a red node, assays in pink, genes in green, organs in blue, and human body system in orange nodes. Gene expression and AC50 (µM) are reported on the edges.
+</p>
+
+<div class="row">
+    <div class="column">
+            <a href="{% static 'bodymap/img/help_5.png' %}">
+                <img src="{% static 'bodymap/img/help_5.png' %}" style="width:100%" alt="Example of Bisphenol A network representation">
+            </a>
+    </div>
+</div>
+
+<p>Networks are represented using the library <a href="https://visjs.org/">vis.js.</a></p>
+
+{% endblock content %}

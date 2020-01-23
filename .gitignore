@@ -1,8 +1,9 @@
-./chemmaps/temp/*
 ./interferences/temp/*
 **/__pycache__/**
+**/admin/**
+*.sqlite3
+**/temp/*
 __pycache__
-**
 TASKS.md
 .env
 .env.db

@@ -26,9 +26,9 @@ class uploadSMILES:
                 doutOUT[int(k)] = {}
                 doutOUT[int(k)]["SMILES"] = self.input[k]["SMI_CLEAN"]
                 if doutOUT[int(k)]["SMILES"] == "0" or doutOUT[int(k)]["SMILES"] == "ERROR":
-                    doutOUT[int(k)]["file"] = "img/checkNo.png"
+                    doutOUT[int(k)]["file"] = "checkNo.png"
                 else:
-                    doutOUT[int(k)]["file"] = "img/checkOK.png"
+                    doutOUT[int(k)]["file"] = "checkOK.png"
             self.dclean = {"IN":doutIN, "OUT":doutOUT}
 
 
@@ -81,11 +81,11 @@ class uploadSMILES:
 
                 if smiles_clean != [] and smiles_clean != "ERROR" :
                     doutOUT[i]["SMILES"] = smiles_clean
-                    doutOUT[i]["file"] = "img/checkOK.png"
+                    doutOUT[i]["file"] = "checkOK.png"
                     doutOUT[i]["inchikey"] = inch
                 else:
                     doutOUT[i]["SMILES"] = 0
-                    doutOUT[i]["file"] = "img/checkNo.png"
+                    doutOUT[i]["file"] = "checkNo.png"
                     doutOUT[i]["inchikey"] = "ERROR"
                 i = i + 1
 
@@ -136,8 +136,8 @@ class uploadSMILES:
             SMICLEAN = self.dclean["OUT"][k]["SMILES"]
             if SMICLEAN == "0":
                 dout[k]["Descriptor"] = "Error"
-                dout[k]["desc"] = "img/checkNo.png"
-                dout[k]["desc"] = "img/checkNo.png"
+                dout[k]["desc"] = "checkNo.png"
+                dout[k]["desc"] = "checkNo.png"
             else:
                 inch = self.input[str(k)]["INCH"]
                 chemical = Chemical.Chemical(SMICLEAN, self.prout)
@@ -161,7 +161,7 @@ class uploadSMILES:
                         chemical.computeAll3D()
 
                         if chemical.err == 1:
-                            dout[k]["desc"] = "img/checkNo.png"
+                            dout[k]["desc"] = "checkNo.png"
                             dout[k]["Descriptor"] = "Error"
                             continue
                         else:
@@ -179,7 +179,7 @@ class uploadSMILES:
                 
                 if lval1D2D_3D != []:
                     dout[k]["Descriptor"] = "OK"
-                    dout[k]["desc"] = "img/checkOK.png"
+                    dout[k]["desc"] = "checkOK.png"
                     filout2D.write("%i\t%s\t%s\t%s\n"%(k, SMICLEAN, inch, "\t".join([str(lval1D2D_3D[0][d]) for d in ldesc1D2D])))
                     filout3D.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(lval1D2D_3D[1][d]) for d in ldesc3D])))
                     # run png generation

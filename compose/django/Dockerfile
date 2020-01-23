@@ -9,19 +9,18 @@ RUN apt-get update && \
         wkhtmltopdf \
         libaio1 \
         libpq-dev \
-        supervisor \
         openbabel \
         default-jre \
         dirmngr \
     && apt-get clean
 
 COPY compose/django/OPERA2.4_CL_mcr.tar.gz /OPERA2.4_CL_mcr.tar.gz
-    
-RUN tar -xzvf /OPERA2.4_CL_mcr.tar.gz && \
-    /OPERA2_CL_mcr/OPERA2.4_CL_mcr.install -mode silent -agreeToLicense yes
+COPY compose/django/marvin_linux_20.1_openjdk11.deb /marvin_linux_20.1_openjdk11.deb
 
-RUN echo "LD_LIBRARY='/usr/local/MATLAB/MATLAB_Runtime/v94/'" >> ~/.bashrc && \
-    echo "alias opera='/usr/local/bin/OPERA/application/run_OPERA.sh $LD_LIBRARY'"
+RUN dpkg -i /marvin_linux_20.1_openjdk11.deb
+
+RUN tar -xzvf /OPERA2.4_CL_mcr.tar.gz && \
+    ./OPERA2_CL_mcr/OPERA2.4_CL_mcr.install -mode silent -agreeToLicense yes
 
 RUN echo "deb http://cran.rstudio.com/bin/linux/debian stretch-cran34/" >> /etc/apt/sources.list && \
     apt-key adv --keyserver keys.gnupg.net --recv-key 'E19F5F87128899B192B1A2C2AD5F960A256A04AF' && \
@@ -53,3 +52,4 @@ RUN chown -R django:django /app
 WORKDIR /app/project
 EXPOSE 8001
 ENTRYPOINT ["/entrypoint.sh"]
+

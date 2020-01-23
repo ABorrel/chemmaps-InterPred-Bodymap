@@ -1,0 +1,76 @@
+--
+-- Create and connect to ChemMap database
+--
+CREATE DATABASE ChemMap;
+\connect chemmap;
+GRANT ALL PRIVILEGES ON DATABASE ChemMap TO postgres;
+
+-- Role: asrc_tox21
+-- DROP ROLE asrc_tox21;
+
+CREATE ROLE asrc_tox21 WITH
+  LOGIN
+  NOSUPERUSER
+  INHERIT
+  NOCREATEDB
+  NOCREATEROLE
+  NOREPLICATION;
+
+COMMENT ON ROLE asrc_tox21 IS 'for ASRC group';
+
+-- Role: chemmap_ntp
+-- DROP ROLE chemmap_ntp;
+
+CREATE ROLE chemmap_ntp WITH
+  LOGIN
+  NOSUPERUSER
+  INHERIT
+  NOCREATEDB
+  NOCREATEROLE
+  NOREPLICATION;
+
+-- Role: noltesz
+-- DROP ROLE noltesz;
+
+CREATE ROLE noltesz WITH
+  LOGIN
+  SUPERUSER
+  INHERIT
+  CREATEDB
+  CREATEROLE
+  REPLICATION;
+
+-- Role: ntp_group
+-- DROP ROLE ntp_group;
+
+CREATE ROLE ntp_group WITH
+  LOGIN
+  NOSUPERUSER
+  INHERIT
+  NOCREATEDB
+  NOCREATEROLE
+  NOREPLICATION;
+
+-- Role: sandbox
+-- DROP ROLE sandbox;
+
+CREATE ROLE sandbox WITH
+  LOGIN
+  SUPERUSER
+  INHERIT
+  CREATEDB
+  CREATEROLE
+  NOREPLICATION;
+
+GRANT postgres TO sandbox WITH ADMIN OPTION;
+
+-- Role: tox21
+-- DROP ROLE tox21;
+
+CREATE ROLE tox21 WITH
+  LOGIN
+  SUPERUSER
+  INHERIT
+  CREATEDB
+  CREATEROLE
+  NOREPLICATION;

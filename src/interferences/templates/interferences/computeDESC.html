@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -8,13 +9,13 @@
           rel="stylesheet" type="text/css"/>
 <link href="{% static 'django_server/css/ntpweb.css' %}"
           rel="stylesheet" type="text/css"/>
-<link href="{% 'interferences/css/theme.css' %}" rel="stylesheet">
-<link href="{% 'interferences/css/table.css' %}" rel="stylesheet">
+<link href="{% static 'interferences/css/theme.css' %}" rel="stylesheet">
+<link href="{% static 'interferences/css/table.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block title %}Chemical descriptors{% endblock %}
 {% block content %}
-<script src="{% 'interferences/js/theme.js' %}"></script>
+<script src="{% static 'interferences/js/theme.js' %}"></script>
 {% include 'interferences/includes/navbar.html' %}
 <h1>Chemical descriptors</h1>
 <br>
@@ -50,7 +51,7 @@
                             <div class="divTableRow">
                                     <div class="divTableCell">&nbsp;{{k1}}</div>
                                     <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
-                                    <div class="divTableCell"><img src="{% 'interferences/img/{{dout.file}}' %}" width="25px" alt="Valide upload"></div>
+                                    <div class="divTableCell"><img src="/static/interferences/img/{{dout.file}}" width="25px" alt="Valide upload"></div>
                             </div>
                         {% endfor %}
                     </div>
@@ -70,7 +71,7 @@
                             <div class="divTableRow">
                                     <div class="divTableCell">&nbsp;{{k1}}</div>
                                     <div class="divTableCell">&nbsp;{{dout.Descriptor}}</div>
-                                    <div class="divTableCell"><img src="{% 'interferences/img/{{dout.desc}}' %}" width="25px" alt="Valide upload"></div>
+                                    <div class="divTableCell"><img src="/static/interferences/img/{{dout.desc}}" width="25px" alt="Valide upload"></div>
                             </div>
                         {% endfor %}
                     </div>
