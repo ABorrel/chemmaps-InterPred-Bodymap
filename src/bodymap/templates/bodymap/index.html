@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra-css %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="{% static 'django_server/css/ntpweb-shared.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/base.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/ntpweb.css' %}"
+          rel="stylesheet" type="text/css"/> 
+
+<link href="{% static 'bodymap/css/theme.css' %}" rel="stylesheet">
+<!--<link href="/static/bodymap/css/theme.css" rel="stylesheet"> -->
+
+{% endblock %}
+{% block title %} Index bodymap{% endblock %}
+{% block content %}
+
+<div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
+    
+<h1>Tox21BodyMap</h1>
+
+<p>
+    Tox21BodyMap provides a visualization of mapping 971 Tox21/ToxCast assay targets to regions of the human body, and allows users to identify target tissues where a specific chemical is more likely to produce effects. The webserver relies upon data on 9,270 chemicals with Tox21 assay activities, information on biological targets of the assays, and an approach that combines expert knowledge with tissue-specific gene expression levels to map assay targets to organ systems, providing an intuitive display of chemical bioactivity patterns.
+</p>
+
+<br>
+<p style="text-align:  center; font-size: 25px">
+    Please cite: <a href="/bodymap/" style="color: darkred">xxxxxxx</a><br>
+</p>
+
+
+<h2>Datasets</h2>
+<p>
+    Navigation is available for the Tox21 chemical library. 
+    The list of chemicals can be browsed on the <a class = "aurl" href="https://comptox.epa.gov/dashboard">EPA chemical dashboard</a>
+     and on the webserver by CASRN or name. 
+     Gene expressions by body part were extracted using the <a class = "aurl" href="https://www.nextbio.com/">Nextbio database</a> 
+      and Tox21 assay results were obtained from the <a class = "aurl" href="https://www.epa.gov/chemical-research/exploring-toxcast-data-downloadable-data/">EPA ToxCast data, invitroDBv3.2.</a>
+</p>
+<br>
+<h2>Visualization</h2>
+<p>
+    Visualization includes three parts: 
+    <ul style="margin-left:40px">
+
+        <li style="font-size: 20px;">chemical information, linked to the <a class = "aurl" href="https://comptox.epa.gov/dashboard">EPA chemical dashboard</a></li>
+        <li style="font-size: 20px;">body-mapping based on a consensus of assay AC50 (µM) and gene expression cutoffs</li>
+        <li style="font-size: 20px;">network representation integrating gene expression, body mapping and chemical activity by assay</li>
+    </ul>
+</p>
+
+
+<div class="row">
+    <div class="column">
+        <div class="desc">Explore chemical data</div>
+            <a href="{% static 'bodymap/img/bodymap_1.png' %}">
+                <img src="{% static 'bodymap/img/bodymap_1.png' %}" style="width:100%" alt="Example of chemical information">
+            </a>
+    </div>
+    <div class="column">
+        <div class="desc">Intereactive Body-mapping</div>
+            <a href="{% static 'bodymap/img/bodymap_2.png' %}">
+                <img src="{% static 'bodymap/img/bodymap_2.png' %}" style="width:100%" alt="Example of a body-mapping">
+            </a>
+    </div>
+    <div class="column">
+        <div class="desc">Explore assay results</div>
+            <a href="{% static 'bodymap/img/bodymap_3.png' %}">
+                <img src="{% static 'bodymap/img/bodymap_3.png' %}" style="width:100%" alt="Example of a assay table results">
+            </a>
+    </div>
+    <div class="column">
+        <div class="desc">Network visualization</div>
+            <a href="{% static 'bodymap/img/bodymap_4.png' %}">
+                <img src="{% static 'bodymap/img/bodymap_4.png' %}" style="width:100%" alt="Example of nerwork Visualization">
+            </a>
+    </div>
+</div>
+<br>
+
+<p>
+    <form action='/bodymap/chemMapping' method='get' style="margin-left: 15px;">
+        <input type='submit' value='To start select a chemical'/>
+    </form>
+</p>
+
+
+{% endblock content %}

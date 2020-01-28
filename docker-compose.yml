@@ -1,0 +1,68 @@
+version: '3.4'
+
+services:
+
+  #####################
+  # POSTGRES DATABASE #
+  #####################
+  chemmaps_db:
+
+    container_name: chemmaps_db
+    build:
+      context: .
+      dockerfile: compose/postgres/Dockerfile
+    volumes:
+      - chem_db_vol:/var/lib/postgresql/data
+    env_file:
+      - .env.db
+    ports:
+      - 5433:5432
+  
+  
+  ##################
+  # DJANGO WEB APP #
+  ##################
+  chemmaps:
+
+    container_name: chemmaps
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+    depends_on:
+      - chemmaps_db
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/project
+      - type: volume
+        source: static_volume
+        target: /app/project/static/
+
+
+  ###################
+  # NGINX WEBSERVER #
+  ###################
+  chem_ws:
+
+    container_name: chem_ws
+    build:
+      context: .
+      dockerfile: compose/nginx/Dockerfile
+    ports:
+      - 8003:8003
+    depends_on:
+      - chemmaps
+    volumes:
+      - type: volume
+        source: static_volume
+        target: /static
+
+#------- VOLUMES --------#
+volumes:
+  chem_db_vol:
+    external: true
+  static_volume:
+
+#------- NETWORKS -------#
+# networks:
+#   chemmaps_backend:

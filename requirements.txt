@@ -61,3 +61,38 @@ wheel=0.33.4=py36_0
 xz=5.2.4=h14c3975_4
 zlib=1.2.11=h7b6447c_3
 zstd=1.3.7=h0b5b093_0
+
+
+
+
+# web
+Django==2.2.4
+numpy==1.16.4
+pandas==0.25
+  xlrd==1.0.0
+  openpyxl==2.4.7
+psycopg2==2.7.4
+# rdkit==2017.09.3  # install via conda not pip
+# git+http://github.com/rdkit/django-rdkit@30cac1f61a1d401a5020a5e410a648fd4b2bfbda
+cython==0.28.2
+jinja2==2.9.5
+scipy==0.19.0
+pyRserve==0.9.1
+gunicorn==20.0.4
+molvs==0.1.1
+python-decouple==3.3
+# pypdf2==1.26.0
+# ca-certificates==2019.9.11
+# ncurses==6.1
+# psycopg2-binary==2.8.3
+# requests==2.22.0
+# sqlparse==0.3.0
+# idna==2.8
+# openssl==1.1.1c
+# molvs==0.1.1
+# django==2.2.4
+# rdkit==2019.03.3.0
+# libedit==3.1.20170329
+# urllib3==1.25.3
+# sqlite==3.28.0
+# chardet==3.0.4

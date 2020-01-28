@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block extra-css %}
+{% load static %}
+<link href="{% static 'django_server/css/ntpweb-shared.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/base.css' %}"
+          rel="stylesheet" type="text/css"/>
+<link href="{% static 'django_server/css/ntpweb.css' %}"
+          rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block content %}
+
+<h1>Server production and test</h1>
+
+<br>
+<li><b>ChemMaps version 2 (Beta3)</b></li>
+        <ul>
+            <li><a href="/chemmaps/">Test version</a></li>
+        </ul>
+
+<li><b>Interference prediction version 1 (Beta 1)</b></li>
+        <ul>
+            <li><a href="/interferences/">Test version</a></li>
+        </ul>
+<li><b>BodyMap(alpha 1)</b></li>
+        <ul>
+            <li><a href="/bodymap/">Development version</a></li>
+        </ul>
+
+
+
+{% endblock content %}

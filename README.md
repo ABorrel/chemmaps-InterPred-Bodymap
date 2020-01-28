@@ -102,3 +102,23 @@
 - 19-12-19: add help and index pages for bodymap
 - 20-12-19: Fix color link bodymap + error upload chemmaps
 - 20-12-19: Fix error replicate in chemmaps user DB
+- 15-01-20: Kyle committed docker related commits to Gitlab. Still WIP after receving QA feedback from Beth + Alex
+
+# Deployment Strategy
+- Replace dot files ".env.example" and ".env.db.example" with ".env" and ".env.db"
+- Fill in new dot file environment variables with db creds and app specific values (Do not add track with Git!)
+- Files not included (but are necessary) in repository:
+    * marvin_linux_20.1_openjdk11.deb
+    * OPERA2.4_CL_mcr.tar.gz
+    * ChemMap_Dec.dump
+- The aforementioned files can be found via Github and/or by emailing Kyle Johnson (johnson.kyle272@gmail.com)
+- Docker related components created before docker-compose execution:
+    * Volume: `docker volume create chem_db_vol`
+- After building postgres image, if the database volume is empty, two steps are needed:
+    * Create roles and import data
+    * (Use psql within postgres container to feed .sql file containing DDL to database)
+- Build images and run containers in the background
+    * `docker-compose up -d --build`
+- Check their status:
+    * `docker-compose ps`
+- Note: The source code is mounted into the container for development purposes only
