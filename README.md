@@ -29,6 +29,7 @@
 - Compute the 3D plan with several different plan
 - change background in function of the map
 - develop a carciMap choose on the 1600 chemicals and 1600 chemicals on the DSSTOX 
+- Change color when chemicals are uploaded and rocket size
 
 
 ### Interferences
