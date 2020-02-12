@@ -22,6 +22,7 @@
 - ~~Fix error with connect neighboor => change intersect JS~~
 - ~~check case of chemical on drugmap and other map~~
 - ~~Fix error with metal~~
+- downloadDescFromDB, line 223 ERROR in coordinate run
 
 
 #### Improvement
