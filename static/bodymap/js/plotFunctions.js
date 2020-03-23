@@ -2,8 +2,8 @@
 
 function dotPlot(dmap){
 
-    console.log(dmap);
-    console.log("In plot");
+    //console.log(dmap);
+    //console.log("In plot");
 
     var lsystem = [];
     var llval = [];
@@ -17,36 +17,46 @@ function dotPlot(dmap){
         }
     }
     ;
-
     var llassays = Object.keys(dmap); 
 
-    
     for (var j=0; j<llassays.length; j++){
       var lval = [];
       for (var i=0; i<lsystem.length; i++){
         if(Object.keys(dmap[llassays[j]]).includes(lsystem[i]) == true){
           var lvaltemp = [];
           for(var organ in dmap[llassays[j]][lsystem[i]]){
-            var val = -Math.log10(dmap[llassays[j]][lsystem[i]][organ]["AC50"]);
+
+            //console.log(llassays[j]);
+            //console.log(lsystem[i]);
+            //console.log(organ);
+            //console.log(dmap[llassays[j]][lsystem[i]][organ]["AC50"])
+            var val = Math.log10(dmap[llassays[j]][lsystem[i]][organ]["AC50"]);
+            //console.log(val);
             // add random fact in ac50
             //var r = Math.random()*0.01;
             //console.log(r);
-            lvaltemp.push(val);
+            if(val != NaN){
+              lvaltemp.push(val);
+            }
+            
             //lass.push(assay);
           }
-          lval.push(Math.min(lvaltemp));
+          //console.log(lvaltemp);
+          //var valMin = Math.min(lvaltemp);
+          lval.push(Math.min(...lvaltemp));
+          //console.log(lval);
         }else{
-          lval.push();
+          lval.push(NaN);
         }  
       }
       ;
       llval.push(lval)
     }
-    
     ;  
       
-    console.log(llassays);
-    console.log(llval);
+    //console.log(llassays);
+    //console.log(llval);
+    //console.log(lsystem);
     ltrace = []
     for (var i=0; i<llval.length; i++){
         var trace = {
@@ -123,7 +133,7 @@ function dotPlot(dmap){
             y: 0.0,
             xref: 'paper',
             yref: 'paper',
-            text: '-log10(AC50)',
+            text: 'log10(AC50)',
             showarrow: false,
           }
         ]

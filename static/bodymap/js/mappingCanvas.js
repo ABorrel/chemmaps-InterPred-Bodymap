@@ -54,22 +54,24 @@ function calibratePosition(){
 function defineDictOrgan(dmap, valAC50, valExp){
 
     var dout = {};
-
     for(assay in dmap){
         for(system in dmap[assay]){
             for(organ in dmap[assay][system]){
                 if(!(organ in dout)){
                     dout[organ] = "No";
-                }
-                if(dout[organ] == "Draw-green" || dout[organ] == "Draw-blue"){
                     continue;
                 }
-
+                if(dout[organ] == "Draw-cyan"){
+                    continue;
+                }
                 if(dmap[assay][system][organ]["AC50"] <= valAC50){
                     if(dmap[assay][system][organ]["gene"][0] == "NA"){
                         dout[organ] = "Draw-blue";
                     }else{
-                        if (dmap[assay][system][organ]["exp"][0] >= valExp){
+                        if (dmap[assay][system][organ]["exp"][0] >= valExp && dout[organ] == "Draw-blue"){
+                            dout[organ] = "Draw-cyan";
+                        }
+                        else if (dmap[assay][system][organ]["exp"][0] >= valExp && dout[organ] != "Draw-blue"){
                             dout[organ] = "Draw-green";
                         }
                     }
@@ -131,6 +133,15 @@ function mapOnBody(dmap, valAC50, valExp){
             }
         }else if(dorgan[organ] == "Draw-blue"){
             ctx.fillStyle = "#282ab5";
+            try {ctx.beginPath();
+                ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 7, 0, 2 * Math.PI);
+                ctx.fill();
+                lorgani = lorgani + organ + "; ";
+            }catch{
+                continue;
+            }
+        }else if(dorgan[organ] == "Draw-cyan"){
+            ctx.fillStyle = "#2bfafa";
             try {ctx.beginPath();
                 ctx.arc(dmappingBody[organ][0], dmappingBody[organ][1], 7, 0, 2 * Math.PI);
                 ctx.fill();
