@@ -1,8 +1,9 @@
 ./static/chemmaps/png/*
 ./static/bodymap/mapping/*
-./static/admin/*
+**/admin/**
+*tar.gz
 
 ./chemmaps/temp/*
 ./interferences/temp/*
 ./public/
-*/__pycache__/*
+**/__pycache__/**

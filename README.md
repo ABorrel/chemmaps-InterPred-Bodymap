@@ -22,6 +22,7 @@
 - ~~Fix error with connect neighboor => change intersect JS~~
 - ~~check case of chemical on drugmap and other map~~
 - ~~Fix error with metal~~
+- downloadDescFromDB, line 223 ERROR in coordinate run
 
 
 #### Improvement
@@ -29,6 +30,7 @@
 - Compute the 3D plan with several different plan
 - change background in function of the map
 - develop a carciMap choose on the 1600 chemicals and 1600 chemicals on the DSSTOX 
+- Change color when chemicals are uploaded and rocket size
 
 
 ### Interferences
@@ -73,6 +75,10 @@
 - ~~write home and help pages~~
 - ~~label organs directly on the png~~
 - ~~add name of the chemical on the network => added name in the autocompletion form~~
+- ~~correct the chemical selection to chose a chemical by name, repetition, alphabetic order~~
+- add one color for the mapping in case of mapping using both tissues and gene
+- correct the barplot
+- improve the network by adding some cutoff on the AC50 and gene expression.
 
 
 #### Improvement

@@ -286,3 +286,12 @@ div.desc {
 .divTableBody > div:nth-child(2n) {
     background-color:lightgray;
 }
+
+
+.aurl{
+    color: #1E6B07;
+}
+
+.aurl:hover{
+    color: #1E6B07;
+}

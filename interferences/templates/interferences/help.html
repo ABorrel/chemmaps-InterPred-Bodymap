@@ -10,6 +10,7 @@ rel="stylesheet" type="text/css"/>
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
 rel="stylesheet" type="text/css"/>
 <link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/theme.css" rel="stylesheet">
+<!--<link href="/static/interferences/css/theme.css" rel="stylesheet">-->
 <link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/table.css" rel="stylesheet">
 {% endblock %}
 
@@ -18,7 +19,7 @@ rel="stylesheet" type="text/css"/>
 
 <h2>Submit chemicals</h2>
 <p>
-In the first step users can upload up to 100 chemicals using SMILES string format or using CASRN ID or DSSTox ID (see https://comptox.epa.gov/dashboard). Inputs are standardized, filtered, and mixtures, ions and inorganic chemicals are excluded using the <a href="http://molvs.readthedocs.io/en/latest/guide/intro.html">MolVS Python3.6 library</a>.
+In the first step users can upload up to 100 chemicals using SMILES string format or using CASRN ID or DSSTox ID (see <a class = "aurl" href="https://comptox.epa.gov/dashboard">EPA comptox</a>). Inputs are standardized, filtered, and mixtures, ions and inorganic chemicals are excluded using the <a class = "aurl" href="http://molvs.readthedocs.io/en/latest/guide/intro.html">MolVS Python3.6 library</a>.
 </p>
 
 <div class="row">
@@ -41,7 +42,7 @@ Users can refine the chemical list uploaded at this step.
 <br>
 <h2>Compute descriptors</h2>
 <p>
-For each chemical a set of 677 structural descriptors is computed including 1D and 2D descriptors as well as physico-chemical descriptors using <a href="http://www.rdkit.org/docs/">RDKit tool kit</a> implemented in Python 3.6 and <a href="https://github.com/kmansouri/OPERA">OPERA models</a>. The computational time is around 2-5s per chemical.
+For each chemical a set of 677 structural descriptors is computed including 1D and 2D descriptors as well as physico-chemical descriptors using <a class = "aurl" href="http://www.rdkit.org/docs/">RDKit tool kit</a> implemented in Python 3.6 and <a class = "aurl" href="https://github.com/kmansouri/OPERA">OPERA models</a>. The computational time is around 2-5s per chemical.
 </p>
 <div class="row">
     <div class="column">
@@ -71,7 +72,7 @@ For each chemical a set of 677 structural descriptors is computed including 1D a
 <p>
 Once descriptors have been computed, users can predict chemical interference activity by choosing one or several of the 17 interreference models proposed. Each model is an average of 10 different random forest models built to cover the full set of chemicals (cf. publication). The table below describes the available models. 
 </p>
-<p>All random forest models used can be downloaded in a <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/modelsInterferences.tar.gz">tar.gz archive</a> with the assciated <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/predictfromModel.R">Rscript</a> to run them individually.</p>
+<p>All random forest models used can be downloaded in a <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/interferences/static/modelsInterferences.tar.gz">tar.gz archive</a> with the assciated <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/interferences/static/predictfromModel.R">Rscript</a> to run them individually.</p>
 
 <br>
 <div class="div-table">
@@ -238,11 +239,9 @@ Users can download the table of results in a csv format.
 <br>
 
 <p style="text-align:  center; font-size: 25px">
-    Please cite: <a href="" style="color: #31BE04">
-        Alexandre Borrel et al.; High-Throughput Screening to Predict Chemical-Assay Interference </a><br>
-    (submitted)
+    Please cite: <a href="https://www.nature.com/articles/s41598-020-60747-3" style="color: rgb(32, 107, 7)">
+        A. Borrel et al.; High-Throughput Screening to Predict Chemical-Assay Interference </a>
 </p>
-
 
 
 {% endblock content %}
