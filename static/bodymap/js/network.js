@@ -1,5 +1,48 @@
+function refineNodes(dmap, valAC50, valExp){
+
+    //return dmap;
+    //console.log(dmap);
+    //console.log(valExp);
+    //console.log(valAC50);
+
+    var dout = {};
+    for(assay in dmap){
+        for(system in dmap[assay]){
+            for(organ in dmap[assay][system]){
+                if(dmap[assay][system][organ]["AC50"] <= valAC50){
+                    //console.log(dmap[assay][system][organ]);
+                    if (dmap[assay][system][organ]["gene"][0] == "NA" || dmap[assay][system][organ]["exp"][0] >= valExp){
+                        if(!(assay in dout)){
+                            dout[assay] = {};
+                        }
+                        if(!(system in dout[assay])){
+                            dout[assay][system] = {};
+                        }
+                        if(!(organ in dout[assay][system])){
+                            dout[assay][system][organ] = {};
+                        }
+                        if(dmap[assay][system][organ]["gene"][0] != "NA"){
+                            dout[assay][system][organ]["exp"] = dmap[assay][system][organ]["exp"]
+                        }
+                        dout[assay][system][organ]["gene"] = dmap[assay][system][organ]["gene"];
+                        dout[assay][system][organ]["AC50"] = dmap[assay][system][organ]["AC50"];
+                    }
+                }
+            }
+        }
+    }
+                
+    return dout;
+}
+
+
+
+
+
 // create an array with nodes
-function builtNetwork(container, dmap, dchem ){
+function builtNetwork(container, dmap, dchem, cutAC50_network, cutExp_network ){
+
+    var dmap_refined = refineNodes(dmap, cutAC50_network, cutExp_network);
 
     var lnodes = [{ id: 1, label: dchem.CAS, color: "red" }]
     var inode = 2;
@@ -7,9 +50,7 @@ function builtNetwork(container, dmap, dchem ){
 
     var flagnode = 0;
 
-    console.log(dmap);
-    console.log("dkldkdl");
-    for(var assay in dmap){
+    for(var assay in dmap_refined){
         var IDassay = searchNodeID(assay, lnodes);
         if(IDassay == 0){
             var node = {id: inode, label: assay, color: "pink"};
@@ -17,12 +58,12 @@ function builtNetwork(container, dmap, dchem ){
             IDassay = inode;
             inode = inode + 1;
         }
-        for(var system in dmap[assay]){
-            for(var organ in dmap[assay][system]){
+        for(var system in dmap_refined[assay]){
+            for(var organ in dmap_refined[assay][system]){
                 // control assays to chemical
                 var inledge = edgeIncludes(1, IDassay, ledges);
                 if(inledge == 0){
-                    var AC50 = Math.round(dmap[assay][system][organ]["AC50"], 2);
+                    var AC50 = Math.round(dmap_refined[assay][system][organ]["AC50"], 2);
                     var AC50 = AC50.toString() + " microM";
                     //console.log(AC50);
                     var edge =  { from: 1, to: IDassay, label: AC50, color: "red" };
@@ -33,7 +74,7 @@ function builtNetwork(container, dmap, dchem ){
                 // add assays node to chemical
                 
                 //gene
-                var gene = dmap[assay][system][organ]["gene"];
+                var gene = dmap_refined[assay][system][organ]["gene"];
                 var gene = gene[0];
                 if(gene == "NA"){
                     var iorgan = searchNodeID(organ, lnodes);
@@ -62,7 +103,7 @@ function builtNetwork(container, dmap, dchem ){
                 }else{
                     var igene =  searchNodeID(gene, lnodes);
                     var iorgan = searchNodeID(organ, lnodes);
-                    var exp = dmap[assay][system][organ]["exp"][0];
+                    var exp = dmap_refined[assay][system][organ]["exp"][0];
                     if(exp < 2.0 ){
                         continue;
                     }
@@ -125,20 +166,24 @@ function builtNetwork(container, dmap, dchem ){
             min: 10,
             max: 30
           },
-          //font: {
-         //   size: 12,
+          font: {
+            size: 15,
          //   face: "Tahoma"
-          //}
+          }
         },
         edges: {
-          width: 0.15,
+          width: 0.35,
           color: { inherit: "from" },
           smooth: {
             type: "continuous"
-          }
+          },
+          font: {
+            size: 15,
+         //   face: "Tahoma"
+          },
         },
         physics: {
-          stabilization: false,
+          stabilization: true,
           barnesHut: {
             gravitationalConstant: -80000,
             springConstant: 0.001,

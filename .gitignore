@@ -2,6 +2,8 @@
 ./static/bodymap/mapping/*
 **/admin/**
 *tar.gz
+./database.init
+
 
 ./chemmaps/temp/*
 ./interferences/temp/*

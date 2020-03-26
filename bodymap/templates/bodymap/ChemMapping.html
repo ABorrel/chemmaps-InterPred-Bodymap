@@ -30,19 +30,19 @@
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
 
-<!--<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
+<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/theme.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/chemical.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/mappingCanvas.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/network.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script> -->
 
-<script src="/static/bodymap/js/table.js"></script>
+<!--<script src="/static/bodymap/js/table.js"></script>
 <script src="/static/bodymap/js/theme.js"></script>
 <script src="/static/bodymap/js/chemical.js"></script>
 <script src="/static/bodymap/js/mappingCanvas.js"></script>
 <script src="/static/bodymap/js/network.js"></script>
-<script src="/static/bodymap/js/plotFunctions.js"></script>
+<script src="/static/bodymap/js/plotFunctions.js"></script>-->
 
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -139,6 +139,20 @@
 <br>
 <p>Network where chemical-assay activity, target gene expression, and body mapping are connected in a data-driven representation.</p>
 <br>
+<div class="rowChem">
+    <div class="columnChem">
+        AC50 cutoff: <span id="AC50_val_network"></span> &#956;M
+        <br>
+        <input type="range" min=0 max=300 steps=1 value=10 id="cutAC50_network"/>
+    </div>
+    <div class="columnChem">
+        <div class="tooltipBM">Tissue expression threshold <eM><sup >?</sup></eM>:&nbsp;<span class="tooltipBMtext">Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity</span> </div><span id="exp_val_network"></span> *folds control
+        <br>
+        <input type="range" min=2 max=50 steps=1 value=1 id="cutExp_network"/>
+    </div>
+</div>
+<br>
+
 <div id="mapnetwork"></div>
 <br>
 <div id="circle" style="background: red"></div>&nbsp;&nbsp;chemical (CASN);&nbsp; 
@@ -157,15 +171,49 @@ var dchem = {{dchem | safe }}
 
 // define default values for mapping
 var cutAC50 = 0;
-var cutExp = 1;
+var cutExp = 2;
 
+var cutAC50_network = 10;
+var cutExp_network = 2;
+
+////////////////////////////
 // Develop the network
+////////////////////////////
+// network built
 var containerNetwork = document.getElementById("mapnetwork");
-builtNetwork(containerNetwork, dmap, dchem);
+builtNetwork(containerNetwork, dmap, dchem, cutAC50_network, cutExp_network);
+
+// slider for AC50 and expression
+var sliderAC50_network = document.getElementById("cutAC50_network");
+var outputAC50_Network = document.getElementById("AC50_val_network");
+
+outputAC50_Network.innerHTML = sliderAC50_network.value;
+sliderAC50_network.oninput = function() {
+    outputAC50_Network.innerHTML = this.value;
+    cutAC50_network = this.value;
+    builtNetwork(containerNetwork, dmap, dchem, cutAC50_network, cutExp_network);
+}
+
+// slider for expression
+var sliderExp_network = document.getElementById("cutExp_network");
+var outputExp_network = document.getElementById("exp_val_network");
+
+outputExp_network.innerHTML = sliderExp_network.value;
+sliderExp_network.oninput = function() {
+    outputExp_network.innerHTML = this.value;
+    cutExp_network = this.value;
+    builtNetwork(containerNetwork, dmap, dchem, cutAC50_network, cutExp_network);
+}
+
+//outputExp_network.innerHTML = sliderExp_network.value;
 
 
 
+
+
+//////////////////////
 // body mapping
+//////////////////////
 
 // load chemical panel
 var canvas = document.getElementById("bodymap");

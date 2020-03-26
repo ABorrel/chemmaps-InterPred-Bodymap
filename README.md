@@ -22,7 +22,7 @@
 - ~~Fix error with connect neighboor => change intersect JS~~
 - ~~check case of chemical on drugmap and other map~~
 - ~~Fix error with metal~~
-- downloadDescFromDB, line 223 ERROR in coordinate run
+- downloadDescFromDB, line 223 ERROR in coordinate run ==> need to check it is working
 
 
 #### Improvement
@@ -108,3 +108,5 @@
 - 19-12-19: add help and index pages for bodymap
 - 20-12-19: Fix color link bodymap + error upload chemmaps
 - 20-12-19: Fix error replicate in chemmaps user DB
+- 25-01-20: last update from the NTP
+- 26-03-20: fix error bodymap and chemmaps as well as added option in bodymap for interactive network

@@ -403,7 +403,8 @@ class JSbuilder:
                 for ID in dcoords.keys():
                     self.dchemAdd["coord"][ID] = {}
                     self.dchemAdd["coord"][ID] = dcoords[ID]
-                    cmdInclude = "SELECT count(*) FROM chemical_description_user WHERE inchikey='%s' AND map_name = '%s';"%( ddesc1D2D[ID]["inchikey"], self.nameMap)
+                    l = list(ddesc1D2D.keys())
+                    cmdInclude = "SELECT count(*) FROM chemical_description_user WHERE inchikey='%s' AND map_name = '%s';"%(ddesc1D2D[ID]["inchikey"], self.nameMap)
                     included = self.cDB.execCMD(cmdInclude)
                     if included == "Error": 
                         self.cDB.verbose = 0

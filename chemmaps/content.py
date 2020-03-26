@@ -219,8 +219,11 @@ def downloadDescFromDB(cDB, ldesc1D2D, ldesc3D, table, inchikey, mapName=""):
         return []
         
     else:
-        lval1D2D = lval[0][0]
-        lval3D = lval[0][1]
+        try:
+            lval1D2D = lval[0][0]
+            lval3D = lval[0][1]
+        except:
+            return []
 
     d1D2D = {}
     i = 0
