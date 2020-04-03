@@ -10,15 +10,15 @@
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
           rel="stylesheet" type="text/css"/> 
 
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/table.css" rel="stylesheet">
+<!--<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/table.css" rel="stylesheet">
 <link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
 <link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/chemical.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/network.css" rel="stylesheet">
+<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/network.css" rel="stylesheet">-->
 
-<!--<link href="/static/bodymap/css/table.css" rel="stylesheet">
+<link href="/static/bodymap/css/table.css" rel="stylesheet">
 <link href="/static/bodymap/css/theme.css" rel="stylesheet">
 <link href="/static/bodymap/css/chemical.css" rel="stylesheet">
-<link href="/static/bodymap/css/network.css" rel="stylesheet">-->
+<link href="/static/bodymap/css/network.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
@@ -30,19 +30,19 @@
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
 
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
+<!--<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/theme.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/chemical.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/mappingCanvas.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/network.js"></script>
 <script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script> -->
 
-<!--<script src="/static/bodymap/js/table.js"></script>
+<script src="/static/bodymap/js/table.js"></script>
 <script src="/static/bodymap/js/theme.js"></script>
 <script src="/static/bodymap/js/chemical.js"></script>
 <script src="/static/bodymap/js/mappingCanvas.js"></script>
 <script src="/static/bodymap/js/network.js"></script>
-<script src="/static/bodymap/js/plotFunctions.js"></script>-->
+<script src="/static/bodymap/js/plotFunctions.js"></script>
 
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -74,7 +74,7 @@
 </div>
 <br>
 
-
+{{exp_type}}
 
 <h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Body mapping</h2></button>
 <br>
@@ -93,18 +93,18 @@
         <br>
         <br>
 
-        AC50 cutoff: <span id="AC50_val"></span> &#956;M
-        <input type="range" min=0 max=300 steps=1 value=1 id="cutAC50"/>
+        log10(AC50) cutoff: <span id="logAC50_val"></span> <br>(AC50 cutoff: <span id="AC50_val"></span> nM)
+        <input type="range" min=-60 max=30 steps=1 value=0 id="cutlogAC50"/>
         <br>
-        <div class="tooltipBM">Tissue expression threshold <eM><sup >?</sup></eM>:&nbsp;<span class="tooltipBMtext">Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity</span> </div><span id="exp_val"></span> *folds control
+        <div class="tooltipBM">Organ expression threshold <eM><sup >?</sup></eM>:&nbsp;<span class="tooltipBMtext">Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity</span> </div><span id="exp_val"></span> *folds control
         <br>
         <input type="range" min=2 max=50 steps=1 value=1 id="cutExp"/>
         <br>
         <div id="circle" style="background: #1ee844"></div>&nbsp;&nbsp;mapped using assay gene target
         <br>
-        <div id="circle" style="background: #282ab5"></div>&nbsp;&nbsp;mapped using assay tissue
+        <div id="circle" style="background: #282ab5"></div>&nbsp;&nbsp;mapped using assay organ target
         <br>
-        <div id="circle" style="background: #2bfafa"></div>&nbsp;&nbsp;mapped using both assay tissue and gene target
+        <div id="circle" style="background: #2bfafa"></div>&nbsp;&nbsp;mapped using both assay organ and gene target
         <br>
         <br>
         <font size="3">List of organ(s): <span id="organ_active"></span></font>
@@ -141,9 +141,8 @@
 <br>
 <div class="rowChem">
     <div class="columnChem">
-        AC50 cutoff: <span id="AC50_val_network"></span> &#956;M
-        <br>
-        <input type="range" min=0 max=300 steps=1 value=10 id="cutAC50_network"/>
+        log10(AC50) cutoff: <span id="logAC50_val_network"></span> <br>(AC50 cutoff: <span id="AC50_val_network"></span> nM)
+        <input type="range" min=-60 max=30 steps=1 value=0 id="cutlogAC50_network"/>
     </div>
     <div class="columnChem">
         <div class="tooltipBM">Tissue expression threshold <eM><sup >?</sup></eM>:&nbsp;<span class="tooltipBMtext">Ratio of specific tissue expression to all tissues for assay gene target. Higher cutoff = greater specificity</span> </div><span id="exp_val_network"></span> *folds control
@@ -184,13 +183,19 @@ var containerNetwork = document.getElementById("mapnetwork");
 builtNetwork(containerNetwork, dmap, dchem, cutAC50_network, cutExp_network);
 
 // slider for AC50 and expression
-var sliderAC50_network = document.getElementById("cutAC50_network");
+var sliderAC50_network = document.getElementById("cutlogAC50_network");
+var outputlogAC50_Network = document.getElementById("logAC50_val_network");
 var outputAC50_Network = document.getElementById("AC50_val_network");
 
-outputAC50_Network.innerHTML = sliderAC50_network.value;
+
+outputlogAC50_Network.innerHTML = sliderAC50_network.value;
 sliderAC50_network.oninput = function() {
-    outputAC50_Network.innerHTML = this.value;
-    cutAC50_network = this.value;
+    outputlogAC50_Network.innerHTML = this.value/10;
+    cutlogAC50_network = this.value;
+    var AC50_network = Math.pow(10, this.value/10)*1000; // transform in nM
+    var rAC50_network = AC50_network.toFixed(3);
+    outputAC50_Network.innerHTML = rAC50_network;
+    cutAC50_network = Math.pow(10, this.value/10);   
     builtNetwork(containerNetwork, dmap, dchem, cutAC50_network, cutExp_network);
 }
 
@@ -225,17 +230,22 @@ chemPanel(dchem);
 //labelOrgan();
 
 // slider for AC50
-var sliderAC50 = document.getElementById("cutAC50");
+var sliderAC50 = document.getElementById("cutlogAC50");
+var outputlogAC50 = document.getElementById("logAC50_val");
 var outputAC50 = document.getElementById("AC50_val");
 
 
 //calibratePosition();
 
-outputAC50.innerHTML = sliderAC50.value;
+outputlogAC50.innerHTML = sliderAC50.value;
 sliderAC50.oninput = function() {
-    outputAC50.innerHTML = this.value;
-    cutAC50 = this.value;
-    mapOnBody(dmap, this.value, cutExp);
+    outputlogAC50.innerHTML = this.value/10;
+    cutlogAC50 = this.value;
+    var AC50 = Math.pow(10, this.value/10)*1000; // transform in nM
+    var rAC50 = AC50.toFixed(3);
+    outputAC50.innerHTML = rAC50;
+    cutAC50 = Math.pow(10, this.value/10);
+    mapOnBody(dmap, Math.pow(10, this.value/10), cutExp);
     
 }
 

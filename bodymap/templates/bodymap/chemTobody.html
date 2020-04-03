@@ -10,8 +10,8 @@
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
           rel="stylesheet" type="text/css"/> 
 
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
-<!--<link href="/static/bodymap/css/theme.css" rel="stylesheet">--> 
+<!--<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">-->
+<link href="/static/bodymap/css/theme.css" rel="stylesheet"> 
 {% endblock %}
 {% block title %}Chemical mapping{% endblock %}
 {% block content %}
@@ -30,16 +30,19 @@
 <form action='/bodymap/chemMappingNameResult/' method='post'>{% csrf_token %}
     <div style="margin-right: 80%; margin-left: 30px">{{formCAS.name}}</div>
     <br>
-    <input style="margin-left: 230px" type='submit' value='Upload by name'>
-</form>
+    <input style="margin-left: 230px" type='submit' value='Next'>
 
-<p><b>or select a Tox21 chemical by CASRN:</b></p>
-<form action='/bodymap/chemMappingCASNResult/' method='post'>{% csrf_token %}
+    <p><b>or select a Tox21 chemical by CASRN:</b></p>
     <div style="margin-right: 80%; margin-left: 30px">{{formCAS.cas}}</div>
     <br>
-    <input style="margin-left: 230px" type='submit' value='Upload by CASN'>
+    <input style="margin-left: 230px" type='submit' value='Next'>
+    <br>
+    <br>
+    <p>Change gene expression cutoff type:</p>
+    <p>
+    <div style="margin-right:30px; margin-left: 30px">{{formCAS.exp}}</div>
+    </p>
 </form>
-
 
 
 {% endblock content %}

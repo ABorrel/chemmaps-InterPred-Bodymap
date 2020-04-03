@@ -3,7 +3,7 @@
 
 function chemPanel(dchem) {
     var sizeCanvas = resizeCanvas();
-    var options = { width: sizeCanvas, height: sizeCanvas };
+    var options = { width: sizeCanvas, height: sizeCanvas, compactDrawing: false, terminalCarbons: true};
     var smilesDrawer = new SmilesDrawer.Drawer(options);
 
     CASID.innerHTML = dchem.CAS;

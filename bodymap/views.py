@@ -36,9 +36,12 @@ def mappingChemicalToBody(request, typeChem=""):
 
     # run map with new chem
     if typeChem == "name":
-        CAS = formCAS.clean_name()
+        formout = formCAS.clean_name()
+        
     else:
-        CAS = formCAS.clean_CAS()
+        formout = formCAS.clean_CAS()
+    CAS = formout[0]
+    exp_type = formout[1]
 
     dchem = prepChem(CAS)
     if dchem == 1:
@@ -46,11 +49,12 @@ def mappingChemicalToBody(request, typeChem=""):
 
     cmapChem = mapChem(CAS)
     cmapChem.loadFromDB("bodymap_assay_mapping_new", "bodymap_assay_ac50", "bodymap_genemap")
-    dmap = cmapChem.mapChemToBody()
+    dmap = cmapChem.mapChemToBody(exp_type)
     dmapJS = json.dumps(dmap)
     dchemJS = json.dumps(dchem)
     typeJS = json.dumps("chem")
+    exp_typeJS = json.dumps(exp_type)
 
 
-    return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS})
+    return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS, "exp_type":exp_typeJS})
 

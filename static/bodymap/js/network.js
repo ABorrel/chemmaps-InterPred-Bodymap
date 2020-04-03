@@ -63,8 +63,8 @@ function builtNetwork(container, dmap, dchem, cutAC50_network, cutExp_network ){
                 // control assays to chemical
                 var inledge = edgeIncludes(1, IDassay, ledges);
                 if(inledge == 0){
-                    var AC50 = Math.round(dmap_refined[assay][system][organ]["AC50"], 2);
-                    var AC50 = AC50.toString() + " microM";
+                    var AC50 = Math.round(dmap_refined[assay][system][organ]["AC50"]*1000);
+                    var AC50 = AC50.toString() + " nM";
                     //console.log(AC50);
                     var edge =  { from: 1, to: IDassay, label: AC50, color: "red" };
                     ledges.push(edge);
@@ -167,7 +167,7 @@ function builtNetwork(container, dmap, dchem, cutAC50_network, cutExp_network ){
             max: 30
           },
           font: {
-            size: 15,
+            size: 18,
          //   face: "Tahoma"
           }
         },
@@ -178,7 +178,7 @@ function builtNetwork(container, dmap, dchem, cutAC50_network, cutExp_network ){
             type: "continuous"
           },
           font: {
-            size: 15,
+            size: 18,
          //   face: "Tahoma"
           },
         },
@@ -187,11 +187,11 @@ function builtNetwork(container, dmap, dchem, cutAC50_network, cutExp_network ){
           barnesHut: {
             gravitationalConstant: -80000,
             springConstant: 0.001,
-            springLength: 200
+            springLength: 100
           }
         },
         interaction: {
-          tooltipDelay: 200,
+          tooltipDelay: 100,
           hideEdgesOnDrag: true
         }
       };

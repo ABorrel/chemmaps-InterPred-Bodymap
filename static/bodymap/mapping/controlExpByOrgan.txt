@@ -1,0 +1,34 @@
+Organ	control
+Uterus	669.0
+Vagina	668.0
+Urethra	631.5
+Testes	637.5
+Kidney	669.0
+Prostate gland	644.0
+Placenta	744.0
+Ovary	670.5
+Penis	615.0
+Bladder	879.0
+Mammary gland	678.5
+Peritoneum	608.0
+Colon	754.5
+Tongue	691.5
+Liver	795.0
+Pancreas	781.5
+Salivary gland	649.0
+Small intestine	670.5
+Stomach	698.0
+Esophagus	634.0
+Skeletal Muscle	700.5
+Joint	650.5
+Heart	733.0
+Vascular	750.5
+Nervous System	645.0
+Pituitary gland	626.0
+Adrenal gland	715.0
+Adipose tissue	747.0
+Thyroid gland	685.5
+Immune System	571.0
+Lung	725.0
+Skin	733.5
+Eye	528.0

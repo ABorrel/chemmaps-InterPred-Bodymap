@@ -38,7 +38,10 @@ class mapChem :
 
 
 
-    def mapChemToBody(self):
+    def mapChemToBody(self, expControl):
+
+        if expControl == "organ":
+            dExp = loadMatrixToDict("./static/bodymap/mapping/controlExpByOrgan.txt")
 
         dvia = {"Immune System": "Immune System", "Digestive System": "Liver", "Respiratory System": "Lung", "Digestive System":"Stomach"}
         dout = {}
@@ -97,12 +100,17 @@ class mapChem :
             elif typeMap == "gene":
                 gene = self.dassayMapped[assay]["gene"]
                 llexp = self.cDB.execCMD("SELECT gene, system, organ, expression, control from %s WHERE gene='%s'"%(self.tableGene, self.dassayMapped[assay]["gene"]))
+                
                 for lexp in llexp:
-                    exp = float(lexp[3]) / float(lexp[4])
-                    if exp < 2.0:
-                        continue
                     system = lexp[1]
                     organ = lexp[2]
+                    if expControl == "gene":
+                        exp = float(lexp[3]) / float(lexp[4])
+                    else: 
+                        exp = float(lexp[3]) / float(dExp[organ]["control"])
+                    if exp < 2.0:
+                        continue
+                   
                     if not assay in list(dout.keys()):
                         dout[assay] = {}
                     if not system in list(dout[assay].keys()):
