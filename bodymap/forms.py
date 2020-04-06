@@ -39,6 +39,8 @@ class CASUpload(forms.Form):
     lname = cDB.execCMD("SELECT DISTINCT casn, name from mvwchemmap_bodymapcase_name WHERE name is not NULL ORDER BY name")
     lcas = cDB.execCMD("SELECT DISTINCT casn, casn from mvwchemmap_bodymapcase_name WHERE casn is not NULL ORDER BY casn")
     
+    lcas.insert(0, ("---", "---"))
+    lname.insert(0, ("---", "---"))
     name = forms.CharField(label='name', widget=forms.Select(choices=lname))
     cas = forms.CharField(label='cas', widget=forms.Select(choices=lcas))
     #chem = forms.CharField(label="", error_messages={'required': ''}, required=True, )
@@ -46,12 +48,9 @@ class CASUpload(forms.Form):
 
 
 
-    def clean_name(self):
-        return [str(self.data['name']), str(self.data['exp'])]
+    def clean_upload(self):
+        return [str(self.data['name']), str(self.data['cas']), str(self.data['exp'])]
     
-    def clean_CAS(self):
-        return [str(self.data['cas']), str(self.data['exp'])]
-
 
 
 

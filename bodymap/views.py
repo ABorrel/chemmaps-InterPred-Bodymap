@@ -24,7 +24,7 @@ def help(request):
     })
 
 
-def mappingChemicalToBody(request, typeChem=""):
+def mappingChemicalToBody(request):
 
 
     # form for bodypart
@@ -35,17 +35,26 @@ def mappingChemicalToBody(request, typeChem=""):
         formCAS = CASUpload(request.POST)
 
     # run map with new chem
-    if typeChem == "name":
-        formout = formCAS.clean_name()
-        
-    else:
-        formout = formCAS.clean_CAS()
+    formout = formCAS.clean_upload()
     CAS = formout[0]
-    exp_type = formout[1]
+    name = formout[1]
+    exp_type = formout[2]
 
-    dchem = prepChem(CAS)
+    print(CAS)
+    print(name)
+
+    if CAS == "---" and name == "---":
+        return render(request, 'bodymap/ChemTobody.html', {"formCAS": formCAS, "Error": "1"})
+    elif CAS == "---" and name != "---":
+        dchem = prepChem(name)
+        CAS = name
+    elif CAS != "---" and name == "---":
+        dchem = prepChem(CAS)
+    else:
+        return render(request, 'bodymap/ChemTobody.html',{"formCAS": formCAS, "Error": "1"})
+
     if dchem == 1:
-        return render(request, 'bodymap/ChemMapping.html', {"Error": "1"})
+        return render(request, 'bodymap/ChemTobody.html',{"formCAS": formCAS, "Error": "1"})
 
     cmapChem = mapChem(CAS)
     cmapChem.loadFromDB("bodymap_assay_mapping_new", "bodymap_assay_ac50", "bodymap_genemap")

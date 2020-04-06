@@ -24,17 +24,9 @@ urlpatterns = [
         name='chemMapping'
     ),
     url(
-        r'^chemMappingCASNResult/$',
-        views.mappingChemicalToBody,
-        {"typeChem":"CASN"},
-        name='chemMappingCAS'
-    ),
-    url(
         r'^chemMappingNameResult/$',
         views.mappingChemicalToBody,
-        {"typeChem":"name"},
-        name='chemMappingTable'
-
+        name='chemMapping'
     ),
     ]+ static(settings.STATIC_URL, document_root="/home/sandbox/ChemMap2Site/static/bodymap/")
 
