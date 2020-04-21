@@ -16,7 +16,6 @@ class mapChem :
     def loadFromDB(self, tableAssayMap, tableAC50, tableGene):
 
         dac50 = self.cDB.execCMD("SELECT assay, ac50 from %s where casn='%s'"%(tableAC50, self.CASin))
-        print(dac50)
         self.dac50 = dac50
 
         # load premap
