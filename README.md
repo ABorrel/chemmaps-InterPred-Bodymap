@@ -110,3 +110,5 @@
 - 20-12-19: Fix error replicate in chemmaps user DB
 - 25-01-20: last update from the NTP
 - 26-03-20: fix error bodymap and chemmaps as well as added option in bodymap for interactive network
+- 21-04-20: Fix error in case of O division in gene expression
+- 21-04-20: Fix spealing errors and add ratio assays tested

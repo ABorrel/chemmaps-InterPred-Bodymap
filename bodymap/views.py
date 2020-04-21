@@ -62,8 +62,9 @@ def mappingChemicalToBody(request):
     dmapJS = json.dumps(dmap)
     dchemJS = json.dumps(dchem)
     typeJS = json.dumps("chem")
+    NassaysJS = json.dumps(int(dchem["N-assay"]))
     exp_typeJS = json.dumps(exp_type)
 
 
-    return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS, "exp_type":exp_typeJS})
+    return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "Nassay":NassaysJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS, "exp_type":exp_typeJS})
 

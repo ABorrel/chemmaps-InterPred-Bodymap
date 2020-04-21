@@ -63,10 +63,10 @@
         <br>
         <h3>Chemical information</h3>
         <b>Chemical name: </b><text id="ChemicalName"></text><br>
-        <b>DSSTOX ID: </b><a class = "aurl" id="DSSTOX"></a><br>
-        <b>CASRN: </b><a class = "aurl" id="CASID"></a><br>
+        <b>DSSTOX ID: </b><div class="tooltipBM"><a class = "aurl" id="DSSTOX"></a><span class="tooltipBMtext">Detailed chemical information available via EPA Chemistry Dashboard</span></div><br>
+        <b>CASRN: </b><div class="tooltipBM"><a class = "aurl" id="CASID"></a><span class="tooltipBMtext">Detailed chemical information available via EPA Chemistry Dashboard</span></div><br>
         <b>SMILES: </b><text id="SMILES"></text><br>
-        <b>Chemial space: </b>Explore on <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/">chemmaps.com</a> <br>
+        <b>Chemical space: </b>Explore on <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/">chemmaps.com</a> <br>
         <b>Chemical annotation: </b>Explore on <a class = "aurl" href="http://134.129.166.26:8080/tox21enricher/">Tox21 Enricher</a> 
         
         
@@ -92,7 +92,7 @@
         <br>
 
         log10(AC50) cutoff: <span id="logAC50_val"></span> <br>(AC50 cutoff: <span id="AC50_val"></span> nM)
-        <input type="range" min=-60 max=30 steps=1 value=0 id="cutlogAC50"/>
+        <input type="range" min=-40 max=20 steps=1 value=0 id="cutlogAC50"/>
         <br>
         {% if exp_type == "\"gene\""%}
         <div class="tooltipBM">Organ expression threshold <eM><sup >?</sup></eM>:&nbsp;<span class="tooltipBMtext">Ratio of specific organ expression to all organ for assay gene target. Higher cutoff = greater specificity</span> </div><span id="exp_val"></span> *folds control
@@ -124,7 +124,9 @@
 <div class="rowChem">
     <div class="columnChem" style="margin-left: 25px">
         <div id="dotplot" style="margin-bottom: 10px;"></div>
-        Assays mapping on organ system in function of the log10(AC50).
+        Assays mapping on organ system in function of the log10(AC50).<br>
+        Assay Annotations: <a class = "aurl" href="https://comptox.epa.gov/dashboard/assay_endpoints/">EPA Chemistry Dashboard</a><br>
+        Assays tested: {{Nassay}}/971
     </div>
     <div class="columnChem" style="margin-left: 10px">
         <br>
@@ -145,7 +147,7 @@
 <div class="rowChem">
     <div class="columnChem">
         log10(AC50) cutoff: <span id="logAC50_val_network"></span> <br>(AC50 cutoff: <span id="AC50_val_network"></span> nM)
-        <input type="range" min=-60 max=30 steps=1 value=0 id="cutlogAC50_network"/>
+        <input type="range" min=-40 max=20 steps=1 value=0 id="cutlogAC50_network"/>
     </div>
     <div class="columnChem">
         {% if exp_type == "\"gene\""%}

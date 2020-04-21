@@ -16,6 +16,7 @@ class mapChem :
     def loadFromDB(self, tableAssayMap, tableAC50, tableGene):
 
         dac50 = self.cDB.execCMD("SELECT assay, ac50 from %s where casn='%s'"%(tableAC50, self.CASin))
+        print(dac50)
         self.dac50 = dac50
 
         # load premap
@@ -105,7 +106,8 @@ class mapChem :
                     system = lexp[1]
                     organ = lexp[2]
                     if expControl == "gene":
-                        exp = float(lexp[3]) / float(lexp[4])
+                        try: exp = float(lexp[3]) / float(lexp[4])
+                        except: exp = 0.0
                     else: 
                         exp = float(lexp[3]) / float(dExp[organ]["control"])
                     if exp < 2.0:

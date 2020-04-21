@@ -19,6 +19,7 @@ def prepChem(CASIN):
             dcas["DSSTOX"] = lelem[1]
             dcas["Name"] = lelem[2]
             dcas["SMILES"] = lelem[3]
+            dcas["N-assay"] = lelem[4]
     
     if dcas == {}:
         return 1

@@ -32,7 +32,7 @@ class bodypartChoice(forms.Form):
 
 class CASUpload(forms.Form):
 
-    CHOICES = (("gene", "Gene expression cutoff based on median expression by gene on all organs"), ("organ", "Gene expression cutoff based on organ median expression on all genes"))
+    CHOICES = (("gene", "Gene expression cutoff based on median expression by gene for all organs"), ("organ", "Gene expression cutoff based on organ median expression for all genes"))
 
     # extract list of available chemical from DB
     cDB = DBrequest(verbose=0)
