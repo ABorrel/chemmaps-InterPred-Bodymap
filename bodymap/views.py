@@ -44,17 +44,17 @@ def mappingChemicalToBody(request):
     print(name)
 
     if CAS == "---" and name == "---":
-        return render(request, 'bodymap/ChemTobody.html', {"formCAS": formCAS, "Error": "1"})
+        return render(request, 'bodymap/chemTobody.html', {"formCAS": formCAS, "Error": "1"})
     elif CAS == "---" and name != "---":
         dchem = prepChem(name)
         CAS = name
     elif CAS != "---" and name == "---":
         dchem = prepChem(CAS)
     else:
-        return render(request, 'bodymap/ChemTobody.html',{"formCAS": formCAS, "Error": "1"})
+        return render(request, 'bodymap/chemTobody.html',{"formCAS": formCAS, "Error": "1"})
 
     if dchem == 1:
-        return render(request, 'bodymap/ChemTobody.html',{"formCAS": formCAS, "Error": "1"})
+        return render(request, 'bodymap/chemTobody.html',{"formCAS": formCAS, "Error": "1"})
 
     cmapChem = mapChem(CAS)
     cmapChem.loadFromDB("bodymap_assay_mapping_new", "bodymap_assay_ac50", "bodymap_genemap")
