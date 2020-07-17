@@ -104,7 +104,7 @@ class mapChem :
                 for lexp in llexp:
                     system = lexp[1]
                     organ = lexp[2]
-                    if expControl == "gene":
+                    if expControl == "gene":# error gene
                         try: exp = float(lexp[3]) / float(lexp[4])
                         except: exp = 0.0
                     else: 
