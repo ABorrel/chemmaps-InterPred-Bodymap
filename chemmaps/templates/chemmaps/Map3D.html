@@ -182,10 +182,11 @@
                 
                     // textures and material
                     var textureLoader = new THREE.TextureLoader();
-                    var spriteApp = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/star.png");
-                    var spriteWithdraw = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/star.png");
-                    var spriteDev = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/planet2.png");
-                    var spriteAdd = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/rocket.png");
+                    var spriteApp = textureLoader.load("{% static 'chemmaps/img/star.png' %}");
+                    var spriteWithdraw = textureLoader.load("{% static 'chemmaps/img/star.png' %}");
+                    var spriteDev = textureLoader.load("{% static 'chemmaps/img/planet2.png' %}");
+                    var spriteAdd = textureLoader.load("{% static 'chemmaps/img/rocket.png' %}");
+                    
                     
                     // for developmemt
                     //var textureLoader = new THREE.TextureLoader();

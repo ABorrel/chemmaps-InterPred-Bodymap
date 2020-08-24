@@ -10,8 +10,8 @@
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
           rel="stylesheet" type="text/css"/> 
 
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
-<!--<link href="/static/bodymap/css/theme.css" rel="stylesheet"> -->
+<link href="{% static 'bodymap/css/theme.css' %}" rel="stylesheet">
+
 
 {% endblock %}
 {% block title %} Index bodymap{% endblock %}
@@ -22,7 +22,13 @@
 <h1>Tox21BodyMap</h1>
 
 <p>
-    Tox21BodyMap provides a visualization of mapping 971 Tox21/ToxCast assay targets to regions of the human body, and allows users to identify target tissues where a specific chemical is more likely to produce effects. The webserver relies upon data on 9,270 chemicals with Tox21 assay activities, information on biological targets of the assays, and an approach that combines expert knowledge with tissue-specific gene expression levels to map assay targets to organ systems, providing an intuitive display of chemical bioactivity patterns.
+    Tox21BodyMap provides a visualization of mapping 971 Tox21/ToxCast assay targets to regions of the human body, and allows users to identify target tissues where a specific chemical
+     is more likely to produce effects. The webserver relies upon data on 9,270 chemicals with Tox21 assay activities, information on biological targets of the assays, and an approach that
+      combines expert knowledge with tissue-specific gene expression levels to map assay targets to organ systems, providing an intuitive display of chemical bioactivity patterns. 
+      There are a variety of reasons why the mappings in this application could be inaccurate including, but not limited to, incompatibility of the chemical with in vitro test systems
+       (e.g. volatility), activity cliffs due to limits of solubility and the concentration range used in the in vitro assays, absence of bioactivation/metabolism in the in vitro systems, 
+       and chemical-specific toxicokinetic/chemical distribution in vivo. This tool is solely a knowledge mapping and data visualization resource, and has not been rigorously evaluated for target organ predictivity. 
+       Tox21BodyMap should therefore not be used as the basis for chemical hazard characterization or risk assessment, and is solely intended for exploratory purposes and hypothesis generation.
 </p>
 
 <br>
@@ -57,26 +63,26 @@
 <div class="row">
     <div class="column">
         <div class="desc">Explore chemical data</div>
-            <a href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/bodymap_1.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/bodymap_1.png" style="width:100%" alt="Example of chemical information">
+            <a href="{% static 'bodymap/img/bodymap_1.png' %}">
+                <img src="{% static 'bodymap/img/bodymap_1.png' %}" style="width:100%" alt="Example of chemical information">
             </a>
     </div>
     <div class="column">
         <div class="desc">Intereactive Body-mapping</div>
-            <a href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/bodymap_2.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/bodymap_2.png" style="width:100%" alt="Example of a body-mapping">
+            <a href="{% static 'bodymap/img/bodymap_2.png' %}">
+                <img src="{% static 'bodymap/img/bodymap_2.png' %}" style="width:100%" alt="Example of a body-mapping">
             </a>
     </div>
     <div class="column">
         <div class="desc">Explore assay results</div>
-            <a href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/bodymap_3.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/bodymap_3.png" style="width:100%" alt="Example of a assay table results">
+            <a href="{% static 'bodymap/img/bodymap_3.png' %}">
+                <img src="{% static 'bodymap/img/bodymap_3.png' %}" style="width:100%" alt="Example of a assay table results">
             </a>
     </div>
     <div class="column">
         <div class="desc">Network visualization</div>
-            <a href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/bodymap_4.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/bodymap_4.png" style="width:100%" alt="Example of nerwork Visualization">
+            <a href="{% static 'bodymap/img/bodymap_4.png' %}">
+                <img src="{% static 'bodymap/img/bodymap_4.png' %}" style="width:100%" alt="Example of nerwork Visualization">
             </a>
     </div>
 </div>
