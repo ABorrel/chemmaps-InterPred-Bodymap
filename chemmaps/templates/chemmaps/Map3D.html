@@ -188,13 +188,6 @@
                     var spriteAdd = textureLoader.load("{% static 'chemmaps/img/rocket.png' %}");
                     
                     
-                    // for developmemt
-                    //var textureLoader = new THREE.TextureLoader();
-                    //var spriteApp = textureLoader.load("/static/chemmaps/img/star.png");
-                    //var spriteWithdraw = textureLoader.load("/static/chemmaps/img/star.png");
-                    //var spriteDev = textureLoader.load("/static/chemmaps/img/planet2.png");
-                    //var spriteAdd = textureLoader.load("/static/chemmaps/img/rocket.png")
-                    
                     var dsprite = {"approved":spriteApp, "withdraw":spriteWithdraw, "indev":spriteDev, "add":spriteAdd}
                     
                 }else{
@@ -212,15 +205,9 @@
                     
                     // textures and material
                     var textureLoader = new THREE.TextureLoader();
-                    var spriteClassified = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/star.png");
-                    var spriteNoClassified = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/planet2.png");
-                    var spriteAdd = textureLoader.load("https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/rocket.png");
-
-                    // for developmemt
-                    //var textureLoader = new THREE.TextureLoader();
-                    //var spriteClassified = textureLoader.load("/static/chemmaps/img/star.png");
-                    //var spriteNoClassified = textureLoader.load("/static/chemmaps/img/planet2.png");
-                    //var spriteAdd = textureLoader.load("/static/chemmaps/img/rocket.png")
+                    var spriteClassified = textureLoader.load("{% static 'chemmaps/img/star.png' %}");
+                    var spriteNoClassified = textureLoader.load("{% static 'chemmaps/img/planet2.png' %}");
+                    var spriteAdd = textureLoader.load("{% static 'chemmaps/img/rocket.png' %}");
 
                     var dsprite = {"classified":spriteClassified, "noclassified":spriteNoClassified, "add":spriteAdd};
 
