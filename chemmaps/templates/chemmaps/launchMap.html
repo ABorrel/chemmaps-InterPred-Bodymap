@@ -15,8 +15,10 @@ rel="stylesheet" type="text/css"/>
 {% block title %}Launch {{map}}{% endblock %}
 {% block content %}
 <script src="{% static 'chemmaps/js/theme.js' %}"></script>
+<div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
+
 <div id = "bg">
-    <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
+<br>    
 
     <h1>Generate the {{map}}</h1>
     <p>Select up to 5 features you would like put on the map:</p>
