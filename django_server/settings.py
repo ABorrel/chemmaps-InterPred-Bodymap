@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'chemmaps',
     'interferences',
     'bodymap',
+    'toolchem',
 ]
 
 MIDDLEWARE = [

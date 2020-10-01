@@ -1,9 +1,9 @@
-# To do list
+# Dependancies
 
 ## installtion with pip -> computation descriptor RDKIT developed in parrallel
 $pip install -i https://test.pypi.org/simple/ CompDesc
 
-## Dependancies
+## lib and sofwares
 Development in python3.6 with
 - Django
 - RDKit (> 3.1): http://rdkit.org/docs/index.html
@@ -13,14 +13,15 @@ Development in python3.6 with
 - OPERA2.3_CL (https://github.com/kmansouri/OPERA/releases), fix the minor error in the install folder add a "/" at the path beginning
 - OPERA will install PADEL in the same folder
 
-### Upade the DSSTOX
+## Upade the DSSTOX
 Download chemicals from the pubchem
-Current download => 866794 chemicals
+Current download => 866794 chemicals => limited to 500,000 structures
 - https://www.ncbi.nlm.nih.gov/pcsubstance?term=%22EPA%20DSSTox%22%5BSourceName%5D%20AND%20hasnohold%5Bfilt%5D
+- with the mapping from the pubmed ID
 
-### For all projects
-- ~~Update the MD directory => created an alternative branch~~
-- 
+# TO DO
+## URGENT
+- fix static file and check with docker version
 
 ### ChemMaps
 #### Urgent 
@@ -100,8 +101,12 @@ Current download => 866794 chemicals
 - improve the network by adding some cutoff on the AC50 and gene expression.
 
 
-#### Improvement
-- ~~Develop a new scrolling bar~~
+### Development of a admin toolbox
+- update chemical DB with 
+- update coordinates 
+- control DB with entries and quality
+- compute on the fly descriptor and OPERA prediction
+
 
 # Updates 
 - 7-8-19: init ncsu git
