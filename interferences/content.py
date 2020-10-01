@@ -4,9 +4,8 @@ from .DBrequest import DBrequest
 from os import path, remove
 from re import search
 import sys
-sys.path.insert(0, path.abspath('./../MD/'))
-from MD import Chemical
 
+from CompDesc import CompDesc
 
 
 class formatSMILES:
@@ -71,7 +70,7 @@ class formatSMILES:
 
                 # process the chemicals
                 if smiles_clean == []  or smiles_clean == "ERROR":
-                    chemical = Chemical.Chemical(chem_input, self.prout)
+                    chemical = CompDesc.CompDesc(chem_input, self.prout)
                     chemical.prepChem()
                     if chemical.err == 0:
                         smiles_clean = chemical.smi
@@ -141,7 +140,7 @@ class formatSMILES:
                 dout[k]["desc"] = "checkNo.png"
             else:
                 inch = self.input[str(k)]["INCH"]
-                chemical = Chemical.Chemical(SMICLEAN, self.prout)
+                chemical = CompDesc.CompDesc(SMICLEAN, self.prout)
                 chemical.prepChem()
                 if chemical.err == 1:
                     dout[k]["Descriptor"] = "Error"
@@ -154,7 +153,7 @@ class formatSMILES:
                 
                 # check in the user chemical list
                 if lval1D2D_OPERA == []:
-                    chemical = Chemical.Chemical(SMICLEAN, self.prout)
+                    chemical = CompDesc.CompDesc(SMICLEAN, self.prout)
                     chemical.prepChem()
                     chemical.generateInchiKey()
                     chemical.computeAll2D()

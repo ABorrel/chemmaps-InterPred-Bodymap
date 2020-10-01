@@ -40,9 +40,6 @@ def mappingChemicalToBody(request):
     name = formout[1]
     exp_type = formout[2]
 
-    print(CAS)
-    print(name)
-
     if CAS == "---" and name == "---":
         return render(request, 'bodymap/chemTobody.html', {"formCAS": formCAS, "Error": "1"})
     elif CAS == "---" and name != "---":

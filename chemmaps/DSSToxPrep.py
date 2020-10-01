@@ -8,10 +8,7 @@ from math import sqrt
 from copy import deepcopy
 from re import search
 
-import sys
-sys.path.insert(0, path.abspath('./../MD/'))
-from MD import Chemical
-
+from CompDesc import CompDesc
 
 class DSSToxPrep:
     def __init__(self, input, ldesc, prout):

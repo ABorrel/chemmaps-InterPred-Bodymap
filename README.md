@@ -1,7 +1,26 @@
 # To do list
 
+## installtion with pip -> computation descriptor RDKIT developed in parrallel
+$pip install -i https://test.pypi.org/simple/ CompDesc
+
+## Dependancies
+Development in python3.6 with
+- Django
+- RDKit (> 3.1): http://rdkit.org/docs/index.html
+- molVS (> 1): https://molvs.readthedocs.io/en/latest/index.html
+- Open Babel 3.0.0 (March 2020): (http://openbabel.org/wiki/Main_Page) (sudo apt install openbabel) 
+(additional some function will not work in case of no install)
+- OPERA2.3_CL (https://github.com/kmansouri/OPERA/releases), fix the minor error in the install folder add a "/" at the path beginning
+- OPERA will install PADEL in the same folder
+
+### Upade the DSSTOX
+Download chemicals from the pubchem
+Current download => 866794 chemicals
+- https://www.ncbi.nlm.nih.gov/pcsubstance?term=%22EPA%20DSSTox%22%5BSourceName%5D%20AND%20hasnohold%5Bfilt%5D
+
 ### For all projects
 - ~~Update the MD directory => created an alternative branch~~
+- 
 
 ### ChemMaps
 #### Urgent 

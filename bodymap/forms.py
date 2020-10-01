@@ -35,7 +35,7 @@ class CASUpload(forms.Form):
     CHOICES = (("gene", "Gene expression cutoff based on median expression by gene for all organs"), ("organ", "Gene expression cutoff based on organ median expression for all genes"))
 
     # extract list of available chemical from DB
-    cDB = DBrequest(verbose=1)
+    cDB = DBrequest(verbose=0)
     lname = cDB.execCMD("SELECT DISTINCT casn, name from mvwchemmap_bodymapcase_name WHERE name is not NULL ORDER BY name")
     lcas = cDB.execCMD("SELECT DISTINCT casn, casn from mvwchemmap_bodymapcase_name WHERE casn is not NULL ORDER BY casn")
     
