@@ -1,0 +1,41 @@
+.div-table {
+    display: block;
+    width: 80%;
+    margin: 20px;
+}
+
+.div-table-body,
+.div-table-foot,
+.div-table-row {
+    clear: both;
+}
+
+.div-table-head,
+.div-table-foot {
+    background-color: #ddd;
+    font-weight: bold;
+}
+
+.div-table-col,
+.div-table-head {
+    border: 1px solid #999999;
+    float: left;
+    height: 80px;
+    overflow: hidden;
+    padding: 3px 1.8%;
+    width: 20%;
+    font-size: 12px;
+}
+
+.div-table-head {
+    font-size: 15px;
+}
+
+.div-table:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: ' ';
+    clear: both;
+    height: 0;
+}

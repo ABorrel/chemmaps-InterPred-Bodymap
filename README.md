@@ -47,7 +47,7 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - ~~check case of chemical on drugmap and other map~~
 - ~~Fix error with metal~~
 - downloadDescFromDB, line 223 ERROR in coordinate run ==> need to check it is working
-
+- Add option to not load in the DB the new chemicals as interferences
 
 #### Improvement
 - ~~Add distance in the neighbor file to download -> done~~
