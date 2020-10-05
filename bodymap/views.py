@@ -53,6 +53,9 @@ def mappingChemicalToBody(request):
     if dchem == 1:
         return render(request, 'bodymap/chemTobody.html',{"formCAS": formCAS, "Error": "1"})
 
+    if dchem["QC"] == False:
+        return render(request, 'bodymap/chemTobody.html',{"formCAS": formCAS, "Error": "2", "dchem": dchem})
+
     cmapChem = mapChem(CAS)
     cmapChem.loadFromDB("bodymap_assay_mapping_new", "bodymap_assay_ac50", "bodymap_genemap")
     dmap = cmapChem.mapChemToBody(exp_type)

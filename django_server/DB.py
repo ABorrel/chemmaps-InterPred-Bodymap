@@ -103,7 +103,7 @@ class DB:
 
     def execCMD(self, cmdSQL):
         if self.verbose == 1: print(cmdSQL)
-        self.connOpen()
+        #self.connOpen()
         if self.conn != None:
             try:
                 cur = self.conn.cursor()
@@ -118,7 +118,7 @@ class DB:
                 return "Error"
         else:
             print("Open connection first")
-        self.connClose()
+        #self.connClose()
         return out
 
     def updateElement(self, cmdSQL):

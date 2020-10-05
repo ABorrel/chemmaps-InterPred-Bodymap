@@ -86,9 +86,8 @@ upload_button:hover {
 p.Errorform {
     border-style: solid;
     border-color: red;
-    font-size: 20px;
+    font-size: 30px;
     text-align: center;
-    background-color: red;
 }
 
 .column-checkbox {

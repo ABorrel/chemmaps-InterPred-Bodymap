@@ -10,19 +10,16 @@
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
           rel="stylesheet" type="text/css"/> 
 
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/table.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/theme.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/chemical.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/bodymap/static/css/network.css" rel="stylesheet">
-
-<!--<link href="/static/bodymap/css/table.css" rel="stylesheet">
-<link href="/static/bodymap/css/theme.css" rel="stylesheet">
-<link href="/static/bodymap/css/chemical.css" rel="stylesheet">
-<link href="/static/bodymap/css/network.css" rel="stylesheet">-->
-
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
 <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+          
+<link href="{% static 'bodymap/css/table.css' %}" rel="stylesheet">
+<link href="{% static 'bodymap/css/theme.css' %}" rel="stylesheet">
+<link href="{% static 'bodymap/css/chemical.css'%}" rel="stylesheet">
+<link href="{% static 'bodymap/css/network.css' %}" rel="stylesheet">
+
+
 
 {% endblock %}
 {% block title %}Chemical mapping{% endblock %}
@@ -30,19 +27,12 @@
 <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
 
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/table.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/theme.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/chemical.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/mappingCanvas.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/network.js"></script>
-<script src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/js/plotFunctions.js"></script> 
-
-<!--<script src="/static/bodymap/js/table.js"></script>
-<script src="/static/bodymap/js/theme.js"></script>
-<script src="/static/bodymap/js/chemical.js"></script>
-<script src="/static/bodymap/js/mappingCanvas.js"></script>
-<script src="/static/bodymap/js/network.js"></script>
-<script src="/static/bodymap/js/plotFunctions.js"></script>-->
+<script src="{% static 'bodymap/js/table.js' %}"></script>
+<script src="{% static 'bodymap/js/theme.js' %}"></script>
+<script src="{% static 'bodymap/js/chemical.js' %}"></script>
+<script src="{% static 'bodymap/js/mappingCanvas.js' %}"></script>
+<script src="{% static 'bodymap/js/network.js' %}"></script>
+<script src="{% static 'bodymap/js/plotFunctions.js' %}"></script> 
 
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>

@@ -42,7 +42,7 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - ~~DrugMap png missing~~
 - ~~508 add logo NTP on the map~~
 - ~~07-11: error in load DSSTOXMAP~~ 
-- change contact information
+- ~~change contact information~~
 - ~~Fix error with connect neighboor => change intersect JS~~
 - ~~check case of chemical on drugmap and other map~~
 - ~~Fix error with metal~~
