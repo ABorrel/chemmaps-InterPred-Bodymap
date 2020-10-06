@@ -1,7 +1,13 @@
 from django.shortcuts import render
 import json
+from django.http import HttpResponse
+from os import path, makedirs, remove, listdir
+from shutil import rmtree
 
 from . import DBrequest
+from .forms import updateForm 
+from django_server import toolbox
+
 
 # Create your views here
 def index(request):
@@ -29,4 +35,31 @@ def index(request):
     # update information from the DB
     cDBrequest.closeConnection()
 
-    return render(request, 'toolchem/index.html', {"d_chem_json":d_DB})
+
+    
+
+    return render(request, 'toolchem/index.html', {"d_chem_json":d_DB, "formUpdate":formUpdate})
+
+
+def testForm(request):
+
+    # form update
+    formUpdate = updateForm()
+    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate})
+
+
+
+def uploadChem(request):
+
+    # open file with
+    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+    
+    formUpdate = updateForm(request.POST, request.FILES)
+    #if formUpdate.is_valid() == True:
+    pfileserver = prsession + "uploadChem.txt"
+    with open(pfileserver, 'wb+') as destination:
+        for chunk in formUpdate.files["form_chem"].chunks():
+            destination.write(chunk)
+    destination.close()
+
+    return HttpResponse("test")

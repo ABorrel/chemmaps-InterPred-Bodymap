@@ -23,7 +23,7 @@ Current download => 866794 chemicals => limited to 500,000 structures
 ## URGENT
 - fix static file and check with docker version
 - fix duplicate code for DB interaction 
-- Add QC data in bodymap
+- ~~Add QC data in bodymap~~
 - Integrate tox21 assays results in chemmaps
 
 

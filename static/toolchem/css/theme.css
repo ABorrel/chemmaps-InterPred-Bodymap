@@ -39,3 +39,26 @@
     clear: both;
     height: 0;
 }
+
+
+input[type='submit'] {
+    /*font-size: 22px;*/
+    /*font-size: 2.5vmin;*/
+    margin-top: 1px;
+    margin-bottom: 2px;
+    border: 1px solid #000000;
+    color: #333333;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+input[type='submit']:hover {
+    background-color: #C3C3C3;
+    color: #000000;
+}
+
+.format_example{
+    font: 10px;
+    background-color: lightgray;
+    font-style: italic;
+}
