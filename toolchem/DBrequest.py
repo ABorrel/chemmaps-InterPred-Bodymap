@@ -3,7 +3,7 @@ from django_server import DB
 
 
 class DBrequest:
-    def __init__(self, verbose):
+    def __init__(self, verbose = 0):
         self.DB = DB.DB(verbose)
 
     def openConnection(self):
@@ -63,3 +63,23 @@ class DBrequest:
     def countDescFullChemUpdate(self):
         cmd = "SELECT COUNT(*) FROM chemical_description_user WHERE status='update'"
         return self.DB.execCMD(cmd)[0][0]
+
+    def runCMD(self, cmd):
+        return self.DB.execCMD(cmd)
+
+    def countUpdateChemicals(self):
+        cmd = "SELECT COUNT(*) FROM chemicals_user WHERE status='update'"
+        return self.DB.execCMD(cmd)[0][0]
+
+    def checkIfChemicalIsReadyToPush(self, SMILES_in):
+        cmd = "SELECT COUNT(*) FROM chemicals_user WHERE status='update' and smiles_origin='%s'"%(SMILES_in)
+        return self.DB.execCMD(cmd)[0][0]
+
+    def extract1D2DDesc(self):
+        cmd = "SELECT name FROM chem_descriptor_1d2d_name ORDER BY id"
+        return self.DB.execCMD(cmd)
+
+    def extract3DDesc(self):
+        cmd = "SELECT name FROM chem_descriptor_3d_name ORDER BY id"
+        return self.DB.execCMD(cmd)
+

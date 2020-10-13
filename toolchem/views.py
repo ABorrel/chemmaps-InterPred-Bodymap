@@ -5,14 +5,19 @@ from os import path, makedirs, remove, listdir
 from shutil import rmtree
 
 from . import DBrequest
+from . import uploadChem
+from . import computeDesc
 from .forms import updateForm 
 from django_server import toolbox
 
 
 # Create your views here
 def index(request):
+    
+    # open connrection to server
     cDBrequest = DBrequest.DBrequest(verbose=0)
     cDBrequest.openConnection()
+
     # extract information from the DB
     d_DB = {}
     d_DB["All_chem"] = cDBrequest.countChemicals()
@@ -35,31 +40,48 @@ def index(request):
     # update information from the DB
     cDBrequest.closeConnection()
 
-
-    
-
-    return render(request, 'toolchem/index.html', {"d_chem_json":d_DB, "formUpdate":formUpdate})
+    return render(request, 'toolchem/index.html', {"d_chem_json":d_DB})
 
 
-def testForm(request):
+def AdminForm(request):
 
     # form update
     formUpdate = updateForm()
-    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate})
+    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "error":[], "notice":[]})
 
 
 
-def uploadChem(request):
+def upload_chem(request):
 
     # open file with
     prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
-    
     formUpdate = updateForm(request.POST, request.FILES)
+    map_chem = formUpdate.data["form_map"]
+
     #if formUpdate.is_valid() == True:
-    pfileserver = prsession + "uploadChem.txt"
+    pfileserver = prsession + "uploadFileChem.txt"
     with open(pfileserver, 'wb+') as destination:
         for chunk in formUpdate.files["form_chem"].chunks():
             destination.write(chunk)
     destination.close()
 
-    return HttpResponse("test")
+    cChem = uploadChem.uploadChem(pfileserver, map_chem, prsession)
+    cChem.prepChem()
+    if cChem.err != []:
+        formUpdate = updateForm()
+        return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "error": cChem.err})
+
+    else:
+        cChem.pushChemicals()
+        formUpdate = updateForm()
+        return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":cChem.notice, "error":[]})
+
+
+def compute_desc(request):
+
+    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+    cCompDesc = computeDesc.computeDesc(prsession)
+    cCompDesc.loadChem()
+
+    formUpdate = updateForm()
+    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":[], "error":[]})

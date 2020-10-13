@@ -25,7 +25,7 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - fix duplicate code for DB interaction 
 - ~~Add QC data in bodymap~~
 - Integrate tox21 assays results in chemmaps
-
+- connection / close DB change in all of the project!!!
 
 ### ChemMaps
 #### Urgent 
@@ -55,6 +55,7 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - change background in function of the map
 - develop a carciMap choose on the 1600 chemicals and 1600 chemicals on the DSSTOX 
 - Change color when chemicals are uploaded and rocket size
+- italic for the article hyperlink + color blue
 
 
 ### Interferences

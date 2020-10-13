@@ -15,15 +15,21 @@ urlpatterns = [
     ),
 
     url(
-        r'testform',
-        views.testForm,
-        name='testform'
+        r'AdminForm',
+        views.AdminForm,
+        name='AdminForm'
     ),
 
     url(
-        r'uploadChem',
-        views.uploadChem,
-        name='uploadChem'
+        r'upload_chem',
+        views.upload_chem,
+        name='upload_chem'
+    ),
+
+    url(
+        r'computeDesc',
+        views.compute_desc,
+        name='compute_desc'
     ),
 
 ] + static(settings.STATIC_URL, document_root="/home/sandbox/ChemMap2Site/static/toolchem/")

@@ -62,3 +62,17 @@ input[type='submit']:hover {
     background-color: lightgray;
     font-style: italic;
 }
+
+p.errorform {
+    border-style: solid;
+    border-color: transparent;
+    background-color: #FDE8E8;
+    font-size: 15px;
+}
+
+p.noticeform {
+    border-style: solid;
+    border-color: transparent;
+    background-color: #E2FDE7;
+    font-size: 15px;
+}
