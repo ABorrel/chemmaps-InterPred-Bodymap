@@ -54,19 +54,19 @@ rel="stylesheet" type="text/css"/>
 <br>
 <h3>Computation on the server</h3>
 <br>
-Chemicals ready for descriptor computation: <b>{{formUpdate.nb_chem}}</b>
+Chemicals ready for descriptor computation: <b>{{formUpdate.nb_update_desc}}</b>
 <form action='/toolchem/computeDesc' method='post'>{% csrf_token %}
     <input type='submit' value='Compute descriptors'>
 </form>
 <br><br>
 
-Chemicals ready for OPERA modeling computation: XXX
+Chemicals ready for OPERA modeling computation: <b>{{formUpdate.nb_update_OPERA}}</b>
 <form action='/toolchem/computeOPERA' method='post'>{% csrf_token %}
     <input type='submit' value='Compute OPERA predictions'>
 </form>
 <br><br>
 
-Chemicals ready for interferences computation: XXX
+Chemicals ready for interferences computation: <b>{{formUpdate.nb_update_interpred}}</b>
 <form action='/toolchem/computeInterPred' method='post'>{% csrf_token %}
     <input type='submit' value='Compute InterPred predictions'>
 </form>

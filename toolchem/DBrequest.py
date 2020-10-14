@@ -67,6 +67,18 @@ class DBrequest:
     def runCMD(self, cmd):
         return self.DB.execCMD(cmd)
 
+    def countUpdateDescChemicals(self):
+        cmd = "SELECT COUNT(*) FROM chemical_description_user WHERE status='update' AND desc_1d2d is null AND desc_3d is null"
+        return self.DB.execCMD(cmd)[0][0]
+
+    def countUpdateOPERAChemicals(self):
+        cmd = "SELECT COUNT(*) FROM chemical_description_user WHERE status='update' AND desc_opera is null"
+        return self.DB.execCMD(cmd)[0][0]
+
+    def countUpdateInterpredChemicals(self):
+        cmd = "SELECT COUNT(*) FROM chemical_description_user WHERE status='update' AND interference_prediction is null"
+        return self.DB.execCMD(cmd)[0][0]
+
     def countUpdateChemicals(self):
         cmd = "SELECT COUNT(*) FROM chemicals_user WHERE status='update'"
         return self.DB.execCMD(cmd)[0][0]
@@ -83,3 +95,10 @@ class DBrequest:
         cmd = "SELECT name FROM chem_descriptor_3d_name ORDER BY id"
         return self.DB.execCMD(cmd)
 
+    def extract3DDesc(self):
+        cmd = "SELECT name FROM chem_descriptor_3d_name ORDER BY id"
+        return self.DB.execCMD(cmd)
+
+    def extractOPERADesc(self):
+        cmd = "SELECT name FROM chem_descriptor_opera_name ORDER BY id"
+        return self.DB.execCMD(cmd)

@@ -7,6 +7,7 @@ from shutil import rmtree
 from . import DBrequest
 from . import uploadChem
 from . import computeDesc
+from . import computeOPERA
 from .forms import updateForm 
 from django_server import toolbox
 
@@ -78,10 +79,19 @@ def upload_chem(request):
 
 
 def compute_desc(request):
-
     prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
     cCompDesc = computeDesc.computeDesc(prsession)
-    cCompDesc.loadChem()
+    cCompDesc.runDesc()
+    
+
+    formUpdate = updateForm()
+    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":[], "error":[]})
+
+
+def compute_opera(request):
+    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+    cCompOPERA = computeOPERA.computeOPERA(prsession)
+    cCompOPERA.runOPERA()
 
     formUpdate = updateForm()
     return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":[], "error":[]})

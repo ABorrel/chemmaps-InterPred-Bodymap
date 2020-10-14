@@ -31,6 +31,12 @@ urlpatterns = [
         views.compute_desc,
         name='compute_desc'
     ),
+    url(
+        r'computeOPERA',
+        views.compute_opera,
+        name='compute_opera'
+    ),
+
 
 ] + static(settings.STATIC_URL, document_root="/home/sandbox/ChemMap2Site/static/toolchem/")
 

@@ -22,6 +22,9 @@ class updateForm(forms.Form):
     # extract from DB chemicals to process
     cDB = DBrequest.DBrequest()
     cDB.openConnection()
-    nb_chem = cDB.countUpdateChemicals()
+    nb_update_chem = cDB.countUpdateChemicals()
+    nb_update_desc = cDB.countUpdateDescChemicals()
+    nb_update_OPERA = cDB.countUpdateOPERAChemicals()
+    nb_update_interpred = cDB.countUpdateInterpredChemicals()
     cDB.closeConnection()
 

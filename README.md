@@ -26,6 +26,10 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - ~~Add QC data in bodymap~~
 - Integrate tox21 assays results in chemmaps
 - connection / close DB change in all of the project!!!
+- Error in the name map for user page
+- check adding in DB for descriptor user computation
+- add new descriptor from OPERA 2.6 in the opera desc list
+- load only one OPERA model
 
 ### ChemMaps
 #### Urgent 

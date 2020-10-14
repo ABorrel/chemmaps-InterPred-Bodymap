@@ -113,8 +113,8 @@ class DB:
                 out = cur.fetchall()
                 if self.verbose == 1: print(out)
             except (Exception, psycopg2.DatabaseError) as error:
-                self.connClose()
-                print(error)
+                #self.connClose()
+                print("Error", error)
                 return "Error"
         else:
             print("Open connection first")
@@ -123,7 +123,7 @@ class DB:
 
     def updateElement(self, cmdSQL):
         if self.verbose == 1: print(cmdSQL)
-        self.connOpen()
+        #self.connOpen()
         if self.conn != None:
             try:
                 cur = self.conn.cursor()
@@ -138,7 +138,7 @@ class DB:
                 return "Error"
         else:
             print("Open connection first")
-        self.connClose()
+        #self.connClose()
         return 0
 
 
