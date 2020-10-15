@@ -76,7 +76,7 @@ class DBrequest:
         return self.DB.execCMD(cmd)[0][0]
 
     def countUpdateInterpredChemicals(self):
-        cmd = "SELECT COUNT(*) FROM chemical_description_user WHERE status='update' AND interference_prediction is null"
+        cmd = "SELECT COUNT(*) FROM chemical_description_user WHERE status='update' AND interference_prediction is null AND desc_opera is not null AND desc_1d2d is not null"
         return self.DB.execCMD(cmd)[0][0]
 
     def countUpdateChemicals(self):
@@ -89,10 +89,6 @@ class DBrequest:
 
     def extract1D2DDesc(self):
         cmd = "SELECT name FROM chem_descriptor_1d2d_name ORDER BY id"
-        return self.DB.execCMD(cmd)
-
-    def extract3DDesc(self):
-        cmd = "SELECT name FROM chem_descriptor_3d_name ORDER BY id"
         return self.DB.execCMD(cmd)
 
     def extract3DDesc(self):

@@ -36,7 +36,11 @@ urlpatterns = [
         views.compute_opera,
         name='compute_opera'
     ),
+    url(
+        r'computeInterPred',
+        views.compute_interference,
+        name='compute_interference'
+    ),
 
-
-] + static(settings.STATIC_URL, document_root="/home/sandbox/ChemMap2Site/static/toolchem/")
+] + static(settings.STATIC_URL, document_root=settings.PROJECT_PATH)
 

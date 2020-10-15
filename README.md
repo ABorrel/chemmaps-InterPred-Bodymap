@@ -29,7 +29,12 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - Error in the name map for user page
 - check adding in DB for descriptor user computation
 - add new descriptor from OPERA 2.6 in the opera desc list
-- load only one OPERA model
+- load only once OPERA model
+- add -999 value in case of descriptor NA
+- remove descriptors in interpred
+- create random int for folder for update in descriptor
+- clean update folder 
+
 
 ### ChemMaps
 #### Urgent 

@@ -8,6 +8,7 @@ from . import DBrequest
 from . import uploadChem
 from . import computeDesc
 from . import computeOPERA
+from . import computeInterPred
 from .forms import updateForm 
 from django_server import toolbox
 
@@ -85,7 +86,7 @@ def compute_desc(request):
     
 
     formUpdate = updateForm()
-    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":[], "error":[]})
+    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":cCompDesc.notice, "error":cCompDesc.error})
 
 
 def compute_opera(request):
@@ -94,4 +95,13 @@ def compute_opera(request):
     cCompOPERA.runOPERA()
 
     formUpdate = updateForm()
-    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":[], "error":[]})
+    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":cCompOPERA.notice, "error":cCompOPERA.error})
+
+
+def compute_interference(request):
+    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+    cCompInterpred = computeInterPred.computeInterPred(prsession)
+    cCompInterpred.runInterpred()
+
+    formUpdate = updateForm()
+    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":cCompInterpred.notice, "error":cCompInterpred.error})

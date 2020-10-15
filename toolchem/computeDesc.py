@@ -12,6 +12,8 @@ class computeDesc:
         self.l_3D_desc = self.cDB.extract3DDesc()
         self.cDB.closeConnection()
 
+        self.error = []
+        self.notice = []
 
     def runDesc(self):
 
@@ -21,6 +23,10 @@ class computeDesc:
         
         l_chem = self.cDB.runCMD(cmd_sql)
 
+        if len(l_chem) == 0:
+            self.notice.append("No chemical ready to be processed")
+
+        nb_computed = 0
         for chem in l_chem:
             smiles = chem[0]
             cChem = CompDesc.CompDesc(smiles, self.pr_session)
@@ -32,7 +38,7 @@ class computeDesc:
                 # change status to error
                 cmd_update = "UPDATE chemical_description_user SET status = 'error' WHERE source_id = '%s'"%(smiles)
                 self.cDB.runCMD(cmd_update)
-
+                self.error.append("%s: error 1D2D computation"%(smiles))
             else:
                 # organise desc 1D2D
                 l_desc2D_upload = []
@@ -51,6 +57,8 @@ class computeDesc:
                 # change status to error
                 cmd_update = "UPDATE chemical_description_user SET status = 'error' WHERE source_id = '%s'"%(smiles)
                 self.cDB.DB.updateElement(cmd_update)
+                self.error.append("%s: error 3D computation"%(smiles))
+
             else:
                 l_desc3D_upload = []
                 for desc3D in self.l_3D_desc:
@@ -58,5 +66,9 @@ class computeDesc:
                 w3D = "{" + ",".join(["%s" % (descval) for descval in l_desc3D_upload]) + "}"
                 cmd_update = "UPDATE chemical_description_user SET desc_3d = '%s' WHERE source_id = '%s'"%(w3D, smiles)
                 self.cDB.DB.updateElement(cmd_update)
+                nb_computed = nb_computed + 1
+
+        if nb_computed > 0:
+            self.notice.append("%i chemicals processed"%(nb_computed))
         self.cDB.closeConnection()
     

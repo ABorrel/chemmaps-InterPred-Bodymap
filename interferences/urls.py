@@ -47,5 +47,5 @@ urlpatterns = [
         views.help,
         name='help'
     ),
-    ]+ static(settings.STATIC_URL, document_root="/home/sandbox/ChemMap2Site/static/interferences/")
+    ]+ static(settings.STATIC_URL, document_root=settings.PROJECT_PATH)
 
