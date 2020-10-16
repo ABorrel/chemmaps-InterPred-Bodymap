@@ -34,6 +34,9 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - remove descriptors in interpred
 - create random int for folder for update in descriptor
 - clean update folder 
+- check error in line 48 of interpred R script
+- add error page in the project to hide sources
+- add when upload chemical add log
 
 
 ### ChemMaps

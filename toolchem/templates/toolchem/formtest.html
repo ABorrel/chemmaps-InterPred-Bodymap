@@ -49,8 +49,12 @@ rel="stylesheet" type="text/css"/>
     <b>Map to add chemicals</b>
     <div style="margin-right: 80%">{{formUpdate.form_map}}</div>
     <br>
+    <input type='submit' value='Check overlap'>
+    <br><br>
     <input type='submit' value='Upload new chemicals' >
 </form>
+
+
 <br>
 <h3>Computation on the server</h3>
 <br>
@@ -72,12 +76,26 @@ Chemicals ready for interferences computation (descriptor and OPERA prediction m
 </form>
 <br><br>
 
-<h3>Recompute all map coordinates</h3> 
+<h3>Recompute map coordinates</h3> 
+
+Chemicals added:
+<li>DrugMap: <b>{{formUpdate.nb_update_drugmap}}</b> chemicals added</li>
+<li>Tox21Map: <b>{{formUpdate.nb_update_tox21map}}</b> chemicals added</li>
+<li>PFASMap: <b>{{formUpdate.nb_update_pfasmap}}</b> chemicals added</li>
+<li>DSSToxMap: <b>{{formUpdate.nb_update_dsstoxmap}}</b> chemicals added</li>
+
+<br>
 <div style="margin-right: 80%">{{formUpdate.form_map}}</div>
 <br>
+<br>
 <form action='/toolchem/uploadChem' method='post'>{% csrf_token %}
-    <input type='submit' value='Recompute all coordinates'>
+    <input type='submit' value='Compute all map coordinates'>
 </form>
+<br>
+<form action='/toolchem/uploadChem' method='post'>{% csrf_token %}
+    <input type='submit' value='Compute only coordinates for added chemicals'>
+</form>
+
 <br>
 <br>
 <h1>Update from precomputed files</h1>

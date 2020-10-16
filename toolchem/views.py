@@ -1,8 +1,9 @@
 from django.shortcuts import render
 import json
 from django.http import HttpResponse
-from os import path, makedirs, remove, listdir
+from os import path, makedirs, remove, listdir, system
 from shutil import rmtree
+from random import randint
 
 from . import DBrequest
 from . import uploadChem
@@ -99,9 +100,17 @@ def compute_opera(request):
 
 
 def compute_interference(request):
-    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
-    cCompInterpred = computeInterPred.computeInterPred(prsession)
-    cCompInterpred.runInterpred()
 
+    a = str(randint(0, 1000000))# define a random number for folder in update to avoid overlap
+    prsession = toolbox.createFolder(path.abspath("./temp") + "update/InterPred-" + a + "/")
+
+    cCompInterpred = computeInterPred.computeInterPred(prsession)
+    if cCompInterpred.prepInterpred() != 1:
+        cCompInterpred.predictInterPred()
+        cCompInterpred.pushInterPred()
+
+    # clean folder
+    rmtree(prsession)
+    
     formUpdate = updateForm()
     return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":cCompInterpred.notice, "error":cCompInterpred.error})

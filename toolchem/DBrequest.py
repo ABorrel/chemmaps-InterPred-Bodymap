@@ -98,3 +98,11 @@ class DBrequest:
     def extractOPERADesc(self):
         cmd = "SELECT name FROM chem_descriptor_opera_name ORDER BY id"
         return self.DB.execCMD(cmd)
+
+    def extractInterPredDesc(self):
+        cmd = "SELECT name FROM chem_interference_prediction_name ORDER BY id"
+        return self.DB.execCMD(cmd)
+
+    def countUpdateForCoordinates(self, name_map):
+        cmd = "SELECT COUNT(*) FROM chemical_description_user WHERE status='update' AND map_name='%s'"%(name_map)
+        return self.DB.execCMD(cmd)

@@ -26,11 +26,16 @@ model = outmodel$model
 # open 2D
 din2D = read.csv(pdesc2D, sep = "\t", header = TRUE)
 rownames(din2D) = din2D[,1]
-# del SMILES colunm
-din2D = din2D[,-which(colnames(din2D) == "SMILES")]
-din2D = din2D[,-which(colnames(din2D) == "inchikey")]
-#print(colnames(din2D))
 
+
+# del SMILES colunm
+if("SMILES" %in% colnames(din2D)){
+  din2D = din2D[,-which(colnames(din2D) == "SMILES")]
+}
+
+if("inchikey" %in% colnames(din2D)){
+  din2D = din2D[,-which(colnames(din2D) == "inchikey")]
+}
 
 #open OPERA
 dinOPERA = read.csv(pdescOPERA, sep = "\t", header = TRUE)
@@ -38,12 +43,10 @@ rownames(dinOPERA) = dinOPERA[,1]
 
 lchem = intersect(rownames(din2D), rownames(dinOPERA))
 ddesc = cbind(din2D[lchem,], dinOPERA[lchem,])
-ddesc = ddesc[,-1]
+#ddesc = ddesc[,-1] ############################### check error in the interpred modeling
 
 lpred = predict(model, ddesc)
 dout = cbind(lchem, lpred)
-
-
 
 colnames(dout) = c("ID", "pred")
 rownames(dout) = rownames(dout)
