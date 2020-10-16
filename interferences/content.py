@@ -5,7 +5,7 @@ from os import path, remove
 from re import search
 import sys
 
-from CompDesc import CompDesc
+import CompDesc
 
 
 class formatSMILES:
