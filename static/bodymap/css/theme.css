@@ -354,3 +354,9 @@ input[type=range]::-ms-thumb {
 .aurl:hover{
     color: darkred;
 }
+
+.bodymapping{
+    background: url("{% static 'bodymap/img/Human_Body_V23.png' %}");
+    width: 825px;
+    height: 720px
+}

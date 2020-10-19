@@ -62,14 +62,13 @@
 </div>
 <br>
 
-<h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Body mapping</h2></button>
+<h2><img src="{% static 'bodymap/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Body mapping</h2></button>
 <br>
 <p>Target tissues mapping where the chemical is more likely to produce effects in the human body. User can adjust gene expression and activity concentration cutoffs.</p>
 <br>    
 <div class="rowChem">
     <div class="columnChem">
-        <canvas id="bodymap" style="background: url('https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/Human_Body_V23.png')" width="825" height="720"> 
-            <!--<canvas id="bodymap" style="background: url('/static/bodymap/img/Human_Body_V23.png')" width="825" height="720">-->
+        <canvas id="bodymap">
             Your browser does not support the canvas element.
         </canvas>
     </div>
@@ -107,7 +106,7 @@
 <br>
 <br>
 
-<h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Assays mapping</h2></button>
+<h2><img src="{% static 'bodymap/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Assays mapping</h2></button>
 <br>
 <div class="rowChem">
     <div class="columnChem" style="margin-left: 25px">
@@ -128,7 +127,7 @@
 </div>
 <br>
 <br>
-<h2><img src="https://sandbox.ntp.niehs.nih.gov/bodymap/static/img/arrow.png" style="width:30px" alt="Arrow used to extend the page"> Network representation</h2>
+<h2><img src="{% static 'bodymap/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Network representation</h2>
 <br>
 <p>Network where chemical-assay activity, target gene expression, and body mapping are connected in a data-driven representation.</p>
 <br>
@@ -223,6 +222,15 @@ var canvas = document.getElementById("bodymap");
 var ctx = canvas.getContext("2d");
 var dpos = definePosDict();
 
+canvas.width=825;
+canvas.height=720;
+var background = new Image();
+background.src = "{% static 'bodymap/img/Human_Body_V23.png' %}";
+
+background.onload = function(){
+    ctx.drawImage(background,0,0);   
+}
+
 chemPanel(dchem);
 //calibratePosition();
 //labelOrgan();
@@ -256,6 +264,7 @@ sliderExp.oninput = function() {
     outputExp.innerHTML = this.value;
     cutExp = this.value;
     mapOnBody(dmap, cutAC50, cutExp);
+    
 }
 
 
