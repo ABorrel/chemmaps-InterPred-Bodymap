@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra-css %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
+rel="stylesheet" type="text/css"/> 
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
+rel="stylesheet" type="text/css"/>
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
+rel="stylesheet" type="text/css"/>
+<link href="{% static 'toolchem/css/theme.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+
+{% block title %}Admin ToolBox{% endblock %}
+{% block content %}
+<p>
+<h1>Database summary</h1>
+Number of chemicals in the database: <b>{{ d_chem_json.All_chem }}</b><br>
+Number of structures cleaned available: <b>{{ d_chem_json.All_chem_cleaned }}</b><br>
+Number of strucutres with descriptors 2D and 3D: <b>{{ d_chem_json.All_chem_desc }}</b><br>
+<br>
+
+<h2>By applications</h2>
+<div class="div-table">
+    <div class="div-table-row">
+        <div class="div-table-head">ChemMaps</div>
+        <div class="div-table-head">InterPred</div>
+        <div class="div-table-head">BodyMap</div>
+    </div>
+    <div class="div-table-row">
+        <div class="div-table-col">
+            Chemicals in DSSToxMap: <b>{{ d_chem_json.chemmaps_DSSTOXMap }}</b><br>
+            Chemicals in DrugMap: <b>{{ d_chem_json.chemmaps_DrugMap }}</b><br>
+            Chemicals in PFASMap: <b>{{ d_chem_json.chemmaps_PFASMap }}</b><br>
+            Chemicals in Tox21Map: <b>{{ d_chem_json.chemmaps_Tox21Map }}</b><br>
+        </div>
+        <div class="div-table-col">
+            Chemicals interference computed: <b>{{ d_chem_json.interpred_chem }}</b>
+        </div>
+        <div class="div-table-col">
+            Chemicals in BodyMap: <b>{{ d_chem_json.bodymap_chem }}</b>
+        </div>
+    </div>
+</div>
+<br>
+
+
+<h1>Chemicals updates</h1>
+Chemicals in user chemicals table (number of chemicals submitted): <b>{{ d_chem_json.All_chem_user }}</b><br>
+Chemicals in user descriptor table (number of chemicals processed correctly): <b> {{ d_chem_json.All_chem_desc_user }}</b><br>
+
+Chemicals ready to be push in the main chemicals table:<b> {{ d_chem_json.All_chem_update }}</b><br>
+Chemicals ready to be push in the main descriptor chemicals table:<b> {{  d_chem_json.All_chem_desc_update}}</b><br>
+<br>
+
+
+<h1>ChemMaps coordinates</h1>
+
+
+<h1>Comptute interferences</h1>
+
+</p>
+
+
+<i>Last update: 10/2020</i>
+{% endblock content %}

@@ -15,7 +15,7 @@ from django_server import toolbox
 
 
 # Create your views here
-def index(request):
+def push(request):
     
     # open connrection to server
     cDBrequest = DBrequest.DBrequest(verbose=0)
@@ -43,14 +43,14 @@ def index(request):
     # update information from the DB
     cDBrequest.closeConnection()
 
-    return render(request, 'toolchem/index.html', {"d_chem_json":d_DB})
+    return render(request, 'toolchem/push.html', {"d_chem_json":d_DB})
 
 
-def AdminForm(request):
+def index(request):
 
     # form update
     formUpdate = updateForm()
-    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "error":[], "notice":[]})
+    return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "error":[], "notice":[]})
 
 
 
@@ -58,26 +58,36 @@ def upload_chem(request):
 
     # open file with
     prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+
     formUpdate = updateForm(request.POST, request.FILES)
-    map_chem = formUpdate.data["form_map"]
+    if request.method == 'POST':
+        formout = formUpdate.clean()
 
-    #if formUpdate.is_valid() == True:
-    pfileserver = prsession + "uploadFileChem.txt"
-    with open(pfileserver, 'wb+') as destination:
-        for chunk in formUpdate.files["form_chem"].chunks():
-            destination.write(chunk)
-    destination.close()
+    if formout == "update":
 
-    cChem = uploadChem.uploadChem(pfileserver, map_chem, prsession)
-    cChem.prepChem()
-    if cChem.err != []:
-        formUpdate = updateForm()
-        return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "error": cChem.err})
+        map_chem = formUpdate.data["form_map"]
 
+        #if formUpdate.is_valid() == True:
+        pfileserver = prsession + "uploadFileChem.txt"
+        with open(pfileserver, 'wb+') as destination:
+            for chunk in formUpdate.files["form_chem"].chunks():
+                destination.write(chunk)
+        destination.close()
+
+        cChem = uploadChem.uploadChem(pfileserver, map_chem, prsession)
+        cChem.prepChem()
+        if cChem.err != []:
+            formUpdate = updateForm()
+            return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "error": cChem.err})
+
+        else:
+            cChem.pushChemicals()
+            formUpdate = updateForm()
+            return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":cChem.notice, "error":[]})
+    
     else:
-        cChem.pushChemicals()
-        formUpdate = updateForm()
-        return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":cChem.notice, "error":[]})
+        
+        return HttpResponse("Fuck")
 
 
 def compute_desc(request):

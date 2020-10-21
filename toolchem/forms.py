@@ -35,3 +35,9 @@ class updateForm(forms.Form):
 
     cDB.closeConnection()
 
+
+    def clean(self):
+
+        if 'overlap' in self.data:
+            return "overlap"
+        return "update"

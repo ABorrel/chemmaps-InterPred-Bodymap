@@ -15,13 +15,7 @@ urlpatterns = [
     ),
 
     url(
-        r'AdminForm',
-        views.AdminForm,
-        name='AdminForm'
-    ),
-
-    url(
-        r'upload_chem',
+        r'uploadChem',
         views.upload_chem,
         name='upload_chem'
     ),
