@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra-css %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
+rel="stylesheet" type="text/css"/> 
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
+rel="stylesheet" type="text/css"/>
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
+rel="stylesheet" type="text/css"/>
+<link href="{% static 'toolchem/css/theme.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+
+{% block title %}Overlap update{% endblock %}
+{% block content %}
+<br>
+<h1>Compute chemicals on the server</h1>
+
+Table chemicals: <b>{{map}}</b><br>
+<br>
+Number of chemicals already included: <b>{{nb_included}}</b><br>
+Number of chemicals not included: <b>{{nb_noincluded}}</b><br>
+<br>
+<form method="get" action="/toolchem/chemicals.csv"><button class="btn"><i class="fa fa-download"></i> Download file with only not included chemicals</button></form>
+
+<br>
+<a href="/toolchem/">Back to form</a>
+
+
+{% endblock content %}
