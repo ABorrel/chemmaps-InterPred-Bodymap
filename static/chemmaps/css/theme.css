@@ -1,18 +1,16 @@
 .bgindex {
-    background-color: #000;
     /*#margin: 0px;
     overflow: hidden;*/
-    background-image: url('https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/background.jpg');
+    background-image: url("../img/background.jpg");
     color:#ffffff;
     /*margin-top: 15px*/
 }
 
 
 #bg {
-    background-color: #000;
     /*#margin: 0px;
     overflow: hidden;*/
-    background-image: url('https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/background.jpg');
+    background-image: url("../img/background.jpg");
     color:#ffffff;
     /*margin-top: 15px*/
 }
@@ -53,7 +51,8 @@ htitle {
 h1 {
     margin: 25px;
     margin-bottom: 15px;
-    color: #00ccff;
+    color: #fff;
+    font-weight: bolder;
     /*font-size: 3.6vmin;*/
     font-size: 40px;
 }
@@ -61,7 +60,8 @@ h1 {
 h2 {
    margin: 25px;
     margin-bottom: 15px;
-    color: #00ccff;
+    color: #fff;
+    font-weight: 600;
     /*font-size: 5.6vmin;*/
     font-size: 30px;
 }
@@ -69,14 +69,15 @@ h2 {
 h3 {
     margin: 20px;
     margin-bottom: 15px;
-    color: #00ccff;
+    color: #fff;
+    font-weight: bolder;
     /*font-size: 3.6vmin;*/
     font-size: 30px;
 }
 
 
 .aurl{
-    color: #232b5f;
+    color: #fff;
     font-style: italic
 }
 
@@ -265,6 +266,10 @@ p.Errorform {
 }
 
 
+textarea {
+    width: 85%;
+    margin-left: 30px;
+}
 
 
 /* Managing table*/

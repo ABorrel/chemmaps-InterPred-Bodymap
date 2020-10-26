@@ -193,6 +193,9 @@ urlpatterns = [
         r'^DSSTox/(?P<DTXSID>[-\w]+)', views.launchDSSToxMap, name="DSSToxSp",
     ),
     url(
+        r'^tox21/(?P<assay>[-\w]+)', views.launchTox21AssayMap, name="Tox21Sp",
+    ),
+    url(
         r'^2D.csv',
         views.download, {"name": "2D"}, name="2D",
 

@@ -49,11 +49,11 @@ class uploadChem:
                     cChem.prepChem()
                     smiles_clean = cChem.smi
 
-                    print(cChem.err)
+                    #print(cChem.err)
                     if cChem.err == 0:
                         d_chem[l_chemin[i]]["smiles_clean"] = smiles_clean
                         cChem.generateInchiKey()
-                        print(cChem.inchikey)
+                        #print(cChem.inchikey)
                         if cChem.err == 0:
                             d_chem[l_chemin[i]]["inchikey"] = cChem.inchikey
                         else:
@@ -77,15 +77,15 @@ class uploadChem:
             l_chemin = list(self.d_chem.keys())
             l_ks = list(self.d_chem[l_chemin[0]].keys())
 
-            self.cDB.openConnection()
+            #self.cDB.openConnection()
             # insert into the main chemicals table
             cmdSQL = "INSERT INTO chemicals_user(%s, status) VALUES"%(",".join(l_ks))
             l_val = []
             for chem in l_chemin:
                 l_val.append("(%s, \'update\')"%(",".join(["\'" + self.d_chem[chem][ks] + "\'" for ks in l_ks])))
             cmdSQL = "%s%s"%(cmdSQL, ",".join(l_val))
-            print(cmdSQL)
-            self.cDB.runCMD(cmdSQL)
+            #print(cmdSQL)
+            self.cDB.DB.addElementCMD(cmdSQL)
 
             # insert into descriptor table
             cmdSQL_desc = "INSERT INTO chemical_description_user(source_id, inchikey, map_name, status) VALUES"
@@ -93,6 +93,6 @@ class uploadChem:
             for chem in l_chemin:
                 l_val_desc.append("('%s','%s','%s','update')"%(chem, self.d_chem[chem]["inchikey"], self.map))
             cmdSQL_desc = "%s%s"%(cmdSQL_desc, ",".join(l_val_desc))
-            print(cmdSQL_desc)
-            self.cDB.runCMD(cmdSQL)
-            self.cDB.closeConnection()
+            #print(cmdSQL_desc)
+            self.cDB.DB.addElementCMD(cmdSQL_desc)
+            #self.cDB.closeConnection()

@@ -2,14 +2,17 @@
 .nav-pills > li > a:hover {
     background-color: #cdcdcd;
 }
-        
+.nav-pills > li > a:active2 {
+    background-color: #cdcdcd;
+}
+       
 </style>
 
 
 <ul class="nav nav-pills" style="padding: 0.5em 0.5em; font-size: 1.5em; " >
 
     {% url 'chemmaps:home' as url %}
-    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #232b5f" ><i class="fa fa-home fa-lg"></i>&nbsp;ChemMaps.com</a></li>
+    <li><a href="{{ url }}" style="color: #232b5f" ><i class="fa fa-home fa-lg"></i>&nbsp;ChemMaps.com</a></li>
 
     <!--{% url 'chemmaps:DrugMap' as url %}
     <li {% if map == "DrugMap" %} class="active"{% endif %}><a href="{{ url }}" style="color: #91e4f8">DrugMap</a></li>
@@ -24,6 +27,6 @@
     <li {% if map == "PFASMap" %} class="active"{% endif %}><a href="{{ url }}" style="color: #91e4f8">PFASMap</a></li>
     -->
     {% url 'chemmaps:help' as url %}
-    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" style="color: #232b5f">Need help?</a></li>
+    <li><a href="{{ url }}" style="color: #232b5f">Need help?</a></li>
 
 </ul>

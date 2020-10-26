@@ -19,22 +19,6 @@ class updateForm(forms.Form):
                ("dsstox", "DSSTOXMap"))
     form_map = forms.CharField(label='map', widget=forms.Select(choices=l_maps))
 
-    # extract from DB chemicals to process
-    cDB = DBrequest.DBrequest()
-    cDB.openConnection()
-    nb_update_chem = cDB.countUpdateChemicals()
-    nb_update_desc = cDB.countUpdateDescChemicals()
-    nb_update_OPERA = cDB.countUpdateOPERAChemicals()
-    nb_update_interpred = cDB.countUpdateInterpredChemicals()
-
-    # count 
-    nb_update_dsstoxmap = cDB.countUpdateForCoordinates("dsstox")[0][0]
-    nb_update_drugmap = cDB.countUpdateForCoordinates("drugbank")[0][0]
-    nb_update_pfasmap = cDB.countUpdateForCoordinates("pfas")[0][0]
-    nb_update_tox21map = cDB.countUpdateForCoordinates("tox21")[0][0]
-
-    cDB.closeConnection()
-
 
     def clean(self):
 

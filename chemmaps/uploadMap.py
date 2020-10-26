@@ -30,7 +30,8 @@ DDESCDSSTOX = {"EPA_category": "EPA category", "LD50_mgkg": "LD50 (mg/kg)",
                "LogVP_pred": "Log vapor pressure (mmHg)", "LogWS_pred": "Log Water solubility", "MolWeight": "MW",
                "LogOH_pred": "Log Atmospheric constant (cm3/molsec)",
                "BioDeg_LogHalfLife_pred": "Biodegradation half-life",
-               "BP_pred": "Boiling Point", "nbLipinskiFailures": "Lipinski Failures"}
+               "BP_pred": "Boiling Point", "nbLipinskiFailures": "Lipinski Failures",
+               "GHS_category": "GHS category",}
 
 def propToDict(ldbprop, ldesc):
     dout = {}
@@ -71,7 +72,6 @@ class loadingMap:
         # load order prop
         if map == "DrugMap":
             lprop = self.DB.extractColoumn("chem_prop_drugbank_name", "name")
-            #self.lallProp = lprop
             self.lallProp = [prop [0] for prop in lprop]
             
             # to del after test 
@@ -124,7 +124,7 @@ class loadingMap:
 
             #coords
             dout["coord"][db_id] = [float(xadd), float(yadd), float(zadd)]
-        
+
             # info
             dout["info"][db_id] = {}
             for descMap in self.lprop:

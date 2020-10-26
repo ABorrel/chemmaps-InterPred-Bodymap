@@ -14,7 +14,7 @@ rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 
-{% block title %}Admin ToolBox{% endblock %}
+{% block title %}Admin update{% endblock %}
 {% block content %}
 <br>
 {% if error|length > 0  %}
@@ -58,19 +58,19 @@ rel="stylesheet" type="text/css"/>
 <br>
 <h3>Computation on the server</h3>
 <br>
-Chemicals ready for descriptor computation: <b>{{formUpdate.nb_update_desc}}</b>
+Chemicals ready for descriptor computation: <b>{{dcount.nb_update_desc}}</b>
 <form action='/toolchem/computeDesc' method='post'>{% csrf_token %}
     <input type='submit' value='Compute molecular descriptors'>
 </form>
 <br><br>
 
-Chemicals ready for OPERA modeling computation: <b>{{formUpdate.nb_update_OPERA}}</b>
+Chemicals ready for OPERA modeling computation: <b>{{dcount.nb_update_OPERA}}</b>
 <form action='/toolchem/computeOPERA' method='post'>{% csrf_token %}
     <input type='submit' value='Compute OPERA predictions'>
 </form>
 <br><br>
 
-Chemicals ready for interferences computation (descriptor and OPERA prediction must be computed before): <b>{{formUpdate.nb_update_interpred}}</b>
+Chemicals ready for interferences computation (descriptor and OPERA prediction must be computed before): <b>{{dcount.nb_update_interpred}}</b>
 <form action='/toolchem/computeInterPred' method='post'>{% csrf_token %}
     <input type='submit' value='Compute InterPred predictions'>
 </form>
@@ -79,10 +79,10 @@ Chemicals ready for interferences computation (descriptor and OPERA prediction m
 <h3>Recompute map coordinates</h3> 
 
 Chemicals added:
-<li>DrugMap: <b>{{formUpdate.nb_update_drugmap}}</b> chemicals added</li>
-<li>Tox21Map: <b>{{formUpdate.nb_update_tox21map}}</b> chemicals added</li>
-<li>PFASMap: <b>{{formUpdate.nb_update_pfasmap}}</b> chemicals added</li>
-<li>DSSToxMap: <b>{{formUpdate.nb_update_dsstoxmap}}</b> chemicals added</li>
+<li>DrugMap: <b>{{dcount.nb_update_drugmap}}</b> chemicals added</li>
+<li>Tox21Map: <b>{{dcount.nb_update_tox21map}}</b> chemicals added</li>
+<li>PFASMap: <b>{{dcount.nb_update_pfasmap}}</b> chemicals added</li>
+<li>DSSToxMap: <b>{{dcount.nb_update_dsstoxmap}}</b> chemicals added</li>
 
 <br>
 <div style="margin-right: 80%">{{formUpdate.form_map}}</div>

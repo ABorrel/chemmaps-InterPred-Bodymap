@@ -106,3 +106,16 @@ class DBrequest:
     def countUpdateForCoordinates(self, name_map):
         cmd = "SELECT COUNT(*) FROM chemical_description_user WHERE status='update' AND map_name='%s'"%(name_map)
         return self.DB.execCMD(cmd)
+    
+    def searchDTXID(self, dsstox_id):
+        cmd = "SELECT COUNT(*) FROM chemicals WHERE dsstox_id='%s'"%(dsstox_id)
+        in_chemical = self.DB.execCMD(cmd)[0][0]
+        if in_chemical == 0:
+            cmd = "SELECT COUNT(*) FROM chemicals_user WHERE dsstox_id='%s' AND status='update'"%(dsstox_id)
+            return self.DB.execCMD(cmd)[0][0]
+        else:
+            return 1
+    
+    def searchInchikey(self, inchikey, map_chem):
+        cmd = "SELECT COUNT(*) FROM chemical_description WHERE inchikey='%s' AND map_name='%s'"%(inchikey, map_chem)
+        return self.DB.execCMD(cmd)[0][0]

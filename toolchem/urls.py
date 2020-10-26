@@ -36,5 +36,11 @@ urlpatterns = [
         name='compute_interference'
     ),
 
+    url(
+        r'^chemicals.csv',
+        views.download, {"name": "chemicals"}, name="chemical",
+    ),
+
+
 ] + static(settings.STATIC_URL, document_root=settings.PROJECT_PATH)
 

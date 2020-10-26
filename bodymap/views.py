@@ -53,7 +53,7 @@ def mappingChemicalToBody(request):
     if dchem == 1:
         return render(request, 'bodymap/chemTobody.html',{"formCAS": formCAS, "Error": "1"})
 
-    if dchem["QC"] == False:
+    if dchem["QC"] == "FAIL":
         return render(request, 'bodymap/chemTobody.html',{"formCAS": formCAS, "Error": "2", "dchem": dchem})
 
     cmapChem = mapChem(CAS)

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import json
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from os import path, makedirs, remove, listdir, system
 from shutil import rmtree
 from random import randint
@@ -10,6 +10,8 @@ from . import uploadChem
 from . import computeDesc
 from . import computeOPERA
 from . import computeInterPred
+from . import chemOverlap
+from . import countChem
 from .forms import updateForm 
 from django_server import toolbox
 
@@ -45,74 +47,92 @@ def push(request):
 
     return render(request, 'toolchem/push.html', {"d_chem_json":d_DB})
 
-
 def index(request):
 
     # form update
     formUpdate = updateForm()
-    return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "error":[], "notice":[]})
-
-
+    cCount = countChem.countChem()
+    dcount = cCount.indexCount()
+    return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":[], "notice":[]})
 
 def upload_chem(request):
 
     # open file with
     prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
 
+    # count for index page
+    cCount = countChem.countChem()
+    dcount = cCount.indexCount()
+
     formUpdate = updateForm(request.POST, request.FILES)
     if request.method == 'POST':
         formout = formUpdate.clean()
-
-    if formout == "update":
-
+        
         map_chem = formUpdate.data["form_map"]
 
-        #if formUpdate.is_valid() == True:
         pfileserver = prsession + "uploadFileChem.txt"
         with open(pfileserver, 'wb+') as destination:
             for chunk in formUpdate.files["form_chem"].chunks():
                 destination.write(chunk)
         destination.close()
 
-        cChem = uploadChem.uploadChem(pfileserver, map_chem, prsession)
-        cChem.prepChem()
-        if cChem.err != []:
-            formUpdate = updateForm()
-            return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "error": cChem.err})
+        if formout == "update":
 
-        else:
-            cChem.pushChemicals()
-            formUpdate = updateForm()
-            return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":cChem.notice, "error":[]})
-    
-    else:
+            #if formUpdate.is_valid() == True:
+            cChem = uploadChem.uploadChem(pfileserver, map_chem, prsession)
+            cChem.prepChem()
+            if cChem.err != []:
+                formUpdate = updateForm()
+                return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error": cChem.err})
+
+            else:
+                cChem.pushChemicals()
+                formUpdate = updateForm()
+                return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "notice":cChem.notice, "dcount":dcount, "error":[]})
         
-        return HttpResponse("Fuck")
+        else:
+            
+            cOverlap = chemOverlap.chemOverlap(pfileserver, map_chem, prsession)
+            cOverlap.runCheck("dsstox_id")
+            cOverlap.prepOutput()
 
+            nb_included = len(cOverlap.l_included)
+            nb_noincluded = len(cOverlap.l_noincluded)
+
+            return render(request, 'toolchem/overlap.html', {"nb_included": nb_included, "nb_noincluded": nb_noincluded, "map": map_chem})
 
 def compute_desc(request):
     prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
     cCompDesc = computeDesc.computeDesc(prsession)
     cCompDesc.runDesc()
     
+    # count for index page
+    cCount = countChem.countChem()
+    dcount = cCount.indexCount()
 
     formUpdate = updateForm()
-    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":cCompDesc.notice, "error":cCompDesc.error})
-
+    return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "notice":cCompDesc.notice, "dcount":dcount, "error":cCompDesc.error})
 
 def compute_opera(request):
     prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
     cCompOPERA = computeOPERA.computeOPERA(prsession)
     cCompOPERA.runOPERA()
 
-    formUpdate = updateForm()
-    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":cCompOPERA.notice, "error":cCompOPERA.error})
+    # count for index page
+    cCount = countChem.countChem()
+    dcount = cCount.indexCount()
 
+    formUpdate = updateForm()
+    return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "notice":cCompOPERA.notice, "dcount":dcount, "error":cCompOPERA.error})
 
 def compute_interference(request):
 
     a = str(randint(0, 1000000))# define a random number for folder in update to avoid overlap
     prsession = toolbox.createFolder(path.abspath("./temp") + "update/InterPred-" + a + "/")
+
+    # count for index page
+    cCount = countChem.countChem()
+    dcount = cCount.indexCount()
 
     cCompInterpred = computeInterPred.computeInterPred(prsession)
     if cCompInterpred.prepInterpred() != 1:
@@ -123,4 +143,17 @@ def compute_interference(request):
     rmtree(prsession)
     
     formUpdate = updateForm()
-    return render(request, 'toolchem/formtest.html', {"formUpdate":formUpdate, "notice":cCompInterpred.notice, "error":cCompInterpred.error})
+    return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "notice":cCompInterpred.notice,"dcount":dcount, "error":cCompInterpred.error})
+
+
+def download(request, name):
+
+    name_session = request.session.get("name_session")
+    prSession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+    file_path = prSession + name + ".csv"
+    if path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + path.basename(file_path)
+            return response
+    raise Http404

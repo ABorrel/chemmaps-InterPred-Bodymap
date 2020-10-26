@@ -43,7 +43,8 @@ class computeDesc:
                 # organise desc 1D2D
                 l_desc2D_upload = []
                 for desc in self.l_1D2D_desc:
-                    l_desc2D_upload.append(float(cChem.all2D[desc[0]]))
+                    l_desc2D_upload.append(cChem.all2D[desc[0]])
+                l_desc2D_upload = ['-9999' if desc == "NA" or desc == "NaN" else desc for desc in l_desc2D_upload]
                 
                 w2D = "{" + ",".join(["%s" % (descval) for descval in l_desc2D_upload]) + "}"
                 cmd_update = "UPDATE chemical_description_user SET desc_1d2d = '%s' WHERE source_id = '%s'"%(w2D, smiles)
@@ -62,7 +63,8 @@ class computeDesc:
             else:
                 l_desc3D_upload = []
                 for desc3D in self.l_3D_desc:
-                    l_desc3D_upload.append(float(cChem.all3D[desc3D[0]]))
+                    l_desc3D_upload.append(cChem.all3D[desc3D[0]])
+                l_desc3D_upload = ['-9999' if desc == "NA" or desc == "NaN" else desc for desc in l_desc3D_upload]
                 w3D = "{" + ",".join(["%s" % (descval) for descval in l_desc3D_upload]) + "}"
                 cmd_update = "UPDATE chemical_description_user SET desc_3d = '%s' WHERE source_id = '%s'"%(w3D, smiles)
                 self.cDB.DB.updateElement(cmd_update)

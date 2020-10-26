@@ -41,7 +41,7 @@ rel="stylesheet" type="text/css"/>
 
 {% block title %} Upload chemical - {{map}}{% endblock %}
 {% block content %}
-<script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/theme.js"></script>
+<script src="{% static 'chemmaps/static/js/theme.js' %}"></script> 
 <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
 <div id = "bg">
 <br>    
@@ -83,7 +83,11 @@ rel="stylesheet" type="text/css"/>
                             <div class="divTableRow">
                                     <div class="divTableCell">&nbsp;{{k1}}</div>
                                     <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
-                                    <div class="divTableCell"><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/{{dout.file}}" width="25px" alt="Valide upload"></div>
+                                    {% if dout.file == 'img/checkOK.png' %}
+                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkOK.png' %}" width="25px" alt="Valide upload"></div>
+                                    {% else %}
+                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkNo.png' %}" width="25px" alt="Error upload"></div>
+                                    {% endif %}
                             </div>
                         {% endfor %}
                     </div>

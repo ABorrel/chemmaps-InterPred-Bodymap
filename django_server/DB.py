@@ -54,10 +54,27 @@ class DB:
         else:
             print("Open connection first")
 
-    def extractColoumn(self, nameTable, coloumn, condition=""):
-        self.verbose=1
+
+    def addElementCMD(self, sqlCMD):
         self.connOpen()
-        sqlCMD = "SELECT %s FROM %s %s;" % (coloumn, nameTable, condition)
+        if self.verbose == 1: print(sqlCMD)
+        if self.conn != None:
+            try:
+                cur = self.conn.cursor()
+                cur.execute(sqlCMD)
+                self.conn.commit()
+                self.connClose()
+            except (Exception, psycopg2.DatabaseError) as error:
+                print(error)
+                self.connClose()
+        else:
+            print("Open connection first")
+
+
+    def extractColoumn(self, nameTable, coloumn, condition=""):
+        self.verbose=0
+        self.connOpen()
+        sqlCMD = "SELECT %s FROM %s %s" % (coloumn, nameTable, condition)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
@@ -77,6 +94,47 @@ class DB:
             return "ERROR"
 
 
+    def getColnames(self, nameTable):
+
+        self.connOpen()
+        sqlCMD = "SELECT COLUMN_NAME FROM information_schema.columns WHERE table_name='%s';" % (nameTable)
+        if self.verbose == 1: print(sqlCMD)
+        if self.conn != None:
+            try:
+                cur = self.conn.cursor()
+                cur.execute(sqlCMD)
+                out = cur.fetchall()
+                if self.verbose == 1: print(out)
+                self.connClose()
+                return out
+            except (Exception, psycopg2.DatabaseError) as error:
+                print(error)
+                self.connClose()
+                return error
+        else:
+            self.connClose()
+            print("Open connection first")
+
+
+    def getTable(self, nameTable):
+        self.connOpen()
+        sqlCMD = "SELECT * FROM %s;" % (nameTable)
+        if self.verbose == 1: print(sqlCMD)
+        if self.conn != None:
+            try:
+                cur = self.conn.cursor()
+                cur.execute(sqlCMD)
+                out = cur.fetchall()
+                if self.verbose == 1: print(out)
+                self.connClose()
+                return out
+            except (Exception, psycopg2.DatabaseError) as error:
+                print(error)
+                self.connClose()
+                return error
+        else:
+            self.connClose()
+            print("Open connection first")
 
     def getRow(self, table, condition):
 

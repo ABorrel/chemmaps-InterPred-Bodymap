@@ -30,13 +30,14 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - check adding in DB for descriptor user computation
 - add new descriptor from OPERA 2.6 in the opera desc list
 - load only once OPERA model
-- add -999 value in case of descriptor NA
+- ~~add -999 value in case of descriptor NA~~
 - remove descriptors in interpred
 - create random int for folder for update in descriptor
 - clean update folder 
 - check error in line 48 of interpred R script
 - add error page in the project to hide sources
 - add when upload chemical add log
+
 
 
 ### ChemMaps
@@ -60,6 +61,8 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - ~~Fix error with metal~~
 - downloadDescFromDB, line 223 ERROR in coordinate run ==> need to check it is working
 - Add option to not load in the DB the new chemicals as interferences
+- fix error on map in case of GHS is empty
+- check range color
 
 #### Improvement
 - ~~Add distance in the neighbor file to download -> done~~

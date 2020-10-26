@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -11,8 +10,14 @@
         <meta name='description' content='{% block meta-description %}{% endblock %}'>
         <meta name='author' content='{% block meta-author %}{% endblock %}'>
         <meta name='keywords' content='{% block meta-keywords %}{% endblock %}'>
-        <link rel="stylesheet" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/css/chemMap.css">
     </head>
+
+{% load static %}
+{% block extra-css %}
+<link href="{% static 'chemmaps/css/chemMap.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block content %}
+
 
     <div id="container"></div>
     <div id="info">
@@ -24,9 +29,9 @@
         <div id="infotext">
             Compound ID: <a id="CompoundID" target="_blank"></a><br>
             {% if map == "DrugMap" %}
-            Group: <text id="Group"></text><br>
+                Group: <text id="Group"></text><br>
             {% else %}
-            GHS category: <text id="GHS"></text><br>
+                GHS category: <text id="GHS"></text><br>
             {% endif %}
             {{ ldesc.0 }}: <text id="box1"></text><br>
             {{ ldesc.1 }}: <text id="box2"></text><br>
@@ -72,26 +77,28 @@
 
     <div id="searchbar">
         {% if map == "DrugMap" %}
-        <form onsubmit="return false">
-            <input id ="search" type="text"  name="search" placeholder="Drugbank ID" onchange="searchID(value)">
-        </form>
+            <form onsubmit="return false">
+                <input id ="search" type="text"  name="search" placeholder="Drugbank ID" onchange="searchID(value)">
+            </form>
         {% else %}
-        <form onsubmit="return false">
-            <input id ="search" type="text"  name="search" placeholder="DTXSID" onchange="searchID(value)">
-        </form>
+            <form onsubmit="return false">
+                <input id ="search" type="text"  name="search" placeholder="DTXSID" onchange="searchID(value)">
+            </form>
         {% endif %}
-
-
     </div>
 
 
     <div id="iconhome">
-        <a href="{% url 'chemmaps:home' %}"><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/icon_chemmaps_full_white.png" height = "30px" alt="Home link"></a>
+        <a href="{% url 'chemmaps:home' %}"><img src="{% static 'chemmaps/img/icon_chemmaps_full_white.png' %}" height = "30px" alt="Home link"></a>
     </div>
 
     <div id="iconNTP">
-            <a href="https://ntp.niehs.nih.gov"><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/icon_ntp_full_white.png" height = "47px" alt="NTP link"></a>
+            <a href="https://ntp.niehs.nih.gov"><img src="{% static 'chemmaps/img/icon_ntp_full_white.png' %}" height = "47px" alt="NTP link"></a>
         </div>
+
+    <div id="blockassay">
+            {{assay}}
+    </div>
 
     <div id="blockdiv">
         <a id = "blockflag"></a>
@@ -111,15 +118,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
 
-     <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/panelfunctions.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/infoboxfunctions.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/mapfunctions.js"></script>
-    <script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/toolbox.js"></script>
-
-   <!--<script src="/static/chemmaps/js/panelfunctions.js"></script>
-    <script src="/static/chemmaps/js/infoboxfunctions.js"></script>
-    <script src="/static/chemmaps/js/mapfunctions.js"></script>
-    <script src="/static/chemmaps/js/toolbox.js"></script>-->
+    <script src="{% static 'chemmaps/js/panelfunctions.js' %}" type="text/javascript"></script>
+    <script src="{% static 'chemmaps/js/infoboxfunctions.js' %}" type="text/javascript"></script>
+    <script src="{% static 'chemmaps/js/mapfunctions.js' %}" type="text/javascript"></script>
+    <script src="{% static 'chemmaps/js/toolbox.js' %}" type="text/javascript"></script>
 
 
     <script>
@@ -156,7 +158,7 @@
                             "Pka acid":"range", "Pka basic":"range", "Biodegradability":"class", "HPLC retention time": "range",
                             "Log vapor pressure (mmHg)":"range", "Log Water solubility":"range", "MW":"range",
                             "Log Atmospheric constant (cm3/molsec)": "range", "Biodegradation half-life": "range",
-                            "Boiling Point":"range", "Lipinski Failures": "class"};
+                            "Boiling Point":"range", "Lipinski Failures": "class", "AC50":"range", "Assay Outcome":"class"};
                 }
                 ;
 
@@ -282,5 +284,5 @@
 
 
     </script>
-</body>
+{% endblock content %}
 </html>

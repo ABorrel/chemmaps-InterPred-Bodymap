@@ -27,13 +27,22 @@ a:hover {
 
 #blockdiv {
     position: absolute;
-
     top: 6%;
     left: 1%;
     color: #ff0000;
     font-family: Monospace;
     font-size: 15px;
     text-align: left;
+}
+
+#blockassay {
+    position: absolute;
+    top: 1%;
+    left: 40%;
+    color: #fff;
+    font-family: Monospace;
+    font-size: 20px;
+    text-align: center;
 }
 
 #info {

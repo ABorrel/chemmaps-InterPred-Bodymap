@@ -43,8 +43,10 @@ class computeOPERA:
                 # organise desc 1D2D
                 l_descOPERA_upload = []
                 for desc in self.l_OPERA:
-                    l_descOPERA_upload.append(float(cChem.allOPERA[desc[0]]))
-                
+                    l_descOPERA_upload.append(cChem.allOPERA[desc[0]])
+                l_descOPERA_upload = ['-9999' if desc == "NA" or desc == "NaN" else desc for desc in l_descOPERA_upload]
+
+
                 wOPERA = "{" + ",".join(["%s" % (descval) for descval in l_descOPERA_upload]) + "}"
                 cmd_update = "UPDATE chemical_description_user SET desc_opera = '%s' WHERE source_id = '%s'"%(wOPERA, smiles)
                 self.cDB.DB.updateElement(cmd_update)

@@ -39,16 +39,16 @@ rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block title %} Descriptors - {{map}}{% endblock %}
 {% block content %}
-<script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/theme.js"></script>
+<script src="{% static 'chemmaps/static/js/theme.js' %}"></script> 
+
 <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div>
 <div id = "bg">
-    
     <br>
     <h1>Descriptor computation</h1>
     <br>
 
     {% if ErrorDesc == "1" %}
-    <p class = "Errorform" style="margin-right: 0px"> No descriptor computed.</p>
+        <p class = "Errorform" style="margin-right: 0px"> No descriptor computed.</p>
     {% endif %}
 
     <div class="row">
@@ -85,8 +85,10 @@ rel="stylesheet" type="text/css"/>
                             <div class="divTableRow">
                                     <div class="divTableCell">&nbsp;{{k1}}</div>
                                     <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
-                                    <div class="divTableCell"><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/{{dout.file}}" width="25px" alt="Valide upload"></div>
-                            </div>
+                                    {% if dout.file == 'checkOK.png' %}
+                                        <div class="divTableCell"><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/{{dout.file}}" width="25px" alt="Valide upload"></div>
+                                    ###### take here !!!!!
+                                    </div>
                         {% endfor %}
                     </div>
                 </div>
