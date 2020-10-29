@@ -31,7 +31,7 @@ def index(request):
         a = randint(0, 1000000)
         request.session.get("name_session", a)
         request.session["name_session"] = a
-    return render(request, 'chemmaps/index.html')
+    return render(request, 'chemmaps/index.html', {"DTXSID":""})
 
 
 

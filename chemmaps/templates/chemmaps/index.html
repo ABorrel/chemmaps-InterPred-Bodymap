@@ -64,7 +64,11 @@
 <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
 
 <div class="container-fluid bgindex text-center padding-left: 0px">
-    <br><br><br><br><br><br>
+    <br>
+    {% if DTXSID != "" %}
+        <p class = "Errorform" style="margin-right: 0px"> {{DTXSID}} is not included in the DSSToxMap.</p>
+    {% endif %}
+    <br><br><br><br><br>
     <htitle>www.chemmaps.com</htitle><br><br>
     <p><i>"A way to navigate in the chemical space"</i></p>
     <br><br><br><br>

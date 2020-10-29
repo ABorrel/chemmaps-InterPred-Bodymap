@@ -158,7 +158,7 @@ function posPointIndividuallyDSSTox() {
         position[1] = parseFloat(dcoords[i][1] * fact);
         position[2] = parseFloat(dcoords[i][2] * fact);
 
-        if (map="Tox21Assay"){
+        if (map=="Tox21Assay"){
             var Assaycat = dSMILESClass[i]['Assay Outcome'];
             if (Assaycat.search("inconclusive") !== -1) {
                 var colorhexa = dcol['NA'];

@@ -8,9 +8,15 @@ function updateInfoBox(intersect) {
     if (map == 'PFASMap' || map == 'DSSToxMap' || map == 'Tox21Map'|| map == 'Tox21Assay') {
         document.getElementById('CompoundID').href =
             'https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=' + ID;
+
+        document.getElementById('LinkDSSTOX').href = "DSSTox/" + ID;
+
     } else if (map == 'DrugMap') {
         document.getElementById('CompoundID').href = 'https://www.drugbank.ca/drugs/' + ID;
     }
+
+    
+
 
     // case of DSStoxMap and PFASmap -> GHS
     if (map == 'PFASMap' || map == 'DSSToxMap' || map == 'Tox21Map' || map == 'Tox21Assay') {
