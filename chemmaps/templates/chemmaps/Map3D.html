@@ -158,7 +158,7 @@
                             "Pka acid":"range", "Pka basic":"range", "Biodegradability":"class", "HPLC retention time": "range",
                             "Log vapor pressure (mmHg)":"range", "Log Water solubility":"range", "MW":"range",
                             "Log Atmospheric constant (cm3/molsec)": "range", "Biodegradation half-life": "range",
-                            "Boiling Point":"range", "Lipinski Failures": "class", "AC50":"range", "Assay Outcome":"class"};
+                            "Boiling Point":"range", "Lipinski Failures": "class", "AC50":"range", "Assay Outcome":"str", "QC":"str"};
                 }
                 ;
 
@@ -167,14 +167,15 @@
                 //console.log(Object.keys(dcoords).length)
                 
                 // info for compound bar
-
                 var dinfo = {{dinfo | safe}};
-                
+                console.log(dinfo);
+
                 // neighbors
                 var dneighbors = {{dneighbor | safe}};
                 
                 //load SMILES and class
                 var dSMILESClass = {{dSMILESClass | safe}};
+
                 // color for the map
                 if (map == "DrugMap"){
                     var dcol = {"approved": 0x00ff00, "indev": 0xffffff, "withdraw": 0x663399, "add":0Xffffff};
@@ -188,8 +189,6 @@
                     var spriteWithdraw = textureLoader.load("{% static 'chemmaps/img/star.png' %}");
                     var spriteDev = textureLoader.load("{% static 'chemmaps/img/planet2.png' %}");
                     var spriteAdd = textureLoader.load("{% static 'chemmaps/img/rocket.png' %}");
-                    
-                    
                     var dsprite = {"approved":spriteApp, "withdraw":spriteWithdraw, "indev":spriteDev, "add":spriteAdd}
                     
                 }else{
@@ -198,7 +197,7 @@
                     var nbcol = 50;
                     if (map == "PFASMap"){
                         var fact = 15;
-                    } else if (map == "Tox21Map"){
+                    } else if (map == "Tox21Map" || map == "Tox21Assay"){
                         var fact = 25;
                     }else{
                         var fact = 50;

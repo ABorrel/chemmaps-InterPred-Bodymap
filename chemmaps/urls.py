@@ -112,7 +112,7 @@ urlpatterns = [
         name='Tox21Map3D'
     ),
     url(
-        r'^Tox21Map3D/Tox21MapHelp',
+        r'Tox21MapHelp$',
         views.launchHelp,
         {"map": "Tox21MapHelp"},
         name='helpMap'

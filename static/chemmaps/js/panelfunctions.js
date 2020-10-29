@@ -40,9 +40,9 @@ function createpanel() {
         };
         var outfunction = spfunction.changeColor.bind(spfunction);
         settings['Drug group'] = outfunction;
-    } else if (map == 'PFASMap' || map == 'DSSToxMap' || map == 'Tox21Map') {
+    }else if (map == 'PFASMap' || map == 'DSSToxMap' || map == 'Tox21Map') {
         var settingsDefault = {
-            Classified: true,
+            'Classified': true,
             'No classified': true,
             'Draw structures': false,
             'Added chemicals': true,
@@ -60,6 +60,7 @@ function createpanel() {
                 Help();
             },
         };
+    
         var spfunction = {
             desc: 'GHS category',
             changeColor: function() {
@@ -68,6 +69,43 @@ function createpanel() {
         };
         var outfunction = spfunction.changeColor.bind(spfunction);
         settings['GHS category'] = outfunction;
+    }else if (map == 'Tox21Assay') {
+        var settingsDefault = {
+            'Conclusive': true,
+            'Inconclusive': true,
+            'Draw structures': false,
+            Axes: false,
+            'Set a pivot point': function() {
+                SetPivot();
+            },
+            'Reset view': function() {
+                controls.reset();
+            },
+            'Reset map': function() {
+                location.reload();
+            },
+            Help: function() {
+                Help();
+            },
+        };
+    
+        var spfunction = {
+            desc: 'GHS category',
+            changeColor: function() {
+                colorbyType(this.desc);
+            },
+        };
+        var outfunction = spfunction.changeColor.bind(spfunction);
+        settings['GHS category'] = outfunction;
+
+        var spfunction2 = {
+            desc: 'Assay outcome',
+            changeColor: function() {
+                colorbyType(this.desc);
+            },
+        };
+        var outfunction = spfunction.changeColor.bind(spfunction2);
+        settings['Assay outcome'] = outfunction;
     }
     // check other parameters
     for (var i in lonMap) {
@@ -111,6 +149,10 @@ function createpanel() {
         folder1.add(settingsDefault, 'Classified').onChange(viewClassified);
         folder1.add(settingsDefault, 'No classified').onChange(viewNoClassified);
         folder1.add(settingsDefault, 'Added chemicals').onChange(viewAdded);
+        folder1.add(settingsDefault, 'Draw structures').onChange(drawChemicals);
+    }else if(map == "Tox21Assay"){
+        folder1.add(settingsDefault, 'Conclusive').onChange(viewClassified);
+        folder1.add(settingsDefault, 'Inconclusive').onChange(viewNoClassified);
         folder1.add(settingsDefault, 'Draw structures').onChange(drawChemicals);
     }
     // panel specific descriptor
@@ -225,7 +267,7 @@ function drawChemicals(visibility) {
             }
         }
     } else {
-        if (map == 'PFASMap' || map == 'DSSToxMap' || map == 'Tox21Map') {
+        if (map == 'PFASMap' || map == 'DSSToxMap' || map == 'Tox21Map' || map == 'Tox21Assay') {
             for (ktype in dpoints) {
                 for (var i = 0; i < dpoints[ktype].length; i++) {
                     var GHScat = dSMILESClass[dpoints[ktype][i].name]['GHS_category'];
@@ -298,7 +340,7 @@ function Help() {
         window.open('DSSToxMap');
     } else if (map == 'PFASMap') {
         window.open('PFASMapHelp');
-    } else if (map == 'Tox21Map') {
+    } else if (map == 'Tox21Map' || map == 'Tox21Assay') {
         window.open('Tox21MapHelp');
     }
 }
@@ -324,6 +366,28 @@ function colorbyType(descin) {
                         dcol[dSMILESClass[dpoints[ktype][i].name]['GHS_category']]
                     );
                     dpoints[ktype][i].col = dcol[dSMILESClass[dpoints[ktype][i].name]['GHS_category']];
+                }
+                
+                dpoints[ktype][i].material.map.needsUpdate = true;
+            }
+        }
+    }else if (descin == 'Assay outcome'){
+        for (ktype in dpoints) {
+            for (var i = 0; i < dpoints[ktype].length; i++) {
+                if (ktype == "add"){
+                    dpoints[ktype][i].material.color.setHex(dcol["NA"]);
+                    dpoints[ktype][i].col = dcol["NA"];
+                }else{
+                    if(dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("inconclusive") !==- 1){
+                        dpoints[ktype][i].material.color.setHex(dcol['NA']);
+                        dpoints[ktype][i].col = dcol["NA"];
+                    }else if(dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("inactive") !==- 1){
+                        dpoints[ktype][i].material.color.setHex(parseFloat(0x6e0000));
+                        dpoints[ktype][i].col = 0x6e0000;
+                    }else{
+                        dpoints[ktype][i].material.color.setHex(parseFloat(0x00ff00));
+                        dpoints[ktype][i].col = 0x00ff00;
+                    }
                 }
                 
                 dpoints[ktype][i].material.map.needsUpdate = true;
@@ -374,6 +438,9 @@ function colorbyRange(descin) {
         for (var desc in dinfo[chem]) {
             if (desc == descin) {
                 var val = parseFloat(dinfo[chem][desc]);
+                if (descin == "AC50" && val == 0.0){
+                    continue;
+                }
                 if (isNaN(val) == false) {
                     lval.push(parseFloat(dinfo[chem][desc]));
                 }
@@ -399,11 +466,21 @@ function colorbyRange(descin) {
             // black for NA
             var val = parseFloat(dinfo[dpoints[ktype][i].name][descin]);
             if (isNaN(val) == true) {
-                dpoints[ktype][i].material.color.setHex('#000000');
+                coltemp = new THREE.Color('#000000').getHex();
+                dpoints[ktype][i].material.color.setHex(coltemp);
                 dpoints[ktype][i].col = coltemp;
                 dpoints[ktype][i].material.map.needsUpdate = true;
                 continue;
             }
+            // case AC50
+            if(descin == "AC50" && val == 0.0){
+                coltemp = new THREE.Color('#000000').getHex();
+                dpoints[ktype][i].material.color.setHex(coltemp);
+                dpoints[ktype][i].col = coltemp;
+                dpoints[ktype][i].material.map.needsUpdate = true;
+                continue;
+            }
+
             flag = 0;
             for (var vallimite in dcol) {
                 vallimite = parseFloat(vallimite);

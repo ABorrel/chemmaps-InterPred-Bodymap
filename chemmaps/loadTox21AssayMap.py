@@ -1,4 +1,6 @@
-from numpy import setdiff1d
+from numpy import setdiff1d, average
+#from math import log10
+from re import search
 
 from .uploadMap import loadingMap
 from django_server import DB
@@ -22,29 +24,59 @@ class loadTox21AssayMap:
 
         self.cDB.connOpen()
         # load assays results
-        l_chemassay = self.cDB.execCMD("SELECT tox21_id, assay_outcome, ac50, dsstox_id FROM tox21_tripod INNER JOIN chemicals ON tox21_tripod.smiles = chemicals.smiles_origin WHERE protocol_name='%s'"%(self.assay))
+        l_chemassay = self.cDB.execCMD("SELECT assay_outcome, ac50, dsstox_id, qc_new_spid FROM tox21_tripod INNER JOIN tox21_qc ON tox21_tripod.sample_id = tox21_qc.ncgc_id INNER JOIN chemicals ON tox21_tripod.cas = chemicals.casn WHERE protocol_name='%s'"%(self.assay))
         self.cDB.connClose()
+
+        #INNER JOIN tox21_qc ON tox21_tripod.sample_id = tox21_qc.ncgc_id
 
         # load cas to DTXSID
         l_dsstoxid_run = []
         for l_propchem in l_chemassay:
-            DTXSID = l_propchem[3]
+            DTXSID = l_propchem[2]
             if DTXSID == None:
                 continue
+            
             try:
-                self.dmap["info"][DTXSID]["AC50"] = l_propchem[2]
-                self.dmap["info"][DTXSID]["Assay Outcome"] = l_propchem[1]
+                AC50 = float(l_propchem[1])
+                assay_outcome = l_propchem[0]
+                if  search("inconclusive", assay_outcome):
+                    self.dmap["info"][DTXSID]["AC50"] = 0.0
+                elif search("inactive", assay_outcome):
+                    self.dmap["info"][DTXSID]["AC50"] = 0.0
+                else:
+                    if AC50 == 0.0:
+                        continue    
+                    try:self.dmap["info"][DTXSID]["AC50"].append(AC50)
+                    except:
+                        self.dmap["info"][DTXSID]["AC50"] = []
+                        self.dmap["info"][DTXSID]["AC50"].append(AC50)
+                
+                self.dmap["info"][DTXSID]["Assay Outcome"] = assay_outcome
+                self.dmap["info"][DTXSID]["QC"] = l_propchem[3]
+                self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = assay_outcome
                 l_dsstoxid_run.append(DTXSID)
             except:
+
                 pass
+        
+        #print(len(l_chemassay))
+        #print(len(l_dsstoxid_run))
+        #print(len(l_add_key_chem))
+        #print(l_add_key_chem[1:10])
+
+        for DTXSID in self.dmap["info"].keys():
             
-            l_add_key_chem = setdiff1d(list(self.dmap["info"].keys()), l_dsstoxid_run)
-            for add_key_chem in l_add_key_chem:
-                 self.dmap["info"][add_key_chem]["AC50"] = 0.0
-                 self.dmap["info"][add_key_chem]["Assay Outcome"] = "inconclusive"
-            #DTXSID = self.cDB.execCMD("SELECT dsstox_id FROM chemicals WHERE casn='%s'"%(cas))
-            #print(DTXSID)
+            if not "AC50" in list(self.dmap["info"][DTXSID].keys()):
+                self.dmap["info"][DTXSID]["AC50"] = "NA"
+                self.dmap["info"][DTXSID]["Assay Outcome"] = "inconclusive"
+                self.dmap["info"][DTXSID]["QC"] = "NA"
+                self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "inconclusive"
+            
+            elif type(self.dmap["info"][DTXSID]["AC50"]) == list:
+                self.dmap["info"][DTXSID]["AC50"] = average(self.dmap["info"][DTXSID]["AC50"])
+                #print(self.dmap["info"][DTXSID]["AC50"])
+
+            
 
 
-        # rebuild dprop with assays results
-        #print(self.dmap["info"])
+

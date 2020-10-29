@@ -157,41 +157,82 @@ function posPointIndividuallyDSSTox() {
         position[0] = parseFloat(dcoords[i][0] * fact);
         position[1] = parseFloat(dcoords[i][1] * fact);
         position[2] = parseFloat(dcoords[i][2] * fact);
-        var GHScat = dSMILESClass[i]['GHS_category'];
-        if (GHScat == 'NA') {
-            var colorhexa = dcol['NA'];
-            var typechem = 'noclassified';
-        } else {
-            if (GHScat == 'add') {
-                var typechem = 'add';
-                var colorhexa = 0xffffff;
-            } else {
-                var typechem = 'classified';
-                var colorhexa = dcol[parseFloat(GHScat)];
-            }
-        }
-        var sprite = dsprite[typechem];
-        var size = dsize[typechem];
 
-        // manage geometry
-        var geometry = new THREE.BufferGeometry();
-        geometry.addAttribute('position', new THREE.BufferAttribute(position, 3));
-        geometry.addAttribute('size', new THREE.BufferAttribute(size, 1));
-        // have to fix for the rayscatting
-        geometry.computeBoundingSphere();
-        geometry.boundingSphere.radius = size;
-        var material = new THREE.PointsMaterial({
-            size: size,
-            map: sprite,
-            alphaTest: 0.1,
-            color: colorhexa,
-            transparent: true,
-        });
-        var particule = new THREE.Points(geometry, material);
-        particule.name = i;
-        particule.col = colorhexa;
-        dout[typechem].push(particule);
-        scene.add(particule);
+        if (map="Tox21Assay"){
+            var Assaycat = dSMILESClass[i]['Assay Outcome'];
+            if (Assaycat.search("inconclusive") !== -1) {
+                var colorhexa = dcol['NA'];
+                var typechem = 'noclassified';
+                var size = dsize[typechem];
+            } else if(Assaycat.search("inactive") !== -1) {
+                var typechem = 'classified';
+                var colorhexa = parseFloat(0x6e0000);
+                var size = 15;
+            }else{
+                var typechem = 'classified';
+                var colorhexa = parseFloat(0x00ff00);
+                var size = 25;
+            }
+            var sprite = dsprite[typechem];
+            
+    
+            // manage geometry
+            var geometry = new THREE.BufferGeometry();
+            geometry.addAttribute('position', new THREE.BufferAttribute(position, 3));
+            geometry.addAttribute('size', new THREE.BufferAttribute(size, 1));
+            // have to fix for the rayscatting
+            geometry.computeBoundingSphere();
+            geometry.boundingSphere.radius = size;
+            var material = new THREE.PointsMaterial({
+                size: size,
+                map: sprite,
+                alphaTest: 0.1,
+                color: colorhexa,
+                transparent: true,
+            });
+            var particule = new THREE.Points(geometry, material);
+            particule.name = i;
+            particule.col = colorhexa;
+            dout[typechem].push(particule);
+            scene.add(particule);
+
+        }else{
+            var GHScat = dSMILESClass[i]['GHS_category'];
+            if (GHScat == 'NA') {
+                var colorhexa = dcol['NA'];
+                var typechem = 'noclassified';
+            } else {
+                if (GHScat == 'add') {
+                    var typechem = 'add';
+                    var colorhexa = 0xffffff;
+                } else {
+                    var typechem = 'classified';
+                    var colorhexa = dcol[parseFloat(GHScat)];
+                }
+            }
+            var sprite = dsprite[typechem];
+            var size = dsize[typechem];
+    
+            // manage geometry
+            var geometry = new THREE.BufferGeometry();
+            geometry.addAttribute('position', new THREE.BufferAttribute(position, 3));
+            geometry.addAttribute('size', new THREE.BufferAttribute(size, 1));
+            // have to fix for the rayscatting
+            geometry.computeBoundingSphere();
+            geometry.boundingSphere.radius = size;
+            var material = new THREE.PointsMaterial({
+                size: size,
+                map: sprite,
+                alphaTest: 0.1,
+                color: colorhexa,
+                transparent: true,
+            });
+            var particule = new THREE.Points(geometry, material);
+            particule.name = i;
+            particule.col = colorhexa;
+            dout[typechem].push(particule);
+            scene.add(particule);
+        }
     }
     return dout;
 }
@@ -579,7 +620,7 @@ function extractNeighbor(that) {
                             var typeChem = 'indev';
                         }
                         var coloradd = dcol[typeChem];
-                    } else if (map == 'DSSToxMap' || map == 'PFASMap' || map == 'Tox21Map') {
+                    } else if (map == 'DSSToxMap' || map == 'PFASMap' || map == 'Tox21Map' || "Tox21Assay") {
                         if (dSMILESClass[IDtemp]['GHS_category'] == 'NA') {
                             var typeChem = 'noclassified';
                         } else if (dSMILESClass[IDtemp]['GHS_category'] == 'add') {

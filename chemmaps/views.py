@@ -35,9 +35,8 @@ def index(request):
 
 
 
-def launchHelp(request):
-    return render(request, 'chemmaps/help.html', {
-    })
+def launchHelp(request, map="all"):
+    return render(request, 'chemmaps/help.html', {"map": map})
 
 
 
@@ -217,13 +216,13 @@ def launchTox21AssayMap(request, assay):
     dSMILESClass = json.dumps(dmap["SMILESClass"])
     ldescJS = list(dmap["info"][list(dmap["info"].keys())[0]].keys())
 
-    mapJS = json.dumps("Tox21Map")
+    mapJS = json.dumps("Tox21Assay")
     prSessionJS = json.dumps("")
 
 
     return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
                                                              "dSMILESClass":dSMILESClass,
-                                                             "ldesc":ldescJS, "map":"Tox21Map", "mapJS": mapJS, "prSessionJS":prSessionJS, "assay":assay })
+                                                             "ldesc":ldescJS, "map":"Tox21Assay", "mapJS": mapJS, "prSessionJS":prSessionJS, "assay":assay })
 
 
 

@@ -12,6 +12,11 @@ urlpatterns = [
         views.index,
         name='home'),
     url(
+        r'^help/$',
+        views.help,
+        name='help'
+    ),
+    url(
         r'^uploadSMILES/$',
         views.uploadSMILES,
         name='uploadSMILES',
@@ -43,10 +48,6 @@ urlpatterns = [
         r'^predict.csv',
         views.download, {"name": "predict"}, name="predict",
     ),
-    url(
-        r'^help/$',
-        views.help,
-        name='help'
-    ),
+    
     ]+ static(settings.STATIC_URL, document_root=settings.PROJECT_PATH)
 
