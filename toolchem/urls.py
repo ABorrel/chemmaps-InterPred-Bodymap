@@ -35,12 +35,26 @@ urlpatterns = [
         views.compute_interference,
         name='compute_interference'
     ),
-
+    url(
+        r'computeCoords',
+        views.compute_coords,
+        name='compute_coords'
+    ),
+    url(
+        r'uploadDataFiles',
+        views.upload_datafiles,
+        name='upload_datafiles'
+    ),
+    url(
+        r'^push',
+        views.push, 
+        name="push",
+    ),
+    
     url(
         r'^chemicals.csv',
         views.download, {"name": "chemicals"}, name="chemical",
     ),
-
 
 ] + static(settings.STATIC_URL, document_root=settings.PROJECT_PATH)
 

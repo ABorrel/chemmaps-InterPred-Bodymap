@@ -14,12 +14,16 @@ class chemOverlap:
         
         l_included = []
         l_noincluded = []
+        l_topush = []
         d_chem = toolbox.loadMatrixToDict(self.p_fchem)
         for chem in d_chem.keys():
             self.DB.openConnection()
-            in_chemical_table = self.DB.searchDTXID(d_chem[chem][col_name])
+            in_main_chemical_table = self.DB.searchDTXID(d_chem[chem][col_name])
+            in_user_table = self.DB.runCMD("SELECT COUNT(*) FROM chemicals_user WHERE %s='%s' AND status='update';"%(col_name, chem))[0][0]
             self.DB.closeConnection()
-            if in_chemical_table == 1:
+            if in_user_table == 1:
+                l_topush.append(d_chem[chem])
+            elif in_main_chemical_table == 1:
                 inchkey = self.DB.DB.extractColoumn("chemicals", "inchikey", "WHERE %s = '%s'"%(col_name, d_chem[chem][col_name]))
                 inchkey = inchkey[0][0]
                 self.DB.openConnection()
@@ -30,6 +34,7 @@ class chemOverlap:
                 else:
                     l_noincluded.append(d_chem[chem])
 
+        self.l_topush = l_topush
         self.l_included = l_included
         self.l_noincluded = l_noincluded
 

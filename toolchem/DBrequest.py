@@ -104,7 +104,7 @@ class DBrequest:
         return self.DB.execCMD(cmd)
 
     def countUpdateForCoordinates(self, name_map):
-        cmd = "SELECT COUNT(*) FROM chemical_description_user WHERE status='update' AND map_name='%s'"%(name_map)
+        cmd = "SELECT COUNT(*) FROM chemical_description_user WHERE status='update' AND map_name='%s' AND status='update' AND d3_cube is null"%(name_map)
         return self.DB.execCMD(cmd)
     
     def searchDTXID(self, dsstox_id):
@@ -119,3 +119,57 @@ class DBrequest:
     def searchInchikey(self, inchikey, map_chem):
         cmd = "SELECT COUNT(*) FROM chemical_description WHERE inchikey='%s' AND map_name='%s'"%(inchikey, map_chem)
         return self.DB.execCMD(cmd)[0][0]
+    
+    def loadDescTables(self, name_table, map_name):
+
+        # load 1D2D
+        d_desc1D2D = self.loadDesc1D2D(name_table, map_name)
+        if d_desc1D2D == {}:
+            return [{}, {}]
+        
+        # load 3D
+        d_desc3D = self.loadDesc3D(name_table, map_name)
+
+        return [d_desc1D2D, d_desc3D] 
+    
+
+    def loadDesc1D2D(self, name_table, map_name):
+
+        d_out = {}
+        l_name_desc = self.extract1D2DDesc()
+
+        cmd = "SELECT inchikey, desc_1d2d from %s WHERE map_name = '%s' AND status='update' AND d3_cube is null"%(name_table, map_name)
+        l_val = self.DB.execCMD(cmd)
+        if l_val == []:
+            return d_out
+
+        for l_chemdesc in l_val:
+            inch = l_chemdesc[0]
+            l_desc = l_chemdesc[1]
+            d_out[inch] = {}
+            i = 0
+            imax = len(l_desc)
+            while i < imax:
+                d_out[inch][l_name_desc[i][0]] = float(l_desc[i])
+                i = i + 1
+        return d_out
+    
+
+    def loadDesc3D(self, name_table, map_name):
+
+        d_out = {}
+        l_name_desc = self.extract3DDesc()
+
+        cmd = "SELECT inchikey, desc_3d from %s WHERE map_name = '%s' AND status='update' AND d3_cube is null"%(name_table, map_name)
+        l_val = self.DB.execCMD(cmd)
+
+        for l_chemdesc in l_val:
+            inch = l_chemdesc[0]
+            l_desc = l_chemdesc[1]
+            d_out[inch] = {}
+            i = 0
+            imax = len(l_desc)
+            while i < imax:
+                d_out[inch][l_name_desc[i][0]] = float(l_desc[i])
+                i = i + 1
+        return d_out

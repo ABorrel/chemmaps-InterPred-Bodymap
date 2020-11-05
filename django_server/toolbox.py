@@ -111,6 +111,22 @@ def loadToList(pfilin, sep = "\t"):
     return lout
 
 
+def writeDescFromDict(d_in, p_filout):
+
+    l_rowin = list(d_in.keys())
+    l_header = list(d_in[l_rowin[0]].keys())
+
+    filout = open(p_filout, "w")
+    filout.write("\t".join(l_header) + "\n")
+    for row_in in l_rowin:
+        filout.write("%s\t%s\n"%(row_in, "\t".join([str(d_in[row_in][h]) for h in l_header])))
+    filout.close()
+
+    if path.exists(p_filout):
+        return p_filout
+    else:
+        return 0
+
 def openGeneExp(pfilin):
     filin = open(pfilin, "r")
     llines = filin.readlines()

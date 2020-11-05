@@ -61,7 +61,7 @@ def launchMap(request, map):
     name_session = request.session.get("name_session")
 
     # load assays from map Tox21
-    if map == "Tox21Map":
+    if map == "tox21":
         cloadAssays = loadAssays()
         d_assays = cloadAssays.DBtoDict("tox21_assays")
     else:
@@ -74,18 +74,18 @@ def launchMap(request, map):
     # load forms
     if request.method == 'GET':
         form_smiles = UploadChemList()
-        if map == "DrugMap":
+        if map == "drugbank":
             formDesc = descDrugMapChoice()
-        elif map == "PFASMap" or map == "Tox21Map":
+        elif map == "pfas" or map == "tox21":
             formDesc = descDSSToxChoice()
         else:
             formDesc = descDSSToxMapChoice()
         formUpload = uploadList()
     else:
         form_smiles = UploadChemList(request.POST)
-        if map == "DrugMap":
+        if map == "drugbank":
             formDesc = descDrugMapChoice(request.POST)
-        elif map == "PFASMap" or map == "Tox21Map":
+        elif map == "pfas" or map == "tox21":
             formDesc = descDSSToxChoice(request.POST)
         else:
             formDesc = descDSSToxMapChoice(request.POST)
@@ -155,7 +155,7 @@ def launchMap(request, map):
             return render(request, 'chemmaps/launchMap.html', {"form_info":formDesc, "form_smiles":form_smiles,
                                                            "from_upload": formUpload, "Error": "1", "map":map, "dassays":d_assays})
 
-        if map == "DSSToxMap":
+        if map == "dsstox":
 
             chemIn = formDesc.cleaned_data['chem']
             build = DSSToxPrep(chemIn, ldescMap, prsession)
@@ -244,12 +244,12 @@ def launchDSSToxMap(request, DTXSID):
         dSMILESClass = json.dumps(build.dSMILES)
         ldescJS = list(build.dinfo[list(build.dinfo.keys())[0]].keys())
 
-        mapJS = json.dumps("DSSToxMap")
+        mapJS = json.dumps("dsstox")
         prSessionJS = json.dumps("")
 
         return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
                                                              "dSMILESClass":dSMILESClass,
-                                                             "ldesc":ldescJS, "map":"DSSToxMap", "mapJS": mapJS,"prSessionJS":prSessionJS })
+                                                             "ldesc":ldescJS, "map":"dsstox", "mapJS": mapJS,"prSessionJS":prSessionJS })
 
 
 
@@ -274,14 +274,14 @@ def computeDescriptor(request, map):
 
     # form for descriptors
     if request.method == 'GET':
-        if map == "DrugMap":
+        if map == "drugbank":
             formDesc = descDrugMapChoice()
-        elif map == "PFASMap" or map == "Tox21Map":
+        elif map == "pfas" or map == "tox21":
             formDesc = descDSSToxChoice()
         else:
             formDesc = descDSSToxMapChoice()
     else:
-        if map == "DrugMap":
+        if map == "drugbank":
             formDesc = descDrugMapChoice(request.POST)
         else:
             formDesc = descDSSToxChoice(request.POST)
@@ -294,7 +294,7 @@ def computeDescriptor(request, map):
                                                             "dSMILESOUT": cinput.dclean["OUT"], "ddesc":cinput.ddesc,
                                                             "form_info": formDesc, "Error": "1"})
         else:
-            if map == "DSSToxMap":
+            if map == "dsstox":
 
                 build = JSbuilder(map, ldescMap, prsession)
                 build.generateCoords(lfileDesc[0], lfileDesc[1])

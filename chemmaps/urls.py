@@ -25,37 +25,37 @@ urlpatterns = [
     url(
         r'^DrugMap/$',
         views.launchMap,
-        {"map":"DrugMap"},
+        {"map":"drugbank"},
         name='DrugMap',
     ),
     url(
         r'^DrugMap3D/$',
         views.launchMap,
-        {"map":"DrugMap"},
+        {"map":"drugbank"},
         name='DrugMap3D'
     ),
     url(
         r'^DrugMap3D/DrugMapHelp',
         views.launchHelp,
-        {"map":"DrugMap"},
+        {"map":"drugbank"},
         name='DrugMapHelp'
     ),
     url(
         r'^DrugMapSmilesUploaded/$',
         views.launchMap,
-        {"map":"DrugMap"},
+        {"map":"drugbank"},
         name='DrugMapSMILES'
     ),
     url(
         r'^DrugMapDescriptors/$',
         views.computeDescriptor,
-        {"map":"DrugMap"},
+        {"map":"drugbank"},
         name='DrugMapDescriptors'
     ),
     url(
         r'^DrugMapAdd/$',
         views.computeDescriptor,
-        {"map": "DrugMap"},
+        {"map": "drugbank"},
         name='DrugMapAdd'
     ),
 
@@ -64,13 +64,13 @@ urlpatterns = [
     url(
         r'^DSSToxMap/$',
         views.launchMap,
-        {"map":"DSSToxMap"},
+        {"map":"dsstox"},
         name='DSSToxMap',
     ),
     url(
         r'^DSSToxMap3D/$',
         views.launchMap,
-        {"map":"DSSToxMap"},
+        {"map":"dsstox"},
         name='DSSToxMap3D'
     ),
     url(
@@ -82,19 +82,19 @@ urlpatterns = [
     url(
         r'^DSSToxMapSmilesUploaded/$',
         views.launchMap,
-        {"map":"DSSToxMap"},
+        {"map":"dsstox"},
         name='DSSToxMapSMILES'
     ),
     url(
         r'^DSSToxMapDescriptors/$',
         views.computeDescriptor,
-        {"map":"DSSToxMap"},
+        {"map":"dsstox"},
         name='DSSToxMapDescriptors'
     ),
     url(
         r'^DSSToxMapAdd/$',
         views.computeDescriptor,
-        {"map": "DSSToxMap"},
+        {"map": "dsstox"},
         name='DSSToxMapAdd'
     ),
 
@@ -102,13 +102,13 @@ urlpatterns = [
     url(
         r'^Tox21Map/$',
         views.launchMap,
-        {"map":"Tox21Map"},
+        {"map":"tox21"},
         name='Tox21Map',
     ),
     url(
         r'^Tox21Map3D/$',
         views.launchMap,
-        {"map":"Tox21Map"},
+        {"map":"tox21"},
         name='Tox21Map3D'
     ),
     url(
@@ -120,19 +120,19 @@ urlpatterns = [
     url(
         r'^Tox21MapSmilesUploaded/$',
         views.launchMap,
-        {"map":"Tox21Map"},
+        {"map":"tox21"},
         name='Tox21MapSMILES'
     ),
     url(
         r'^Tox21MapDescriptors/$',
         views.computeDescriptor,
-        {"map":"Tox21Map"},
+        {"map":"tox21"},
         name='Tox21MapDescriptors'
     ),
     url(
         r'^Tox21MapAdd/$',
         views.computeDescriptor,
-        {"map": "Tox21Map"},
+        {"map": "tox21"},
         name='Tox21MapAdd'
     ),
 
@@ -141,37 +141,37 @@ urlpatterns = [
     url(
         r'^PFASMap/$',
         views.launchMap,
-        {"map":"PFASMap"},
+        {"map":"pfas"},
         name='PFASMap',
     ),
     url(
         r'^PFASMap3D/$',
         views.launchMap,
-        {"map":"PFASMap"},
+        {"map":"pfas"},
         name='PFASMap3D'
     ),
     url(
         r'^PFASMap3D/PFASMapHelp',
         views.launchHelp,
-        {"map": "PFASMap"},
+        {"map": "pfas"},
         name='PFASMapHelp'
     ),
     url(
         r'^PFASMapSmilesUploaded/$',
         views.launchMap,
-        {"map": "PFASMap"},
+        {"map": "pfas"},
         name='PFASMapSMILES'
     ),
     url(
         r'^PFASMapDescriptors/$',
         views.computeDescriptor,
-        {"map": "PFASMap"},
+        {"map": "pfas"},
         name='PFASMapDescriptors'
     ),
     url(
         r'^PFASMapAdd/$',
         views.computeDescriptor,
-        {"map": "PFASMap"},
+        {"map": "pfas"},
         name='PFASMapAdd'
     ),
 

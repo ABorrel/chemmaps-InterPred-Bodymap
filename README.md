@@ -37,6 +37,9 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - check error in line 48 of interpred R script
 - add error page in the project to hide sources
 - add when upload chemical add log
+- add descriptor scaling in a table
+- protect page admin with a password
+- Add option to not upload chemical in the DB as interpred
 
 
 

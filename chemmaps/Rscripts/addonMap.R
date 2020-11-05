@@ -30,21 +30,21 @@ computeCoord = function(ddescScale, dCP, col3D){
   
   
   if(dim(dcoord)[1] == 1){
-    dcoordtemp = data.frame(t(dcoord[,c(1,2)]))
+    dcoordtemp = data.frame(t(dcoord[,seq(10)]))
     if(col3D == 1){
-      colnames(dcoordtemp) = c("DIM3", "DIM4")
+      colnames(dcoordtemp) = c("DIM3-1", "DIM3-2", "DIM3-3", "DIM3-4", "DIM3-5", "DIM3-6", "DIM3-7", "DIM3-8", "DIM3-9", "DIM3-10")
     }else{
-      colnames(dcoordtemp) = c("DIM1", "DIM2")
+      colnames(dcoordtemp) = c("DIM1", "DIM2", "DIM3", "DIM4", "DIM5", "DIM6", "DIM7", "DIM8", "DIM9", "DIM10")
     }
     rownames(dcoordtemp) = rownames(dcoord)
     dcoord = dcoordtemp
     
   }else{
-    dcoord = dcoord[,c(1,2)]
+    dcoord = dcoord[,seq(10)]
     if(col3D == 1){
-      colnames(dcoord) = c("DIM3", "DIM4")
+      colnames(dcoord) = c("DIM3-1", "DIM3-2", "DIM3-3", "DIM3-4", "DIM3-5", "DIM3-6", "DIM3-7", "DIM3-8", "DIM3-9", "DIM3-10")
     }else{
-      colnames(dcoord) = c("DIM1", "DIM2")
+      colnames(dcoord) = c("DIM1", "DIM2", "DIM3", "DIM4", "DIM5", "DIM6", "DIM7", "DIM8", "DIM9", "DIM10")
     }
   }
   

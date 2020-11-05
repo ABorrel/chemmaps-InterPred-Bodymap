@@ -28,7 +28,7 @@
 
         <div id="infotext">
             Compound ID: <a id="CompoundID" target="_blank"></a><br>
-            {% if map == "DrugMap" %}
+            {% if map == "drugbank" %}
                 Group: <text id="Group"></text><br>
             {% else %}
                 GHS category: <text id="GHS"></text><br>
@@ -71,7 +71,7 @@
                 <br><button id="downloadlink" onclick="downloadNeighbor()">Download neighbors</button>
             </div>
 
-            {% if map != "DrugMap" %}
+            {% if map != "drugbank" %}
                 <div class="control">
                     <br><a id="LinkDSSTOX" target="_blank">Link to DSSTOXMap</a>
                 </div>
@@ -82,7 +82,7 @@
 
 
     <div id="searchbar">
-        {% if map == "DrugMap" %}
+        {% if map == "drugbank" %}
             <form onsubmit="return false">
                 <input id ="search" type="text"  name="search" placeholder="Drugbank ID" onchange="searchID(value)">
             </form>
@@ -137,7 +137,7 @@
                 var prSession = {{prSessionJS | safe}};
                 
                 // format properly descriptors
-                if (map == "DrugMap"){
+                if (map == "drugbank"){
                     var desctype = {"Rotable bond": "range", "Polar surface": "range",
                             "Molecular weight": "range", "Physio charge":"range",
                             "Rule of five": "class", "Veber rule": "class", "Formula":"str",
@@ -183,7 +183,7 @@
                 var dSMILESClass = {{dSMILESClass | safe}};
 
                 // color for the map
-                if (map == "DrugMap"){
+                if (map == "drugbank"){
                     var dcol = {"approved": 0x00ff00, "indev": 0xffffff, "withdraw": 0x663399, "add":0Xffffff};
                     var dsize = {"approved": 20, "indev": 2.5, "withdraw": 10, "add": 7};
                     var nbcol = 20;
@@ -201,9 +201,9 @@
                     var dcol = {"5": 0x6e0000, "4": 0x8ab700, "3": 0xc09400, "2": 0xe76400, "1": 0xfb002c, "NA": 0xffffff};
                     var dsize = {"classified": 20, "noclassified": 2.5, "add": 7};
                     var nbcol = 50;
-                    if (map == "PFASMap"){
+                    if (map == "pfas"){
                         var fact = 15;
-                    } else if (map == "Tox21Map" || map == "Tox21Assay"){
+                    } else if (map == "tox21" || map == "Tox21Assay"){
                         var fact = 25;
                     }else{
                         var fact = 50;
@@ -253,7 +253,7 @@
                 
                 // === Initial positionning
                 var dpoints = {};
-                if (map == "DrugMap"){
+                if (map == "drugbank"){
                     dpoints = posPointIndividuallyDrugMap();
                 }else{
                     dpoints = posPointIndividuallyDSSTox();

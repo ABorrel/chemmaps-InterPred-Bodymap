@@ -118,7 +118,7 @@ class JSbuilder:
         self.inDB = 0
 
         # load descriptor from prop
-        if self.nameMap == "DrugMap":
+        if self.nameMap == "drugbank":
             table_prop_name = "chem_prop_drugbank_name"
         else:
             table_prop_name = "chem_prop_dsstox_name"
@@ -165,13 +165,13 @@ class JSbuilder:
                 ddesc[ldesc[d]] = lval[d]
                 d = d + 1
 
-            if self.nameMap == "DrugMap":
+            if self.nameMap == "drugbank":
                 lextract = self.cDB.extractColoumn("mvwchemmap_mapdrugbank", "drugbank_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value", "WHERE inchikey = '%s' limit (1)"%(inchikey))
 
-            elif self.nameMap == "PFASMap":
+            elif self.nameMap == "pfas":
                 lextract = self.cDB.extractColoumn("mvwchemmap_mappfas", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value", "WHERE inchikey = '%s' limit (1)"%(inchikey))
 
-            elif self.nameMap == "Tox21Map":
+            elif self.nameMap == "tox21":
                 lextract = self.cDB.extractColoumn("mvwchemmap_maptox21", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value", "WHERE inchikey = '%s' limit (1)"%(inchikey))
             
             else:
@@ -206,7 +206,7 @@ class JSbuilder:
                 self.dchemAdd["SMILESClass"][id]["SMILES"] = smiles
                 self.dchemAdd["SMILESClass"][id]["inchikey"] = inch
 
-                if self.nameMap == "DrugMap":
+                if self.nameMap == "drugbank":
                     self.dchemAdd["SMILESClass"][id]["DRUG_GROUPS"] = "add"
                 else:
                     self.dchemAdd["SMILESClass"][id]["GHS_category"] = "add"
@@ -237,14 +237,14 @@ class JSbuilder:
                         self.dchemAdd["info"][id][descMap] = "NA"
 
                 # neighbor
-                # transform neughbor
+                # transform neighbor
                 if lneighbor != [] and lneighbor != "Error":
                     lneighbormap = []
                     for n in lneighbor:
-                        if search("^DTXSID", n) and self.nameMap != "DrugMap":
+                        if search("^DTXSID", n) and self.nameMap != "drugbank":
                             lneighbormap.append(n)
                             continue
-                        if search("^DB", n) and self.nameMap == "DrugMap":
+                        if search("^DB", n) and self.nameMap == "drugbank":
                             lneighbormap.append(n)
                             continue
 
@@ -253,7 +253,7 @@ class JSbuilder:
                 self.dchemAdd["neighbor"][id] = lneighbormap
 
                 # dell from the map in case where the map is loaded (not dsstox)
-                if self.nameMap != "DSSToxMap":
+                if self.nameMap != "dsstox":
                     del self.map["coord"][db_id]
                     del self.map["neighbor"][db_id]
                     del self.map["info"][db_id]
@@ -339,7 +339,7 @@ class JSbuilder:
                     self.dchemAdd["SMILESClass"][id]["SMILES"] = smiles
                     self.dchemAdd["SMILESClass"][id]["inchikey"] = inch
 
-                    if self.nameMap == "DrugMap":
+                    if self.nameMap == "drugbank":
                         self.dchemAdd["SMILESClass"][id]["DRUG_GROUPS"] = "add"
 
                     else:
@@ -350,10 +350,10 @@ class JSbuilder:
                     if lneighbor != [] and lneighbor != "Error":
                         lneighbormap = []
                         for n in lneighbor:
-                            if search("^DTXSID", n) and self.nameMap != "DrugMap":
+                            if search("^DTXSID", n) and self.nameMap != "drugbank":
                                 lneighbormap.append(n)
                                 continue
-                            if search("^DB", n) and self.nameMap == "DrugMap":
+                            if search("^DB", n) and self.nameMap == "drugbank":
                                 lneighbormap.append(n)
                                 continue
 
@@ -437,10 +437,10 @@ class JSbuilder:
             else:
                 
                 # data search
-                if self.nameMap == "DSSToxMap":
+                if self.nameMap == "dsstox":
                     inch = self.dchemAdd["SMILESClass"][ID]["inchikey"]
                     cmdExtract = "Select dsstox_id from mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (select cube (d3_cube) from chemmap_coords_user \
-                    where inchikey='%s' and map_name = 'DSSToxMap' limit (1)) limit (%s);"%(inch, 20)
+                    where inchikey='%s' limit (1)) limit (%s);"%(inch, 20)
                     lID = self.cDB.execCMD(cmdExtract)
                     if lID != "Error" or lID != []:
                         lID = [ID[0] for ID in lID]

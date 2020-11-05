@@ -461,7 +461,7 @@ function createLineWriteForTable(IDchem, IDcenter, ldesc) {
         dSMILESClass[IDchem]['inchikey'] +
         '\t';
     
-    if (map == 'DrugMap') {
+    if (map == 'drugbank') {
         lineW = lineW + dSMILESClass[IDchem]['DRUG_GROUPS'];
     } else {
         lineW = lineW + dSMILESClass[IDchem]['GHS_category'];
@@ -609,7 +609,7 @@ function extractNeighbor(that) {
                 //console.log(dSMILESClass[IDtemp]['GHS_category']);
                 //alert(map);
                 if (flag == 0) {
-                    if (map == 'DrugMap') {
+                    if (map == 'drugbank') {
                         if (dSMILESClass[IDtemp]['DRUG_GROUPS'].search('approved') !== -1) {
                             var typeChem = 'approved';
                         } else if (dSMILESClass[IDtemp]['DRUG_GROUPS'].search('withdraw') !== -1) {
@@ -620,7 +620,7 @@ function extractNeighbor(that) {
                             var typeChem = 'indev';
                         }
                         var coloradd = dcol[typeChem];
-                    } else if (map == 'DSSToxMap' || map == 'PFASMap' || map == 'Tox21Map' || "Tox21Assay") {
+                    } else if (map == 'dsstox' || map == 'pfas' || map == 'tox21' || "Tox21Assay") {
                         if (dSMILESClass[IDtemp]['GHS_category'] == 'NA') {
                             var typeChem = 'noclassified';
                         } else if (dSMILESClass[IDtemp]['GHS_category'] == 'add') {

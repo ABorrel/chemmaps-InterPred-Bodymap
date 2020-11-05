@@ -9,6 +9,7 @@ from . import DBrequest
 from . import uploadChem
 from . import computeDesc
 from . import computeOPERA
+from . import computeCoords
 from . import computeInterPred
 from . import chemOverlap
 from . import countChem
@@ -69,6 +70,10 @@ def upload_chem(request):
         formout = formUpdate.clean()
         
         map_chem = formUpdate.data["form_map"]
+        if map_chem == "---":
+            l_error = ["Please choose a map"]
+            formUpdate = updateForm()
+            return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":l_error})
 
         pfileserver = prsession + "uploadFileChem.txt"
         with open(pfileserver, 'wb+') as destination:
@@ -96,10 +101,11 @@ def upload_chem(request):
             cOverlap.runCheck("dsstox_id")
             cOverlap.prepOutput()
 
+            nb_topush = len(cOverlap.l_topush)
             nb_included = len(cOverlap.l_included)
             nb_noincluded = len(cOverlap.l_noincluded)
 
-            return render(request, 'toolchem/overlap.html', {"nb_included": nb_included, "nb_noincluded": nb_noincluded, "map": map_chem})
+            return render(request, 'toolchem/overlap.html', {"nb_included": nb_included, "nb_noincluded": nb_noincluded, "nb_topush":nb_topush, "map": map_chem})
 
 def compute_desc(request):
     prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
@@ -145,6 +151,53 @@ def compute_interference(request):
     formUpdate = updateForm()
     return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "notice":cCompInterpred.notice,"dcount":dcount, "error":cCompInterpred.error})
 
+def compute_coords(request):
+
+    a = str(randint(0, 1000000))# define a random number for folder in update to avoid overlap
+    #pr_session = toolbox.createFolder(path.abspath("./temp") + "update/coords-" + a + "/")
+    pr_session = path.abspath("./temp") + "/update/"
+
+    # generate the return information
+    # form update
+    formUpdate = updateForm()
+    cCount = countChem.countChem()
+    dcount = cCount.indexCount()
+
+    formUpdate = updateForm(request.POST, request.FILES)
+    if request.method == 'POST':
+        formout = formUpdate.clean()
+
+    map_chem = formUpdate.data["form_map"]
+    if map_chem == "---":
+        l_error = ["Please choose a map"]
+        return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":l_error, "notice":[]})
+    else:
+        c_coords = computeCoords.computeCoords(map_chem, pr_session)
+        c_coords.computeCoordForOnlyNewChem()
+        return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":c_coords.error, "notice":c_coords.notice})
+
+def upload_datafiles(request):
+
+    a = str(randint(0, 1000000))# define a random number for folder in update to avoid overlap
+    #pr_session = toolbox.createFolder(path.abspath("./temp") + "update/coords-" + a + "/")
+    pr_session = path.abspath("./temp") + "/update/"
+
+    # generate the return information
+    # form update
+    formUpdate = updateForm()
+    cCount = countChem.countChem()
+    dcount = cCount.indexCount()
+
+    formUpdate = updateForm(request.POST, request.FILES)
+    if request.method == 'POST':
+        formout = formUpdate.clean()
+
+    map_chem = formUpdate.data["form_map"]
+    if map_chem == "---":
+        l_error = ["Please choose a map"]
+        return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":l_error, "notice":[]})
+    else:
+        return 
 
 def download(request, name):
 

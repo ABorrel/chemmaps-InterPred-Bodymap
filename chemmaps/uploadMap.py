@@ -70,7 +70,7 @@ class loadingMap:
         self.lprop = lprop
 
         # load order prop
-        if map == "DrugMap":
+        if map == "drugbank":
             lprop = self.DB.extractColoumn("chem_prop_drugbank_name", "name")
             self.lallProp = [prop [0] for prop in lprop]
             
@@ -97,13 +97,13 @@ class loadingMap:
         #self.DB.verbose = 1
         # load chem matrix
 
-        if self.map == "DrugMap":
+        if self.map == "drugbank":
             lchem = self.DB.extractColoumn("mvwchemmap_mapdrugbank", "drugbank_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value")
 
-        elif self.map == "PFASMap":
+        elif self.map == "pfas":
             lchem = self.DB.extractColoumn("mvwchemmap_mappfas", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value")
 
-        elif self.map == "Tox21Map":
+        elif self.map == "tox21":
             lchem = self.DB.extractColoumn("mvwchemmap_maptox21", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value")
 
         # format for JS dictionnary

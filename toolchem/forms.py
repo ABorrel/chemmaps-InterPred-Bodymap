@@ -7,12 +7,12 @@ class updateForm(forms.Form):
 
     # file forms
     form_chem = forms.FileField(label='chemicals')
-    form_chem_cleaned = forms.FileField(label='chemicals_cleaned')
-    form_desc1D2D = forms.FileField(label='desc1D2D')
-    form_desc3D = forms.FileField(label='desc3D')
-    form_OPERA = forms.FileField(label='opera')
-    form_coord1D2D = forms.FileField(label='coord1D2D')
-    form_coord3D = forms.FileField(label='coord3D')
+    form_chem_cleaned = forms.FileField(label='chemicals_cleaned', required=False)
+    form_desc1D2D = forms.FileField(label='desc1D2D', required=False)
+    form_desc3D = forms.FileField(label='desc3D', required=False)
+    form_OPERA = forms.FileField(label='opera', required=False)
+    form_coord1D2D = forms.FileField(label='coord1D2D', required=False)
+    form_coord3D = forms.FileField(label='coord3D', required=False)
 
     # choose the map
     l_maps = (("---", "---"),("tox21", "Tox21Map"),("drugbank", "DrugMap"),("pfas", "PFASMap"),
@@ -24,4 +24,6 @@ class updateForm(forms.Form):
 
         if 'overlap' in self.data:
             return "overlap"
+        elif 'all' in self.data:
+            return "all"
         return "update"

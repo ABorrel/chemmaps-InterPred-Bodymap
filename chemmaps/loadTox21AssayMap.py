@@ -15,7 +15,7 @@ class loadTox21AssayMap:
     
     def loadMapCoords(self):
 
-        cload = loadingMap("Tox21Map", self.l_desc)
+        cload = loadingMap("tox21", self.l_desc)
         dmap = cload.loadMap()
         self.dmap = dmap
 

@@ -95,44 +95,44 @@ rel="stylesheet" type="text/css"/>
 
             <br><br>
 
-            {% if map == "DrugMap"  %}
+            {% if map == "drugbank"  %}
             <form action='/chemmaps/DrugMap' method='get'>
                 <input type='submit' value='Resubmit Chemicals' />
             </form>
             {% endif %}
-            {% if map == "DSSToxMap"  %}
+            {% if map == "dsstox"  %}
             <form action='/chemmaps/DSSToxMap' method='get'>
                 <input type='submit' value='Resubmit Chemicals' />
             </form>
             {% endif %}
-            {% if map == "PFASMap"  %}
+            {% if map == "pfas"  %}
             <form action='/chemmaps/PFASMap' method='get'>
                 <input type='submit' value='Resubmit Chemicals' />
             </form>
             {% endif %}
-            {% if map == "Tox21Map"  %}
+            {% if map == "tox21"  %}
             <form action='/chemmaps/Tox21Map' method='get'>
                 <input type='submit' value='Resubmit Chemicals' />
             </form>
             {% endif %}
 
             {% if ERRORSmiles == "0" %}
-            {% if map == "DrugMap"  %}
+            {% if map == "drugbank"  %}
             <form action='/chemmaps/DrugMapDescriptors' method='get' onsubmit="ShowLoading()">
                 <input type='submit' value='Compute descriptors' />
             </form>
             {% endif %}
-            {% if map == "DSSToxMap"  %}
+            {% if map == "dsstox"  %}
             <form action='/chemmaps/DSSToxMapDescriptors' method='get' onsubmit="ShowLoading()">
                 <input type='submit' value='Compute descriptors' />
             </form>
             {% endif %}
-            {% if map == "PFASMap"  %}
+            {% if map == "pfas"  %}
             <form action='/chemmaps/PFASMapDescriptors' method='get' onsubmit="ShowLoading()">
                 <input type='submit' value='Compute descriptors' />
             </form>
             {% endif %}
-            {% if map == "Tox21Map"  %}
+            {% if map == "tox21"  %}
             <form action='/chemmaps/Tox21MapDescriptors' method='get' onsubmit="ShowLoading()">
                 <input type='submit' value='Compute descriptors' />
             </form>

@@ -10,7 +10,7 @@ function createpanel() {
     console.log(lonMap);
     var settings = {};
 
-    if (map == 'DrugMap') {
+    if (map == 'drugbank') {
         var settingsDefault = {
             'Draw structures': false,
             'Approved drugs': true,
@@ -40,7 +40,7 @@ function createpanel() {
         };
         var outfunction = spfunction.changeColor.bind(spfunction);
         settings['Drug group'] = outfunction;
-    }else if (map == 'PFASMap' || map == 'DSSToxMap' || map == 'Tox21Map') {
+    }else if (map == 'pfas' || map == 'dsstox' || map == 'tox21') {
         var settingsDefault = {
             'Classified': true,
             'No classified': true,
@@ -139,13 +139,13 @@ function createpanel() {
     }
     console.log(settings);
     // panel selection
-    if (map == 'DrugMap') {
+    if (map == 'drugbank') {
         folder1.add(settingsDefault, 'Approved drugs').onChange(viewDBapproved);
         folder1.add(settingsDefault, 'In development drugs').onChange(viewDBindev);
         folder1.add(settingsDefault, 'Withdrawn drugs').onChange(viewDBwithdraw);
         folder1.add(settingsDefault, 'Added chemicals').onChange(viewAdded);
         folder1.add(settingsDefault, 'Draw structures').onChange(drawChemicals);
-    } else if (map == 'PFASMap' || map == 'DSSToxMap' || map == 'Tox21Map') {
+    } else if (map == 'pfas' || map == 'dsstox' || map == 'tox21') {
         folder1.add(settingsDefault, 'Classified').onChange(viewClassified);
         folder1.add(settingsDefault, 'No classified').onChange(viewNoClassified);
         folder1.add(settingsDefault, 'Added chemicals').onChange(viewAdded);
@@ -267,7 +267,7 @@ function drawChemicals(visibility) {
             }
         }
     } else {
-        if (map == 'PFASMap' || map == 'DSSToxMap' || map == 'Tox21Map' || map == 'Tox21Assay') {
+        if (map == 'pfas' || map == 'dsstox' || map == 'tox21' || map == 'Tox21Assay') {
             for (ktype in dpoints) {
                 for (var i = 0; i < dpoints[ktype].length; i++) {
                     var GHScat = dSMILESClass[dpoints[ktype][i].name]['GHS_category'];
@@ -334,13 +334,13 @@ function SetPivot() {
     //controls.enabled = true;
 }
 function Help() {
-    if (map == 'DrugMap') {
+    if (map == 'drugbank') {
         window.open('DrugMapHelp');
-    } else if (map == 'DSSToxMap') {
+    } else if (map == 'dsstox') {
         window.open('DSSToxMap');
-    } else if (map == 'PFASMap') {
+    } else if (map == 'pfas') {
         window.open('PFASMapHelp');
-    } else if (map == 'Tox21Map' || map == 'Tox21Assay') {
+    } else if (map == 'tox21' || map == 'Tox21Assay') {
         window.open('Tox21MapHelp');
     }
 }

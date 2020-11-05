@@ -1,14 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
 {% block extra-css %}
-<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
-rel="stylesheet" type="text/css"/> 
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
-rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
-rel="stylesheet" type="text/css"/>
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+    type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css" rel="stylesheet" type="text/css" />
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css" rel="stylesheet" type="text/css" />
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css" rel="stylesheet" type="text/css" />
 <link href="{% static 'toolchem/css/theme.css' %}" rel="stylesheet">
 
 {% endblock %}
@@ -18,19 +17,19 @@ rel="stylesheet" type="text/css"/>
 {% block content %}
 <br>
 {% if error|length > 0  %}
-    <p class = "errorform">
-        {% for l_error in error %}
-            {{l_error}}<br>
-        {% endfor %}
-    </p>
+<p class="errorform">
+    {% for l_error in error %}
+    {{l_error}}<br>
+    {% endfor %}
+</p>
 {% endif %}
 
 {% if notice|length > 0  %}
-    <p class = "noticeform">
-        {% for l_notice in notice %}
-            {{l_notice}}<br>
-        {% endfor %}
-    </p>
+<p class="noticeform">
+    {% for l_notice in notice %}
+    {{l_notice}}<br>
+    {% endfor %}
+</p>
 {% endif %}
 <h1>Compute chemicals on the server</h1>
 <br>
@@ -42,14 +41,16 @@ rel="stylesheet" type="text/css"/>
     <div class="format_example">
         <p>Example:<br>
             <b>smiles_origin</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;<b>dsstox_id</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;name&nbsp;&nbsp;{tab}&nbsp;&nbsp;casn<br>
-            ICCCI&nbsp;&nbsp;{tab}&nbsp;&nbsp;DTXSID7060837&nbsp;&nbsp;{tab}&nbsp;&nbsp;Propane, 1,3-diiodo&nbsp;&nbsp;{tab}&nbsp;&nbsp;627-31-6<br>
+            ICCCI&nbsp;&nbsp;{tab}&nbsp;&nbsp;DTXSID7060837&nbsp;&nbsp;{tab}&nbsp;&nbsp;Propane,
+            1,3-diiodo&nbsp;&nbsp;{tab}&nbsp;&nbsp;627-31-6<br>
             ...
         </p>
     </div>
     <b>Map to add chemicals</b>
     <div style="margin-right: 80%">{{formUpdate.form_map}}</div>
     <br>
-    <input type='submit' value='Check overlap' name='overlap'> *overlap is computed based on the DSSToxID, if you want to update other field resubmit the chemcial
+    <input type='submit' value='Check overlap' name='overlap'> *overlap is computed based on the DSSToxID, if you want
+    to update other field resubmit the chemcial
     <br><br>
     <input type='submit' value='Upload new chemicals' name='upload_chem'>
 </form>
@@ -70,13 +71,14 @@ Chemicals ready for OPERA modeling computation: <b>{{dcount.nb_update_OPERA}}</b
 </form>
 <br><br>
 
-Chemicals ready for interferences computation (descriptor and OPERA prediction must be computed before): <b>{{dcount.nb_update_interpred}}</b>
+Chemicals ready for interferences computation (descriptor and OPERA prediction must be computed before):
+<b>{{dcount.nb_update_interpred}}</b>
 <form action='/toolchem/computeInterPred' method='post'>{% csrf_token %}
     <input type='submit' value='Compute InterPred predictions'>
 </form>
 <br><br>
 
-<h3>Recompute map coordinates</h3> 
+<h3>Recompute map coordinates</h3>
 
 Chemicals added:
 <li>DrugMap: <b>{{dcount.nb_update_drugmap}}</b> chemicals added</li>
@@ -85,15 +87,13 @@ Chemicals added:
 <li>DSSToxMap: <b>{{dcount.nb_update_dsstoxmap}}</b> chemicals added</li>
 
 <br>
-<div style="margin-right: 80%">{{formUpdate.form_map}}</div>
-<br>
-<br>
-<form action='/toolchem/uploadChem' method='post'>{% csrf_token %}
-    <input type='submit' value='Compute all map coordinates'>
-</form>
-<br>
-<form action='/toolchem/uploadChem' method='post'>{% csrf_token %}
-    <input type='submit' value='Compute only coordinates for added chemicals'>
+<form action='/toolchem/computeCoords' method='post'>{% csrf_token %}
+    <div style="margin-right: 80%">{{formUpdate.form_map}}</div>
+    <br>
+    <br>
+    <input type='submit' value='Compute only coordinates for added chemicals' name='specific'>
+    <br> * if more than 10% of the database need to be added/updated considered recompute the all coordinates and use
+    file upload option.
 </form>
 
 <br>
@@ -101,79 +101,89 @@ Chemicals added:
 <h1>Update from precomputed files</h1>
 <br>
 <b>Chemicals file:</b>
-{{formUpdate.form_chem}}
-Precomputed chemcials formated with {tab} separator and headers (SMILES, SMILES_cleaned, inchikey, dsstox_id, drugbank_id, casn, name), leave blank or 'NA' if not present.<br><br>
-<div class="format_example">
-    <p>Example:<br>
-        SMILES&nbsp;&nbsp;{tab}&nbsp;&nbsp;SMILES_cleaned&nbsp;&nbsp;{tab}&nbsp;&nbsp;inchikey&nbsp;&nbsp;{tab}&nbsp;&nbsp;dsstox_id&nbsp;&nbsp;{tab}&nbsp;&nbsp;drugbank_id&nbsp;&nbsp;{tab}&nbsp;&nbsp;casn&nbsp;&nbsp;{tab}&nbsp;&nbsp;name<br>
-        [Na+].[O-]N=O&nbsp;&nbsp;{tab}&nbsp;&nbsp;O=N[O-]&nbsp;&nbsp;{tab}&nbsp;&nbsp;IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;DTXSID5024219&nbsp;&nbsp;{tab}&nbsp;&nbsp;NA&nbsp;&nbsp;{tab}&nbsp;&nbsp;14797-65-0&nbsp;&nbsp;{tab}&nbsp;&nbsp;Nitrite<br>
-        ...
-    </p>
-</div>
+<form action='/toolchem/uploadDataFiles' method='post'>{% csrf_token %}
+    {{formUpdate.form_chem_cleaned}}
+    Precomputed chemcials formated with {tab} separator and headers (SMILES, SMILES_cleaned, inchikey, dsstox_id,
+    drugbank_id, casn, name), leave blank or 'NA' if not present.<br><br>
+    <div class="format_example">
+        <p>Example:<br>
+            SMILES&nbsp;&nbsp;{tab}&nbsp;&nbsp;SMILES_cleaned&nbsp;&nbsp;{tab}&nbsp;&nbsp;inchikey&nbsp;&nbsp;{tab}&nbsp;&nbsp;dsstox_id&nbsp;&nbsp;{tab}&nbsp;&nbsp;drugbank_id&nbsp;&nbsp;{tab}&nbsp;&nbsp;casn&nbsp;&nbsp;{tab}&nbsp;&nbsp;name<br>
+            [Na+].[O-]N=O&nbsp;&nbsp;{tab}&nbsp;&nbsp;O=N[O-]&nbsp;&nbsp;{tab}&nbsp;&nbsp;IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;DTXSID5024219&nbsp;&nbsp;{tab}&nbsp;&nbsp;NA&nbsp;&nbsp;{tab}&nbsp;&nbsp;14797-65-0&nbsp;&nbsp;{tab}&nbsp;&nbsp;Nitrite<br>
+            ...
+        </p>
+    </div>
 
-<b>1D/2D descriptor file:</b>
-{{formUpdate.form_desc1D2D}}
-Precomputed chemcial 1D2D descriptors computed with the package <a href= 'https://test.pypi.org/project/CompDesc/'>CompDesc</a> formated with {tab} separator and headers (inchikey, descriptor1, descriptor2, descriptor3, ...).<br><br>
-<div class="format_example">
-    <p>Example:<br>
-        <b>inchikey</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor1&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor2&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor3&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
-        IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;12&nbsp;&nbsp;0.16&nbsp;&nbsp;0.3444&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
-        ...
-    </p>
-</div>
+    <b>1D/2D descriptor file:</b>
+    {{formUpdate.form_desc1D2D}}
+    Precomputed chemcial 1D2D descriptors computed with the package <a
+        href='https://test.pypi.org/project/CompDesc/'>CompDesc</a> formated with {tab} separator and headers (inchikey,
+    descriptor1, descriptor2, descriptor3, ...).<br><br>
+    <div class="format_example">
+        <p>Example:<br>
+            <b>inchikey</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor1&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor2&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor3&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
+            IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;12&nbsp;&nbsp;0.16&nbsp;&nbsp;0.3444&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
+            ...
+        </p>
+    </div>
 
-<b>3D descriptor file:</b>
-{{formUpdate.form_desc3D}}
-Precomputed chemcial 3D descriptors computed with the package <a href= 'https://test.pypi.org/project/CompDesc/'>CompDesc</a> formated with {tab} separator and headers (inchikey, descriptor1, descriptor2, descriptor3, ...).<br><br>
-<div class="format_example">
-    <p>Example:<br>
-        <b>inchikey</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor1&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor2&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor3&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
-        IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;23&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.45&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.8764&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
-        ...
-    </p>
-</div>
+    <b>3D descriptor file:</b>
+    {{formUpdate.form_desc3D}}
+    Precomputed chemcial 3D descriptors computed with the package <a
+        href='https://test.pypi.org/project/CompDesc/'>CompDesc</a> formated with {tab} separator and headers (inchikey,
+    descriptor1, descriptor2, descriptor3, ...).<br><br>
+    <div class="format_example">
+        <p>Example:<br>
+            <b>inchikey</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor1&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor2&nbsp;&nbsp;{tab}&nbsp;&nbsp;descriptor3&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
+            IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;23&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.45&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.8764&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
+            ...
+        </p>
+    </div>
 
-<b>OPERA prediction file:</b>
-{{formUpdate.form_OPERA}}
-Precomputed OPERA prediction computed with <a href="https://github.com/kmansouri/OPERA/">OPERA v2.XX</a> formated with {tab} separator and headers (inchikey, pred1, pred2, pred3, ...).<br><br>
-<div class="format_example">
-    <p>Example:<br>
-        <b>inchikey</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;pred1&nbsp;&nbsp;{tab}&nbsp;&nbsp;pred2&nbsp;&nbsp;{tab}&nbsp;&nbsp;pred3&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
-        IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;23&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.45&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
-        ...
-    </p>
-</div>
+    <b>OPERA prediction file:</b>
+    {{formUpdate.form_OPERA}}
+    Precomputed OPERA prediction computed with <a href="https://github.com/kmansouri/OPERA/">OPERA v2.XX</a> formated
+    with {tab} separator and headers (inchikey, pred1, pred2, pred3, ...).<br><br>
+    <div class="format_example">
+        <p>Example:<br>
+            <b>inchikey</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;pred1&nbsp;&nbsp;{tab}&nbsp;&nbsp;pred2&nbsp;&nbsp;{tab}&nbsp;&nbsp;pred3&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
+            IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;23&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.45&nbsp;&nbsp;{tab}&nbsp;&nbsp;...<br>
+            ...
+        </p>
+    </div>
 
-<b>Coordiates 1D/2D file:</b>
-Precomputed coordinates in the 1D2D plan (10 first dimensions) formated with {tab} separator and headers (inchikey, dim1, dim2, dim3, dim4, dim5, dim6, dim7, dim8, dim9, dim10)<br><br>
-<div class="format_example">
-    <p>Example:<br>
-        <b>inchikey</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim1&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim2&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim3&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim4&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim5&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim6&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim7&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim8&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim9&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim10<br>
-        IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.45&nbsp;&nbsp;{tab}&nbsp;&nbsp;12&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19<br>
-        ...
-    </p>
-</div>
-<b>Coordiates 3D file:</b>
-{{formUpdate.form_coord3D}}
-Precomputed coordinates in the 3D plan (10 first dimensions) formated with {tab} separator and headers (inchikey, dim1, dim2, dim3, dim4, dim5, dim6, dim7, dim8, dim9, dim10)<br><br>
-<div class="format_example">
-    <p>Example:<br>
-        <b>inchikey</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim1&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim2&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim3&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim4&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim5&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim6&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim7&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim8&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim9&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim10<br>
-        IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.45&nbsp;&nbsp;{tab}&nbsp;&nbsp;12&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19<br>
-        ...
-    </p>
-</div>
-<b>Map of coordinate</b>
-<div style="margin-right: 80%">{{formUpdate.form_map}}</div>
-<br>
-<form action='/toolchem/uploadChem' method='post'>{% csrf_token %}
-    <input type='submit' value='Upload new chemicals'>
+    <b>Coordiates 1D/2D file:</b>
+    Precomputed coordinates in the 1D2D plan (10 first dimensions) formated with {tab} separator and headers (inchikey,
+    dim1, dim2, dim3, dim4, dim5, dim6, dim7, dim8, dim9, dim10)<br><br>
+    <div class="format_example">
+        <p>Example:<br>
+            <b>inchikey</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim1&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim2&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim3&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim4&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim5&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim6&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim7&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim8&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim9&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim10<br>
+            IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.45&nbsp;&nbsp;{tab}&nbsp;&nbsp;12&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19<br>
+            ...
+        </p>
+    </div>
+    <b>Coordiates 3D file:</b>
+    {{formUpdate.form_coord3D}}
+    Precomputed coordinates in the 3D plan (10 first dimensions) formated with {tab} separator and headers (inchikey,
+    dim1, dim2, dim3, dim4, dim5, dim6, dim7, dim8, dim9, dim10)<br><br>
+    <div class="format_example">
+        <p>Example:<br>
+            <b>inchikey</b>&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim1&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim2&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim3&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim4&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim5&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim6&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim7&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim8&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim9&nbsp;&nbsp;{tab}&nbsp;&nbsp;dim10<br>
+            IOVCWXUNBOPUCH-UHFFFAOYSA-M&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.45&nbsp;&nbsp;{tab}&nbsp;&nbsp;12&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19&nbsp;&nbsp;{tab}&nbsp;&nbsp;0.19<br>
+            ...
+        </p>
+    </div>
+    <b>Map of coordinate</b>
+
+    <div style="margin-right: 80%">{{formUpdate.form_map}}</div>
+    <br>
+    <input type='submit' value='Upload new data from files'>
 </form>
 <br>
 <h1>Push a new database update</h1>
 <br>
-<form action='/toolchem/uploadChem' method='post'>{% csrf_token %}
+<form action='/toolchem/push' method='post'>{% csrf_token %}
     <input type='submit' value='Ready to push'>
 </form>
-
+<br>
+<i>Last update: 11/2020</i>
 {% endblock content %}

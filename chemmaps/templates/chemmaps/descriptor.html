@@ -119,22 +119,22 @@ rel="stylesheet" type="text/css"/>
             </div>
             {% endif %}
             {% if ErrorDesc == "1" %}
-            {% if map == "DrugMap"  %}
+            {% if map == "drugbank"  %}
             <form action='/chemmaps/DrugMap' method='get'>
                 <input type='submit' value='Resubmit SMILES' />
             </form>
             {% endif %}
-            {% if map == "DSSToxMap"  %}
+            {% if map == "dsstox"  %}
             <form action='/chemmaps/DSSToxMap' method='get'>
                 <input type='submit' value='Resubmit SMILES' />
             </form>
             {% endif %}
-            {% if map == "PFASMap"  %}
+            {% if map == "pfas"  %}
             <form action='/chemmaps/PFASMap' method='get'>
                 <input type='submit' value='Resubmit SMILES' />
             </form>
             {% endif %}
-            {% if map == "Tox21Map"  %}
+            {% if map == "tox21"  %}
             <form action='/chemmaps/Tox21Map' method='get'>
                 <input type='submit' value='Resubmit SMILES' />
             </form>
@@ -152,7 +152,7 @@ rel="stylesheet" type="text/css"/>
     {% if Error == "1" %}
     <p class = "Errorform"> Please choose only 5 categories</p>
     {% endif %}
-    {% if map == "DrugMap"  %}
+    {% if map == "drugbank"  %}
     <form action='/chemmaps/DrugMapAdd/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
         <div class="row">
             <div class="column">
@@ -169,7 +169,7 @@ rel="stylesheet" type="text/css"/>
         </div>
     </form>
     {% endif %}
-    {% if map == "PFASMap"%}
+    {% if map == "pfas"%}
     <form action='/chemmaps/PFASMapAdd/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
         <div class="row">
             <div class="column">
@@ -187,7 +187,7 @@ rel="stylesheet" type="text/css"/>
         </div>
     </form>
     {% endif %}
-    {% if map == "Tox21Map"%}
+    {% if map == "tox21"%}
     <form action='/chemmaps/Tox21MapAdd/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
         <div class="row">
             <div class="column">
@@ -205,7 +205,7 @@ rel="stylesheet" type="text/css"/>
         </div>
     </form>
     {% endif %}   
-    {% if map == "DSSToxMap"%}
+    {% if map == "dsstox"%}
     <form action='/chemmaps/DSSToxMapAdd/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
         <div class="row">
             <div class="column">

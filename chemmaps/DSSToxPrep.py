@@ -61,7 +61,7 @@ class DSSToxPrep:
             # have to be a inch
             cmdExtract = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value \
                 from mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (select cube (d3_cube) from chemical_description_user \
-                    where inchikey='%s' and map_name = 'DSSToxMap' limit (1)) limit (%s);"%(center_chem, nbChem)
+                    where inchikey='%s' limit (1)) limit (%s);"%(center_chem, nbChem)
 
 
         lchem = self.cDB.execCMD(cmdExtract)

@@ -25,7 +25,7 @@ rel="stylesheet" type="text/css"/>
     {% if Error == "1" %}
     <p class = "Errorform" style="margin-right: 0px"> Please choose only 5 categories.</p>
     {% endif %}
-    {% if map == "DrugMap"  %}
+    {% if map == "drugbank"  %}
     <form action='/chemmaps/DrugMap3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
         <div class="row">
             <div class="column">
@@ -42,7 +42,7 @@ rel="stylesheet" type="text/css"/>
         </div>
     </form>
     {% endif %}
-    {% if map == "Tox21Map"%}
+    {% if map == "tox21"%}
     <form action='/chemmaps/Tox21Map3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
         <div class="row">
             <div class="column">
@@ -60,7 +60,7 @@ rel="stylesheet" type="text/css"/>
         </div>
     </form>
     {% endif %}
-    {% if map == "PFASMap"%}
+    {% if map == "pfas"%}
     <form action='/chemmaps/PFASMap3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
         <div class="row">
             <div class="column">
@@ -78,7 +78,7 @@ rel="stylesheet" type="text/css"/>
         </div>
     </form>
     {% endif %}
-    {% if map == "DSSToxMap"%}
+    {% if map == "dsstox"%}
     <form action='/chemmaps/DSSToxMap3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
         <div class="row">
             <div class="column">
@@ -103,7 +103,7 @@ rel="stylesheet" type="text/css"/>
     </form>
     {% endif %}  
 
-    {% if map == "Tox21Map"%}
+    {% if map == "tox21"%}
         {% include 'chemmaps/_launch_tox21Assays.html' %}
     {% endif %}
 
@@ -114,25 +114,25 @@ rel="stylesheet" type="text/css"/>
         <p class = "Errorform">Please upload < 100 chemicals</p>
     {% endif %}
     <p>From a list including SMILES, DrugBankID, DTXSID or CAS (not recommended):</p>
-    {% if map == "DrugMap"  %}
+    {% if map == "drugbank"  %}
         <form action='/chemmaps/DrugMapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
             <p>{{ form_smiles.content }}</p>
             <input type='submit' value='Submit chemicals'/>
         </form>
     {% endif %}
-    {% if map == "DSSToxMap"  %}
+    {% if map == "dsstox"  %}
         <form action='/chemmaps/DSSToxMapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
             <p>{{ form_smiles.content }}</p>
             <input type='submit' value='Submit chemicals'/>
         </form>
     {% endif %}
-    {% if map == "Tox21Map"  %}
+    {% if map == "tox21"  %}
         <form action='/chemmaps/Tox21MapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
             <p>{{ form_smiles.content }}</p>
             <input type='submit' value='Submit chemicals'/>
         </form>
     {% endif %}
-    {% if map == "PFASMap"  %}
+    {% if map == "pfas"  %}
         <form action='/chemmaps/PFASMapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
             <p>{{ form_smiles.content }}</p>
             <input type='submit' value='Submit chemicals'/>
@@ -143,19 +143,18 @@ rel="stylesheet" type="text/css"/>
     {% if ErrorFile == "1"  %}
         <p class = "Errorform">Please upload a text file with one chemical by line (< 100 lines)</p>
     {% endif %}
-    {% if map == "DrugMap"  %}
+    {% if map == "drugbank"  %}
         <form method="post" enctype="multipart/form-data" action='/chemmaps/DrugMapSmilesUploaded/' onsubmit="ShowLoading()">
             {% csrf_token %}
             {%for field in from_upload%}
                 <div id="UploadBox">{{field}}</div>
             {% endfor %}
             <br>
-
             <button type="submit" class="upload_button">Upload list of chemicals</button>
         </form>
         <p>Example of input: <a class = "aurl" target="_blank" href="{% static 'chemmaps/test.txt' %}">Test input</a></p>
     {% endif %}
-    {% if map == "DSSToxMap"  %}
+    {% if map == "dsstox"  %}
         <form method="post" enctype="multipart/form-data" action='/chemmaps/DSSToxMapSmilesUploaded/' onsubmit="ShowLoading()">
             {% csrf_token %}
             {%for field in from_upload%}
@@ -166,7 +165,7 @@ rel="stylesheet" type="text/css"/>
         </form>
         <p>Example of input: <a class = "aurl" target="_blank" href="{% static 'chemmaps/test.txt' %}">Test input</a></p>
     {% endif %}
-    {% if map == "PFASMap"  %}
+    {% if map == "pfas"  %}
         <form method="post" enctype="multipart/form-data" action='/chemmaps/PFASMapSmilesUploaded/' onsubmit="ShowLoading()">
             {% csrf_token %}
             {%for field in from_upload%}
@@ -177,7 +176,7 @@ rel="stylesheet" type="text/css"/>
         </form>
         <p>Example of input: <a class = "aurl" target="_blank" href="{% static 'chemmaps/test.txt' %}">Test input</a></p>
     {% endif %}
-    {% if map == "Tox21Map"  %}
+    {% if map == "tox21"  %}
         <form method="post" enctype="multipart/form-data" action='/chemmaps/Tox21MapSmilesUploaded/' onsubmit="ShowLoading()">
             {% csrf_token %}
             {%for field in from_upload%}
