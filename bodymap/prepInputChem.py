@@ -2,26 +2,25 @@ from os import path
 import urllib.request
 from re import search
 
+from . import DBrequest
 
 
 def prepChem(CASIN):
 
-    pfchem = path.abspath("./static/bodymap/mapping/ChemSum")
-    fchem = open(pfchem, "r")
-    dcas = {}
-    while dcas == {}:
-        try : linestr = fchem.readline()
-        except:
-            break
-        if search(CASIN, linestr):
-            lelem = linestr.strip().split("\t")
-            dcas["CAS"] = CASIN
-            dcas["DSSTOX"] = lelem[1]
-            dcas["Name"] = lelem[2]
-            dcas["SMILES"] = lelem[3]
-            dcas["N-assay"] = lelem[4]
-    
-    if dcas == {}:
-        return 1
-    else:
+    cDB = DBrequest.DBrequest()
+    l_chem = cDB.getRow("bodymap_chemsum", "casn='%s'"%(CASIN))[0]
+
+    print(l_chem)
+
+    try:
+        dcas = {}
+        dcas["CAS"] = CASIN
+        dcas["DSSTOX"] = l_chem[4]
+        dcas["Name"] = l_chem[3]
+        dcas["SMILES"] = l_chem[2]
+        dcas["N-assay"] = l_chem[5]
+        dcas["QC"] = l_chem[7]
         return dcas
+    except:
+        return 1
+    

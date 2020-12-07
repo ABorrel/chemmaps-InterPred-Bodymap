@@ -3,7 +3,7 @@ from configparser import ConfigParser
 from os import path
 
 class DBrequest:
-    def __init__(self, verbose=1):
+    def __init__(self, verbose=0):
         self.dbconfig = path.abspath("./database.ini")
         self.conn = None
         self.verbose = verbose

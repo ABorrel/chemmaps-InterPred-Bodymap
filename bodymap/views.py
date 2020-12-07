@@ -40,9 +40,6 @@ def mappingChemicalToBody(request):
     name = formout[1]
     exp_type = formout[2]
 
-    print(CAS)
-    print(name)
-
     if CAS == "---" and name == "---":
         return render(request, 'bodymap/chemTobody.html', {"formCAS": formCAS, "Error": "1"})
     elif CAS == "---" and name != "---":
@@ -65,6 +62,10 @@ def mappingChemicalToBody(request):
     NassaysJS = json.dumps(int(dchem["N-assay"]))
     exp_typeJS = json.dumps(exp_type)
 
-
-    return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "Nassay":NassaysJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS, "exp_type":exp_typeJS})
+    if dchem["QC"] == "FAIL":
+        Error_in = "2"
+    else:
+        Error_in = "0"
+    
+    return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "Nassay":NassaysJS, "dchem": dchemJS, "Error": Error_in, "Type":"chem", "TypeJS":typeJS, "exp_type":exp_typeJS})
 

@@ -121,6 +121,7 @@ function mapOnBody(dmap, valAC50, valExp){
     //console.log(valAC50);
     //console.log(valExp);
     var lorgani="";
+    ctx.drawImage(background,0,0);
     for(var organ in dorgan){
         if(dorgan[organ] == "Draw-green"){
             ctx.fillStyle = "#1ee844";
@@ -150,12 +151,7 @@ function mapOnBody(dmap, valAC50, valExp){
                 continue;
             }
         }else{
-            try {ctx.beginPath();
-            ctx.clearRect(dmappingBody[organ][0] - 7 - 1, dmappingBody[organ][1] - 7 - 1, 7 * 2 + 2, 7 * 2 + 2);
-            ctx.closePath();
-            }catch{
-                continue;
-            }
+
         }
     }
 
