@@ -95,6 +95,7 @@ def loadToList(pfilin, sep = "\t"):
     lout = []
     filin = open(pfilin, "r")
     llines = filin.readlines()
+    print(llines)
     filin.close()
     
     head = llines[0].strip().split(sep)
@@ -148,3 +149,15 @@ def openGeneExp(pfilin):
         dout[system][organ]["control"] = control
     
     return dout
+
+
+
+
+# fast search
+from bisect import bisect_left
+
+def binary_search(L, x):
+    i = bisect_left(L, x)
+    if i == len(L) or L[i] != x:
+        return -1
+    return i

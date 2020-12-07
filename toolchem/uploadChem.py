@@ -47,10 +47,10 @@ class uploadChem:
                     # compute all of the entry for chemical table
                     cChem = CompDesc.CompDesc(d_chem[l_chemin[i]]["smiles_origin"], self.pr_out)
                     cChem.prepChem()
-                    smiles_clean = cChem.smi
 
                     #print(cChem.err)
                     if cChem.err == 0:
+                        smiles_clean = cChem.smi
                         d_chem[l_chemin[i]]["smiles_clean"] = smiles_clean
                         cChem.generateInchiKey()
                         #print(cChem.inchikey)

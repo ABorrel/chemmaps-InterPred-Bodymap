@@ -11,8 +11,7 @@ class mapChem :
         self.CASin = CASin
         self.cDB = DBrequest()
         self.cDB.verbose = 0
-        
-    
+           
     def loadFromDB(self, tableAssayMap, tableAC50, tableGene):
 
         dac50 = self.cDB.execCMD("SELECT assay, ac50 from %s where casn='%s'"%(tableAC50, self.CASin))
@@ -35,8 +34,6 @@ class mapChem :
         
         self.dassayMapped = dassayMapped
         self.tableGene = tableGene
-
-
 
     def mapChemToBody(self, expControl):
 

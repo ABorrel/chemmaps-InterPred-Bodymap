@@ -13,6 +13,7 @@ from . import computeCoords
 from . import computeInterPred
 from . import chemOverlap
 from . import countChem
+from . import updateFromFiles
 from .forms import updateForm 
 from django_server import toolbox
 
@@ -70,11 +71,7 @@ def upload_chem(request):
         formout = formUpdate.clean()
         
         map_chem = formUpdate.data["form_map"]
-        if map_chem == "---":
-            l_error = ["Please choose a map"]
-            formUpdate = updateForm()
-            return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":l_error})
-
+        
         pfileserver = prsession + "uploadFileChem.txt"
         with open(pfileserver, 'wb+') as destination:
             for chunk in formUpdate.files["form_chem"].chunks():
@@ -82,13 +79,17 @@ def upload_chem(request):
         destination.close()
 
         if formout == "update":
+            if map_chem == "---":
+                l_error = ["Please choose a map"]
+                formUpdate = updateForm()
+                return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":l_error})
 
             #if formUpdate.is_valid() == True:
             cChem = uploadChem.uploadChem(pfileserver, map_chem, prsession)
             cChem.prepChem()
             if cChem.err != []:
                 formUpdate = updateForm()
-                return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error": cChem.err})
+                return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error": cChem.err, "notice":cChem.notice})
 
             else:
                 cChem.pushChemicals()
@@ -184,7 +185,6 @@ def upload_datafiles(request):
 
     # generate the return information
     # form update
-    formUpdate = updateForm()
     cCount = countChem.countChem()
     dcount = cCount.indexCount()
 
@@ -194,10 +194,15 @@ def upload_datafiles(request):
 
     map_chem = formUpdate.data["form_map"]
     if map_chem == "---":
+        formUpdate = updateForm()
         l_error = ["Please choose a map"]
         return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":l_error, "notice":[]})
     else:
-        return 
+
+        c_updateFromFile = updateFromFiles.updateFromFiles(formUpdate, pr_session)
+        c_updateFromFile.checkFilesIn()
+
+        return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":c_updateFromFile.error, "notice":c_updateFromFile.notice}) 
 
 def download(request, name):
 
@@ -210,3 +215,7 @@ def download(request, name):
             response['Content-Disposition'] = 'inline; filename=' + path.basename(file_path)
             return response
     raise Http404
+
+def upload_assayfile(request):
+
+    return HttpResponse("Wait for assay format from Agnes")

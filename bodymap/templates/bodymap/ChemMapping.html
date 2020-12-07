@@ -56,11 +56,21 @@
         <b>DSSTOX ID: </b><div class="tooltipBM"><a class = "aurl" id="DSSTOX"></a><span class="tooltipBMtext">Detailed chemical information available via EPA Chemistry Dashboard</span></div><br>
         <b>CASRN: </b><div class="tooltipBM"><a class = "aurl" id="CASID"></a><span class="tooltipBMtext">Detailed chemical information available via EPA Chemistry Dashboard</span></div><br>
         <b>SMILES: </b><text id="SMILES"></text><br>
-        <b>Chemical space: </b>Explore on <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/">chemmaps.com</a> <br>
-        <b>Chemical annotation: </b>Explore on <a class = "aurl" href="http://134.129.166.26:8080/tox21enricher/">Tox21 Enricher</a> 
+        <b>Chemical space: </b>Explore on <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/">chemmaps.com</a><br>
+        <b>Chemical annotation: </b>Explore on <a class = "aurl" href="http://134.129.166.26:8080/tox21enricher/">Tox21 Enricher</a><br>
+        <b>Chemical Quality Control (QC) status: </b><div class="tooltipBM"><a class = "aurl" id="QC"></a><span class="tooltipBMtext">Detailed QC information available on the ICE server</span></div><br>
+        <b>Number of assays tested: </b>{{Nassay}}/971
     </div>
 </div>
 <br>
+
+{% if Error == "2" %}
+<p class = "Errorform"> <img src="{% static 'bodymap/img/warning.png' %}" style="width:30px" alt="Warning icon for QC fail"> <b><text id="CASIDError"></text></b> did not pass the quality check requirement for at least one assay.</p><br>
+{% else %}
+<span style="font-size:0px" id="CASIDError"></span>
+{% endif %}
+
+
 
 <h2><img src="{% static 'bodymap/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Body mapping</h2></button>
 <br>
@@ -113,7 +123,7 @@
         <div id="dotplot" style="margin-bottom: 10px;"></div>
         Assays mapping on organ system in function of the log10(AC50).<br>
         Assay Annotations: <a class = "aurl" href="https://comptox.epa.gov/dashboard/assay_endpoints/">EPA Chemistry Dashboard</a><br>
-        Assays tested: {{Nassay}}/971
+        Number of assays tested: {{Nassay}}/971<br>
     </div>
     <div class="columnChem" style="margin-left: 10px">
         <br>

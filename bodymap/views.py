@@ -53,9 +53,6 @@ def mappingChemicalToBody(request):
     if dchem == 1:
         return render(request, 'bodymap/chemTobody.html',{"formCAS": formCAS, "Error": "1"})
 
-    if dchem["QC"] == "FAIL":
-        return render(request, 'bodymap/chemTobody.html',{"formCAS": formCAS, "Error": "2", "dchem": dchem})
-
     cmapChem = mapChem(CAS)
     cmapChem.loadFromDB("bodymap_assay_mapping_new", "bodymap_assay_ac50", "bodymap_genemap")
     dmap = cmapChem.mapChemToBody(exp_type)
@@ -65,6 +62,10 @@ def mappingChemicalToBody(request):
     NassaysJS = json.dumps(int(dchem["N-assay"]))
     exp_typeJS = json.dumps(exp_type)
 
-
-    return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "Nassay":NassaysJS, "dchem": dchemJS, "Error": "0", "Type":"chem", "TypeJS":typeJS, "exp_type":exp_typeJS})
+    if dchem["QC"] == "FAIL":
+        Error_in = "2"
+    else:
+        Error_in = "0"
+    
+    return render(request, 'bodymap/ChemMapping.html', {"dmap": dmapJS, "Nassay":NassaysJS, "dchem": dchemJS, "Error": Error_in, "Type":"chem", "TypeJS":typeJS, "exp_type":exp_typeJS})
 

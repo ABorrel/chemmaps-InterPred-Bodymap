@@ -13,6 +13,7 @@ class updateForm(forms.Form):
     form_OPERA = forms.FileField(label='opera', required=False)
     form_coord1D2D = forms.FileField(label='coord1D2D', required=False)
     form_coord3D = forms.FileField(label='coord3D', required=False)
+    form_assays = forms.FileField(label='assays', required=True)
 
     # choose the map
     l_maps = (("---", "---"),("tox21", "Tox21Map"),("drugbank", "DrugMap"),("pfas", "PFASMap"),
