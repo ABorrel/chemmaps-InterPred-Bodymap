@@ -123,7 +123,7 @@ class formatSMILES:
         ldesc1D2D = self.cDB.extractColoumn("chem_descriptor_1d2d_name", "name")
         ldesc1D2D = [desc [0] for desc in ldesc1D2D]
 
-        ldescOPERA = self.cDB.extractColoumn("chem_descriptor_opera_name", "name")
+        ldescOPERA = self.cDB.extractColoumn("chem_descriptor_opera_name_new", "name")
         ldescOPERA = [desc [0] for desc in ldescOPERA]
         dout = {} # for table in descriptor coloumn
 
@@ -158,7 +158,11 @@ class formatSMILES:
                     chemical.generateInchiKey()
                     chemical.computeAll2D()
 
-                    chemical.computeOperaDesc(path.abspath("./MD/doc/desc_fp.xml"))
+                    try:chemical.computeOPERAFromChem()
+                    except: 
+                        dout[k]["Descriptor"] = "Error"
+                        dout[k]["desc"] = "checkNo.png"
+                        continue
 
                     if chemical.err == 1:
                         dout[k]["desc"] = "checkNo.png"
@@ -175,7 +179,9 @@ class formatSMILES:
                         w1D2D = "{" + ",".join(["\"%s\"" % (desc) for desc in valDesc1D2D]) + "}"
 
                         # opera
-                        valDescOPERA = [dopera[descOPERA] for descOPERA in ldescOPERA]
+                        #print(ldescOPERA)
+                        #print(dopera)
+                        valDescOPERA = [dopera[descOPERA] if descOPERA in list(dopera.keys()) else "NA"  for descOPERA in ldescOPERA]
                         valDescOPERA = ['-9999' if desc == "NA" or desc == "NaN" else desc for desc in valDescOPERA]
                         wOPERA = "{" + ",".join(["\"%s\"" % (desc) for desc in valDescOPERA]) + "}"
                         # add to DB
@@ -195,7 +201,7 @@ class formatSMILES:
                     dout[k]["Descriptor"] = "OK"
                     dout[k]["desc"] = "checkOK.png"
                     filout2D.write("%i\t%s\t%s\t%s\n"%(k, SMICLEAN, inch, "\t".join([str(lval1D2D_OPERA[0][d]) for d in ldesc1D2D])))
-                    filoutOPERA.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(lval1D2D_OPERA[1][d]) for d in ldescOPERA])))
+                    filoutOPERA.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(lval1D2D_OPERA[1][d]) if d in list(lval1D2D_OPERA[1].keys()) else "-9999" for d in ldescOPERA])))
                 
         filout2D.close()
         filoutOPERA.close()
@@ -214,7 +220,6 @@ class formatSMILES:
 
         self.ddesc = dout
         return [pfilout2D, pfiloutOPERA]
-
 
 
 def downloadDescFromDB(cDB, ldesc1D2D, ldescOPERA, inchikey):
