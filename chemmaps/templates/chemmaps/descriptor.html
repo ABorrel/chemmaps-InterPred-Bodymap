@@ -35,12 +35,13 @@ rel="stylesheet" type="text/css"/>
 rel="stylesheet" type="text/css"/>
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
 rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/css/theme.css" rel="stylesheet">
+
+<link href="{% static 'chemmaps/css/theme.css' %}" rel="stylesheet">
 <!--<link href="/static/chemmaps/css/theme.css" rel="stylesheet">-->
 {% endblock %}
 {% block title %} Descriptors - {{map}}{% endblock %}
 {% block content %}
-<script src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/js/theme.js"></script>
+<script src="{% static 'chemmaps/static/js/theme.js' %}"></script> 
 
 <div id = "bg">
     {% include 'chemmaps/includes/navbar.html' %}
@@ -86,7 +87,11 @@ rel="stylesheet" type="text/css"/>
                             <div class="divTableRow">
                                     <div class="divTableCell">&nbsp;{{k1}}</div>
                                     <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
-                                    <div class="divTableCell"><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/{{dout.file}}" width="25px" alt="Valide upload"></div>
+                                    {% if dout.file == 'img/checkOK.png' %}
+                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkOK.png' %}" width="25px" alt="Valide upload"></div>
+                                    {% else %}
+                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkNo.png' %}" width="25px" alt="Error upload"></div>
+                                    {% endif %}
                             </div>
                         {% endfor %}
                     </div>
@@ -105,7 +110,11 @@ rel="stylesheet" type="text/css"/>
                             <div class="divTableRow">
                                     <div class="divTableCell">&nbsp;{{k1}}</div>
                                     <div class="divTableCell">&nbsp;{{dout.Descriptor}}</div>
-                                    <div class="divTableCell"><img src="https://sandbox.ntp.niehs.nih.gov/chemmaps/static/{{dout.desc}}" width="25px" alt="Valide upload"></div>
+                                    {% if dout.desc == 'img/checkOK.png' %}
+                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkOK.png' %}" width="25px" alt="Valide upload"></div>
+                                    {% else %}
+                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkNo.png' %}" width="25px" alt="Error upload"></div>
+                                    {% endif %}
                             </div>
                         {% endfor %}
                     </div>
