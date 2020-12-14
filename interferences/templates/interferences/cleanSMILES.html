@@ -1,20 +1,22 @@
 {% extends "base.html" %}
+{% load static %}
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
-rel="stylesheet" type="text/css"/> 
+rel="stylesheet" type="text/css"> 
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
-rel="stylesheet" type="text/css"/>
+rel="stylesheet" type="text/css">
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
-rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/theme.css" rel="stylesheet">
-<link href="https://sandbox.ntp.niehs.nih.gov/interferences/static/css/table.css" rel="stylesheet">
+rel="stylesheet" type="text/css">
+
+<link href="{% static 'interferences/css/theme.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'interferences/css/table.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block title %}Process Chemicals{% endblock %}
 {% block content %}
-<script src="https://sandbox.ntp.niehs.nih.gov/interferences/static/js/theme.js"></script>
+<script src="{% static 'interferences/js/theme.js' %}" type="text/javascript"></script>
 {% include 'interferences/includes/navbar.html' %}
 
 <h1>QSAR-ready SMILES</h1>
@@ -56,7 +58,11 @@ rel="stylesheet" type="text/css"/>
                             <div class="divTableRow">
                                     <div class="divTableCell">&nbsp;{{k1}}</div>
                                     <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
-                                    <div class="divTableCell"><img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/{{dout.file}}" width="25px" alt="Valide upload"></div>
+                                    {% if dout.file == 'checkOK.png' %}
+                                        <div class="divTableCell"><img src="{% static 'interferences/img/checkOK.png' %}" width="25px" alt="Valide upload"></div>
+                                    {% else %}
+                                        <div class="divTableCell"><img src="{% static 'interferences/img/checkNo.png' %}" width="25px" alt="Error upload"></div>
+                                    {% endif %}
                             </div>
                         {% endfor %}
                     </div>
