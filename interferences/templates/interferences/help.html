@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% load static %}
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -72,7 +73,7 @@ For each chemical a set of 677 structural descriptors is computed including 1D a
 <p>
 Once descriptors have been computed, users can predict chemical interference activity by choosing one or several of the 17 interreference models proposed. Each model is an average of 10 different random forest models built to cover the full set of chemicals (cf. publication). The table below describes the available models. 
 </p>
-<p>All random forest models used can be downloaded in a <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/interferences/static/modelsInterferences.tar.gz">tar.gz archive</a> with the assciated <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/interferences/static/predictfromModel.R">Rscript</a> to run them individually.</p>
+<p>All random forest models used can be downloaded in a <a class = "aurl" href="{% static 'interferences/modelsInterferences.tar.gz' %}">tar.gz archive</a> with the assciated <a class = "aurl" href="{% static 'interferences/predictfromModel.R' %}">Rscript</a> to run them individually.</p>
 
 <br>
 <div class="div-table">
