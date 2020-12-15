@@ -40,6 +40,8 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - add descriptor scaling in a table
 - protect page admin with a password
 - Add option to not upload chemical in the DB as interpred
+- merge VM_prod and check path server
+- change page head to have the name of the tool in it
 
 
 
