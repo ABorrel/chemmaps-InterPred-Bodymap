@@ -12,8 +12,21 @@ body {
     background-color: #000;
     margin: 0px;
     overflow: hidden;
+    /*background-image: url("../img/background.jpg");
+    
+    background-image: url('/static/chemmaps/img/water.jpg');*/
+}
+
+#backPFAS {
+    background-image: url("../img/black-sea-water-texture-free.png");
+}
+
+#backDSSTOX {
     background-image: url("../img/background.jpg");
-    /*background-image: url('/static/chemmaps/img/water.jpg');*/
+}
+
+#backDrugmap {
+    background-image: url("../img/chem_background.png");
 }
 
 a:link {

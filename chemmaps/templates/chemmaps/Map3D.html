@@ -17,6 +17,13 @@
 <link href="{% static 'chemmaps/css/chemMap.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block content %}
+    {% if map == "pfas" %}
+        <div id="backPFAS">
+    {% elif map == "drugbank" %}
+        <div id="backDrugmap">
+    {% else %}
+        <div id="backDSSTOX">
+    {% endif %}
 
 
     <div id="container"></div>
@@ -103,7 +110,17 @@
         </div>
 
     <div id="blockassay">
+        {% if assay != "" %}
             {{assay}}
+        {% else %}
+            {% if map == "drugbank" %}
+                DrugMap
+            {% elif map == "dsstox" %}
+                Center chemical: {{center_map}}
+            {% else %}
+                {{map.upper}}Map
+            {% endif %}
+        {% endif %}
     </div>
 
     <div id="blockdiv">
@@ -288,5 +305,6 @@
 
 
     </script>
+    </div>
 {% endblock content %}
 </html>

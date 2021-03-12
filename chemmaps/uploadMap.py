@@ -128,9 +128,10 @@ class loadingMap:
             # info
             dout["info"][db_id] = {}
             for descMap in self.lprop:
-                if self.map == "DrugMap":
+                if self.map == "drugbank":
                     try: dout["info"][db_id][DDESCDRUGMAP[descMap]] = round(float(lprop[self.lallProp.index(descMap)]),1)
-                    except: dout["info"][db_id][DDESCDRUGMAP[descMap]] = lprop[self.lallProp.index(descMap)]
+                    except: 
+                        dout["info"][db_id][DDESCDRUGMAP[descMap]] = lprop[self.lallProp.index(descMap)]
                 else:
                     try: dout["info"][db_id][DDESCDSSTOX[descMap]] = round(float(lprop[self.lallProp.index(descMap)]),1)
                     except: dout["info"][db_id][DDESCDSSTOX[descMap]] = lprop[self.lallProp.index(descMap)]

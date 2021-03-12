@@ -172,6 +172,7 @@ def launchMap(request, map):
             dneighbor = json.dumps(build.dneighbor)
             dSMILESClass = json.dumps(build.dSMILES)
             ldescJS = list(build.dinfo[list(build.dinfo.keys())[0]].keys())
+            center_chem = chemIn
 
 
         else:
@@ -185,13 +186,14 @@ def launchMap(request, map):
             dneighbor = json.dumps(dJS["neighbor"])
             dSMILESClass = json.dumps(dJS["SMILESClass"])
             ldescJS = list(dJS["info"][list(dJS["info"].keys())[0]].keys())
+            center_chem = ""
 
         mapJS = json.dumps(map)
         prSessionJS = json.dumps(prsession[1:])
 
         return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
                                                              "dSMILESClass":dSMILESClass,
-                                                             "ldesc":ldescJS, "map":map, "mapJS": mapJS,"prSessionJS":prSessionJS })
+                                                             "ldesc":ldescJS, "map":map, "mapJS": mapJS,"prSessionJS":prSessionJS, "assay":"" , "center_map":center_chem})
 
     else:
         return render(request, 'chemmaps/launchMap.html', {"form_info":formDesc, "form_smiles":form_smiles,
@@ -247,9 +249,7 @@ def launchDSSToxMap(request, DTXSID):
         mapJS = json.dumps("dsstox")
         prSessionJS = json.dumps("")
 
-        return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
-                                                             "dSMILESClass":dSMILESClass,
-                                                             "ldesc":ldescJS, "map":"dsstox", "mapJS": mapJS,"prSessionJS":prSessionJS })
+        return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor, "dSMILESClass":dSMILESClass, "ldesc":ldescJS, "map":"dsstox", "mapJS": mapJS,"prSessionJS":prSessionJS, "center_map":DTXSID, "assay":"" })
 
 
 
