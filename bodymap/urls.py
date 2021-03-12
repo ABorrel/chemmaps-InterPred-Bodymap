@@ -28,5 +28,5 @@ urlpatterns = [
         views.mappingChemicalToBody,
         name='chemMapping'
     ),
-    ]+ static(settings.STATIC_URL, document_root="/home/sandbox/ChemMap2Site/static/bodymap/")
+    ] 
 

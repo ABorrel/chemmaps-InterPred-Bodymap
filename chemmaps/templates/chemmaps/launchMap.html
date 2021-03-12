@@ -14,8 +14,9 @@ rel="stylesheet" type="text/css"/>
 
 {% block title %}Launch {{map}}{% endblock %}
 {% block content %}
-<script src="{% static 'chemmaps/js/theme.js' %}"></script>
-<div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
+<script src="{% static 'chemmaps/js/theme.js' %}" type="text/javascript"></script>
+<div id = "bg">
+    <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
 
 <div id = "bg">
     <br>    

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+{% load static %}
 {% block extra-css %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -25,13 +26,13 @@ In the first step users can upload up to 100 chemicals using SMILES string forma
 
 <div class="row">
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_1.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_1.png" style="width:100%" alt="Example of upload SMILES page">
+            <a href="{% static 'interferences/img/interference_1.png' %}">
+                <img src="{% static 'interferences/img/interference_1.png' %}" style="width:100%" alt="Example of upload SMILES page">
             </a>
         </div>
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_2.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_2.png" style="width:100%" alt="SMILES clean process results">
+            <a href="{% static 'interferences/img/interference_2.png' %}">
+                <img src="{% static 'interferences/img/interference_2.png' %}" style="width:100%" alt="SMILES clean process results">
             </a>
     </div>
 </div>
@@ -47,13 +48,13 @@ For each chemical a set of 677 structural descriptors is computed including 1D a
 </p>
 <div class="row">
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/RDKIT.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/RDKIT.png" style="width:30%" alt="RDKIT logo for illustration">
+            <a href="{% static 'interferences/img/RDKIT.png' %}">
+                <img src="{% static 'interferences/img/RDKIT.png' %}" style="width:30%" alt="RDKIT logo for illustration">
             </a>
         </div>
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/OPERA.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/OPERA.png" style="width:30%" alt="OPERA logo for illustration">
+            <a href="{% static 'interferences/img/OPERA.png' %}">
+                <img src="{% static 'interferences/img/OPERA.png' %}" style="width:30%" alt="OPERA logo for illustration">
             </a>
     </div>
 </div>
@@ -63,8 +64,8 @@ For each chemical a set of 677 structural descriptors is computed including 1D a
 
 <div class="row">
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_3.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_3.png" style="width:100%" alt="Example of descriptor computation results">
+            <a href="{% static 'interferences/img/interference_3.png' %}">
+                <img src="{% static 'interferences/img/interference_3.png' %}" style="width:100%" alt="Example of descriptor computation results">
             </a>
     </div>
 </div>
@@ -73,7 +74,7 @@ For each chemical a set of 677 structural descriptors is computed including 1D a
 <p>
 Once descriptors have been computed, users can predict chemical interference activity by choosing one or several of the 17 interreference models proposed. Each model is an average of 10 different random forest models built to cover the full set of chemicals (cf. publication). The table below describes the available models. 
 </p>
-<p>All random forest models used can be downloaded in a <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/interferences/static/modelsInterferences.tar.gz">tar.gz archive</a> with the assciated <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/interferences/static/predictfromModel.R">Rscript</a> to run them individually.</p>
+<p>All random forest models used can be downloaded in a <a class = "aurl" href="{% static 'interferences/modelsInterferences.tar.gz' %}">tar.gz archive</a> with the assciated <a class = "aurl" href="{% static 'interferences/predictfromModel.R' %}">Rscript</a> to run them individually.</p>
 
 <br>
 <div class="div-table">
@@ -211,8 +212,8 @@ It takes around 1-2s per chemical and per model to compute the predictions.
 </p>
 <div class="row">
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_5.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_5.png" style="width:100%" alt="Form to choose QSAR models">
+            <a href="{% static 'interferences/img/interference_5.png' %}">
+                <img src="{% static 'interferences/img/interference_5.png' %}" style="width:100%" alt="Form to choose QSAR models">
             </a>
         </div>
 </div>
@@ -227,8 +228,8 @@ Results are presented in a dynamic table. For each model selected a score betwee
 </p>
 <div class="row">
     <div class="column">
-            <a href="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_6.png">
-                <img src="https://sandbox.ntp.niehs.nih.gov/interferences/static/img/interference_6.png" style="width:100%" alt="Results table">
+            <a href="{% static 'interferences/img/interference_6.png' %}">
+                <img src="{% static 'interferences/img/interference_6.png' %}" style="width:100%" alt="Results table">
             </a>
         </div>
 </div>

@@ -31,7 +31,7 @@ function posCloud(din, dcolorRGB, size, scene) {
     geometry.computeBoundingSphere();
     // textures and material
     var textureLoader = new THREE.TextureLoader();
-    var sprite = textureLoader.load('https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/aspirin.png');
+    var sprite = textureLoader.load('https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/img/star.png');
     //en conssprite.repeat.set( 1, 1 );
     //		sprite.wrapS = sprite.wrapT = THREE.RepeatWrapping;
     //				sprite.format = THREE.RGBFormat;
@@ -89,7 +89,7 @@ function posMeshs(din, scene, color, rad) {
     var lmesh = [];
     // Texture
     var textureLoader = new THREE.TextureLoader();
-    var texture = textureLoader.load('https://sandbox.ntp.niehs.nih.gov/chemmaps/static/img/disturb.jpg');
+    var texture = textureLoader.load('https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/img/disturb.jpg');
     for (var i in din) {
         var objectGeometry = new THREE.SphereGeometry(rad);
         var objectMaterial = new THREE.MeshLambertMaterial({ map: texture, color: color });
@@ -398,11 +398,11 @@ function drawChemical() {
             if (ID == dpoints[ktype][i].name) {
                 console.log(ktype)
                 var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                ppng = "https://sandbox.ntp.niehs.nih.gov/chemmaps/static/png/" + namepng + '.png'
+                ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
                 //if(fs.exists(ppng) == true){
                     var texture = textureLoader.load(ppng);
                     dpoints[ktype][i].material.map = texture;
-                    console.log('https://sandbox.ntp.niehs.nih.gov/chemmaps/static/png/' + namepng + '.png')
+                    console.log('https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/' + namepng + '.png')
                     dpoints[ktype][i].material.size = 15;
                     dpoints[ktype][i].material.color.setHex(0xffffff);
                     dpoints[ktype][i].col = 0xffffff;
