@@ -150,7 +150,7 @@ function createpanel() {
         folder1.add(settingsDefault, 'No classified').onChange(viewNoClassified);
         folder1.add(settingsDefault, 'Added chemicals').onChange(viewAdded);
         folder1.add(settingsDefault, 'Draw structures').onChange(drawChemicals);
-    }else if(map == "Tox21Assay"){
+    }else if(map == "Tox21Assay" || map == 'Tox21Target'){
         folder1.add(settingsDefault, 'Conclusive').onChange(viewClassified);
         folder1.add(settingsDefault, 'Inconclusive').onChange(viewNoClassified);
         folder1.add(settingsDefault, 'Draw structures').onChange(drawChemicals);
@@ -267,7 +267,7 @@ function drawChemicals(visibility) {
             }
         }
     } else {
-        if (map == 'pfas' || map == 'dsstox' || map == 'tox21' || map == 'Tox21Assay') {
+        if (map == 'pfas' || map == 'dsstox' || map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target') {
             for (ktype in dpoints) {
                 for (var i = 0; i < dpoints[ktype].length; i++) {
                     var GHScat = dSMILESClass[dpoints[ktype][i].name]['GHS_category'];
@@ -340,7 +340,7 @@ function Help() {
         window.open('DSSToxMap');
     } else if (map == 'pfas') {
         window.open('PFASMapHelp');
-    } else if (map == 'tox21' || map == 'Tox21Assay') {
+    } else if (map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target') {
         window.open('Tox21MapHelp');
     }
 }

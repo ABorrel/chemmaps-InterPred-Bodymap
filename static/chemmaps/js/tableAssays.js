@@ -3,19 +3,37 @@ function defineColumnDef(din) {
     var columnDefs = [];
     for (var assay in din){
         for(var prop in din[assay]){
+            console.log(prop);
             if(prop == "protocol_name"){
                 columnDefs.push({
                     headerName: prop.charAt(0).toUpperCase() + prop.slice(1).replace("_", " "),
                     field: prop,
                     sortable: true,
                     filter: true,
-                    width: 350,
+                    width: 500,
                     resizable: true,
                     lockVisible: true,
                     cellRenderer: function(params) {
                         let keyData = params.data.protocol_name;
                         let newLink = `<a href= /chemmaps/tox21/${keyData} target="_blank">${keyData}</a>`;
                         return newLink;
+                    },
+                });
+            }else if (prop == "assay_target"){
+                columnDefs.push({
+                    headerName: prop.charAt(0).toUpperCase() + prop.slice(1).replace("_", " "),
+                    field: prop,
+                    sortable: true,
+                    filter: true,
+                    width: 500,
+                    resizable: true,
+                    lockVisible: true,
+                    cellRenderer: function(params) {
+                        let keyData = params.data.assay_target;
+                        if (keyData != null){
+                            let newLink = `<a href= /chemmaps/tox21/target=${keyData} target="_blank">${keyData}</a>`;
+                            return newLink;
+                        };
                     },
                 });
             }else{

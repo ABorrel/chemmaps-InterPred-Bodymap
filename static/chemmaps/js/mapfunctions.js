@@ -168,7 +168,7 @@ function posPointIndividuallyDSSTox() {
                 var typechem = 'classified';
                 var colorhexa = parseFloat(0x6e0000);
                 var size = 15;
-            }else if (Assaycat.search("No tested") !== -1) {
+            }else if (Assaycat.search("Not tested") !== -1) {
                     var colorhexa = dcol['NA'];
                     var typechem = 'noclassified';
                     var size = dsize[typechem];
@@ -624,7 +624,7 @@ function extractNeighbor(that) {
                             var typeChem = 'indev';
                         }
                         var coloradd = dcol[typeChem];
-                    } else if (map == 'dsstox' || map == 'pfas' || map == 'tox21' || "Tox21Assay") {
+                    } else if (map == 'dsstox' || map == 'pfas' || map == 'tox21' || "Tox21Assay" || map == 'Tox21Target') {
                         if (dSMILESClass[IDtemp]['GHS_category'] == 'NA') {
                             var typeChem = 'noclassified';
                         } else if (dSMILESClass[IDtemp]['GHS_category'] == 'add') {

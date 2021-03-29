@@ -221,6 +221,32 @@ def launchTox21AssayMap(request, assay):
                                                              "ldesc":ldescJS, "map":"Tox21Assay", "mapJS": mapJS, "prSessionJS":prSessionJS, "assay":assay, "nb_active": cloadAssays.nb_active, "nb_tested":  cloadAssays.nb_tested })
 
 
+def launchTox21TagetMap(request, target):
+
+
+    cloadAssays = loadTox21AssayMap(target)
+    cloadAssays.loadMapCoords()
+    cloadAssays.loadAssayTargeted()
+
+    dmap = cloadAssays.dmap
+
+    #   format for JS
+    dcoord = json.dumps(dmap["coord"])
+    dinfo = json.dumps(dmap["info"])
+    dneighbor = json.dumps(dmap["neighbor"])
+    dSMILESClass = json.dumps(dmap["SMILESClass"])
+    ldescJS = list(dmap["info"][list(dmap["info"].keys())[0]].keys())
+
+    mapJS = json.dumps("Tox21Assay")
+    prSessionJS = json.dumps("")
+
+
+    return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
+                                                             "dSMILESClass":dSMILESClass,
+                                                             "ldesc":ldescJS, "map":"Tox21Target", "mapJS": mapJS, "prSessionJS":prSessionJS, "target":target, "assay":"", "nb_assays": cloadAssays.nb_assays})#, "nb_active": cloadAssays.nb_active, "nb_tested":  cloadAssays.nb_tested })
+
+
+
 # case of automatic launch -> Comptox
 def launchDSSToxMap(request, DTXSID):
 

@@ -5,7 +5,7 @@ function updateInfoBox(intersect) {
     var smilesDrawer = new SmilesDrawer.Drawer(options);
 
     CompoundID.innerHTML = ID;
-    if (map == 'pfas' || map == 'dsstox' || map == 'tox21'|| map == 'Tox21Assay') {
+    if (map == 'pfas' || map == 'dsstox' || map == 'tox21'|| map == 'Tox21Assay' || map == 'Tox21Target') {
         document.getElementById('CompoundID').href =
             'https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=' + ID;
 
@@ -19,7 +19,7 @@ function updateInfoBox(intersect) {
 
 
     // case of DSStoxMap and PFASmap -> GHS
-    if (map == 'pfas' || map == 'dsstox' || map == 'tox21' || map == 'Tox21Assay') {
+    if (map == 'pfas' || map == 'dsstox' || map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target') {
         GHS.innerHTML = dSMILESClass[ID]['GHS_category'];
     } else if (map == 'drugbank') {
         Group.innerHTML = dSMILESClass[ID]['DRUG_GROUPS'];
@@ -39,8 +39,6 @@ function updateInfoBox(intersect) {
         } else if (desctype[ldesc[i]] == 'range') {
             if(dinfo[ID][ldesc[i]] == "NA"){
                 lboxes[i].innerHTML = "NA";
-            }else if (ldesc[i] == "AC50"){
-                lboxes[i].innerHTML = round(dinfo[ID][ldesc[i]], 3).toString();
             }else{
                 lboxes[i].innerHTML = round(dinfo[ID][ldesc[i]], 2).toString();
             }

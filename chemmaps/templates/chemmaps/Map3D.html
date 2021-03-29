@@ -117,6 +117,8 @@
                 DrugMap
             {% elif map == "dsstox" %}
                 Center chemical: {{center_map}}
+            {% elif map == "Tox21Target" %}
+                {{target}} ({{nb_assays}} assay(s))
             {% else %}
                 {{map.upper}}Map
             {% endif %}
@@ -180,7 +182,8 @@
                             "Pka acid":"range", "Pka basic":"range", "Biodegradability":"class", "HPLC retention time": "range",
                             "Log vapor pressure (mmHg)":"range", "Log Water solubility":"range", "MW":"range",
                             "Log Atmospheric constant (cm3/molsec)": "range", "Biodegradation half-life": "range",
-                            "Boiling Point":"range", "Lipinski Failures": "class", "AC50":"range", "Assay Outcome":"str", "QC":"str"};
+                            "Boiling Point":"range", "Lipinski Failures": "class", "AC50 (µM)":"str", "Assay Outcome":"str",
+                            "QC":"str", "Most active assay": "str","Best AC50 (µM)":"str"};
                 }
                 ;
 
@@ -219,7 +222,7 @@
                     var nbcol = 50;
                     if (map == "pfas"){
                         var fact = 15;
-                    } else if (map == "tox21" || map == "Tox21Assay"){
+                    } else if (map == "tox21" || map == "Tox21Assay" || map == "Tox21Target"){
                         var fact = 25;
                     }else{
                         var fact = 50;

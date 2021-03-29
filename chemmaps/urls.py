@@ -193,6 +193,9 @@ urlpatterns = [
         r'DSSTox/(?P<DTXSID>[-\w]+)', views.launchDSSToxMap, name="DSSToxSp",
     ),
     url(
+        r'^tox21/target=(?P<target>[-\w]+)', views.launchTox21TagetMap, name="Tox21Target",
+    ),
+    url(
         r'^tox21/(?P<assay>[-\w]+)', views.launchTox21AssayMap, name="Tox21Sp",
     ),
     url(
