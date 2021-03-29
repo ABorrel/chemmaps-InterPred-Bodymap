@@ -111,7 +111,7 @@
 
     <div id="blockassay">
         {% if assay != "" %}
-            {{assay}}
+            {{assay}} ({{nb_active}} active / {{nb_tested}} tested)
         {% else %}
             {% if map == "drugbank" %}
                 DrugMap

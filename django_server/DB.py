@@ -71,10 +71,10 @@ class DB:
             print("Open connection first")
 
 
-    def extractColoumn(self, nameTable, coloumn, condition=""):
+    def extractColoumn(self, nameTable, column, condition=""):
         self.verbose=0
         self.connOpen()
-        sqlCMD = "SELECT %s FROM %s %s" % (coloumn, nameTable, condition)
+        sqlCMD = "SELECT %s FROM %s %s" % (column, nameTable, condition)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:

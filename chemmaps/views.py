@@ -34,10 +34,8 @@ def index(request):
     return render(request, 'chemmaps/index.html', {"DTXSID":""})
 
 
-
 def launchHelp(request, map="all"):
     return render(request, 'chemmaps/help.html', {"map": map})
-
 
 
 def download(request, name):
@@ -52,8 +50,6 @@ def download(request, name):
             response['Content-Disposition'] = 'inline; filename=' + path.basename(file_path)
             return response
     raise Http404
-
-
 
 
 def launchMap(request, map):
@@ -200,8 +196,6 @@ def launchMap(request, map):
                                                            "from_upload": formUpload, "Error": "0", "map":map, "dassays":d_assays})
 
 
-
-
 def launchTox21AssayMap(request, assay):
 
     
@@ -224,8 +218,7 @@ def launchTox21AssayMap(request, assay):
 
     return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
                                                              "dSMILESClass":dSMILESClass,
-                                                             "ldesc":ldescJS, "map":"Tox21Assay", "mapJS": mapJS, "prSessionJS":prSessionJS, "assay":assay })
-
+                                                             "ldesc":ldescJS, "map":"Tox21Assay", "mapJS": mapJS, "prSessionJS":prSessionJS, "assay":assay, "nb_active": cloadAssays.nb_active, "nb_tested":  cloadAssays.nb_tested })
 
 
 # case of automatic launch -> Comptox
@@ -250,7 +243,6 @@ def launchDSSToxMap(request, DTXSID):
         prSessionJS = json.dumps("")
 
         return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor, "dSMILESClass":dSMILESClass, "ldesc":ldescJS, "map":"dsstox", "mapJS": mapJS,"prSessionJS":prSessionJS, "center_map":DTXSID, "assay":"" })
-
 
 
 def computeDescriptor(request, map):
@@ -344,10 +336,6 @@ def computeDescriptor(request, map):
         return render(request, 'chemmaps/descriptor.html', {"map": map, "dSMILESIN":cinput.dclean["IN"],
                                                             "dSMILESOUT": cinput.dclean["OUT"], "ddesc":cinput.ddesc,
                                                             "form_info": formDesc, "Error": "0"})
-
-
-
-
 
 
 

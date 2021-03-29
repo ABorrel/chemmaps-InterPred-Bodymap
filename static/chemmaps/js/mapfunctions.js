@@ -168,6 +168,10 @@ function posPointIndividuallyDSSTox() {
                 var typechem = 'classified';
                 var colorhexa = parseFloat(0x6e0000);
                 var size = 15;
+            }else if (Assaycat.search("No tested") !== -1) {
+                    var colorhexa = dcol['NA'];
+                    var typechem = 'noclassified';
+                    var size = dsize[typechem];
             }else{
                 var typechem = 'classified';
                 var colorhexa = parseFloat(0x00ff00);
