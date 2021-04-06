@@ -18,7 +18,7 @@ class computeDesc:
     def CheckDescriptorFromMainTable(self):
         self.cDB.openConnection()
         # load all of the chemical
-        cmd_sql = "SELECT inchikey FROM chemical_description_user WHERE status='update' AND desc_1d2d is null OR desc_3d is null OR desc_opera is null"
+        cmd_sql = "SELECT inchikey FROM chemical_description_user WHERE status='update' AND desc_1d2d is null OR desc_3d is null OR desc_opera is null OR interference_prediction is null"
         
         l_chem = self.cDB.runCMD(cmd_sql)
         shuffle(l_chem)
@@ -29,7 +29,7 @@ class computeDesc:
         nb_computed = 0
         for inchikey in l_chem:
             # check if existing in the main DB
-            cmd_search_main_table =  "SELECT desc_1d2d, desc_3d, desc_opera FROM chemical_description WHERE inchikey='%s'"%(inchikey)
+            cmd_search_main_table =  "SELECT desc_1d2d, desc_3d, desc_opera, interference_prediction FROM chemical_description WHERE inchikey='%s'"%(inchikey)
             l_desc = self.cDB.runCMD(cmd_search_main_table)
 
             if l_desc == [] or l_desc == "Error":
@@ -58,14 +58,22 @@ class computeDesc:
             else:
                 wopera = ''
 
+            # interference descriptors
+            if l_desc[0][3] != None:
+                winterpred = "{%s}"%(",".join([str(val) for val in l_desc[0][3]]))
+                l_w.append("interference_prediction = '%s'"%(winterpred))
+            else:
+                winterpred = ''
+
             # check if something to update
             if l_w != []:
                 cmd_update = cmd_update +  ",".join(l_w) + " WHERE inchikey = '%s'"%(inchikey)
                 self.cDB.DB.updateElement(cmd_update)
-            else:
-                cmd_update = "UPDATE chemical_description_user SET status = 'error' WHERE inchikey = '%s'"%(inchikey)
+            
+            if len(l_w) > 0: 
+                cmd_update = "UPDATE chemical_description_user SET status = 'check' WHERE inchikey = '%s'"%(inchikey)
                 self.cDB.DB.updateElement(cmd_update)
-                self.error.append("%s: error descriptor computation"%(inchikey))
+                self.error.append("%s: No everything computed"%(inchikey))
 
         self.cDB.closeConnection()
 

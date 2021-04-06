@@ -48,7 +48,6 @@ computeCoord = function(ddescScale, dCP, col3D){
     }
   }
   
-  print(rownames(dcoord))
   if(rownames(dcoord)[1] == "ddescScale"){
     dcoord = as.data.frame(dcoord)
     dcoord = dcoord[-1,]

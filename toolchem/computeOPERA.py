@@ -18,7 +18,7 @@ class computeOPERA:
 
         self.cDB.openConnection()
         # load all of the chemical
-        cmd_sql = "SELECT source_id FROM chemical_description_user WHERE status='update' AND desc_opera is null"
+        cmd_sql = "SELECT source_id FROM chemical_description_user WHERE status !='error' AND desc_opera is null"
         l_chem = self.cDB.runCMD(cmd_sql)
 
         if len(l_chem) == 0:
@@ -31,7 +31,7 @@ class computeOPERA:
             cChem.prepChem()
             
             # descriptor OPERA
-            cChem.computeOperaDesc()
+            cChem.computeOPERAFromChem()
             if cChem.err == 1:
                 # change status to error
                 cmd_update = "UPDATE chemical_description_user SET status = 'error' WHERE source_id = '%s'"%(smiles)

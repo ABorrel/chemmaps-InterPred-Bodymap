@@ -35,35 +35,36 @@ class uploadChem:
             imax = len(l_chemin)
             while i < imax:
                 # check is included in the main user table => do not check here if it is in the main chemical table 
-                in_db = self.cDB.checkIfChemicalIsReadyToPush(d_chem[l_chemin[i]]["smiles_origin"])
-                if in_db > 0:
-                    del d_chem[l_chemin[i]]
-                    l_chemin.pop(i)
-                    imax = imax - 1
-                    continue
-                else:
-                    # format name for sql
-                    d_chem[l_chemin[i]]["name"] = d_chem[l_chemin[i]]["name"].replace("'", "''")
-                    # compute all of the entry for chemical table
-                    cChem = CompDesc.CompDesc(d_chem[l_chemin[i]]["smiles_origin"], self.pr_out)
-                    cChem.prepChem()
+                #in_db = self.cDB.checkIfChemicalIsReadyToPush(d_chem[l_chemin[i]]["smiles_origin"])
+                #if in_db > 0:
+                #    del d_chem[l_chemin[i]]
+                #    l_chemin.pop(i)
+                #    imax = imax - 1
+                #    continue
+                #else:
+                    
+                # format name for sql
+                d_chem[l_chemin[i]]["name"] = d_chem[l_chemin[i]]["name"].replace("'", "''")
+                # compute all of the entry for chemical table
+                cChem = CompDesc.CompDesc(d_chem[l_chemin[i]]["smiles_origin"], self.pr_out)
+                cChem.prepChem()
 
-                    #print(cChem.err)
+                #print(cChem.err)
+                if cChem.err == 0:
+                    smiles_clean = cChem.smi
+                    d_chem[l_chemin[i]]["smiles_clean"] = smiles_clean
+                    cChem.generateInchiKey()
+                    #print(cChem.inchikey)
                     if cChem.err == 0:
-                        smiles_clean = cChem.smi
-                        d_chem[l_chemin[i]]["smiles_clean"] = smiles_clean
-                        cChem.generateInchiKey()
-                        #print(cChem.inchikey)
-                        if cChem.err == 0:
-                            d_chem[l_chemin[i]]["inchikey"] = cChem.inchikey
-                        else:
-                            d_chem[l_chemin[i]]["inchikey"] = ""
-                            
-                    else: 
-                        d_chem[l_chemin[i]]["smiles_clean"] = ""
+                        d_chem[l_chemin[i]]["inchikey"] = cChem.inchikey
+                    else:
                         d_chem[l_chemin[i]]["inchikey"] = ""
+                            
+                else: 
+                    d_chem[l_chemin[i]]["smiles_clean"] = ""
+                    d_chem[l_chemin[i]]["inchikey"] = ""
                 i = i + 1
-            self.cDB.closeConnection()
+        self.cDB.closeConnection()
 
         self.d_chem = d_chem
         self.notice.append("%i chemicals pushed in DB"%(len(l_chemin)))
@@ -80,19 +81,29 @@ class uploadChem:
             #self.cDB.openConnection()
             # insert into the main chemicals table
             cmdSQL = "INSERT INTO chemicals_user(%s, status) VALUES"%(",".join(l_ks))
-            l_val = []
-            for chem in l_chemin:
-                l_val.append("(%s, \'update\')"%(",".join(["\'" + self.d_chem[chem][ks] + "\'" for ks in l_ks])))
-            cmdSQL = "%s%s"%(cmdSQL, ",".join(l_val))
-            #print(cmdSQL)
-            self.cDB.DB.addElementCMD(cmdSQL)
-
-            # insert into descriptor table
             cmdSQL_desc = "INSERT INTO chemical_description_user(source_id, inchikey, map_name, status) VALUES"
+
+            l_val = []
             l_val_desc = []
+            self.cDB.openConnection()
             for chem in l_chemin:
-                l_val_desc.append("('%s','%s','%s','update')"%(chem, self.d_chem[chem]["inchikey"], self.map))
-            cmdSQL_desc = "%s%s"%(cmdSQL_desc, ",".join(l_val_desc))
-            #print(cmdSQL_desc)
-            self.cDB.DB.addElementCMD(cmdSQL_desc)
-            #self.cDB.closeConnection()
+                in_db = self.cDB.checkIfChemicalIsReadyToPush(self.d_chem[chem]["smiles_origin"])
+                if in_db == 0:
+                    l_val.append("(%s, \'update\')"%(",".join(["\'" + self.d_chem[chem][ks] + "\'" for ks in l_ks])))
+                if self.d_chem[chem]["inchikey"] != "":
+                    l_val_desc.append("('%s','%s','%s','update')"%(chem, self.d_chem[chem]["inchikey"], self.map))
+                else:
+                    l_val_desc.append("('%s','%s','%s','error')"%(chem, self.d_chem[chem]["inchikey"], self.map))
+            self.cDB.closeConnection()
+
+            # push in DB
+            if l_val != []:
+                cmdSQL = "%s%s"%(cmdSQL, ",".join(l_val))
+                self.cDB.DB.addElementCMD(cmdSQL)
+            
+            if l_val_desc != []:
+                cmdSQL_desc = "%s%s"%(cmdSQL_desc, ",".join(l_val_desc))
+                self.cDB.DB.addElementCMD(cmdSQL_desc)
+            
+            
+        

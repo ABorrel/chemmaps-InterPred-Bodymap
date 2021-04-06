@@ -42,12 +42,13 @@ def push(request):
     d_DB["All_chem_desc_user"] = cDBrequest.countDescFullChemUser()
     d_DB["All_chem_update"] = cDBrequest.countChemUpdate()
     d_DB["All_chem_desc_update"] = cDBrequest.countDescFullChemUpdate()
+    d_DB["coordinate_update"] = cDBrequest.countChemCoordsUpdate()
 
 
     # update information from the DB
     cDBrequest.closeConnection()
 
-    return render(request, 'toolchem/push.html', {"d_chem_json":d_DB})
+    return render(request, 'toolchem/push.html', {"d_chem_json":d_DB, "notice":[]})
 
 def index(request):
 
@@ -109,7 +110,7 @@ def upload_chem(request):
             return render(request, 'toolchem/overlap.html', {"nb_included": nb_included, "nb_noincluded": nb_noincluded, "nb_topush":nb_topush, "map": map_chem, "nbChemDescForMap": cOverlap.nbChemDescForMap})
 
 def compute_desc(request):
-    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/", clean=1)
     cCompDesc = computeDesc.computeDesc(prsession)
     cCompDesc.runDesc()
     
@@ -146,8 +147,7 @@ def compute_opera(request):
 
 def compute_interference(request):
 
-    a = str(randint(0, 1000000))# define a random number for folder in update to avoid overlap
-    prsession = toolbox.createFolder(path.abspath("./temp") + "update/InterPred-" + a + "/")
+    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/InterPred/", clean=1)
 
     # count for index page
     cCount = countChem.countChem()
@@ -166,8 +166,6 @@ def compute_interference(request):
 
 def compute_coords(request):
 
-    a = str(randint(0, 1000000))# define a random number for folder in update to avoid overlap
-    #pr_session = toolbox.createFolder(path.abspath("./temp") + "update/coords-" + a + "/")
     pr_session = path.abspath("./temp") + "/update/"
 
     # generate the return information
@@ -185,8 +183,15 @@ def compute_coords(request):
         l_error = ["Please choose a map"]
         return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":l_error, "notice":[]})
     else:
-        c_coords = computeCoords.computeCoords(map_chem, pr_session)
-        c_coords.computeCoordForOnlyNewChem()
+        pr_session = pr_session + map_chem + "/"
+        toolbox.createFolder(pr_session, clean=1, txt=0)
+        if formUpdate.data["specific"] == "Recompute the all map coordinates":
+            c_coords = computeCoords.computeCoords(map_chem, pr_session)
+            c_coords.computeForAllCoordForMap()
+        else:
+            c_coords = computeCoords.computeCoords(map_chem, pr_session)
+            c_coords.computeCoordForOnlyNewChem()
+
         return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":c_coords.error, "notice":c_coords.notice})
 
 def upload_datafiles(request):
@@ -231,3 +236,38 @@ def download(request, name):
 def upload_assayfile(request):
 
     return HttpResponse("Wait for assay format from Agnes")
+
+def clearuserchem(request):
+
+    # open connrection to server
+    cDBrequest = DBrequest.DBrequest(verbose=0)
+    cDBrequest.openConnection()
+    cmd_chemical_users = "DELETE FROM chemicals_user WHERE status = 'user'"
+    cDBrequest.DB.updateElement(cmd_chemical_users)
+    cmd_chemical_description_users = "DELETE FROM chemical_description_user WHERE status = 'user'"
+    cDBrequest.DB.updateElement(cmd_chemical_description_users)
+
+    # extract information from the DB
+    d_DB = {}
+    d_DB["All_chem"] = cDBrequest.countChemicals()
+    d_DB["All_chem_cleaned"] = cDBrequest.countCleanChemical()
+    d_DB["All_chem_desc"] = cDBrequest.countDescFullChemical()
+    d_DB["chemmaps_DSSTOXMap"] = cDBrequest.countChemOnDSSTOXMap()
+    d_DB["chemmaps_DrugMap"] = cDBrequest.countChemOnDrugMap()
+    d_DB["chemmaps_PFASMap"] = cDBrequest.countChemOnPFASMap()
+    d_DB["chemmaps_Tox21Map"] = cDBrequest.countChemOnTox21Map()
+    d_DB["interpred_chem"] = cDBrequest.countChemInterPred()
+    d_DB["bodymap_chem"] = cDBrequest.countChemBodyMap()
+
+    # information from the users table
+    d_DB["All_chem_user"] = cDBrequest.countChemUser()
+    d_DB["All_chem_desc_user"] = cDBrequest.countDescFullChemUser()
+    d_DB["All_chem_update"] = cDBrequest.countChemUpdate()
+    d_DB["All_chem_desc_update"] = cDBrequest.countDescFullChemUpdate()
+    d_DB["coordinate_update"] = cDBrequest.countChemCoordsUpdate()
+
+
+    # update information from the DB
+    cDBrequest.closeConnection()
+
+    return render(request, 'toolchem/push.html', {"d_chem_json":d_DB, "notice":["User enties removed"]})

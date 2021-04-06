@@ -1,26 +1,30 @@
 from os import path, makedirs, listdir, remove
 from shutil import rmtree
 
-def cleanFolder(prin):
+def cleanFolder(prin, txt=1):
 
     lfiles = listdir(prin)
     if len(lfiles) != 0:
         for filin in lfiles:
-            if filin[-3:] != "txt": # keep descriptor in memory
-                # problem with folder
+            if txt == 1:
+                if filin[-3:] != "txt": # keep descriptor in memory
+                    # problem with folder
+                    try:remove(prin + filin)
+                    except: rmtree(prin + filin)
+            else:
                 try:remove(prin + filin)
                 except: rmtree(prin + filin)
 
     return prin
 
 
-def createFolder(prin, clean=0):
+def createFolder(prin, clean=0, txt=1):
 
     if not path.exists(prin):
         makedirs(prin)
 
     if clean == 1:
-        cleanFolder(prin)
+        cleanFolder(prin, txt)
 
     return prin
 
@@ -118,7 +122,7 @@ def writeDescFromDict(d_in, p_filout):
     l_header = list(d_in[l_rowin[0]].keys())
 
     filout = open(p_filout, "w")
-    filout.write("\t".join(l_header) + "\n")
+    filout.write("ID\t" + "\t".join(l_header) + "\n")
     for row_in in l_rowin:
         filout.write("%s\t%s\n"%(row_in, "\t".join([str(d_in[row_in][h]) for h in l_header])))
     filout.close()

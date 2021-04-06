@@ -25,6 +25,8 @@ model = outmodel$model
 #print (model)
 # open 2D
 din2D = read.csv(pdesc2D, sep = "\t", header = TRUE)
+# remove duplicate name
+din2D = din2D[-which(duplicated(din2D[,1])),]
 rownames(din2D) = din2D[,1]
 
 
@@ -39,6 +41,7 @@ if("inchikey" %in% colnames(din2D)){
 
 #open OPERA
 dinOPERA = read.csv(pdescOPERA, sep = "\t", header = TRUE)
+dinOPERA = dinOPERA[-which(duplicated(dinOPERA[,1])),]
 rownames(dinOPERA) = dinOPERA[,1]
 
 lchem = intersect(rownames(din2D), rownames(dinOPERA))

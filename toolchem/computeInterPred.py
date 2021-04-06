@@ -24,7 +24,7 @@ class computeInterPred:
 
         # extract chemicals 
         self.cDB.openConnection()
-        cmd_sql = "SELECT inchikey, desc_1d2d, desc_opera FROM chemical_description_user WHERE status='update' AND desc_opera is not null AND desc_1d2d is not null AND interference_prediction is null"
+        cmd_sql = "SELECT inchikey, desc_1d2d, desc_opera FROM chemical_description_user WHERE status != 'error' AND desc_opera is not null AND desc_1d2d is not null AND interference_prediction is null"
         l_dchem = self.cDB.runCMD(cmd_sql)
         self.cDB.closeConnection()
 

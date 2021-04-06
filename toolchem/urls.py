@@ -63,6 +63,12 @@ urlpatterns = [
     ),
     
     url(
+        r'^clearuserchem',
+        views.clearuserchem, 
+        name="clearuser",
+    ),
+       
+    url(
         r'^chemicals.csv',
         views.download, {"name": "chemicals"}, name="chemical",
     ),
