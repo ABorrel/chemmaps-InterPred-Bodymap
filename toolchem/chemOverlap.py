@@ -20,7 +20,7 @@ class chemOverlap:
         self.DB.openConnection()
 
         # extract all chemicals in the main DB
-        l_chem_chemicalsDB = self.DB.DB.execCMD("SELECT dsstox_id FROM chemicals")
+        l_chem_chemicalsDB = self.DB.DB.execCMD("SELECT dsstox_id FROM chemical_description INNER JOIN chemicals ON chemical_description.inchikey = chemicals.inchikey WHERE map_name = '%s'"%(self.chem_map))
         l_chem_DB = []
         for chem_DB in l_chem_chemicalsDB:
             chem = chem_DB[0]
@@ -28,7 +28,6 @@ class chemOverlap:
                 continue
             else:
                 l_chem_DB.append(chem)
-        
         l_chem_DB.sort()
 
         # extract all chemicals in the update table
@@ -40,7 +39,7 @@ class chemOverlap:
                 continue
             else:
                 l_chem_DB_update.append(chem)
-        self.DB.closeConnection()
+        
         l_chem_DB_update.sort()
 
         for chem in d_chem.keys():
@@ -59,6 +58,10 @@ class chemOverlap:
         self.l_included = l_included
         self.l_noincluded = l_noincluded
 
+        # check NB chemicals in the descriptor table
+        nb_chem_descDB = self.DB.DB.execCMD("SELECT COUNT(*) FROM chemical_description WHERE map_name='%s';"%(self.chem_map))
+        self.nbChemDescForMap = nb_chem_descDB[0][0]
+        self.DB.closeConnection()
 
     def prepOutput(self):
 

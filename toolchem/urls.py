@@ -26,6 +26,12 @@ urlpatterns = [
         name='compute_desc'
     ),
     url(
+        r'checkDesc',
+        views.checkAlreadyComputedDesc,
+        name='check_already_computed'
+    ),
+
+    url(
         r'computeOPERA',
         views.compute_opera,
         name='compute_opera'
@@ -60,6 +66,7 @@ urlpatterns = [
         r'^chemicals.csv',
         views.download, {"name": "chemicals"}, name="chemical",
     ),
+    
 
 ] + static(settings.STATIC_URL, document_root=settings.PROJECT_PATH)
 

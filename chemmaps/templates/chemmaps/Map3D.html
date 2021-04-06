@@ -116,7 +116,11 @@
             {% if map == "drugbank" %}
                 DrugMap
             {% elif map == "dsstox" %}
-                Center chemical: {{center_map}}
+                {% if center_map == None %}
+                    {{map.upper}}Map
+                {% else %}
+                    Center chemical: {{center_map}}
+                {% endif %}
             {% elif map == "Tox21Target" %}
                 {{target}} ({{nb_assays}} assay(s))
             {% else %}
@@ -204,7 +208,7 @@
                 // color for the map
                 if (map == "drugbank"){
                     var dcol = {"approved": 0x00ff00, "indev": 0xffffff, "withdraw": 0x663399, "add":0Xffffff};
-                    var dsize = {"approved": 20, "indev": 2.5, "withdraw": 10, "add": 7};
+                    var dsize = {"approved": 20, "indev": 2.5, "withdraw": 10, "add": 11};
                     var nbcol = 20;
                     var fact = 22;
                 

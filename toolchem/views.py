@@ -106,12 +106,24 @@ def upload_chem(request):
             nb_included = len(cOverlap.l_included)
             nb_noincluded = len(cOverlap.l_noincluded)
 
-            return render(request, 'toolchem/overlap.html', {"nb_included": nb_included, "nb_noincluded": nb_noincluded, "nb_topush":nb_topush, "map": map_chem})
+            return render(request, 'toolchem/overlap.html', {"nb_included": nb_included, "nb_noincluded": nb_noincluded, "nb_topush":nb_topush, "map": map_chem, "nbChemDescForMap": cOverlap.nbChemDescForMap})
 
 def compute_desc(request):
     prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
     cCompDesc = computeDesc.computeDesc(prsession)
     cCompDesc.runDesc()
+    
+    # count for index page
+    cCount = countChem.countChem()
+    dcount = cCount.indexCount()
+
+    formUpdate = updateForm()
+    return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "notice":cCompDesc.notice, "dcount":dcount, "error":cCompDesc.error})
+
+def checkAlreadyComputedDesc(request):
+    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+    cCompDesc = computeDesc.computeDesc(prsession)
+    cCompDesc.CheckDescriptorFromMainTable()
     
     # count for index page
     cCount = countChem.countChem()

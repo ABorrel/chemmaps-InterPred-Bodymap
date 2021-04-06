@@ -19,7 +19,7 @@ rel="stylesheet" type="text/css"/>
 
 <div id = "bg">
     <br>    
-    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Generate the {{map}}</h2>
+    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Generate the {{map.capitalize}}Map</h2>
     <p>Select up to 5 features you would like put on the map:</p>
 
     {% if Error == "1" %}
@@ -109,7 +109,7 @@ rel="stylesheet" type="text/css"/>
 
     <br>
     <br>
-    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Optional - Upload your list of chemicals (< 100 chemicals)</h2>
+    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Upload your list of chemicals (< 100 chemicals)</h2>
     {% if ErrorLine == "1"  %}
         <p class = "Errorform">Please upload < 100 chemicals</p>
     {% endif %}

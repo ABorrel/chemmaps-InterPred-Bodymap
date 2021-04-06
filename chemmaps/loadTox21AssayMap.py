@@ -87,6 +87,7 @@ class loadTox21AssayMap:
                         self.dmap["info"][DTXSID]["Best AC50 (µM)"] = "%.3f (/%s assay(s) positive)"%(d_assay[DTXSID]["AC50"], d_assay[DTXSID]["Active assays"])
                     self.dmap["info"][DTXSID]["Assay Outcome"] = "active"
                     self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "active"
+                    self.dmap["info"][DTXSID]["Most active assay"] = d_assay[DTXSID]["Most active assay"]
 
                 elif d_assay[DTXSID]["Assay Outcome"] == "inactive":
                     self.dmap["info"][DTXSID]["Best AC50 (µM)"] = "0.0"

@@ -8,7 +8,7 @@ Development in python3.6 with
 - Django
 - RDKit (> 3.1): http://rdkit.org/docs/index.html
 - molVS (> 1): https://molvs.readthedocs.io/en/latest/index.html
-- Open Babel 3.0.0 (March 2020): (http://openbabel.org/wiki/Main_Page) (sudo apt install openbabel) 
+- Open Babel > 3.0.0 (March 2020): (http://openbabel.org/wiki/Main_Page) (sudo apt install openbabel) or https://open-babel.readthedocs.io/en/latest/Installation/install.html#compiling-open-babel 
 (additional some function will not work in case of no install)
 - OPERA2.3_CL (https://github.com/kmansouri/OPERA/releases), fix the minor error in the install folder add a "/" at the path beginning
 - OPERA will install PADEL in the same folder
@@ -22,11 +22,11 @@ Current download => 866794 chemicals => limited to 500,000 structures
 # TO DO
 ## URGENT
 - fix static file and check with docker version
-- fix duplicate code for DB interaction 
+- ~~fix duplicate code for DB interaction~~
 - ~~Add QC data in bodymap~~
-- Integrate tox21 assays results in chemmaps
-- connection / close DB change in all of the project!!!
-- Error in the name map for user page
+- ~~Integrate tox21 assays results in chemmaps~~
+- ~~connection / close DB change in all of the project!!!~~
+- ~~Error in the name map for user page~~
 - check adding in DB for descriptor user computation
 - add new descriptor from OPERA 2.6 in the opera desc list
 - load only once OPERA model
@@ -161,3 +161,5 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - 26-03-20: fix error bodymap and chemmaps as well as added option in bodymap for interactive network
 - 21-04-20: Fix error in case of O division in gene expression
 - 21-04-20: Fix spealing errors and add ratio assays tested
+- 09-20: add ILS ICE data
+- 12-20: update bodymap with the assays results from ICE and QC 

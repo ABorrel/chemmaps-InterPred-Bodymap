@@ -44,7 +44,7 @@ rel="stylesheet" type="text/css"/>
 <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div>
 <div id = "bg">
     <br>
-    <h1>Descriptor computation</h1>
+    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page">Descriptor computation</h2>
     <br>
 
     {% if ErrorDesc == "1" %}
@@ -152,7 +152,7 @@ rel="stylesheet" type="text/css"/>
 
     {% if ErrorDesc != "1" %}
 
-    <h1>Generate the {{map}}</h1>
+    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page">Generate the {{map.capitalize}}Map</h2>
     <p>Select up to 5 features you would like put on the map</p>
 
     {% if Error == "1" %}
@@ -230,7 +230,7 @@ rel="stylesheet" type="text/css"/>
     </form>
     {% endif %}
     {% endif %}
+    <br>
 </div>
-<br>
 {% endblock content %}
 

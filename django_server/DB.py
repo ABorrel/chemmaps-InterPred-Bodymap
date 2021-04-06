@@ -172,6 +172,7 @@ class DB:
                 if self.verbose == 1: print(out)
             except (Exception, psycopg2.DatabaseError) as error:
                 #self.connClose()
+                stopDB175
                 print("Error", error)
                 return "Error"
         else:
@@ -191,7 +192,8 @@ class DB:
                 #out = cur.fetchall()
                 #if self.verbose == 1: print(out)
             except (Exception, psycopg2.DatabaseError) as error:
-                self.connClose()
+                #self.connClose()
+                stopDB195
                 print(error)
                 return "Error"
         else:

@@ -356,7 +356,8 @@ def computeDescriptor(request, map):
 
         return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
                                                            "dSMILESClass": dSMILESClass, "ldesc": ldesc,
-                                                            "map": map, "mapJS": mapJS, "prSessionJS":prSessionJS})
+                                                            "map": map, "mapJS": mapJS, "prSessionJS":prSessionJS,
+                                                            "assay":""})
 
     else:
         return render(request, 'chemmaps/descriptor.html', {"map": map, "dSMILESIN":cinput.dclean["IN"],

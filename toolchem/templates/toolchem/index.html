@@ -50,7 +50,7 @@
     <div style="margin-right: 80%">{{formUpdate.form_map}}</div>
     <br>
     <input type='submit' value='Check overlap' name='overlap'> *overlap is computed based on the DSSToxID, if you want
-    to update other field resubmit the chemcial
+    to update other field resubmit the chemical
     <br><br>
     <input type='submit' value='Upload new chemicals' name='upload_chem'>
 </form>
@@ -59,6 +59,12 @@
 <br>
 <h3>Computation on the server</h3>
 <br>
+Check if molecular descriptors are already computed in the main descriptor table in the database.
+<form action='/toolchem/checkDesc' method='post'>{% csrf_token %}
+    <input type='submit' value='Check molecular descriptors already computed'>
+</form>
+<br><br>
+
 Chemicals ready for descriptor computation: <b>{{dcount.nb_update_desc}}</b>
 <form action='/toolchem/computeDesc' method='post'>{% csrf_token %}
     <input type='submit' value='Compute molecular descriptors'>
@@ -71,7 +77,7 @@ Chemicals ready for OPERA modeling computation: <b>{{dcount.nb_update_OPERA}}</b
 </form>
 <br><br>
 
-Chemicals ready for interferences computation (descriptor and OPERA prediction must be computed before):
+Chemicals ready for interferences computation (descriptors and OPERA predictions must be computed before):
 <b>{{dcount.nb_update_interpred}}</b>
 <form action='/toolchem/computeInterPred' method='post'>{% csrf_token %}
     <input type='submit' value='Compute InterPred predictions'>
