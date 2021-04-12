@@ -36,12 +36,11 @@ class Predict:
         while i < imax:
             inch = dchem2D[lchem[i]]["inchikey"]
             lpred = self.cDB.extractColoumn("chemical_description", "interference_prediction", "WHERE inchikey='%s' limit(1)"%(inch))
+            
+
             if type(lpred) != list or lpred == []:
                  lpred = self.cDB.extractColoumn("chemical_description_user", "interference_prediction", "WHERE inchikey='%s' limit(1)"%(inch))
             
-
-            #print(lpred)
-
             if type(lpred) == list and lpred != []: 
                 #lpred = self.cDB.extractColoumn("interference_chemicals", "interference_prediction", "WHERE inchikey='%s'"%(inch))
                 lpred = lpred[0]
@@ -104,8 +103,7 @@ class Predict:
                         remove(self.prSession + "temp.txt")
         self.resultPred = dout
         self.dpred = dresult
-
-
+        self.pdes2D = pfnew2D
 
     def predictRmodel(self, pmodel, pdesc2D, pOPERA, pout):
 
@@ -113,9 +111,7 @@ class Predict:
         cmd = "%s %s %s %s %s" % (pRpredict, pdesc2D, pOPERA, pmodel, pout)
         #print(cmd)
         system(cmd)
-
-
-    
+   
     def processResult(self):
 
         # pred result from DB
@@ -174,8 +170,7 @@ class Predict:
                 
                 # choose the table
                 out = self.cDB.execCMD("select count(*) from chemical_description where inchikey='%s'"%(d2D[chem]["inchikey"]))
-                out = [0][0]
-                if out != 0:
+                if out == [(1,)]:
                     cmdSQL = "UPDATE chemical_description SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
                 else:
                     if self.noDB == True:
@@ -184,17 +179,26 @@ class Predict:
                         cmdSQL = "UPDATE chemical_description_user SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
                 self.cDB.updateElement(cmdSQL)
                 
-
-
         fpred = open(pprect, "w")
-        fpred.write("ID\tSMILES\t%s\n"%("\t".join(["M-" + str(formatModelName(i)) + "\tSD-" + str(formatModelName(i)) for i in self.lmodels])))
+        fpred.write("ID\tSMILES\t%s\tinTox21\n"%("\t".join(["M-" + str(formatModelName(i)) + "\tSD-" + str(formatModelName(i)) for i in self.lmodels])))
         for chem in self.dpred.keys():
-            fpred.write("%s\t%s\t%s\n"%(chem, self.dpred[chem]["SMILES"], "\t".join([str(self.dpred[chem][i]["M"]) + "\t" +
+
+            # check if chemical is inside the tox21 chemical library
+            cmd_sql = "SELECT COUNT(*) from chemical_description where map_name = 'tox21' and inchikey = '%s'"
+            count = int(self.cDB.execCMD(cmd_sql)[0][0])
+            if count > 0:
+                self.dpred[chem]["inTox21"] = 1
+            else:
+                self.dpred[chem]["inTox21"] = 0 
+
+
+            fpred.write("%s\t%s\t%s\t%s\n"%(chem, self.dpred[chem]["SMILES"], "\t".join([str(self.dpred[chem][i]["M"]) + "\t" +
                                                      str(self.dpred[chem][i]["SD"])
-                                                     for i in self.lmodels])))
+                                                     for i in self.lmodels]), self.dpred[chem]["inTox21"]))
             
             lmodel = list(self.dpred[chem].keys())
             lmodel.remove("SMILES")
+            lmodel.remove("inTox21")
             for model in lmodel:
                 if model in self.lmodels:
                     self.dpred[chem][formatModelName(model)] = {}
@@ -202,4 +206,4 @@ class Predict:
                     self.dpred[chem][formatModelName(model)]["SD"] = float(self.dpred[chem][model]["SD"])
                 del self.dpred[chem][model]
         fpred.close()
-        return self.dpred
+        self.dpred

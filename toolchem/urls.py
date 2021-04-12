@@ -57,6 +57,11 @@ urlpatterns = [
         name='upload_assayfile'
     ),
     url(
+        r'^pushUpdate',
+        views.pushUpdate, 
+        name="pushUpdate",
+    ),
+    url(
         r'^push',
         views.push, 
         name="push",

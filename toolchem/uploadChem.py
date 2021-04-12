@@ -94,7 +94,7 @@ class uploadChem:
                     l_val_desc.append("('%s','%s','%s','update')"%(chem, self.d_chem[chem]["inchikey"], self.map))
                 else:
                     l_val_desc.append("('%s','%s','%s','error')"%(chem, self.d_chem[chem]["inchikey"], self.map))
-            self.cDB.closeConnection()
+            
 
             # push in DB
             if l_val != []:
@@ -104,6 +104,8 @@ class uploadChem:
             if l_val_desc != []:
                 cmdSQL_desc = "%s%s"%(cmdSQL_desc, ",".join(l_val_desc))
                 self.cDB.DB.addElementCMD(cmdSQL_desc)
+
+            self.cDB.closeConnection()
             
             
         

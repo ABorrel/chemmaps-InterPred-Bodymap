@@ -11,7 +11,6 @@ from .predictInterference import Predict
 
 
 
-
 def index(request):
     if not "name_session" in request.session.keys():
         a = randint(0, 1000000)
@@ -21,14 +20,9 @@ def index(request):
     return render(request, 'interferences/index.html', {
     })
 
-
-
 def help(request):
     return render(request, 'interferences/help.html', {
     })
-
-
-
 
 def uploadSMILES(request):
 
@@ -101,9 +95,6 @@ def uploadSMILES(request):
     return render(request, 'interferences/uploadSMILES.html', {"form_smiles":form_smiles,
                                                            "from_upload": formUpload, "ErrorLine": "0"})
 
-
-
-
 def computeDesc(request):
 
     name_session = request.session.get("name_session")
@@ -138,9 +129,9 @@ def computeDesc(request):
 
         cPred = Predict(ldescMap, inDB, prsession)
         cPred.predictAll()
-        dpred = cPred.processResult()
+        cPred.processResult()
         #print(dpred)
-        dpredJS = json.dumps(dpred)
+        dpredJS = json.dumps(cPred.dpred)
 
         return render(request, 'interferences/results.html', {"dpred":dpredJS})
 
@@ -149,8 +140,6 @@ def computeDesc(request):
                                                                  "dSMILESOUT": cinput.dclean["OUT"],
                                                                  "ddesc": cinput.ddesc,
                                                                  "form_model": formModel, "Error": "1"})
-
-
 
 def download(request, name):
 

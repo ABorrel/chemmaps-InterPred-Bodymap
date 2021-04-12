@@ -14,6 +14,7 @@ from . import computeInterPred
 from . import chemOverlap
 from . import countChem
 from . import updateFromFiles
+from . import pushAllUpdate
 from .forms import updateForm 
 from django_server import toolbox
 
@@ -134,7 +135,8 @@ def checkAlreadyComputedDesc(request):
     return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "notice":cCompDesc.notice, "dcount":dcount, "error":cCompDesc.error})
 
 def compute_opera(request):
-    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/OPERA/", clean=1)
+
     cCompOPERA = computeOPERA.computeOPERA(prsession)
     cCompOPERA.runOPERA()
 
@@ -271,3 +273,15 @@ def clearuserchem(request):
     cDBrequest.closeConnection()
 
     return render(request, 'toolchem/push.html', {"d_chem_json":d_DB, "notice":["User enties removed"]})
+
+def pushUpdate(request):
+
+    pr_session = path.abspath("./temp") + "/update/"
+    cpush = pushAllUpdate.pushAllUpdate(pr_session)
+    cpush.pushAll()
+
+    # form update
+    formUpdate = updateForm()
+    cCount = countChem.countChem()
+    dcount = cCount.indexCount()
+    return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "dcount":dcount, "error":cpush.error, "notice":cpush.notice})

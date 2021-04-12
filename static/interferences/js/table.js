@@ -24,7 +24,7 @@ function defineColumnDef(din) {
     ];
     for (var chem in din) {
         for (var model in din[chem]) {
-            if (model != 'SMILES') {
+            if (model != 'SMILES' && model != 'inTox21') {
                 columnDefs.push({
                     headerName: model,
                     children: [
@@ -63,6 +63,22 @@ function defineColumnDef(din) {
         }
         break;
     }
+
+    columnDefs.push({
+        headerName: 'Tox21 library',
+        children: [
+            {
+                headerName: 'Included',
+                field: 'Included',
+                width: 110,
+                sortable: true,
+                filter: true,
+                resizable: true,
+                valueParser: numberParser,
+            },
+        ]
+    });
+
     return columnDefs;
 }
 function numberParser(params) {
@@ -98,7 +114,7 @@ function defineRawData(din) {
         var add = { id: chem };
         add['smiles'] = din[chem]['SMILES'];
         for (var model in din[chem]) {
-            if (model != 'SMILES') {
+            if (model != 'SMILES' && model != 'inTox21') {
                 //console.log(model);
                 //console.log(din[chem][model]['M']);
                 //console.log(model);
@@ -106,6 +122,7 @@ function defineRawData(din) {
                 add['SD-' + model] = din[chem][model]['SD'];
             }
         }
+        add['Included'] = din[chem]['inTox21'];
         rowData.push(add);
     }
     return rowData;

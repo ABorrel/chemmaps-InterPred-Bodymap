@@ -29,13 +29,16 @@ class computeOPERA:
             smiles = chem[0]
             cChem = CompDesc.CompDesc(smiles, self.pr_session)
             cChem.prepChem()
-            
-            # descriptor OPERA
-            cChem.computeOPERAFromChem()
+            if cChem.err == 0:
+                # descriptor OPERA
+                cChem.computePADEL2DFPandCDK()
+                cChem.computeOperaDesc()
+
+
             if cChem.err == 1:
                 # change status to error
                 cmd_update = "UPDATE chemical_description_user SET status = 'error' WHERE source_id = '%s'"%(smiles)
-                self.cDB.runCMD(cmd_update)
+                self.cDB.DB.updateElement(cmd_update)
                 self.error.append("%s: error OPERA computation"%(smiles))
 
             else:

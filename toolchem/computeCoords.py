@@ -92,12 +92,12 @@ class computeCoords:
         for inch in l_inch_users:
             cmd = "UPDATE chemical_description_user SET dim1d2d = '{%s}', dim3d = '{%s}', d3_cube='{%s, %s, %s}'  WHERE inchikey='%s' AND map_name = '%s';" %(",".join([str(d_coords1D2D[inch]["DIM%i"%(i)]) for i in range(1,11)]), ",".join([str(d_coords3D[inch]["DIM3-%i"%(i)]) for i in range(1,11)]), d_coords1D2D[inch]["DIM1"],d_coords1D2D[inch]["DIM2"], d_coords3D[inch]["DIM3-1"], inch, self.map_name)
             self.cDBresquest.DB.updateElement(cmd)
-        self.cDBresquest.closeConnection()
+        
 
         # create entry in user with coords to update DB
         for inch in l_inch_db:
             cmd = "INSERT INTO chemical_description_user(inchikey, dim1d2d, dim3d, d3_cube, map_name, status) VALUES('%s', '{%s}', '{%s}', '{%s, %s, %s}', '%s', 'coords') ;" %(inch, ",".join([str(d_coords1D2D[inch]["DIM%i"%(i)]) for i in range(1,11)]), ",".join([str(d_coords3D[inch]["DIM3-%i"%(i)]) for i in range(1,11)]), d_coords1D2D[inch]["DIM1"],d_coords1D2D[inch]["DIM2"], d_coords3D[inch]["DIM3-1"], self.map_name)
             self.cDBresquest.DB.addElementCMD(cmd)
 
-        
+        self.cDBresquest.closeConnection()
         self.notice.append("New coordinated have been computed")

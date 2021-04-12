@@ -61,7 +61,6 @@ class formatSMILES:
                 # inspect the DB with SMILES from users
                 if smiles_clean == [] or smiles_clean == "ERROR":
                     if not search(",", chem_input) and not search("'", chem_input) and not search("`", chem_input):
-                        print(chem_input)
                         # search in chemical DB and chemical_user
                         smiles_clean = self.cDB.extractColoumn("chemicals", "smiles_clean, inchikey", "WHERE smiles_origin = '%s' or smiles_clean = '%s'" %(chem_input, chem_input))
 
@@ -76,7 +75,7 @@ class formatSMILES:
                         smiles_clean = chemical.smi
                         inch = chemical.generateInchiKey()
                         # add in the DB
-                        self.cDB.addElement("chemicals_user", ["smiles_origin", "smiles_clean", "inchikey"], [chem_input, smiles_clean, inch])
+                        self.cDB.addElement("chemicals_user", ["smiles_origin", "smiles_clean", "inchikey", "status"], [chem_input, smiles_clean, inch, "user"])
                 else:
                     inch = smiles_clean[0][1]
                     smiles_clean = smiles_clean[0][0]
@@ -138,70 +137,80 @@ class formatSMILES:
             if SMICLEAN == "0":
                 dout[k]["Descriptor"] = "Error"
                 dout[k]["desc"] = "checkNo.png"
+                continue
             else:
                 inch = self.input[str(k)]["INCH"]
                 chemical = CompDesc.CompDesc(SMICLEAN, self.prout)
                 chemical.prepChem()
+                chemical.generateInchiKey()
                 if chemical.err == 1:
                     dout[k]["Descriptor"] = "Error"
                     dout[k]["desc"] = "checkNo.png"
                     continue
-                chemical.generateInchiKey()
-
+                
                 # check if chemical is in DB for 1D2D
                 lval1D2D_OPERA = downloadDescFromDB(self.cDB, ldesc1D2D, ldescOPERA, inch)
                 
-                # check in the user chemical list
+                # case of error in computation
                 if lval1D2D_OPERA == []:
-                    chemical = CompDesc.CompDesc(SMICLEAN, self.prout)
-                    chemical.prepChem()
-                    chemical.generateInchiKey()
+                    dout[k]["desc"] = "checkNo.png"
+                    dout[k]["Descriptor"] = "Error"
+                    continue
+                
+                # case already computed
+                elif lval1D2D_OPERA != [] and lval1D2D_OPERA != 0:
+                    d_1D2D = lval1D2D_OPERA[0]
+                    dopera = lval1D2D_OPERA[1]
+
+                    valDesc1D2D = [d_1D2D[desc1D2D] for desc1D2D in ldesc1D2D]
+                    valDesc1D2D = ['-9999' if desc == "NA" else desc for desc in valDesc1D2D]
+
+                    valDescOPERA = [dopera[descOPERA] if descOPERA in list(dopera.keys()) else "NA"  for descOPERA in ldescOPERA]
+                    valDescOPERA = ['-9999' if desc == "NA" or desc == "NaN" else desc for desc in valDescOPERA]
+                    lval1D2D_OPERA = [valDesc1D2D, valDescOPERA]
+                
+                # compute 2D/opera descriptors
+                elif lval1D2D_OPERA == 0:
                     chemical.computeAll2D()
-
-                    try:chemical.computeOPERAFromChem()
-                    except: 
-                        dout[k]["Descriptor"] = "Error"
-                        dout[k]["desc"] = "checkNo.png"
-                        continue
-
                     if chemical.err == 1:
-                        dout[k]["desc"] = "checkNo.png"
                         dout[k]["Descriptor"] = "Error"
-                        continue
+                        dout[k]["desc"] = "checkNo.png"
+                        self.cDB.addElement("chemical_description_user", ["inchikey", "source_id", "status"], [inch, SMICLEAN, "error"])
+                        lval1D2D_OPERA = []
                     else:
-                        dopera = loadMatrixToDict(chemical.pOPERA, sep = ',')
-                        dopera = dopera[list(dopera.keys())[0]]
-                        lval1D2D_OPERA = [chemical.all2D, dopera]
-
                         #2D descriptor
                         valDesc1D2D = [chemical.all2D[desc1D2D] for desc1D2D in ldesc1D2D]
                         valDesc1D2D = ['-9999' if desc == "NA" else desc for desc in valDesc1D2D]
                         w1D2D = "{" + ",".join(["\"%s\"" % (desc) for desc in valDesc1D2D]) + "}"
 
-                        # opera
-                        #print(ldescOPERA)
-                        #print(dopera)
-                        valDescOPERA = [dopera[descOPERA] if descOPERA in list(dopera.keys()) else "NA"  for descOPERA in ldescOPERA]
-                        valDescOPERA = ['-9999' if desc == "NA" or desc == "NaN" else desc for desc in valDescOPERA]
-                        wOPERA = "{" + ",".join(["\"%s\"" % (desc) for desc in valDescOPERA]) + "}"
-                        # add to DB
-                        # find if it is on DB
-                        out = self.cDB.execCMD("select count(*) from chemical_description where inchikey='%s'"%(inch))
-                        out = [0][0]
+                        # compute OPERA
+                        chemical.computePADEL2DFPandCDK()
+                        chemical.computeOperaDesc()
 
-                        # add everything in user
-                        if out == 0:
-                            self.cDB.addElement("chemical_description_user", ["desc_opera", "desc_1d2d", "inchikey", "source_id"], [wOPERA, w1D2D, inch, SMICLEAN])
+                        if chemical.err == 1:
+                            dout[k]["desc"] = "checkNo.png"
+                            dout[k]["Descriptor"] = "Error"
+                            self.cDB.addElement("chemical_description_user", ["desc_1d2d", "inchikey", "source_id", "status"], [w1D2D, inch, SMICLEAN, "error"])
+                            lval1D2D_OPERA = []
                         else:
-                            self.cDB.updateElement("UPDATE chemical_description SET desc_opera = '%s' WHERE inchikey='%s';"%(wOPERA, inch))
-                            self.cDB.updateElement("UPDATE chemical_description SET desc_1d2d = '%s' WHERE inchikey='%s';"%(w1D2D, inch))
+                            dopera = loadMatrixToDict(chemical.pOPERA, sep = ',')
+                            dopera = dopera[list(dopera.keys())[0]]
 
+                            # opera
+                            valDescOPERA = [dopera[descOPERA] if descOPERA in list(dopera.keys()) else "NA"  for descOPERA in ldescOPERA]
+                            valDescOPERA = ['-9999' if desc == "NA" or desc == "NaN" else desc for desc in valDescOPERA]
+                            wOPERA = "{" + ",".join(["\"%s\"" % (desc) for desc in valDescOPERA]) + "}"
+                            
+                            # add everything in user
+                            self.cDB.addElement("chemical_description_user", ["desc_opera", "desc_1d2d", "inchikey", "source_id", "status"], [wOPERA, w1D2D, inch, SMICLEAN, "user"])
+                            lval1D2D_OPERA = [valDesc1D2D, valDescOPERA]
+                
                 
                 if lval1D2D_OPERA != []:
                     dout[k]["Descriptor"] = "OK"
                     dout[k]["desc"] = "checkOK.png"
-                    filout2D.write("%i\t%s\t%s\t%s\n"%(k, SMICLEAN, inch, "\t".join([str(lval1D2D_OPERA[0][d]) for d in ldesc1D2D])))
-                    filoutOPERA.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(lval1D2D_OPERA[1][d]) if d in list(lval1D2D_OPERA[1].keys()) else "-9999" for d in ldescOPERA])))
+                    filout2D.write("%i\t%s\t%s\t%s\n"%(k, SMICLEAN, inch, "\t".join([str(d) for d in lval1D2D_OPERA[0]])))
+                    filoutOPERA.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(d) for d in lval1D2D_OPERA[1]])))
                 
         filout2D.close()
         filoutOPERA.close()
@@ -225,15 +234,24 @@ class formatSMILES:
 def downloadDescFromDB(cDB, ldesc1D2D, ldescOPERA, inchikey):
 
     cDB.verbose = 0
-    lval1D2D = cDB.extractColoumn("chemical_description", "desc_1d2d","where inchikey='%s' limit(1)"%(inchikey))
-    lvalOPERA = cDB.extractColoumn("chemical_description", "desc_opera", "where inchikey='%s' limit(1)"%(inchikey))
 
-    if lval1D2D == "ERROR" or lval1D2D == [] or lvalOPERA == "ERROR" or lvalOPERA == []:
-        lval1D2D = cDB.extractColoumn("chemical_description_user", "desc_1d2d","where inchikey='%s' limit(1)"%(inchikey))
-        lvalOPERA = cDB.extractColoumn("chemical_description_user", "desc_opera", "where inchikey='%s' limit(1)"%(inchikey))
+    # check if included in DB
+    nb_mainDB = cDB.execCMD("SELECT COUNT(*) FROM chemical_description WHERE inchikey='%s'"%(inchikey))[0][0]
+    if nb_mainDB > 0:
+        lval1D2D = cDB.extractColoumn("chemical_description", "desc_1d2d","where inchikey='%s' limit(1)"%(inchikey))
+        lvalOPERA = cDB.extractColoumn("chemical_description", "desc_opera", "where inchikey='%s' limit(1)"%(inchikey))
+    
+    else:
+        nb_userDB = cDB.execCMD("SELECT COUNT(*) FROM chemical_description_user WHERE inchikey='%s' AND status != 'update'"%(inchikey))[0][0]
+        if nb_userDB > 0:
+            lval1D2D = cDB.extractColoumn("chemical_description_user", "desc_1d2d","where inchikey='%s' and status != 'update' limit(1)"%(inchikey))
+            lvalOPERA = cDB.extractColoumn("chemical_description_user", "desc_opera", "where inchikey='%s' and status != 'update' limit(1)"%(inchikey))
+        
+        else:
+            return 0
 
-        if lval1D2D == "ERROR" or lval1D2D == [] or lvalOPERA == "ERROR" or lvalOPERA == [] or lvalOPERA == [(None)]:
-            return []
+    if lval1D2D == "ERROR" or lval1D2D == [] or lvalOPERA == "ERROR" or lvalOPERA == [] or lvalOPERA == [(None)]:
+        return []
         
     lval1D2D = lval1D2D[0][0]
     lvalOPERA = lvalOPERA[0][0]

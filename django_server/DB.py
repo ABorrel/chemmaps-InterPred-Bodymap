@@ -56,17 +56,17 @@ class DB:
 
 
     def addElementCMD(self, sqlCMD):
-        self.connOpen()
+        #self.connOpen()
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
                 cur = self.conn.cursor()
                 cur.execute(sqlCMD)
                 self.conn.commit()
-                self.connClose()
+                #self.connClose()
             except (Exception, psycopg2.DatabaseError) as error:
                 print(error)
-                self.connClose()
+                #self.connClose()
         else:
             print("Open connection first")
 
