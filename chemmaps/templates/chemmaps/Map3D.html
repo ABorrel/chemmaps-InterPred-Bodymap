@@ -32,7 +32,7 @@
         <div id="pngcompound">
             <canvas id="Compoundpng2"></canvas>
         </div>
-
+        <text id="nbchem"></text> chemicals
         <div id="infotext">
             Compound ID: <a id="CompoundID" target="_blank"></a><br>
             {% if map == "drugbank" %}
@@ -154,6 +154,7 @@
 
     <script>
 
+
                 //for the function generalisation
                 var map = {{mapJS | safe}};
                 var prSession = {{prSessionJS | safe}};
@@ -197,13 +198,16 @@
                 
                 // info for compound bar
                 var dinfo = {{dinfo | safe}};
-                console.log(dinfo);
+                //console.log(dinfo);
 
                 // neighbors
                 var dneighbors = {{dneighbor | safe}};
                 
                 //load SMILES and class
                 var dSMILESClass = {{dSMILESClass | safe}};
+
+                //nb chemical
+                nbchem.innerHTML = Object.keys(dinfo).length;
 
                 // color for the map
                 if (map == "drugbank"){
@@ -225,11 +229,11 @@
                     var dsize = {"classified": 20, "noclassified": 2.5, "add": 7};
                     var nbcol = 50;
                     if (map == "pfas"){
-                        var fact = 15;
+                        var fact = 20;
                     } else if (map == "tox21" || map == "Tox21Assay" || map == "Tox21Target"){
                         var fact = 25;
                     }else{
-                        var fact = 50;
+                        var fact = 70;
                     }
                     ;
                     

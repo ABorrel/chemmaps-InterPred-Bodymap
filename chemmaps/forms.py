@@ -68,7 +68,7 @@ class descDSSToxMapChoice(forms.Form):
 
 
         desc = forms.MultipleChoiceField(choices=CHOICESDESC, widget=forms.CheckboxSelectMultiple(attrs={
-            "class": "column-checkbox"}), initial=["LD50_mgkg", "CATMoS_VT_pred", "EPA_category", "MolWeight",
+            "class": "column-checkbox"}), initial=["nbLipinskiFailures", "CoMPARA_Bind_pred", "CERAPP_Bind_pred", "MolWeight",
                                                    "LogP_pred"], required=True)
 
         chem = forms.CharField(label="", error_messages={'required': ''}, required=True)
@@ -103,7 +103,7 @@ class descDSSToxChoice(forms.Form):
 
 
     desc = forms.MultipleChoiceField(choices=CHOICESDESC, widget=forms.CheckboxSelectMultiple(attrs={
-        "class": "column-checkbox"}), initial=["LD50_mgkg", "CATMoS_VT_pred", "EPA_category", "MolWeight",
+        "class": "column-checkbox"}), initial=["nbLipinskiFailures", "CoMPARA_Bind_pred", "CERAPP_Bind_pred", "MolWeight",
                                                "LogP_pred"], required=True)
 
 

@@ -30,6 +30,8 @@ Release version 3 - Scheduled April 2021
 - Change map backgrounds and add name on map
 - Add ntp logo in the map
 - Increase chemicals size in the map
+- Change default map descriptors
+------------------- Add number of chemicals on the map
 
 
 ## Update in Tox21BodyMap

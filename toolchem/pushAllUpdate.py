@@ -1,6 +1,6 @@
 from . import DBrequest
 from django_server import toolbox
-from os import path, rename
+from os import path, rename, rmdir
 from datetime import date
 from shutil import copy2
 
@@ -20,12 +20,11 @@ class pushAllUpdate:
 
     def pushAll(self):
 
-        #self.pushChemicalUsers()
-        #self.pushChemicalDescription()
+        self.pushChemicalUsers()
+        self.pushChemicalDescription()
         self.recomputeNeighbors()
-        #self.pushNewStaticsAndCleanTable()
-
-    
+        self.pushNewStaticsAndCleanTable()
+        self.cleanTables()
 
     def pushChemicalUsers(self):
         """Push in production table with chemicals and chemicals clean"""
@@ -74,6 +73,7 @@ class pushAllUpdate:
                 
             cmd_sql = "UPDATE chemicals SET %s WHERE dsstox_id='%s'"%(",".join(l_cmd_update), chem)
             self.cDB.DB.updateElement(cmd_sql)
+
         self.cDB.closeConnection()
 
     def pushChemicalDescription(self):
@@ -181,6 +181,8 @@ class pushAllUpdate:
         l_map_full_coords = self.cDB.runCMD(cmd_map)
         if l_map_full_coords != []:
             l_map_to_update = [str(map[0]) for map in l_map_full_coords]
+        else:
+            return 
 
         
         for map_to_update in l_map_to_update:
@@ -213,33 +215,35 @@ class pushAllUpdate:
                 copy2(p_cp1D2D_updated, pr_static + "CP1D2D.csv")
                 copy2(p_cp3D_updated, pr_static + "CP3D.csv")
 
-                self.notice.append("%s CP and scaling file have been updates")
+                self.notice.append("%s CP and scaling files have been updates"%(map_to_update))
 
         self.cDB.closeConnection()
-
-
-
 
     def cleanTables(self):
 
         self.cDB.openConnection()
 
         # clean table chemicals
-        nb_to_remove = self.cDB.runCMD("SELECT COUNT(*) FROM chemical_user WHERE status != 'user'")[0]
-        print(nb_to_remove)
-        cmd_clean_chemical_user = "DELETE FROM chemical_user WHERE status != 'user'"
-        self.notice.append("%s have been updated in the chemicals table"%s(nb_to_remove))
+        nb_to_remove = self.cDB.runCMD("SELECT COUNT(*) FROM chemicals_user WHERE status != 'user'")[0][0]
+        cmd_clean_chemical_user = "DELETE FROM chemicals_user WHERE status != 'user'"
+        self.cDB.DB.updateElement(cmd_clean_chemical_user)
+        self.notice.append("%s have been updated in the chemicals table"%(nb_to_remove))
 
 
         # clean table description
-        nb_to_remove_description = self.cDB.runCMD("SELECT COUNT(*) FROM chemical_description_user WHERE status != 'user'")[0]
-        print(nb_to_remove_description)
+        nb_to_remove_description = self.cDB.runCMD("SELECT COUNT(*) FROM chemical_description_user WHERE status != 'user'")[0][0]
         cmd_clean_chemical_description_user = "DELETE FROM chemical_description_user WHERE status != 'user'"
-        self.notice.append("%s have been updated in the chemical_description table"%s(nb_to_remove_description))
+        self.cDB.DB.updateElement(cmd_clean_chemical_description_user)
+        self.notice.append("%s have been updated in the chemical_description table"%(nb_to_remove_description))
 
+        self.cDB.closeConnection()
 
+        # remove all update file
+        if path.exists(self.prsession):
+            toolbox.cleanFolder(self.prsession, txt=0)
+            rmdir(self.prsession)
+        self.notice.append("Update temporary files have been cleaned")
 
-        toolbox.cleanFolder(self.prsession)
-        self.notice.append("Update temporary file have been cleaned")
+        
 
 
