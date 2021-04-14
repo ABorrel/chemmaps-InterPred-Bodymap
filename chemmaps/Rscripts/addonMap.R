@@ -1,7 +1,6 @@
 #!/usr/bin/env Rscript
 
 
-
 scaling = function(din, dscaling){
   
   ldesc = intersect(colnames(dscaling), colnames(din))
@@ -91,18 +90,31 @@ d3DCP = read.csv(p3DCP, sep = ",", row.names = 1)
 ################
 d1D2Dscale = scaling(d1D2D, d1D2Dscale)
 d3Dscale = scaling(d3D, d3Dscale)
-
 ldesc1D2D = intersect(colnames(d1D2Dscale), colnames(d1D2DCP))
-d1D2Dscale = d1D2Dscale[,ldesc1D2D]
+
+if (dim(d1D2Dscale)[1] == 1){
+  d1D2Dscale_new = data.frame(lapply(d1D2Dscale[,ldesc1D2D], function(x) t(data.frame(x))))
+  rownames(d1D2Dscale_new) = rownames(d1D2Dscale)
+  d1D2Dscale = d1D2Dscale_new
+}else{
+  d1D2Dscale = d1D2Dscale[,ldesc1D2D]
+}
+
 d1D2DCP = d1D2DCP[,ldesc1D2D]
 
 ldesc3D = intersect(colnames(d3Dscale), colnames(d3DCP))
-d3Dscale = d3Dscale[,ldesc3D]
+if (dim(d3Dscale)[1] == 1){
+  d3Dscale_new = data.frame(lapply(d3Dscale[,ldesc3D], function(x) t(data.frame(x))))
+  rownames(d3Dscale_new) = rownames(d3Dscale)
+  d3Dscale = d3Dscale_new
+}else{
+  d3Dscale = d3Dscale[,ldesc3D]
+}
+
 d3DCP = d3DCP[,ldesc3D]
 
 # step2 coord #
 ###############
-
 dcoords1D2D = computeCoord(d1D2Dscale, d1D2DCP, col3D = 0)
 write.csv(dcoords1D2D, paste(prout, "coord1D2D.csv", sep = ""))
 

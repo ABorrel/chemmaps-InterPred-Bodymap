@@ -11,6 +11,7 @@ from re import search
 from CompDesc import CompDesc
 
 class DSSToxPrep:
+
     def __init__(self, input, ldesc, prout):
 
         self.input = input
@@ -21,17 +22,18 @@ class DSSToxPrep:
         self.cDB = DBrequest()
         self.cDB.verbose = 0
 
-        lprop = self.cDB.extractColoumn("chem_prop_dsstox_name", "name")
+        lprop = self.cDB.extractColoumn("chem_descriptor_opera_name_new", "name")
         self.lallProp = [prop [0] for prop in lprop]
 
-
+        lprop = self.cDB.extractColoumn("chem_toxexp_name", "name")
+        self.lPropTox = [prop [0] for prop in lprop]
 
     def loadChemMapCenterChem(self, center_chem, center, nbChem):
 
+        #center = 0
         #a = self.input # for control
         # control input type
         if not type(center_chem) == str:
-            #print("Check input type")
             self.err = 1
             return
 
@@ -39,32 +41,56 @@ class DSSToxPrep:
         # case of DTXID
         if search("DTXSID", center_chem):
             # check if include in the DB
-            cmd_search = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1] from mvwchemmap_mapdsstox\
-                where dsstox_id = '%s'" %(center_chem)
+            cmd_search = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1] FROM mvwchemmap_mapdsstox\
+                WHERE dsstox_id = '%s'" %(center_chem)
             
             chem_center = self.cDB.execCMD(cmd_search)
             if chem_center == []:
                 self.err = 1
                 return 
-            x = chem_center[0][3]
-            y = chem_center[0][4]
-            z = chem_center[0][5]
-            inch = chem_center[0][2]
+            
+            if center == 1:
+                x = chem_center[0][3]
+                y = chem_center[0][4]
+                z = chem_center[0][5]
+                inch = chem_center[0][2]
             
 
-            cmdExtract = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value \
-                from mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (select cube (d3_cube) from mvwchemmap_mapdsstox \
-                    where inchikey='%s' limit (1)) limit (%s);"%(inch, nbChem)
-
+            cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
+                FROM mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM mvwchemmap_mapdsstox \
+                where dsstox_id='%s' limit (1)) limit (%s);"%(center_chem, nbChem)
 
         else:
-            # have to be a inch
-            cmdExtract = "Select dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value \
-                from mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (select cube (d3_cube) from chemical_description_user \
+
+            # need to check if it is in user table
+            cmd_count = "SELECT COUNT(*) FROM chemical_description_user WHERE inchikey = '%s' AND map_name = 'dsstox'"%(center_chem)
+            inUser = self.cDB.execCMD(cmd_count)[0][0]
+
+            if inUser == 1:
+                cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
+                    FROM mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM chemical_description_user \
+                    where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(center_chem, nbChem)
+
+                if center == 1:
+                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM chemical_description_user WHERE inchikey = '%s' AND map_name = 'dsstox'"%(center_chem))[0]
+                    x = coords_center[0][0]
+                    y = coords_center[0][1]
+                    z = coords_center[0][2]
+
+            else:
+                # have to be a inch
+                cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
+                    FROM mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM mvwchemmap_mapdsstox \
                     where inchikey='%s' limit (1)) limit (%s);"%(center_chem, nbChem)
 
+                if center == 1:
+                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM mvwchemmap_mapdsstox WHERE inchikey = '%s'"%(center_chem))[0]
+                    x = coords_center[0][0]
+                    y = coords_center[0][1]
+                    z = coords_center[0][2]
 
         lchem = self.cDB.execCMD(cmdExtract)
+
 
         # format for JS dictionnary
         if not "coord" in self.__dict__:
@@ -81,17 +107,23 @@ class DSSToxPrep:
 
         dinch = {}
 
-        for chem in lchem:
-            inch = chem[2]
-            smiles = chem[1]
-            dsstox = chem[0]
-            xadd = chem[3]
-            yadd = chem[4]
-            zadd = chem[5]
-            lneighbors = chem[6]
-            lprop = chem[7]
+        i = 0
+        imax = len(lchem)
+        while i < imax:
+            inch = lchem[i][2]
+            smiles = lchem[i][1]
+            dsstox = lchem[i][0]
+            xadd = lchem[i][3]
+            yadd = lchem[i][4]
+            zadd = lchem[i][5]
+            lneighbors = lchem[i][6]
+            lprop = lchem[i][7]
+            l_prop_tox = lchem[i][8]
+            if l_prop_tox == None: l_prop_tox = ["NA" for toxname in self.lPropTox]
             
+
             if lprop == None or lneighbors == None:
+                i = i + 1
                 continue
 
             #coords
@@ -101,22 +133,29 @@ class DSSToxPrep:
                 self.coord[dsstox] = [float(xadd), float(yadd), float(zadd)]
         
             # info
+
             self.dinfo[dsstox] = {}
             for descMap in self.ldescMap:
-                try: self.dinfo[dsstox][DDESCDSSTOX[descMap]] = round(float(lprop[self.lallProp.index(descMap)]),1)
-                except: self.dinfo[dsstox][DDESCDSSTOX[descMap]] = lprop[self.lallProp.index(descMap)]
+                if descMap in self.lallProp:
+                    val = lprop[self.lallProp.index(descMap)]
+                else:
+                    val = l_prop_tox[self.lPropTox.index(descMap)]
+
+                try: self.dinfo[dsstox][DDESCDSSTOX[descMap]] = round(float(val),1)
+                except: self.dinfo[dsstox][DDESCDSSTOX[descMap]] = val
 
             #SMILES
             self.dSMILES[dsstox] = {}
             self.dSMILES[dsstox]["inchikey"] = inch
             self.dSMILES[dsstox]["SMILES"] = smiles
-            self.dSMILES[dsstox]["GHS_category"] = lprop[self.lallProp.index("GHS_category")]
+            self.dSMILES[dsstox]["GHS_category"] = str(l_prop_tox[self.lPropTox.index("GHS_category")])
 
             # neighbor
             self.dneighbor[dsstox] = lneighbors
 
             # dictionnary of comparison inch / dsstox
             dinch[inch] = dsstox
+            i = i + 1 
 
         # Change name in the neighbor
         for chem in dinch.values():
@@ -131,27 +170,32 @@ class DSSToxPrep:
                     pass
             self.dneighbor[chem] = lneighbors
 
-
-
-
     def loadChemMapAddMap(self):
         
         nbChemAdd = len(list(self.input["coord"].keys()))
         nbChemInMap = 10000/nbChemAdd
+        
+        # case of only one chemical add => center view
+        if nbChemAdd == 1:
+            center_map = 1
+        else:
+            center_map =0
 
-        #ldsstoxAdd = []
-        #s = self.input
 
         for chem in self.input["SMILESClass"].keys():
             if chem in list(self.input["db_id"].keys()) and search("DTXSID", self.input["db_id"][chem]):
                 dsstoxID = self.input["db_id"][chem]
                 #ldsstoxAdd.append(dsstoxID)
-                self.loadChemMapCenterChem(dsstoxID, 0, nbChemInMap)
+                self.loadChemMapCenterChem(dsstoxID, center_map, nbChemInMap)
                 
-                self.coord[chem] = deepcopy(self.coord[dsstoxID])
+                try:self.coord[chem] = deepcopy(self.coord[dsstoxID])
+                except:continue
+
+
                 self.dinfo[chem] = {}
                 for desc in self.input["info"][chem]:
                     self.dinfo[chem][DDESCDSSTOX[desc]] = self.input["info"][chem][desc]
+
                 self.dneighbor[chem] = deepcopy(self.dneighbor[dsstoxID])
                 self.dSMILES[chem] = {}
                 self.dSMILES[chem]["SMILES"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
@@ -166,9 +210,13 @@ class DSSToxPrep:
 
             else:
                 inch = self.input["SMILESClass"][chem]["inchikey"]
-                self.loadChemMapCenterChem(inch, 0, nbChemInMap)
+                
+                self.loadChemMapCenterChem(inch, center_map, nbChemInMap)
 
-                self.coord[chem] = deepcopy(self.input["coord"][chem])
+                if center_map == 1:
+                    self.coord[chem] = [0,0,0]
+                else:
+                    self.coord[chem] = deepcopy(self.input["coord"][chem])
                 self.dinfo[chem] = {}
                 for desc in self.input["info"][chem]:
                     self.dinfo[chem][DDESCDSSTOX[desc]] = self.input["info"][chem][desc]
@@ -178,47 +226,4 @@ class DSSToxPrep:
                 self.dSMILES[chem]["inchikey"] = deepcopy(self.input["SMILESClass"][chem]["inchikey"])
                 self.dSMILES[chem]["GHS_category"] = "add"
 
-
-    def addChem(self):
-
-
-        if not "dcenterChem" in self.__dict__ or not "dneighbor" in self.__dict__ or not "dinfo" in self.__dict__ or not "dSMILES" in self.__dict__:
-            print("ERROR - no chem uploaded")
-            return
-
-        # load descriptor 2D
-        p2Dadd = self.input + "2D.csv"
-        d2Dadd = toolbox.loadMatrixToDict(p2Dadd)
-
-
-        for chemIDadd in self.dcenterChem.keys():
-            self.coord[chemIDadd] = [float(self.dcenterChem[chemIDadd]["DIM1"]), float(self.dcenterChem[chemIDadd]["DIM2"]), float(self.dcenterChem[chemIDadd]["DIM3"])]
-
-            SMILES = d2Dadd[chemIDadd]["SMILES"]
-            inchikey = toolbox.convertSMILEStoINCHIKEY(SMILES)
-
-            self.dSMILES[chemIDadd] = {}
-            self.dSMILES[chemIDadd]["SMILES"] = SMILES
-            self.dSMILES[chemIDadd]["inchikey"] = inchikey
-            self.dSMILES[chemIDadd]["GHS_category"] = "add"
-
-            #info
-            self.dinfo[chemIDadd] = {}
-            for desc in self.ldesc:
-                if desc in d2Dadd[chemIDadd].keys():
-                    self.dinfo[chemIDadd][DDESCDSSTOX[desc]] = d2Dadd[chemIDadd][desc]
-                else:
-                    self.dinfo[chemIDadd][DDESCDSSTOX[desc]] = "NA"
-
-
-            #neighbor
-            ddist = {}
-            for chemID in self.coord.keys():
-                lcoordID = [float(self.coord[chemID][0]), float(self.coord[chemID][1]),
-                            float(self.coord[chemID][2])]
-                ddist[chemID] = sqrt(sum([(xi - yi) ** 2 for xi, yi in zip(lcoordID, self.coord[chemIDadd])]))
-
-            lID = [i[0] for i in sorted(ddist.items(), key=lambda x: x[1])][:20]
-            #print(lID)
-            self.dneighbor[chemIDadd] = lID
 

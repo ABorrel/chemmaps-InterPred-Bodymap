@@ -73,7 +73,7 @@ class uploadSMILES:
                         smiles_clean = chemical.smi
                         inch = chemical.generateInchiKey()
                         # add in the DB
-                        self.cDB.addElement("chemicals_user", ["smiles_origin", "smiles_clean", "inchikey"], [chem_input, smiles_clean, inch])
+                        self.cDB.addElement("chemicals_user", ["smiles_origin", "smiles_clean", "inchikey", "status"], [chem_input, smiles_clean, inch, "user"])
                 else:
                     inch = smiles_clean[0][1]
                     smiles_clean = smiles_clean[0][0]
@@ -174,7 +174,7 @@ class uploadSMILES:
                             valDesc3D = [chemical.all3D[desc3D] for desc3D in ldesc3D]
                             valDesc3D = ['-9999' if desc == "NA" else desc for desc in valDesc3D]
                             w3D = "{" + ",".join(["\"%s\"" % (desc) for desc in valDesc3D]) + "}"
-                            self.cDB.addElement("chemical_description_user", ["inchikey", "source_id", "map_name", "desc_1d2d", "desc_3d"], [inch, SMICLEAN, mapName, w1D2D, w3D])
+                            self.cDB.addElement("chemical_description_user", ["inchikey", "source_id", "map_name", "desc_1d2d", "desc_3d", "status"], [inch, SMICLEAN, mapName, w1D2D, w3D, "user"])
                 
                 if lval1D2D_3D != []:
                     dout[k]["Descriptor"] = "OK"
