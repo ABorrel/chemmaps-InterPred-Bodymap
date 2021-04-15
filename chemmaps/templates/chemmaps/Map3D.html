@@ -111,20 +111,22 @@
 
     <div id="blockassay">
         {% if assay != "" %}
-            {{assay}} ({{nb_active}} active / {{nb_tested}} tested)
+            <a href="{% url 'chemmaps:Tox21Map' %}" style="color: white;">{{assay}} ({{nb_active}} active / {{nb_tested}} tested)</a>
         {% else %}
             {% if map == "drugbank" %}
-                DrugMap
+            <a href="{% url 'chemmaps:DrugMap' %}" style="color: white;">DrugMap</a>
             {% elif map == "dsstox" %}
                 {% if center_map == None %}
-                    {{map.upper}}Map
+                    <a href="{% url 'chemmaps:DSSToxMap' %}" style="color: white;">{{map.upper}}Map</a>
                 {% else %}
-                    Center chemical: {{center_map}}
+                    <a href="{% url 'chemmaps:DSSToxMap' %}" style="color: white;">Center chemical: {{center_map}}</a>
                 {% endif %}
             {% elif map == "Tox21Target" %}
-                {{target}} ({{nb_assays}} assay(s))
+                <a href="{% url 'chemmaps:Tox21Map' %}" style="color: white;">{{target}} ({{nb_assays}} assay(s))</a>
+            {% elif map == "pfas" %}
+                <a href="{% url 'chemmaps:PFASMap' %}" style="color: white;">{{map.upper}}Map</a>
             {% else %}
-                {{map.upper}}Map
+                <a href="{% url 'chemmaps:Tox21Map' %}" style="color: white;">{{map.upper}}Map</a>
             {% endif %}
         {% endif %}
     </div>
@@ -211,8 +213,8 @@
 
                 // color for the map
                 if (map == "drugbank"){
-                    var dcol = {"approved": 0x00ff00, "indev": 0xffffff, "withdraw": 0x663399, "add":0Xffffff};
-                    var dsize = {"approved": 20, "indev": 2.5, "withdraw": 10, "add": 11};
+                    var dcol = {"approved": 0x00ff00, "indev": 0xffffff, "withdraw": 0xd819d2, "add":0Xffffff};
+                    var dsize = {"approved": 20, "indev": 2.5, "withdraw": 15, "add": 11};
                     var nbcol = 20;
                     var fact = 22;
                 
@@ -231,7 +233,7 @@
                     if (map == "pfas"){
                         var fact = 20;
                     } else if (map == "tox21" || map == "Tox21Assay" || map == "Tox21Target"){
-                        var fact = 35;
+                        var fact = 25;
                     }else{
                         var fact = 70;
                     }
