@@ -24,7 +24,6 @@ class loadTox21AssayMap:
 
         self.cDB.connOpen()
         # load assays results
-        #l_chemassay = self.cDB.execCMD("SELECT assay_outcome, ac50, dsstox_id, qc_new_spid FROM tox21_tripod INNER JOIN tox21_qc ON tox21_tripod.sample_id = tox21_qc.ncgc_id INNER JOIN chemicals ON tox21_tripod.cas = chemicals.casn WHERE protocol_name='%s'"%(self.assay))
         l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, new_hitc_flag, qc_omit_src, ac50, aenm FROM ice_tox21 INNER JOIN tox21_assays ON tox21_assays.protocol_name = ice_tox21.aenm WHERE assay_target='%s'"%(self.assay))
         self.cDB.connClose()
 
@@ -115,7 +114,6 @@ class loadTox21AssayMap:
         # assays targeted
         self.cDB.connOpen()
         # load assays results
-        #l_chemassay = self.cDB.execCMD("SELECT assay_outcome, ac50, dsstox_id, qc_new_spid FROM tox21_tripod INNER JOIN tox21_qc ON tox21_tripod.sample_id = tox21_qc.ncgc_id INNER JOIN chemicals ON tox21_tripod.cas = chemicals.casn WHERE protocol_name='%s'"%(self.assay))
         l_assay = self.cDB.execCMD("SELECT DISTINCT aenm FROM ice_tox21 INNER JOIN tox21_assays ON tox21_assays.protocol_name = ice_tox21.aenm WHERE assay_target='%s'"%(self.assay))
         self.cDB.connClose()
 
@@ -129,7 +127,6 @@ class loadTox21AssayMap:
 
         self.cDB.connOpen()
         # load assays results
-        #l_chemassay = self.cDB.execCMD("SELECT assay_outcome, ac50, dsstox_id, qc_new_spid FROM tox21_tripod INNER JOIN tox21_qc ON tox21_tripod.sample_id = tox21_qc.ncgc_id INNER JOIN chemicals ON tox21_tripod.cas = chemicals.casn WHERE protocol_name='%s'"%(self.assay))
         l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, new_hitc_flag, qc_omit_src, ac50 FROM ice_tox21 WHERE aenm='%s'"%(self.assay))
         self.cDB.connClose()
 
@@ -193,7 +190,6 @@ class loadTox21AssayMap:
 
         self.cDB.connOpen()
         # load assays results
-        #l_chemassay = self.cDB.execCMD("SELECT assay_outcome, ac50, dsstox_id, qc_new_spid FROM tox21_tripod INNER JOIN tox21_qc ON tox21_tripod.sample_id = tox21_qc.ncgc_id INNER JOIN chemicals ON tox21_tripod.cas = chemicals.casn WHERE protocol_name='%s'"%(self.assay))
         l_unique_chem = self.cDB.execCMD("SELECT DISTINCT dtxsid FROM ice_tox21 WHERE aenm='%s'"%(self.assay))
         self.cDB.connClose()
 

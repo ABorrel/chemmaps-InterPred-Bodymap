@@ -168,7 +168,6 @@ class JSbuilder:
                 ddesc[ldesc[d]] = lval[d]
                 d = d + 1
 
-            # extract from chemical_description table   =================================================================================================================================================================
             if self.nameMap == "drugbank":
                 lextract = self.cDB.extractColoumn("mvwchemmap_mapdrugbank", "drugbank_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox", "WHERE inchikey = '%s' AND d3_cube is not null limit (1)"%(inchikey))
 

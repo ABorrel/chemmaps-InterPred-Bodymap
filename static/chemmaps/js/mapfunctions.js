@@ -402,19 +402,29 @@ function drawChemical() {
             if (ID == dpoints[ktype][i].name) {
                 console.log(ktype)
                 var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
-                //if(fs.exists(ppng) == true){
+                console.log(dSMILESClass[dpoints[ktype][i].name])
+                console.log(map);
+                // TO CHECK IN PRODUCTION ===> NEED to add in case of in the repertory
+                if(map != "drugbank" && dSMILESClass[dpoints[ktype][i].name]["GHS_category"] == 'add'){
+                    ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
                     var texture = textureLoader.load(ppng);
                     dpoints[ktype][i].material.map = texture;
-                    console.log('https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/' + namepng + '.png')
                     dpoints[ktype][i].material.size = 15;
                     dpoints[ktype][i].material.color.setHex(0xffffff);
                     dpoints[ktype][i].col = 0xffffff;
                     dpoints[ktype][i].material.map.needsUpdate = true;
                     dpoints[ktype][i].material.size.needsUpdate = true;
-               // } else {
-               //     console.log(ppng);
-                //}
+
+                } else if (map == "drugbank" && dSMILESClass[dpoints[ktype][i].name]["DRUG_GROUPS"] == 'add'){
+                    ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
+                    var texture = textureLoader.load(ppng);
+                    dpoints[ktype][i].material.map = texture;
+                    dpoints[ktype][i].material.size = 15;
+                    dpoints[ktype][i].material.color.setHex(0xffffff);
+                    dpoints[ktype][i].col = 0xffffff;
+                    dpoints[ktype][i].material.map.needsUpdate = true;
+                    dpoints[ktype][i].material.size.needsUpdate = true;
+                }
             }
         }
     }

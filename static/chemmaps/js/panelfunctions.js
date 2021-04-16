@@ -254,9 +254,7 @@ function drawChemicals(visibility) {
             for (var i = 0; i < dpoints[ktype].length; i++) {
                 // have to be rewrtie when png accessment will be fix
                 var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                console.log(namepng);
                 var ppng = 'https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/' + namepng + '.png'
-                console.log(ppng);
                 var texture = textureLoader.load(ppng);
                 dpoints[ktype][i].material.map = texture;
                 dpoints[ktype][i].material.size = 15;

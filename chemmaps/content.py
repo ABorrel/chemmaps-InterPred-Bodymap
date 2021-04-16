@@ -181,9 +181,9 @@ class uploadSMILES:
                     dout[k]["desc"] = "img/checkOK.png"
                     filout2D.write("%i\t%s\t%s\t%s\n"%(k, SMICLEAN, inch, "\t".join([str(lval1D2D_3D[0][d]) for d in ldesc1D2D])))
                     filout3D.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(lval1D2D_3D[1][d]) for d in ldesc3D])))
-                    # run png generation
+                    # run png generation -- HERE CHANGE PNG FOLDER
                     prPNG = path.abspath("./static/chemmaps/png") + "/"
-                    chemical.computePNG(prPNG)
+                    chemical.computePNG(prPNG, bg="None")
                 
         filout2D.close()
         filout3D.close()
