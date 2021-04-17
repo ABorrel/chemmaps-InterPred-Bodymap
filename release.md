@@ -2,10 +2,15 @@
 Release version 3 - Scheduled April 2021
 
 ## Dependency updates
-- OPERA 2.3 -> 2.6
+- python3.5 -> python 3.9
+- django-3.0 -> django-3.2
+- OPERA 2.3 -> OPERA 2.6
 - openbabel 2.3 -> 3.3
-- rdkit 2019 -> 2021
+- rdkit 2019.3 -> 2021.3
+- marvin - Chemaxon 18.4 -> marvin - Chemaxon 21.4
+- R-3.X -> R-4.0.3
 - Extract chemical preparation and chemical descriptor computation from original project and develop a pip package (CompDesc) available in the test pip plateform https://test.pypi.org/simple/CompDesc
+
 
 ## Database updates
 - add ICE tox21 assays results cleaned (ice_tox21)
