@@ -252,6 +252,29 @@ function drawChemicals(visibility) {
         }
         for (ktype in dpoints) {
             for (var i = 0; i < dpoints[ktype].length; i++) {
+                // TO CHECK IN PRODUCTION 
+                if(map != "drugbank" && dSMILESClass[dpoints[ktype][i].name]["GHS_category"] == 'add'){
+                    ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
+                    var texture = textureLoader.load(ppng);
+                    dpoints[ktype][i].material.map = texture;
+                    dpoints[ktype][i].material.size = 15;
+                    dpoints[ktype][i].material.color.setHex(0xffffff);
+                    dpoints[ktype][i].col = 0xffffff;
+                    dpoints[ktype][i].material.map.needsUpdate = true;
+                    dpoints[ktype][i].material.size.needsUpdate = true;
+                    
+                } else if (map == "drugbank" && dSMILESClass[dpoints[ktype][i].name]["DRUG_GROUPS"] == 'add'){
+                    ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
+                    var texture = textureLoader.load(ppng);
+                    dpoints[ktype][i].material.map = texture;
+                    dpoints[ktype][i].material.size = 15;
+                    dpoints[ktype][i].material.color.setHex(0xffffff);
+                    dpoints[ktype][i].col = 0xffffff;
+                    dpoints[ktype][i].material.map.needsUpdate = true;
+                    dpoints[ktype][i].material.size.needsUpdate = true;
+                }
+
+
                 // have to be rewrtie when png accessment will be fix
                 var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
                 var ppng = 'https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/' + namepng + '.png'
