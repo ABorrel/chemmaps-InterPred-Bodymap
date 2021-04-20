@@ -15,10 +15,11 @@ Release version 3 - Scheduled April 2021
 ## Database updates
 - add ICE tox21 assays results cleaned (ice_tox21)
 - reorganize bodymap tables to remove statics files (bodymap_*)
-- update list of OPERA's descriptors to include not physico-chemical prediction available in OPERA2.6 (CERRAP, CATMOS, ...) (chem_descriptor_opera_name)
-- redefine materialized views to catch OPERA descriptor
-- new tables with only experimental tox value and drugbank properties (chem_toxexp_value and chem_toxexp_name) and drugbank prop values (chem_prop_drugbank_value and chem_prop_drugbank_name)
+- update list of OPERA's descriptors to include not only physico-chemical predictions available in OPERA2.6 (CERRAP, CATMOS, ...) (chem_descriptor_opera_name)
+- redefine materialized views to catch OPERA descriptors
+- new tables with only experimental tox values and drugbank properties (chem_toxexp_value and chem_toxexp_name) and drugbank prop values (chem_prop_drugbank_value and chem_prop_drugbank_name)
 - Add chemicals excluded in the first chemmaps version and missing chemicals
+- Add status fields in the user tables
 
 ## Develop an interface for update the chemical database
 - compute a database summary 
