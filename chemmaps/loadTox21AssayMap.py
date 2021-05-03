@@ -71,7 +71,7 @@ class loadTox21AssayMap:
 
         for DTXSID in self.dmap["info"].keys():
             if not DTXSID in list(d_assay.keys()):
-                self.dmap["info"][DTXSID]["Best AC50 (µM)"] = "Not tested"
+                self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "Not tested"
                 self.dmap["info"][DTXSID]["Assay Outcome"] = "Not tested"
                 self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "Not tested"
                 self.dmap["info"][DTXSID]["Most active assay"] = "None"
@@ -80,21 +80,21 @@ class loadTox21AssayMap:
             else:
                 if d_assay[DTXSID]["Assay Outcome"] == "active":
                     if d_assay[DTXSID]["AC50"] == 0.0:
-                        self.dmap["info"][DTXSID]["Best AC50 (µM)"] = "< 0.001 (%s positive assay(s))"%(d_assay[DTXSID]["Active assays"])
+                        self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "< 0.001 (%s positive assay(s))"%(d_assay[DTXSID]["Active assays"])
                         
                     else:
-                        self.dmap["info"][DTXSID]["Best AC50 (µM)"] = "%.3f (%s positive assay(s))"%(d_assay[DTXSID]["AC50"], d_assay[DTXSID]["Active assays"])
+                        self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "%.3f (%s positive assay(s))"%(d_assay[DTXSID]["AC50"], d_assay[DTXSID]["Active assays"])
                     self.dmap["info"][DTXSID]["Assay Outcome"] = "active"
                     self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "active"
                     self.dmap["info"][DTXSID]["Most active assay"] = d_assay[DTXSID]["Most active assay"]
 
                 elif d_assay[DTXSID]["Assay Outcome"] == "inactive":
-                    self.dmap["info"][DTXSID]["Best AC50 (µM)"] = "0.0"
+                    self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "0.0"
                     self.dmap["info"][DTXSID]["Assay Outcome"] = "inactive"
                     self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "inactive"
                 
                 else:
-                    self.dmap["info"][DTXSID]["Best AC50 (µM)"] = "NA"
+                    self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "NA"
                     self.dmap["info"][DTXSID]["Assay Outcome"] = "inconclusive"
                     self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "inconclusive"                    
 

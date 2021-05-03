@@ -1,4 +1,6 @@
-from django.apps import AppConfig class ChemmapsConfig(AppConfig):
+from django.apps import AppConfig 
+
+class ChemmapsConfig(AppConfig):
     name = 'chemmaps'
 
 
