@@ -158,7 +158,7 @@ function posPointIndividuallyDSSTox() {
         position[1] = parseFloat(dcoords[i][1] * fact);
         position[2] = parseFloat(dcoords[i][2] * fact);
 
-        if (map=="Tox21Assay"){
+        if (map=="Tox21Assay" || map == 'Tox21Target' || map == 'Tox21MostActive'){
             var Assaycat = dSMILESClass[i]['Assay Outcome'];
             if (Assaycat.search("inconclusive") !== -1) {
                 var colorhexa = dcol['NA'];
@@ -167,7 +167,7 @@ function posPointIndividuallyDSSTox() {
             } else if(Assaycat.search("inactive") !== -1) {
                 var typechem = 'classified';
                 var colorhexa = parseFloat(0x6e0000);
-                var size = 15;
+                var size = dsize[typechem];
             }else if (Assaycat.search("Not tested") !== -1) {
                     var colorhexa = dcol['NA'];
                     var typechem = 'noclassified';
@@ -175,7 +175,7 @@ function posPointIndividuallyDSSTox() {
             }else{
                 var typechem = 'classified';
                 var colorhexa = parseFloat(0x00ff00);
-                var size = 25;
+                var size = dsize[typechem];
             }
             var sprite = dsprite[typechem];
             
@@ -634,7 +634,7 @@ function extractNeighbor(that) {
                             var typeChem = 'indev';
                         }
                         var coloradd = dcol[typeChem];
-                    } else if (map == 'dsstox' || map == 'pfas' || map == 'tox21' || "Tox21Assay" || map == 'Tox21Target') {
+                    } else if (map == 'dsstox' || map == 'pfas' || map == 'tox21' || "Tox21Assay" || map == 'Tox21Target' || map == 'Tox21MostActive') {
                         if (dSMILESClass[IDtemp]['GHS_category'] == 'NA') {
                             var typeChem = 'noclassified';
                         } else if (dSMILESClass[IDtemp]['GHS_category'] == 'add') {

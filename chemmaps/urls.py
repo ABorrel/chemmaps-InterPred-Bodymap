@@ -196,19 +196,23 @@ urlpatterns = [
         r'^tox21/target=(?P<target>[-\w]+)', views.launchTox21TagetMap, name="Tox21Target",
     ),
     url(
+        r'^tox21/mostactive', views.launchTox21MostPotent, name="Tox21MostPotent",
+    ),
+    url(
+        r'^tox21/browsechemicals', views.browseChemicals, name="browseChemicals",
+    ),
+    url(
         r'^tox21/(?P<assay>[-\w]+)', views.launchTox21AssayMap, name="Tox21Sp",
     ),
     url(
         r'^2D.csv',
         views.download, {"name": "2D"}, name="2D",
-
     ),
     url(
         r'^3D.csv',
         views.download, {"name": "3D"}, name="3D",
 
     )
-
 
 ]
 

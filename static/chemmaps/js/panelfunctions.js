@@ -69,7 +69,7 @@ function createpanel() {
         };
         var outfunction = spfunction.changeColor.bind(spfunction);
         settings['GHS category'] = outfunction;
-    }else if (map == 'Tox21Assay') {
+    }else if (map == 'Tox21Assay' ||  map == 'Tox21Target' || map == 'Tox21MostActive') {
         var settingsDefault = {
             'Conclusive': true,
             'Inconclusive': true,
@@ -150,7 +150,7 @@ function createpanel() {
         folder1.add(settingsDefault, 'No classified').onChange(viewNoClassified);
         folder1.add(settingsDefault, 'Added chemicals').onChange(viewAdded);
         folder1.add(settingsDefault, 'Draw structures').onChange(drawChemicals);
-    }else if(map == "Tox21Assay" || map == 'Tox21Target'){
+    }else if(map == "Tox21Assay" || map == 'Tox21Target' || map == 'Tox21MostActive'){
         folder1.add(settingsDefault, 'Conclusive').onChange(viewClassified);
         folder1.add(settingsDefault, 'Inconclusive').onChange(viewNoClassified);
         folder1.add(settingsDefault, 'Draw structures').onChange(drawChemicals);
@@ -257,7 +257,7 @@ function drawChemicals(visibility) {
                     ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
                     var texture = textureLoader.load(ppng);
                     dpoints[ktype][i].material.map = texture;
-                    dpoints[ktype][i].material.size = 15;
+                    dpoints[ktype][i].material.size = dsize[dSMILESClass[dpoints[ktype][i].name]["GHS_category"]];
                     dpoints[ktype][i].material.color.setHex(0xffffff);
                     dpoints[ktype][i].col = 0xffffff;
                     dpoints[ktype][i].material.map.needsUpdate = true;
@@ -267,7 +267,7 @@ function drawChemicals(visibility) {
                     ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
                     var texture = textureLoader.load(ppng);
                     dpoints[ktype][i].material.map = texture;
-                    dpoints[ktype][i].material.size = 15;
+                    dpoints[ktype][i].material.size = dsize[dSMILESClass[dpoints[ktype][i].name]["GHS_category"]];
                     dpoints[ktype][i].material.color.setHex(0xffffff);
                     dpoints[ktype][i].col = 0xffffff;
                     dpoints[ktype][i].material.map.needsUpdate = true;
@@ -288,7 +288,7 @@ function drawChemicals(visibility) {
             }
         }
     } else {
-        if (map == 'pfas' || map == 'dsstox' || map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target') {
+        if (map == 'pfas' || map == 'dsstox' || map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target' || map == 'Tox21MostActive') {
             for (ktype in dpoints) {
                 for (var i = 0; i < dpoints[ktype].length; i++) {
                     var GHScat = dSMILESClass[dpoints[ktype][i].name]['GHS_category'];
@@ -361,7 +361,7 @@ function Help() {
         window.open('DSSToxMap');
     } else if (map == 'pfas') {
         window.open('PFASMapHelp');
-    } else if (map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target') {
+    } else if (map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target' || map == 'Tox21MostActive') {
         window.open('Tox21MapHelp');
     }
 }

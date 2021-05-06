@@ -10,10 +10,23 @@
 <br>
 <br>
 <br>
-<h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Project Tox21 assays results</h2>
+<h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Project Tox21 assay results</h2>
 
 <p>Choose a assay protocol or an assay target. Assay target will provide you a concensus of all Tox21 assays that target the same gene. Tox21 assay results have been extracted from the <a class = "aurl" target="_blank" href="htps://ice.ntp.niehs.nih.gov/">Integrated Chemical Environement</a>.
 </p>
+<p><div id="myGrid" style="height: 400px;margin-left: 30px; margin-right: 30px;" class="ag-theme-balham"></div></p>
+<br>
+<h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Project by chemical the most active assay</h2>
+<p>Only the most active assay result is projected for each chemical.</p>
+<form action='/chemmaps/tox21/mostactive/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+    <input type='submit' value='Generate Tox21Map with most active assay results'>
+</form>
+<br>
+<p>You can also browse the list of chemicals with the Tox21 assays results.</p>
+<form action='/chemmaps/tox21/browsechemicals/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+    <input type='submit' value='Browse the Tox21 chemical library'>
+</form>
+
 <style>
     .ag-theme-balham {
         /* use theme parameters where possible */
@@ -31,7 +44,7 @@
     
     </style>
 
-<p><div id="myGrid" style="height: 400px;margin-left: 30px; margin-right: 30px;" class="ag-theme-balham"></div></p>
+
 
 <script>
     var dassays = {{ dassays | safe }};

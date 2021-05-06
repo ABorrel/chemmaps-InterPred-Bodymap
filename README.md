@@ -42,6 +42,7 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - Add option to not upload chemical in the DB as interpred
 - merge VM_prod and check path server
 - change page head to have the name of the tool in it
+- check PNG and color and size on the map when draw chemical
 
 
 

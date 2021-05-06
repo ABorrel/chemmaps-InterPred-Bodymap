@@ -5,7 +5,7 @@ function updateInfoBox(intersect) {
     var smilesDrawer = new SmilesDrawer.Drawer(options);
 
     CompoundID.innerHTML = ID;
-    if (map == 'pfas' || map == 'dsstox' || map == 'tox21'|| map == 'Tox21Assay' || map == 'Tox21Target') {
+    if (map == 'pfas' || map == 'dsstox' || map == 'tox21'|| map == 'Tox21Assay' || map == 'Tox21Target' || map == 'Tox21MostActive') {
         document.getElementById('CompoundID').href =
             'https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=' + ID;
 
@@ -19,7 +19,7 @@ function updateInfoBox(intersect) {
 
 
     // case of DSStoxMap and PFASmap -> GHS
-    if (map == 'pfas' || map == 'dsstox' || map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target') {
+    if (map == 'pfas' || map == 'dsstox' || map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target' || map == 'Tox21MostActive') {
         GHS.innerHTML = dSMILESClass[ID]['GHS_category'];
     } else if (map == 'drugbank') {
         Group.innerHTML = dSMILESClass[ID]['DRUG_GROUPS'];
