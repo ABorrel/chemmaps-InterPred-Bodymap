@@ -15,6 +15,7 @@ from .toolbox import createFolder
 from .DSSToxPrep import DSSToxPrep
 from .loadAssays import loadAssays
 from .loadTox21AssayMap import loadTox21AssayMap
+from .loadBrowseTox21Chem import loadBrowseTox21Chem
 
 from os import path
 
@@ -273,10 +274,16 @@ def launchTox21MostPotent(request):
 
 
 
-
 def browseChemicals(request):
 
-    return HttpResponse('Do shit')
+    c_loadTox21Chem = loadBrowseTox21Chem()
+    c_loadTox21Chem.loadAssaysAndChem()
+
+    d_chem_JS = json.dumps(c_loadTox21Chem.d_chem)
+    d_assays_JS = json.dumps(c_loadTox21Chem.d_assays)
+
+
+    return render(request, 'chemmaps/chemicalBrowser.html', {"d_chem":d_chem_JS, "d_assays":d_assays_JS})
 
 
 # case of automatic launch -> Comptox

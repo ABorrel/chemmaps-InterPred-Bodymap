@@ -69,6 +69,7 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - Add option to not load in the DB the new chemicals as interferences
 - fix error on map in case of GHS is empty
 - check range color
+- check in assay results if new_hitc is checked 
 
 #### Improvement
 - ~~Add distance in the neighbor file to download -> done~~

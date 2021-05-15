@@ -399,7 +399,7 @@ function colorbyType(descin) {
                     dpoints[ktype][i].material.color.setHex(dcol["NA"]);
                     dpoints[ktype][i].col = dcol["NA"];
                 }else{
-                    if(dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("inconclusive") !==- 1 || dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("Not tested") !==- 1){
+                    if(dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("inconclusive") !==- 1 || dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("Not tested") !==- 1 || dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("-") !==- 1){
                         dpoints[ktype][i].material.color.setHex(dcol['NA']);
                         dpoints[ktype][i].col = dcol["NA"];
                     }else if(dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("inactive") !==- 1){

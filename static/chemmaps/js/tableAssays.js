@@ -3,7 +3,6 @@ function defineColumnDef(din) {
     var columnDefs = [];
     for (var assay in din){
         for(var prop in din[assay]){
-            console.log(prop);
             if(prop == "protocol_name"){
                 columnDefs.push({
                     headerName: prop.charAt(0).toUpperCase() + prop.slice(1).replace("_", " "),

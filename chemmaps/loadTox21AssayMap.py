@@ -19,12 +19,11 @@ class loadTox21AssayMap:
         dmap = cload.loadMap()
         self.dmap = dmap
 
-
     def loadAssayMostActive(self):
 
         self.cDB.connOpen()
         # load assays results
-        l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, new_hitc_flag, qc_omit_src, ac50, aenm FROM ice_tox21 WHERE ac50 is not null")
+        l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, new_hitc_flag, qc_omit_src, ac50, aenm FROM ice_tox21 WHERE new_hitc = 1")
         self.cDB.connClose()
 
         l_dsstoxid_run = []
@@ -42,46 +41,31 @@ class loadTox21AssayMap:
             else: ac50 = float(ac50)
             aenm = chem[5]
 
-            if not dtxsid in d_assay.keys():
+            if not dtxsid in list(d_assay.keys()):
                 d_assay[dtxsid] = {}
                 d_assay[dtxsid]["Most active assay"] = "None"
                 d_assay[dtxsid]["Active assays"] = 0
-                if hitc == 0: 
-                    d_assay[dtxsid]["Assay Outcome"] = "inactive"
-                    d_assay[dtxsid]["AC50"] = 0.0
-                elif hitc == 2:
-                    d_assay[dtxsid]["Assay Outcome"] = "inconclusive"
-                    d_assay[dtxsid]["AC50"] = "NA"
-                elif hitc == 3:
-                    d_assay[dtxsid]["Assay Outcome"] = "inconclusive"
-                    d_assay[dtxsid]["AC50"] = "NA"
-                else:
-                    d_assay[dtxsid]["Assay Outcome"] = "active"
-                    d_assay[dtxsid]["AC50"] = ac50
-                    d_assay[dtxsid]["Most active assay"] = aenm
-                    d_assay[dtxsid]["Active assays"] = d_assay[dtxsid]["Active assays"] + 1
-            
-            else:
-                if hitc == 1: 
-                    if d_assay[dtxsid]["AC50"] == "NA" or d_assay[dtxsid]["AC50"] > 0.0 and ac50 < d_assay[dtxsid]["AC50"]:
-                        d_assay[dtxsid]["Most active assay"] = aenm
-                        d_assay[dtxsid]["AC50"] = ac50
-                        d_assay[dtxsid]["Active assays"] =  d_assay[dtxsid]["Active assays"] + 1
+                d_assay[dtxsid]["AC50"] = "-"
+                d_assay[dtxsid]["Assay Outcome"] = "active"
 
+            d_assay[dtxsid]["Active assays"] =  d_assay[dtxsid]["Active assays"] + 1
+            
+            if d_assay[dtxsid]["AC50"] == "-" or ac50 < d_assay[dtxsid]["AC50"]:
+                d_assay[dtxsid]["Most active assay"] = aenm
+                d_assay[dtxsid]["AC50"] = ac50
+                    
 
         for DTXSID in self.dmap["info"].keys():
             if not DTXSID in list(d_assay.keys()):
-                self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "Not tested"
-                self.dmap["info"][DTXSID]["Assay Outcome"] = "Not tested"
+                self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "-"
+                self.dmap["info"][DTXSID]["Assay Outcome"] = "-"
                 self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "Not tested"
-                self.dmap["info"][DTXSID]["Most active assay"] = "None"
-
+                self.dmap["info"][DTXSID]["Most active assay"] = "-"
 
             else:
                 if d_assay[DTXSID]["Assay Outcome"] == "active":
                     if d_assay[DTXSID]["AC50"] == 0.0:
                         self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "< 0.001 (%s positive assay(s))"%(d_assay[DTXSID]["Active assays"])
-                        
                     else:
                         self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "%.3f (%s positive assay(s))"%(d_assay[DTXSID]["AC50"], d_assay[DTXSID]["Active assays"])
                     self.dmap["info"][DTXSID]["Assay Outcome"] = "active"
@@ -119,9 +103,6 @@ class loadTox21AssayMap:
 
         self.nb_assays = len(l_assay)
 
-
-
-
     def loadAssayTargeted(self):
 
         self.cDB.connOpen()
@@ -144,11 +125,11 @@ class loadTox21AssayMap:
             else: ac50 = float(ac50)
             aenm = chem[5]
 
-            if not dtxsid in d_assay.keys():
+            if not dtxsid in list(d_assay.keys()):
                 d_assay[dtxsid] = {}
                 d_assay[dtxsid]["Most active assay"] = "None"
                 d_assay[dtxsid]["Active assays"] = 0
-                if hitc == 0: 
+                if hitc == 0 and hitc == -1: 
                     d_assay[dtxsid]["Assay Outcome"] = "inactive"
                     d_assay[dtxsid]["AC50"] = 0.0
                 elif hitc == 2:
@@ -220,7 +201,6 @@ class loadTox21AssayMap:
         self.cDB.connClose()
 
         self.nb_assays = len(l_assay)
-
 
     def loadAssayResults(self):
 

@@ -19,13 +19,9 @@
 <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Project by chemical the most active assay</h2>
 <p>Only the most active assay result is projected for each chemical.</p>
 <form action='/chemmaps/tox21/mostactive/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-    <input type='submit' value='Generate Tox21Map with most active assay results'>
+    <input type='submit' value='Tox21Map with lowest AC50 by chemicals'>
 </form>
-<br>
-<p>You can also browse the list of chemicals with the Tox21 assays results.</p>
-<form action='/chemmaps/tox21/browsechemicals/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-    <input type='submit' value='Browse the Tox21 chemical library'>
-</form>
+<p><a class = "aurl" target="_blank" href="/chemmaps/tox21/browsechemicals/">Browse the list of chemicals with the lowest AC50 (µM)</a></p>
 
 <style>
     .ag-theme-balham {
@@ -42,13 +38,12 @@
         color: #fff; 
     }
     
-    </style>
+</style>
 
 
 
 <script>
     var dassays = {{ dassays | safe }};
-    console.log(dassays);
     // lookup the container we want the Grid to use
     var eGridDiv = document.querySelector('#myGrid');
     // create the grid passing in the div to use together with the columns & data we want to use
