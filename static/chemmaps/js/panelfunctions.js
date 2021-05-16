@@ -448,7 +448,6 @@ function colorbyType(descin) {
         dcoltemp[''] = '#ffffff';
         dcoltemp['NA'] = '#ffffff';
 
-        console.log(dcoltemp);
         for (ktype in dpoints) {
             for (var i = 0; i < dpoints[ktype].length; i++) {
                 // black for NA
@@ -484,7 +483,7 @@ function colorbyRange(descin) {
     var ecart = Math.min(med - minval, maxval - med);
 
     var gradval = range(med - ecart, med + ecart, ecart * 2 / nbcol);
-    var gradcol = generateColor('#061094', '#ffffff', nbcol);
+    var gradcol = generateColor('#005AB5', '#FEFE62', nbcol);
 
     var dcol = {};
     for (var i = 0; i < gradval.length - 1; i++) {
