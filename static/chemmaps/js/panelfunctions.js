@@ -180,6 +180,7 @@ function viewDBapproved(visibility) {
         }
     }
 }
+
 function viewDBindev(visibility) {
     if (visibility == false) {
         for (var i = 0; i < dpoints['indev'].length; i++) {
@@ -192,6 +193,7 @@ function viewDBindev(visibility) {
         }
     }
 }
+
 function viewDBwithdraw(visibility) {
     if (visibility == false) {
         for (var i = 0; i < dpoints['withdraw'].length; i++) {
@@ -203,6 +205,7 @@ function viewDBwithdraw(visibility) {
         }
     }
 }
+
 function viewAdded(visibility) {
     if (visibility == false) {
         for (var i = 0; i < dpoints['add'].length; i++) {
@@ -214,6 +217,7 @@ function viewAdded(visibility) {
         }
     }
 }
+
 function viewNoClassified(visibility) {
     if (visibility == false) {
         for (var i = 0; i < dpoints['noclassified'].length; i++) {
@@ -225,6 +229,7 @@ function viewNoClassified(visibility) {
         }
     }
 }
+
 function viewClassified(visibility) {
     if (visibility == false) {
         for (var i = 0; i < dpoints['classified'].length; i++) {
@@ -237,6 +242,7 @@ function viewClassified(visibility) {
         }
     }
 }
+
 // functions to draw chemical on map
 function drawChemicals(visibility) {
     var textureLoader = new THREE.TextureLoader();
@@ -326,6 +332,7 @@ function viewAxes(visibility) {
         scene.add(axes);
     }
 }
+
 function SetPivot() {
     if (!block) {
         alert(
@@ -354,6 +361,7 @@ function SetPivot() {
         .start();
     //controls.enabled = true;
 }
+
 function Help() {
     if (map == 'drugbank') {
         window.open('DrugMapHelp');
@@ -365,6 +373,7 @@ function Help() {
         window.open('Tox21MapHelp');
     }
 }
+
 // color
 function colorbyType(descin) {
     console.log(descin);
@@ -380,13 +389,13 @@ function colorbyType(descin) {
         for (ktype in dpoints) {
             for (var i = 0; i < dpoints[ktype].length; i++) {
                 if (ktype == "add"){
-                    dpoints[ktype][i].material.color.setHex(dcol["NA"]);
-                    dpoints[ktype][i].col = dcol["NA"];
+                    dpoints[ktype][i].material.color.setHex(dcolGHS["NA"]);
+                    dpoints[ktype][i].col = dcolGHS["NA"];
                 }else{
                     dpoints[ktype][i].material.color.setHex(
-                        dcol[dSMILESClass[dpoints[ktype][i].name]['GHS_category']]
+                        dcolGHS[dSMILESClass[dpoints[ktype][i].name]['GHS_category']]
                     );
-                    dpoints[ktype][i].col = dcol[dSMILESClass[dpoints[ktype][i].name]['GHS_category']];
+                    dpoints[ktype][i].col = dcolGHS[dSMILESClass[dpoints[ktype][i].name]['GHS_category']];
                 }
                 
                 dpoints[ktype][i].material.map.needsUpdate = true;
@@ -400,14 +409,14 @@ function colorbyType(descin) {
                     dpoints[ktype][i].col = dcol["NA"];
                 }else{
                     if(dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("inconclusive") !==- 1 || dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("Not tested") !==- 1 || dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("-") !==- 1){
-                        dpoints[ktype][i].material.color.setHex(dcol['NA']);
-                        dpoints[ktype][i].col = dcol["NA"];
+                        dpoints[ktype][i].material.color.setHex(dcol["inconclusive"]);
+                        dpoints[ktype][i].col = dcol["inconclusive"];
                     }else if(dinfo[dpoints[ktype][i].name]["Assay Outcome"].search("inactive") !==- 1){
-                        dpoints[ktype][i].material.color.setHex(parseFloat(0x6e0000));
-                        dpoints[ktype][i].col = 0x6e0000;
+                        dpoints[ktype][i].material.color.setHex(parseFloat(dcol["inactive"]));
+                        dpoints[ktype][i].col = dcol["inactive"];
                     }else{
-                        dpoints[ktype][i].material.color.setHex(parseFloat(0x00ff00));
-                        dpoints[ktype][i].col = 0x00ff00;
+                        dpoints[ktype][i].material.color.setHex(parseFloat(dcol["active"]));
+                        dpoints[ktype][i].col = dcol["active"];
                     }
                 }
                 dpoints[ktype][i].material.map.needsUpdate = true;
@@ -427,9 +436,9 @@ function colorbyType(descin) {
         }
 
         if (lval.length == 2) {
-            lcol = ['#00ff00', '#c11212'];
+            lcol = ['#40B0A6', '#FEFE62'];
         } else {
-            var lcol = ['#c11212', '#ff5500', '#ffaa00', '#ffff00', '#aaff00'];
+            var lcol = ['#40B0A6', '#006CD1', '#E66100', '#D41159', '#FEFE62'];
         }
         var dcoltemp = {};
         var i = 1;
@@ -452,6 +461,7 @@ function colorbyType(descin) {
         }
     }
 }
+
 function colorbyRange(descin) {
     var lval = [];
     for (var chem in dinfo) {

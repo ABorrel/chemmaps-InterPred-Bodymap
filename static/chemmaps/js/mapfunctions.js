@@ -167,7 +167,6 @@ function posPointIndividuallyDSSTox() {
     return dout;
 }
 
-
 // Build axes and text
 function buildAxes(length, x, y, z) {
     var axes = new THREE.Object3D();
@@ -237,8 +236,6 @@ function createText(scene, stext, x, y, z) {
     );
 }
 
-
-
 // render animation
 function animate() {
     requestAnimationFrame(animate);
@@ -288,11 +285,6 @@ function callbackFunc(response) {
     // do something with the response
     console.log(response);
 }
-
-
-//var fs = require('fs');
-
-
 
 // map function
 function drawChemical() {
@@ -615,7 +607,6 @@ function cameraCenterPoint() {
     istepcamera = 0;
 }
 
-
 function searchID(that) {
     var thatUpper = that.toUpperCase();
     for (ktype in dpoints) {
@@ -642,8 +633,6 @@ function searchID(that) {
 
     alert(that + ' is not a valide request\nReset the map and/or check your request\n\n');
 }
-
-
 
 function searchIDtox(that) {
     var thatUpper = that.toUpperCase();
