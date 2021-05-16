@@ -21,7 +21,9 @@
 <form action='/chemmaps/tox21/mostactive/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
     <input type='submit' value='Tox21Map with lowest AC50 by chemicals'>
 </form>
-<p><a class = "aurl" target="_blank" href="/chemmaps/tox21/browsechemicals/">Browse the list of chemicals with the lowest AC50 (µM)</a></p>
+<br>
+<div style="margin-left: 10px;"><form method="post" action="/chemmaps/tox21/browsechemicals/" onsubmit="ShowLoading()">{% csrf_token %}<button class="btn"><i class="fa fa-space-shuttle"></i> Browse the chemical list with the lowest AC50</button></form></div>
+    
 
 <style>
     .ag-theme-balham {

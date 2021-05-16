@@ -19,6 +19,8 @@ from .loadBrowseTox21Chem import loadBrowseTox21Chem
 
 from os import path
 
+from chemmaps import toolbox
+
 
 def test(request, toto):
 
@@ -272,12 +274,14 @@ def launchTox21MostPotent(request):
                                                              "ldesc":ldescJS, "map":"Tox21Target", "mapJS": mapJS, "prSessionJS":prSessionJS, "target":"Most active", "assay":"", "nb_assays": cloadAssays.nb_assays})#, "nb_active": cloadAssays.nb_active, "nb_tested":  cloadAssays.nb_tested })
 
 
-
-
 def browseChemicals(request):
 
+    name_session = request.session.get("name_session")
+    prsession = toolbox.createFolder(path.abspath("./temp") + "/" + str(name_session) + "/")
+    
     c_loadTox21Chem = loadBrowseTox21Chem()
     c_loadTox21Chem.loadAssaysAndChem()
+    c_loadTox21Chem.writeTable(prsession)
 
     d_chem_JS = json.dumps(c_loadTox21Chem.d_chem)
     d_assays_JS = json.dumps(c_loadTox21Chem.d_assays)
@@ -290,7 +294,8 @@ def browseChemicals(request):
 def launchDSSToxMap(request, DTXSID):
 
     # fault Ldesc
-    ldescMap = ["LD50_mgkg", "CATMoS_VT_pred", "EPA_category", "MolWeight","LogP_pred"]
+    ldescMap = ["nbLipinskiFailures", "CoMPARA_Bind_pred", "CERAPP_Bind_pred", "MolWeight",
+                                                   "LogP_pred"]
 
     build = DSSToxPrep(DTXSID, ldescMap, "")
     build.loadChemMapCenterChem(DTXSID, center = 1, nbChem = 10000)

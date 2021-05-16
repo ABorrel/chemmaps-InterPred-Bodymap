@@ -21,23 +21,23 @@ Current download => 866794 chemicals => limited to 500,000 structures
 
 # TO DO
 ## URGENT
-- fix static file and check with docker version
+- ~~fix static file and check with docker version~~
 - ~~fix duplicate code for DB interaction~~
 - ~~Add QC data in bodymap~~
 - ~~Integrate tox21 assays results in chemmaps~~
 - ~~connection / close DB change in all of the project!!!~~
 - ~~Error in the name map for user page~~
-- check adding in DB for descriptor user computation
-- add new descriptor from OPERA 2.6 in the opera desc list
+- ~~check adding in DB for descriptor user computation~~
+- ~~add new descriptor from OPERA 2.6 in the opera desc list +> integrated in CompDesc~~
 - load only once OPERA model
 - ~~add -999 value in case of descriptor NA~~
-- remove descriptors in interpred
-- create random int for folder for update in descriptor
-- clean update folder 
-- check error in line 48 of interpred R script
+- ~~remove descriptors in interpred~~
+- ~~create random int for folder for update in descriptor~~
+- ~~clean update folder~~ 
+- ~~check error in line 48 of interpred R script~~
 - add error page in the project to hide sources
 - add when upload chemical add log
-- add descriptor scaling in a table
+- ~~add descriptor scaling in a table => keep with static~~
 - protect page admin with a password
 - Add option to not upload chemical in the DB as interpred
 - merge VM_prod and check path server
@@ -65,11 +65,11 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - ~~Fix error with connect neighboor => change intersect JS~~
 - ~~check case of chemical on drugmap and other map~~
 - ~~Fix error with metal~~
-- downloadDescFromDB, line 223 ERROR in coordinate run ==> need to check it is working
+- ~~downloadDescFromDB, line 223 ERROR in coordinate run ==> need to check it is working~~
 - Add option to not load in the DB the new chemicals as interferences
 - fix error on map in case of GHS is empty
 - check range color
-- check in assay results if new_hitc is checked 
+- ~~check in assay results if new_hitc is checked~~ 
 
 #### Improvement
 - ~~Add distance in the neighbor file to download -> done~~
@@ -123,9 +123,9 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - ~~label organs directly on the png~~
 - ~~add name of the chemical on the network => added name in the autocompletion form~~
 - ~~correct the chemical selection to chose a chemical by name, repetition, alphabetic order~~
-- add one color for the mapping in case of mapping using both tissues and gene
-- correct the barplot
-- improve the network by adding some cutoff on the AC50 and gene expression.
+- ~~add one color for the mapping in case of mapping using both tissues and gene~~
+- ~~correct the barplot~~
+- ~~improve the network by adding some cutoff on the AC50 and gene expression.~~
 
 
 ### Development of a admin toolbox

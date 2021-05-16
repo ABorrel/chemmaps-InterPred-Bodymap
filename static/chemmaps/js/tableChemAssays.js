@@ -41,18 +41,18 @@ function defineColumnDef() {
     });
 
     columnDefs.push({
-        headerName: "Number of active of assays",
+        headerName: "Number of active assays",
         field: "nb_active",
         sortable: true,
         filter: true,
-        width: 300,
+        width: 280,
         resizable: true,
         lockVisible: true,
         cellClass: "grid-cell-left",
     });
 
     columnDefs.push({
-        headerName: "Lowest AC50",
+        headerName: "Lowest AC50 (µM)",
         field: "lowest_ac50",
         sortable: true,
         filter: true,

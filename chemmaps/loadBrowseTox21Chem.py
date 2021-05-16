@@ -60,12 +60,21 @@ class loadBrowseTox21Chem:
                     d_assays[dtxsid]["Most active assay"] = aenm
                     d_assays[dtxsid]["lowest_ac50"] = ac50
                 d_assays[dtxsid]["l_ac50"].append(ac50)
-                d_assays[dtxsid]["l_assays"].append(aenm)
+                #d_assays[dtxsid]["l_assays"].append(aenm)
                 
-        
         self.d_assays = d_assays
         
         
+    def writeTable(self, pr_session):
 
+        p_filout = pr_session + "lowestAC50.csv"
+        filout = open(p_filout, "w")
+        filout.write("DTXSID\tCASRN\tName\tNumber of active assay\tLowest AC50 (µM)\tAssay with the lowest AC50\n")
+        for chem in self.d_chem:
+            filout.write("%s\t%s\t%s\t"%(chem, self.d_chem[chem]["casn"], self.d_chem[chem]["name"]))
+            if chem in list(self.d_assays.keys()):
+                filout.write("%s\t%s\t%s\n"%(self.d_assays[chem]["Active assays"], self.d_assays[chem]["lowest_ac50"], self.d_assays[chem]["Most active assay"]))
+            else:
+                filout.write("\t\t\n")
 
     

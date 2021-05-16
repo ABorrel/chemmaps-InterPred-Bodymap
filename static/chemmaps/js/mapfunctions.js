@@ -1,61 +1,5 @@
 //position points on the map
 
-function posCloud(din, dcolorRGB, size, scene) {
-    var colors = new Float32Array(Object.keys(din).length * 3);
-    var positions = new Float32Array(Object.keys(din).length * 3);
-    var sizes = new Float32Array(Object.keys(din).length);
-    var color = new THREE.Color();
-    //console.log(color);
-
-    //console.log(color);
-    //console.log(din);
-    var count = 0;
-    for (var i in din) {
-        console.log(i);
-        positions[count * 3] = parseFloat(din[i][0] * 20);
-        positions[count * 3 + 1] = parseFloat(din[i][1] * 20);
-        positions[count * 3 + 2] = parseFloat(din[i][2] * 20);
-        sizes[count] = size;
-        color.setRGB(dcolorRGB['r'] / 250, dcolorRGB['g'] / 250, dcolorRGB['b'] / 250);
-        //console.log(color.r);
-        colors[count * 3] = color.r;
-        colors[count * 3 + 1] = color.g;
-        colors[count * 3 + 2] = color.b;
-        count = count + 1;
-    }
-    // manage geometry
-    var geometry = new THREE.BufferGeometry();
-    geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.addAttribute('color', new THREE.BufferAttribute(colors, 3));
-    geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
-    geometry.computeBoundingSphere();
-    // textures and material
-    var textureLoader = new THREE.TextureLoader();
-    var sprite = textureLoader.load('https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/img/star.png');
-    //en conssprite.repeat.set( 1, 1 );
-    //		sprite.wrapS = sprite.wrapT = THREE.RepeatWrapping;
-    //				sprite.format = THREE.RGBFormat;
-
-    //make level of shpere
-    //sprite.wrapS = THREE.RepeatWrapping;
-    //sprite.wrapT = THREE.RepeatWrapping;
-    //sprite.repeat.set( 4, 4 );
-
-    var material;
-    material = new THREE.PointsMaterial({
-        size: size,
-        map: sprite,
-        alphaTest: 0.9,
-        color: 0x888888,
-        transparent: true,
-    });
-    //material.needsUpdate=true;
-
-    // create point
-    particules = new THREE.Points(geometry, material);
-    scene.add(particules);
-}
-
 function posPoint(lcoord, name, colorhexa, sprite, size, fact, scene) {
     var textureLoader = new THREE.TextureLoader();
 
@@ -85,24 +29,6 @@ function posPoint(lcoord, name, colorhexa, sprite, size, fact, scene) {
     return particule;
 }
 
-function posMeshs(din, scene, color, rad) {
-    var lmesh = [];
-    // Texture
-    var textureLoader = new THREE.TextureLoader();
-    var texture = textureLoader.load('https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/img/disturb.jpg');
-    for (var i in din) {
-        var objectGeometry = new THREE.SphereGeometry(rad);
-        var objectMaterial = new THREE.MeshLambertMaterial({ map: texture, color: color });
-        var mesh = new THREE.Mesh(objectGeometry, objectMaterial);
-        mesh.position.x = parseFloat(din[i][0] * 20);
-        mesh.position.y = parseFloat(din[i][1] * 20);
-        mesh.position.z = parseFloat(din[i][2] * 20);
-        mesh.name = i;
-        scene.add(mesh);
-        lmesh.push(mesh);
-    }
-    return lmesh;
-}
 
 function posPointIndividuallyDrugMap() {
     //console.log(color);
@@ -161,20 +87,20 @@ function posPointIndividuallyDSSTox() {
         if (map=="Tox21Assay" || map == 'Tox21Target' || map == 'Tox21MostActive'){
             var Assaycat = dSMILESClass[i]['Assay Outcome'];
             if (Assaycat.search("inconclusive") !== -1) {
-                var colorhexa = dcol['NA'];
+                var colorhexa = dcol['inconclusive'];
                 var typechem = 'noclassified';
                 var size = dsize[typechem];
             } else if(Assaycat.search("inactive") !== -1) {
                 var typechem = 'classified';
-                var colorhexa = parseFloat(0x6e0000);
+                var colorhexa = dcol['inactive'];
                 var size = dsize[typechem];
             }else if (Assaycat.search("Not tested") !== -1) {
-                    var colorhexa = dcol['NA'];
+                    var colorhexa = dcol['inconclusive'];
                     var typechem = 'noclassified';
                     var size = dsize[typechem];
             }else{
                 var typechem = 'classified';
-                var colorhexa = parseFloat(0x00ff00);
+                var colorhexa =  dcol['active'];
                 var size = dsize[typechem];
             }
             var sprite = dsprite[typechem];
@@ -240,6 +166,8 @@ function posPointIndividuallyDSSTox() {
     }
     return dout;
 }
+
+
 // Build axes and text
 function buildAxes(length, x, y, z) {
     var axes = new THREE.Object3D();
@@ -309,34 +237,7 @@ function createText(scene, stext, x, y, z) {
     );
 }
 
-//light position ///not use
-function posLights(xmax, ymax, zmax, scale, color) {
-    var llights = [];
-    for (var x = -xmax; x < xmax; x = x + scale) {
-        for (var y = -ymax; y < ymax; y = y + scale) {
-            for (var z = -zmax; z < zmax; z = z + scale) {
-                var light = posLight(x, y, z, color);
-                scene.add(light);
-                llights.push(light);
-            }
-        }
-    }
-    return llights;
-}
 
-function posLight(x, y, z, color) {
-    var light;
-    var intensity = 100;
-    var distance = 300;
-    var decay = 2.0;
-    var sphere = new THREE.SphereGeometry(0.1, 10, 8);
-    light = new THREE.PointLight(color, intensity, distance, decay);
-    light.add(new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: color })));
-    light.position.x = x;
-    light.position.y = y;
-    light.position.z = z;
-    return light;
-}
 
 // render animation
 function animate() {
@@ -634,7 +535,24 @@ function extractNeighbor(that) {
                             var typeChem = 'indev';
                         }
                         var coloradd = dcol[typeChem];
-                    } else if (map == 'dsstox' || map == 'pfas' || map == 'tox21' || "Tox21Assay" || map == 'Tox21Target' || map == 'Tox21MostActive') {
+                    
+                    }else if (map == "Tox21Assay" || map == "Tox21Target" || map == 'Tox21MostActive'){
+
+                        var Assaycat = dSMILESClass[IDtemp]['Assay Outcome'];
+                        if (Assaycat.search("inconclusive") !== -1) {
+                            var typeChem = 'noclassified';
+                            var coloradd = dcol["inconclusive"]
+                        } else if(Assaycat.search("inactive") !== -1) {
+                            var typeChem = 'classified';
+                            var coloradd = dcol["inactive"]
+                        }else if (Assaycat.search("Not tested") !== -1) {
+                            var typeChem = 'noclassified';
+                            var coloradd = dcol["inconclusive"]
+                        }else{
+                            var typeChem = 'classified';
+                            var coloradd = dcol["active"]
+                        }
+                    }else {
                         if (dSMILESClass[IDtemp]['GHS_category'] == 'NA') {
                             var typeChem = 'noclassified';
                         } else if (dSMILESClass[IDtemp]['GHS_category'] == 'add') {
@@ -726,61 +644,6 @@ function searchID(that) {
 }
 
 
-
-
-// rewrite search function
-//function searchID(that) {
-//    var thatUpper = that.toUpperCase();
-//    for (ktype in dpoints) {
-//        for (var i = 0; i < dpoints[ktype].length; i++) {
-//            if (thatUpper == dpoints[ktype][i].name) {
-//                ID = thatUpper;
-//                new TWEEN.Tween(controls.target)
-//                    .to(
-//                        {
-//                            x: dcoords[ID][0] * fact,
-//                            y: dcoords[ID][1] * fact,
-//                            z: dcoords[ID][2] * fact,
-//                        },
-//                        500
-//                    )
-//                    //.easing( TWEEN.Easing.Elastic.Out).start();
-//                    .easing(TWEEN.Easing.Linear.None)
-//                   .start();
-//                updateInfoBox(dpoints[ktype][i]);
-//                return;
-//            }
-//        }
-//    }
-//    var thatlower = that.toLowerCase();
-//    for (ktype in dpoints) {
-//        for (var i = 0; i < dpoints[ktype].length; i++) {
-//            var IDsearch = dpoints[ktype][i].name;
-//            var genericlower = dinfo[IDsearch][1].toLowerCase();
-//            if (
-//                dinfo[IDsearch][5].search(thatlower) != -1 ||
-//                genericlower.search(thatlower) != -1
-//            ) {
-//                ID = IDsearch;
-//                new TWEEN.Tween(controls.target)
-//                    .to(
-//                        {
-//                            x: dcoords[ID][0] * fact,
-//                            y: dcoords[ID][1] * fact,
-//                            z: dcoords[ID][2] * fact,
-//                        },
-//                        500
-//                    )
-//                    .easing(TWEEN.Easing.Linear.None)
-//                    .start();
-//                //    cameraCenterPoint();
-//                updateInfoBox(dpoints[ktype][i]);
-//                return;
-//            }
-//        }
-//    }
-//    alert(that + ' is not a valide request\nReset the map and/or check your request\n\n');
-//}
 
 function searchIDtox(that) {
     var thatUpper = that.toUpperCase();

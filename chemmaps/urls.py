@@ -211,8 +211,10 @@ urlpatterns = [
     url(
         r'^3D.csv',
         views.download, {"name": "3D"}, name="3D",
-
+    ),
+    url(
+        r'^lowestAC50.csv',
+        views.download, {"name": "lowestAC50"}, name="lowestAC50",
     )
-
 ]
 

@@ -17,8 +17,7 @@ rel="stylesheet" type="text/css"/>
 <script src="{% static 'chemmaps/js/theme.js' %}" type="text/javascript"></script>
 <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
 
-<div id = "bg">
-    <br>    
+<div class="container-fluid bgindex padding-left: 0px">
     <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Generate the {{map.capitalize}}Map</h2>
     <p>Select up to 5 features you would like put on the map:</p>
 
@@ -107,7 +106,6 @@ rel="stylesheet" type="text/css"/>
         {% include 'chemmaps/_launch_tox21Assays.html' %}
     {% endif %}
 
-    <br>
     <br>
     <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Upload your list of chemicals (< 100 chemicals)</h2>
     {% if ErrorLine == "1"  %}
