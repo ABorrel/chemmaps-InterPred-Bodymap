@@ -61,7 +61,7 @@ class pushAllUpdate:
                 id_DB = int(id_DB[0][0]) + 1
 
                 cmd_sql = "INSERT INTO chemicals (id, smiles_origin, dsstox_id) VALUES('%s', '%s', '%s') ;" %(id_DB, d_chem_user[chem]["smiles_origin"], d_chem_user[chem]["dsstox_id"])
-                self.cDB.DB.addElementCMD(cmd)
+                self.cDB.DB.addElementCMD(cmd_sql)
 
 
             # update chemicals table

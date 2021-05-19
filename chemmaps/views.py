@@ -316,6 +316,7 @@ def launchDSSToxMap(request, DTXSID):
 
     return 
 
+
 def computeDescriptor(request, map):
 
 

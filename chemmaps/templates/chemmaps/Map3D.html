@@ -214,7 +214,7 @@
                 // color for the map
                 if (map == "drugbank"){
                     var dcol = {"approved": 0x00ff00, "indev": 0xffffff, "withdraw": 0xd819d2, "add":0Xffffff};
-                    var dsize = {"approved": 20, "indev": 2.5, "withdraw": 15, "add": 11};
+                    var dsize = {"approved": 20, "indev": 2.5, "withdraw": 15, "add": 15};
                     var nbcol = 20;
                     var fact = 22;
                 
@@ -254,7 +254,6 @@
                     var spriteClassified = textureLoader.load("{% static 'chemmaps/img/star.png' %}");
                     var spriteNoClassified = textureLoader.load("{% static 'chemmaps/img/planet2.png' %}");
                     var spriteAdd = textureLoader.load("{% static 'chemmaps/img/rocket.png' %}");
-
                     var dsprite = {"classified":spriteClassified, "noclassified":spriteNoClassified, "add":spriteAdd};
 
                 }
@@ -291,13 +290,15 @@
                 var raycaster = new THREE.Raycaster();
                 
                 // === Initial positionning
-                var dpoints = {};
                 if (map == "drugbank"){
-                    dpoints = posPointIndividuallyDrugMap();
+                    var dpoints = { approved: [], withdraw: [], indev: [], add: [] };
+                    posPointIndividuallyDrugMap("all");
                 }else{
-                    dpoints = posPointIndividuallyDSSTox();
+                    var dpoints = { classified: [], noclassified: [], add: [] };
+                    posPointIndividuallyDSSTox("all");
                 }
                 
+
                 // ==== renderer initialization  ====
                 var renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
                 renderer.setPixelRatio(window.devicePixelRatio);

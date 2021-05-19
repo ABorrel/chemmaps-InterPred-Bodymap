@@ -30,16 +30,15 @@ function posPoint(lcoord, name, colorhexa, sprite, size, fact, scene) {
 }
 
 
-function posPointIndividuallyDrugMap() {
+function posPointIndividuallyDrugMap(repos) {
     //console.log(color);
     // textures and material
-    var dout = { approved: [], withdraw: [], indev: [], add: [] };
     for (var i in dcoords) {
         var position = new Float32Array(3);
-        var sizes = new Float32Array(1);
         position[0] = parseFloat(dcoords[i][0] * fact);
         position[1] = parseFloat(dcoords[i][1] * fact);
         position[2] = parseFloat(dcoords[i][2] * fact);
+        console.log(dSMILESClass);
         if (dSMILESClass[i]['DRUG_GROUPS'].search('approved') !== -1) {
             var typeDrug = 'approved';
         } else if (dSMILESClass[i]['DRUG_GROUPS'].search('withdraw') !== -1) {
@@ -48,6 +47,9 @@ function posPointIndividuallyDrugMap() {
             var typeDrug = 'add';
         } else {
             var typeDrug = 'indev';
+        }
+        if(repos != "all" && repos != typeDrug){
+            continue;
         }
         var size = dsize[typeDrug];
         var colorhexa = dcol[typeDrug];
@@ -69,17 +71,14 @@ function posPointIndividuallyDrugMap() {
         var particule = new THREE.Points(geometry, material);
         particule.name = i;
         particule.col = colorhexa;
-        dout[typeDrug].push(particule);
+        dpoints[typeDrug].push(particule);
         scene.add(particule);
     }
-    return dout;
 }
 
-function posPointIndividuallyDSSTox() {
-    var dout = { classified: [], noclassified: [], add: [] };
+function posPointIndividuallyDSSTox(repos) {
     for (var i in dcoords) {
         var position = new Float32Array(3);
-        var sizes = new Float32Array(1);
         position[0] = parseFloat(dcoords[i][0] * fact);
         position[1] = parseFloat(dcoords[i][1] * fact);
         position[2] = parseFloat(dcoords[i][2] * fact);
@@ -105,7 +104,10 @@ function posPointIndividuallyDSSTox() {
             }
             var sprite = dsprite[typechem];
             
-    
+            if(repos != "all" && repos != typechem){
+                continue;
+            }
+
             // manage geometry
             var geometry = new THREE.BufferGeometry();
             geometry.addAttribute('position', new THREE.BufferAttribute(position, 3));
@@ -123,7 +125,7 @@ function posPointIndividuallyDSSTox() {
             var particule = new THREE.Points(geometry, material);
             particule.name = i;
             particule.col = colorhexa;
-            dout[typechem].push(particule);
+            dpoints[typechem].push(particule);
             scene.add(particule);
 
         }else{
@@ -143,6 +145,10 @@ function posPointIndividuallyDSSTox() {
             var sprite = dsprite[typechem];
             var size = dsize[typechem];
     
+            if(repos != "all" && repos != typechem){
+                continue;
+            }
+
             // manage geometry
             var geometry = new THREE.BufferGeometry();
             geometry.addAttribute('position', new THREE.BufferAttribute(position, 3));
@@ -160,12 +166,77 @@ function posPointIndividuallyDSSTox() {
             var particule = new THREE.Points(geometry, material);
             particule.name = i;
             particule.col = colorhexa;
-            dout[typechem].push(particule);
+            dpoints[typechem].push(particule);
             scene.add(particule);
         }
     }
-    return dout;
 }
+
+function resetPoint(){
+
+    for (typechem in dpoints) {
+        for (var i = 0; i < dpoints[typechem].length; i++) {
+            var i_original = dpoints[typechem][i].name
+            if (map=="Tox21Assay" || map == 'Tox21Target' || map == 'Tox21MostActive'){
+                var Assaycat = dSMILESClass[i_original]['Assay Outcome'];
+                if (Assaycat.search("inconclusive") !== -1) {
+                    var colorhexa = dcol['inconclusive'];
+                    var typechem = 'noclassified';
+                    var size = dsize[typechem];
+                } else if(Assaycat.search("inactive") !== -1) {
+                    var typechem = 'classified';
+                    var colorhexa = dcol['inactive'];
+                    var size = dsize[typechem];
+                }else if (Assaycat.search("Not tested") !== -1) {
+                        var colorhexa = dcol['inconclusive'];
+                        var typechem = 'noclassified';
+                        var size = dsize[typechem];
+                }else{
+                    var typechem = 'classified';
+                    var colorhexa =  dcol['active'];
+                    var size = dsize[typechem];
+                }
+                var sprite = dsprite[typechem];
+            }else if (map == "drugbank"){
+                if (dSMILESClass[i_original]['DRUG_GROUPS'].search('approved') !== -1) {
+                    var typechem = 'approved';
+                } else if (dSMILESClass[i_original]['DRUG_GROUPS'].search('withdraw') !== -1) {
+                    var typechem = 'withdraw';
+                } else if (dSMILESClass[i_original]['DRUG_GROUPS'].search('add') !== -1) {
+                    var typechem = 'add';
+                } else {
+                    var typechem = 'indev';
+                }
+                var size = dsize[typechem];
+                var colorhexa = dcol[typechem];
+                var sprite = dsprite[typechem];
+            }else{
+                var GHScat = dSMILESClass[i_original]['GHS_category'];
+                if (GHScat == 'NA') {
+                    var colorhexa = dcol['NA'];
+                    var typechem = 'noclassified';
+                } else {
+                    if (GHScat == 'add') {
+                        var typechem = 'add';
+                        var colorhexa = 0xffffff;
+                    } else {
+                        var typechem = 'classified';
+                        var colorhexa = dcol[parseFloat(GHScat)];
+                    }
+                }
+                var sprite = dsprite[typechem];
+                var size = dsize[typechem];
+            }
+            dpoints[typechem][i].material.map = sprite;
+            dpoints[typechem][i].material.color.setHex(colorhexa);
+            dpoints[typechem][i].material.size = size;
+            dpoints[typechem][i].col = colorhexa;
+            dpoints[typechem][i].material.map.needsUpdate = true;
+            dpoints[typechem][i].material.size.needsUpdate = true;
+        }
+    }
+}
+
 
 // Build axes and text
 function buildAxes(length, x, y, z) {
@@ -293,31 +364,17 @@ function drawChemical() {
     for (ktype in dpoints) {
         for (var i = 0; i < dpoints[ktype].length; i++) {
             if (ID == dpoints[ktype][i].name) {
-                console.log(ktype)
                 var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                console.log(dSMILESClass[dpoints[ktype][i].name])
-                console.log(map);
                 // TO CHECK IN PRODUCTION ===> NEED to add in case of in the repertory
-                if(map != "drugbank" && dSMILESClass[dpoints[ktype][i].name]["GHS_category"] == 'add'){
-                    ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
-                    var texture = textureLoader.load(ppng);
-                    dpoints[ktype][i].material.map = texture;
-                    dpoints[ktype][i].material.size = 15;
-                    dpoints[ktype][i].material.color.setHex(0xffffff);
-                    dpoints[ktype][i].col = 0xffffff;
-                    dpoints[ktype][i].material.map.needsUpdate = true;
-                    dpoints[ktype][i].material.size.needsUpdate = true;
-
-                } else if (map == "drugbank" && dSMILESClass[dpoints[ktype][i].name]["DRUG_GROUPS"] == 'add'){
-                    ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
-                    var texture = textureLoader.load(ppng);
-                    dpoints[ktype][i].material.map = texture;
-                    dpoints[ktype][i].material.size = 15;
-                    dpoints[ktype][i].material.color.setHex(0xffffff);
-                    dpoints[ktype][i].col = 0xffffff;
-                    dpoints[ktype][i].material.map.needsUpdate = true;
-                    dpoints[ktype][i].material.size.needsUpdate = true;
-                }
+                var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
+                var ppng = "/static_chemmaps/chemmaps/png/" + namepng.substring(0, 2) + "/" + namepng.substring(2, 4) + "/" + namepng + ".png"
+                var texture = textureLoader.load(ppng);
+                dpoints[ktype][i].material.map = texture;
+                dpoints[ktype][i].material.size = 15;
+                dpoints[ktype][i].material.color.setHex(0xffffff);
+                dpoints[ktype][i].col = 0xffffff;
+                //dpoints[ktype][i].material.map.needsUpdate = true;
+                //dpoints[ktype][i].material.size.needsUpdate = true;
             }
         }
     }

@@ -16,7 +16,6 @@ scaling = function(din, dscaling){
 
 
 computeCoord = function(ddescScale, dCP, col3D){
-  
   ldesc= colnames(ddescScale)
   if(is.null(ldesc)){
     ldesc = names(ddescScale)
@@ -26,7 +25,6 @@ computeCoord = function(ddescScale, dCP, col3D){
   dCP = dCP[,ldesc]
   
   dcoord = data.matrix(ddescScale)%*%as.matrix(dCP)
-  
   
   if(dim(dcoord)[1] == 1){
     dcoordtemp = data.frame(t(dcoord[,seq(10)]))
@@ -52,7 +50,6 @@ computeCoord = function(ddescScale, dCP, col3D){
     dcoord = dcoord[-1,]
     rownames(dcoord) = "1"
   }
-
   return(dcoord)
 }
 
@@ -77,7 +74,6 @@ lchem = intersect(rownames(d1D2D), rownames(d3D))
 d1D2D = d1D2D[lchem, ]
 d3D = d3D[lchem, ]
 
-
 d1D2Dscale = read.csv(p1D2Dscaling, sep = ",", row.names = 1)
 d3Dscale = read.csv(p3Dscaling, sep = ",", row.names = 1)
 
@@ -92,6 +88,7 @@ d1D2Dscale = scaling(d1D2D, d1D2Dscale)
 d3Dscale = scaling(d3D, d3Dscale)
 ldesc1D2D = intersect(colnames(d1D2Dscale), colnames(d1D2DCP))
 
+
 if (dim(d1D2Dscale)[1] == 1){
   d1D2Dscale_new = data.frame(lapply(d1D2Dscale[,ldesc1D2D], function(x) t(data.frame(x))))
   rownames(d1D2Dscale_new) = rownames(d1D2Dscale)
@@ -101,6 +98,8 @@ if (dim(d1D2Dscale)[1] == 1){
 }
 
 d1D2DCP = d1D2DCP[,ldesc1D2D]
+
+
 
 ldesc3D = intersect(colnames(d3Dscale), colnames(d3DCP))
 if (dim(d3Dscale)[1] == 1){
@@ -112,6 +111,7 @@ if (dim(d3Dscale)[1] == 1){
 }
 
 d3DCP = d3DCP[,ldesc3D]
+
 
 # step2 coord #
 ###############

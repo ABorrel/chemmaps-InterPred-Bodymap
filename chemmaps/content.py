@@ -1,8 +1,9 @@
-from .toolbox import loadMatrixToDict
+from .toolbox import loadMatrixToDict, createFolder
 from .DBrequest import DBrequest
 
 from os import path, remove
 from re import search
+from shutil import copy2
 import sys
 import CompDesc
 
@@ -182,8 +183,13 @@ class uploadSMILES:
                     filout2D.write("%i\t%s\t%s\t%s\n"%(k, SMICLEAN, inch, "\t".join([str(lval1D2D_3D[0][d]) for d in ldesc1D2D])))
                     filout3D.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(lval1D2D_3D[1][d]) for d in ldesc3D])))
                     # run png generation -- HERE CHANGE PNG FOLDER
-                    prPNG = path.abspath("./static/chemmaps/png") + "/"
-                    chemical.computePNG(prPNG, bg="None")
+                    prPNG = createFolder(path.abspath(self.prout + "/png") + "/")
+                    p_png = chemical.computePNG(prPNG, bg="None")
+                    if p_png != "ERROR: PNG Generation":
+                        pr_static_png =  path.abspath("./static/chemmaps/png") + "/"
+                        pr_static_png = createFolder(pr_static_png + chemical.inchikey[0:2] + "/" + chemical.inchikey[2:4] + "/")
+                        print(pr_static_png)
+                        copy2(p_png, pr_static_png + chemical.inchikey + ".png")
                 
         filout2D.close()
         filout3D.close()

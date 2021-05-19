@@ -174,10 +174,9 @@ function viewDBapproved(visibility) {
         for (var i = 0; i < dpoints['approved'].length; i++) {
             scene.remove(dpoints['approved'][i]);
         }
+        dpoints['approved'] = []
     } else {
-        for (var i = 0; i < dpoints['approved'].length; i++) {
-            scene.add(dpoints['approved'][i]);
-        }
+        posPointIndividuallyDrugMap("approved");
     }
 }
 
@@ -185,12 +184,10 @@ function viewDBindev(visibility) {
     if (visibility == false) {
         for (var i = 0; i < dpoints['indev'].length; i++) {
             scene.remove(dpoints['indev'][i]);
-            dpoints['indev'][i].size = 1;
         }
+        dpoints['indev'] = []
     } else {
-        for (var i = 0; i < dpoints['indev'].length; i++) {
-            scene.add(dpoints['indev'][i]);
-        }
+        posPointIndividuallyDrugMap("indev");
     }
 }
 
@@ -199,10 +196,9 @@ function viewDBwithdraw(visibility) {
         for (var i = 0; i < dpoints['withdraw'].length; i++) {
             scene.remove(dpoints['withdraw'][i]);
         }
+        dpoints['withdraw'] = []
     } else {
-        for (var i = 0; i < dpoints['withdraw'].length; i++) {
-            scene.add(dpoints['withdraw'][i]);
-        }
+        posPointIndividuallyDrugMap("withdraw");
     }
 }
 
@@ -211,9 +207,12 @@ function viewAdded(visibility) {
         for (var i = 0; i < dpoints['add'].length; i++) {
             scene.remove(dpoints['add'][i]);
         }
+        dpoints['add'] = []
     } else {
-        for (var i = 0; i < dpoints['add'].length; i++) {
-            scene.add(dpoints['add'][i]);
+        if(map == "drugbank"){
+            posPointIndividuallyDrugMap("add");
+        }else{
+            posPointIndividuallyDSSTox("add")
         }
     }
 }
@@ -223,10 +222,9 @@ function viewNoClassified(visibility) {
         for (var i = 0; i < dpoints['noclassified'].length; i++) {
             scene.remove(dpoints['noclassified'][i]);
         }
+        dpoints['noclassified'] = []
     } else {
-        for (var i = 0; i < dpoints['noclassified'].length; i++) {
-            scene.add(dpoints['noclassified'][i]);
-        }
+        posPointIndividuallyDSSTox('noclassified')
     }
 }
 
@@ -234,12 +232,10 @@ function viewClassified(visibility) {
     if (visibility == false) {
         for (var i = 0; i < dpoints['classified'].length; i++) {
             scene.remove(dpoints['classified'][i]);
-            dpoints['classified'][i].size = 0.1;
         }
+        dpoints['classified'] = []
     } else {
-        for (var i = 0; i < dpoints['classified'].length; i++) {
-            scene.add(dpoints['classified'][i]);
-        }
+        posPointIndividuallyDSSTox('classified')
     }
 }
 
@@ -259,31 +255,9 @@ function drawChemicals(visibility) {
         for (ktype in dpoints) {
             for (var i = 0; i < dpoints[ktype].length; i++) {
                 // TO CHECK IN PRODUCTION 
-                if(map != "drugbank" && dSMILESClass[dpoints[ktype][i].name]["GHS_category"] == 'add'){
-                    ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
-                    var texture = textureLoader.load(ppng);
-                    dpoints[ktype][i].material.map = texture;
-                    dpoints[ktype][i].material.size = dsize[dSMILESClass[dpoints[ktype][i].name]["GHS_category"]];
-                    dpoints[ktype][i].material.color.setHex(0xffffff);
-                    dpoints[ktype][i].col = 0xffffff;
-                    dpoints[ktype][i].material.map.needsUpdate = true;
-                    dpoints[ktype][i].material.size.needsUpdate = true;
-                    
-                } else if (map == "drugbank" && dSMILESClass[dpoints[ktype][i].name]["DRUG_GROUPS"] == 'add'){
-                    ppng = "https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/" + namepng + '.png'
-                    var texture = textureLoader.load(ppng);
-                    dpoints[ktype][i].material.map = texture;
-                    dpoints[ktype][i].material.size = dsize[dSMILESClass[dpoints[ktype][i].name]["GHS_category"]];
-                    dpoints[ktype][i].material.color.setHex(0xffffff);
-                    dpoints[ktype][i].col = 0xffffff;
-                    dpoints[ktype][i].material.map.needsUpdate = true;
-                    dpoints[ktype][i].material.size.needsUpdate = true;
-                }
-
-
-                // have to be rewrtie when png accessment will be fix
                 var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                var ppng = 'https://sandbox.ntp.niehs.nih.gov/static_chemmaps/chemmaps/png/' + namepng + '.png'
+                    dpoints[ktype][i].material.map = texture;
+                var ppng = "/static_chemmaps/chemmaps/png/" + namepng.substring(0, 2) + "/" + namepng.substring(2, 4) + "/" + namepng + ".png"
                 var texture = textureLoader.load(ppng);
                 dpoints[ktype][i].material.map = texture;
                 dpoints[ktype][i].material.size = 15;
@@ -294,34 +268,7 @@ function drawChemicals(visibility) {
             }
         }
     } else {
-        if (map == 'pfas' || map == 'dsstox' || map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target' || map == 'Tox21MostActive') {
-            for (ktype in dpoints) {
-                for (var i = 0; i < dpoints[ktype].length; i++) {
-                    var GHScat = dSMILESClass[dpoints[ktype][i].name]['GHS_category'];
-                    if (GHScat == 'NA') {
-                        var colorhexa = dcol['NA'];
-                        var typechem = 'noclassified';
-                    } else {
-                        if (GHScat == 'add') {
-                            var typechem = 'add';
-                            var colorhexa = 0xffffff;
-                        } else {
-                            var typechem = 'classified';
-                            var colorhexa = dcol[parseFloat(GHScat)];
-                        }
-                    }
-                    var sprite = dsprite[typechem];
-                    var size = dsize[typechem];
-
-                    dpoints[ktype][i].material.map = sprite;
-                    dpoints[ktype][i].material.color.setHex(colorhexa);
-                    dpoints[ktype][i].material.size = size;
-                    dpoints[ktype][i].col = colorhexa;
-                    dpoints[ktype][i].material.map.needsUpdate = true;
-                    dpoints[ktype][i].material.size.needsUpdate = true;
-                }
-            }
-        }
+        resetPoint()
     }
 }
 // functions to see manage the view
