@@ -169,14 +169,14 @@ class Predict:
                     wdb.append(str(self.dpred[chem][model][valM]))
                 
                 # choose the table
-                out = self.cDB.execCMD("select count(*) from chemical_description where inchikey='%s'"%(d2D[chem]["inchikey"]))
+                out = self.cDB.execCMD("SELECT count(*) FROM %s.chemical_description where inchikey='%s'"%(self.cDB.schema, d2D[chem]["inchikey"]))
                 if out == [(1,)]:
-                    cmdSQL = "UPDATE chemical_description SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
+                    cmdSQL = "UPDATE %s.chemical_description SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(self.cDB.schema, ",".join(wdb), d2D[chem]["inchikey"])
                 else:
                     if self.noDB == True:
-                        cmdSQL = "DELETE from chemical_description_user WHERE inchikey='%s';"%(d2D[chem]["inchikey"])
+                        cmdSQL = "DELETE FROM %s.chemical_description_user WHERE inchikey='%s';"%(self.cDB.schema,d2D[chem]["inchikey"])
                     else:
-                        cmdSQL = "UPDATE chemical_description_user SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(",".join(wdb), d2D[chem]["inchikey"])
+                        cmdSQL = "UPDATE %s.chemical_description_user SET interference_prediction = '{%s}' WHERE inchikey='%s';"%(self.cDB.schema,",".join(wdb), d2D[chem]["inchikey"])
                 self.cDB.updateElement(cmdSQL)
                 
         fpred = open(pprect, "w")
@@ -184,7 +184,7 @@ class Predict:
         for chem in self.dpred.keys():
 
             # check if chemical is inside the tox21 chemical library
-            cmd_sql = "SELECT COUNT(*) from chemical_description where map_name = 'tox21' and inchikey = '%s'"
+            cmd_sql = "SELECT COUNT(*) FROM %s.chemical_description where map_name = 'tox21' and inchikey = '%s'"%(self.cDB.schema, d2D[chem]["inchikey"])
             count = int(self.cDB.execCMD(cmd_sql)[0][0])
             if count > 0:
                 self.dpred[chem]["inTox21"] = 1

@@ -1,5 +1,5 @@
 # ChemMaps - Interpred -Tox21BodyMap V.3
-Release version 3 - Scheduled April 2021
+Release version 3 - Scheduled May 2021
 
 ## Dependency updates
 - python3.5 -> python 3.9
@@ -36,13 +36,18 @@ Release version 3 - Scheduled April 2021
 - Update the internal dsstox database (+100,000 chemicals) using the DSSTOX release 2020
 - Update database architecture, added chemicals without a QSAR ready structure and descriptor fail (to be sync with the NTP database effort)
 - Add projection of the Tox21 assays results on the Tox21Map (from ICE effort) and combine target based assays 
+- Add table to see the lowest ac50 and assay by chemicals
 - Merged Tox21 assay results based on assay target available in the Tox21BodyMap
 - Develop interactive url with chemicals / assays name and assays target for a cross plateform
-- improve DB requests, improve speed with optimize open/close database and a better definition of the materialized view
+- Improve DB requests, improve speed with optimize open/close database and change the materialized view request
+- Fix bug on chemical selection on panel, remove chemical in scene not hide
+- Change color range and color scale on map 
+- Change png path to improve speed
 
 ### Minor update
 - Update help pages and general website design to fit better with the NTP template
-- Change map backgrounds and add map name on the map and number of chemicals projected
+- Change map backgrounds
+- Add map name on the 3D map with the number of chemicals projected
 - Add ntp logo in the map
 - Increase stars size on the map
 - Change default map descriptors
@@ -54,10 +59,11 @@ Release version 3 - Scheduled April 2021
 - Add in results page the number of assay tested
 - Use ICE tox21 assay results instead of invitroDB
 
-## Update in interpred v2
+## Update in interpred v1.5
 - Compute descriptor using the CompDesc packages and OPERA 2.6
-- Add in the results page if a chemical is included in the training set
+- Add on the results page if a chemical is included in the training set
 
 
 ## TO CHECK IN PRODUCTION
 - link to the png folder and case where chemicals are added => link to static/png (search text "// TO CHECK IN PRODUCTION" )
+- sql injection

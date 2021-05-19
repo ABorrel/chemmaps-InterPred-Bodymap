@@ -7,6 +7,7 @@ class DB:
         self.dbconfig = path.abspath("./database.ini")
         self.conn = None
         self.verbose = verbose
+        self.schema = "chemmap_proc_v2" 
 
 
     def config(self, section='postgresql'):
@@ -40,7 +41,7 @@ class DB:
 
     def addElement(self, nameTable, lcoloumn, lval):
         self.connOpen()
-        sqlCMD = "INSERT INTO %s(%s) VALUES(%s);"%(nameTable, ",".join(lcoloumn), ",".join(["\'%s\'"%(val) for val in lval]))
+        sqlCMD = "INSERT INTO %s.%s(%s) VALUES(%s);"%(self.schema, nameTable, ",".join(lcoloumn), ",".join(["\'%s\'"%(val) for val in lval]))
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
@@ -74,7 +75,7 @@ class DB:
     def extractColoumn(self, nameTable, column, condition=""):
         self.verbose=0
         self.connOpen()
-        sqlCMD = "SELECT %s FROM %s %s" % (column, nameTable, condition)
+        sqlCMD = "SELECT %s FROM %s.%s %s" % (column, self.schema, nameTable, condition)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
@@ -92,7 +93,6 @@ class DB:
             print("Open connection first")
             self.connClose()
             return "ERROR"
-
 
     def getColnames(self, nameTable):
 
@@ -115,10 +115,9 @@ class DB:
             self.connClose()
             print("Open connection first")
 
-
     def getTable(self, nameTable):
         self.connOpen()
-        sqlCMD = "SELECT * FROM %s;" % (nameTable)
+        sqlCMD = "SELECT * FROM %s.%s;" % (self.schema, nameTable)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
@@ -139,7 +138,7 @@ class DB:
     def getRow(self, table, condition):
 
         self.connOpen()
-        sqlCMD = "SELECT * FROM %s WHERE %s;" % (table, condition)
+        sqlCMD = "SELECT * FROM %s.%s WHERE %s;" % (self.schema, table, condition)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
@@ -172,7 +171,6 @@ class DB:
                 if self.verbose == 1: print(out)
             except (Exception, psycopg2.DatabaseError) as error:
                 #self.connClose()
-                stopDB175
                 print("Error", error)
                 return "Error"
         else:
@@ -193,7 +191,6 @@ class DB:
                 #if self.verbose == 1: print(out)
             except (Exception, psycopg2.DatabaseError) as error:
                 #self.connClose()
-                stopDB195
                 print(error)
                 return "Error"
         else:

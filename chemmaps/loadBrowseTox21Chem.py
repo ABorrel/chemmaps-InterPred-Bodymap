@@ -10,7 +10,7 @@ class loadBrowseTox21Chem:
         self.c_DB.connOpen()
         
         # load chemicals with lowest AC50
-        l_chemDB = self.c_DB.execCMD("SELECT DISTINCT dtxsid, chemicals.name, chemicals.casn FROM ice_tox21 INNER JOIN chemicals ON ice_tox21.dtxsid = chemicals.dsstox_id where ice_tox21.dtxsid is not null")
+        l_chemDB = self.c_DB.execCMD("SELECT DISTINCT dtxsid, chemicals.name, chemicals.casn FROM %s.ice_tox21 INNER JOIN %s.chemicals ON ice_tox21.dtxsid = chemicals.dsstox_id where ice_tox21.dtxsid is not null"%(self.c_DB.schema, self.c_DB.schema))
         d_chem = {}
         for chemDB in l_chemDB:
             dtxsid = chemDB[0]
@@ -24,7 +24,7 @@ class loadBrowseTox21Chem:
         self.d_chem = d_chem
         
         # load assay results 
-        l_chemassayresults = self.c_DB.execCMD("SELECT dtxsid, new_hitc, ac50, aenm FROM ice_tox21 WHERE new_hitc = 1")
+        l_chemassayresults = self.c_DB.execCMD("SELECT dtxsid, new_hitc, ac50, aenm FROM %s.ice_tox21 WHERE new_hitc = 1"%(self.c_DB.schema))
         self.c_DB.connClose()
 
         d_assays = {}

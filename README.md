@@ -43,7 +43,7 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - merge VM_prod and check path server
 - change page head to have the name of the tool in it
 - check PNG and color and size on the map when draw chemical
-
+- centralize all DB requests on a class - currently many duplicate
 
 
 ### ChemMaps
@@ -54,7 +54,7 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - ~~fix check in input and QSAR ready (09-20) -> done~~
 - 508 html for all pages
 - ~~fix table in case of very long chemical and size of the check figure -> done~~
-- Add option to load characteristic on the map
+- ~~Add option to load characteristic on the map~~
 - Fix the help page
 - ~~For 508 change font tab~~
 - ~~NaN in the panel tab~~
@@ -67,18 +67,19 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - ~~Fix error with metal~~
 - ~~downloadDescFromDB, line 223 ERROR in coordinate run ==> need to check it is working~~
 - Add option to not load in the DB the new chemicals as interferences
-- fix error on map in case of GHS is empty
-- check range color
+- ~~fix error on map in case of GHS is empty~~
+- ~~check range color~~
 - ~~check in assay results if new_hitc is checked~~ 
+- check double computer function call in views chemmaps
 
 #### Improvement
 - ~~Add distance in the neighbor file to download -> done~~
 - Compute the 3D plan with several different plan
-- change background in function of the map
+- ~~change background in function of the map~~
 - develop a carciMap choose on the 1600 chemicals and 1600 chemicals on the DSSTOX 
-- Change color when chemicals are uploaded and rocket size
-- italic for the article hyperlink + color blue
-
+- ~~Change color when chemicals are uploaded and rocket size~~
+- ~~italic for the article hyperlink + color blue~~
+- Change the center of the map for the tox21map
 
 ### Interferences
 #### Urgent
@@ -96,7 +97,7 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - ~~Fix upload file path fail~~
 
 #### Improvement
-- Add in the table if the chemical is included in the trainning set
+- ~~Add in the table if the chemical is included in the trainning set~~
 - Add a cross link with chemmaps and add an option
 
 
@@ -129,13 +130,13 @@ Current download => 866794 chemicals => limited to 500,000 structures
 
 
 ### Development of a admin toolbox
-- update chemical DB with 
-- update coordinates 
-- control DB with entries and quality
-- compute on the fly descriptor and OPERA prediction
+- ~~update chemical DB~~  
+- ~~update coordinates for the all map~~ 
+- ~~control DB with entries and quality~~
+- ~~compute on the fly descriptor and OPERA prediction~~
 
 
-# Updates 
+# Keys updates 
 - 7-8-19: init ncsu git
 - 7-8-19: add gitignore to no include png in chemmaps
 - 9-8-19: Error interferences, revert on sandbox version
@@ -165,3 +166,4 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - 21-04-20: Fix spealing errors and add ratio assays tested
 - 09-20: add ILS ICE data
 - 12-20: update bodymap with the assays results from ICE and QC 
+- 18-05-21: fix map navigation bug on color and selection 

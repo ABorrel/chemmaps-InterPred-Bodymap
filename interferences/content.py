@@ -236,13 +236,13 @@ def downloadDescFromDB(cDB, ldesc1D2D, ldescOPERA, inchikey):
     cDB.verbose = 0
 
     # check if included in DB
-    nb_mainDB = cDB.execCMD("SELECT COUNT(*) FROM chemical_description WHERE inchikey='%s'"%(inchikey))[0][0]
+    nb_mainDB = cDB.execCMD("SELECT COUNT(*) FROM %s.chemical_description WHERE inchikey='%s'"%(cDB.schema, inchikey))[0][0]
     if nb_mainDB > 0:
         lval1D2D = cDB.extractColoumn("chemical_description", "desc_1d2d","where inchikey='%s' limit(1)"%(inchikey))
         lvalOPERA = cDB.extractColoumn("chemical_description", "desc_opera", "where inchikey='%s' limit(1)"%(inchikey))
     
     else:
-        nb_userDB = cDB.execCMD("SELECT COUNT(*) FROM chemical_description_user WHERE inchikey='%s' AND status != 'update'"%(inchikey))[0][0]
+        nb_userDB = cDB.execCMD("SELECT COUNT(*) FROM %s.chemical_description_user WHERE inchikey='%s' AND status != 'update'"%(cDB.schema,inchikey))[0][0]
         if nb_userDB > 0:
             lval1D2D = cDB.extractColoumn("chemical_description_user", "desc_1d2d","where inchikey='%s' and status != 'update' limit(1)"%(inchikey))
             lvalOPERA = cDB.extractColoumn("chemical_description_user", "desc_opera", "where inchikey='%s' and status != 'update' limit(1)"%(inchikey))

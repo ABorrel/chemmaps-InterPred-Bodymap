@@ -33,7 +33,7 @@ class updateFromFiles:
         # 2D descriptors
         if "form_desc2D" in self.c_form.files:
             p_chem_desc2D = self.uploadFile(self.pr_session + "chem_desc2D", "form_desc2D")
-            l_chem_desc2D = toolbox.loadToList(p_chem_clean)
+            l_chem_desc2D = toolbox.loadToList(p_chem_desc2D)
             l_header = list(l_chem_desc2D[0].keys())
             l_header.sort()
             l_control = self.cDB.extractColoumn() ##### extract descriptor list
@@ -63,28 +63,6 @@ class updateFromFiles:
         return
 
 
-
-
-#''
-#form_desc3D	
-#''
-#form_OPERA	
-#''
-#form_coord3D	
-#''
-#form_map
-
-
-        #print(self.c_form.files["form_chem"])
-        print(self.c_form["form_chem_cleaned"])
-        print(self.c_form["form_desc3D"])
-        
-        self.uploadFile(self.pr_session + "chem_cleaned", "form_chem_cleaned")
-        self.uploadFile(self.pr_session + "desc3D", "form_desc3D")
-
-        print(self.pr_session)
-        sss
-        return 
 
     def uploadFile(self, p_filout, k_form):
 

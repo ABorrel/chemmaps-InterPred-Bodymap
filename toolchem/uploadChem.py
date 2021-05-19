@@ -80,8 +80,8 @@ class uploadChem:
 
             #self.cDB.openConnection()
             # insert into the main chemicals table
-            cmdSQL = "INSERT INTO chemicals_user(%s, status) VALUES"%(",".join(l_ks))
-            cmdSQL_desc = "INSERT INTO chemical_description_user(source_id, inchikey, map_name, status) VALUES"
+            cmdSQL = "INSERT INTO %s.chemicals_user(%s, status) VALUES"%(self.cDB.schema, ",".join(l_ks))
+            cmdSQL_desc = "INSERT INTO %s.chemical_description_user(source_id, inchikey, map_name, status) VALUES"%(self.cDB.schema)
 
             l_val = []
             l_val_desc = []

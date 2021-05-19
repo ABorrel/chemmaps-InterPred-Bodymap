@@ -7,6 +7,10 @@ class DBrequest:
         self.dbconfig = path.abspath("./database.ini")
         self.conn = None
         self.verbose = verbose
+        # for dev 
+        #self.schema = "public"
+        # in prod 
+        self.schema = "chemmap_proc_v2"
 
 
     def config(self, section='postgresql'):
@@ -40,7 +44,7 @@ class DBrequest:
 
     def addElement(self, nameTable, lcoloumn, lval):
         self.connOpen()
-        sqlCMD = "INSERT INTO %s(%s) VALUES(%s);"%(nameTable, ",".join(lcoloumn), ",".join(["\'%s\'"%(val) for val in lval]))
+        sqlCMD = "INSERT INTO %s.%s(%s) VALUES(%s);"%(self.schema, nameTable, ",".join(lcoloumn), ",".join(["\'%s\'"%(val) for val in lval]))
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
@@ -57,7 +61,7 @@ class DBrequest:
     def extractColoumn(self, nameTable, coloumn, condition=""):
         self.verbose=0
         self.connOpen()
-        sqlCMD = "SELECT %s FROM %s %s;" % (coloumn, nameTable, condition)
+        sqlCMD = "SELECT %s FROM %s.%s %s;" % (coloumn, self.schema, nameTable, condition)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
@@ -81,7 +85,7 @@ class DBrequest:
     def getRow(self, table, condition):
 
         self.connOpen()
-        sqlCMD = "SELECT * FROM %s WHERE %s;" % (table, condition)
+        sqlCMD = "SELECT * FROM %s.%s WHERE %s;" % (self.schema, table, condition)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
