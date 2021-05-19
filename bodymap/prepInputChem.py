@@ -10,8 +10,6 @@ def prepChem(CASIN):
     cDB = DBrequest.DBrequest()
     l_chem = cDB.getRow("bodymap_chemsum", "casn='%s'"%(CASIN))[0]
 
-    print(l_chem)
-
     try:
         dcas = {}
         dcas["CAS"] = CASIN

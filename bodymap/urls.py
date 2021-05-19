@@ -28,5 +28,11 @@ urlpatterns = [
         views.mappingChemicalToBody,
         name='chemMapping'
     ),
+    url(
+        r'^bychem/(?P<CAS>[-\w]+)', 
+        views.mappingChemicalToBodyByCASRN, 
+        name="byCASRN"
+    ),
+
     ] 
 
