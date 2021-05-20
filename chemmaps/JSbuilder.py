@@ -398,13 +398,13 @@ class JSbuilder:
                     self.dchemAdd["coord"][ID] = {}
                     self.dchemAdd["coord"][ID] = dcoords[ID]
                     l = list(ddesc1D2D.keys())
-                    cmdInclude = "SELECT count(*) FROM %s.chemical_description_user WHERE inchikey='%s' AND map_name = '%s';"%(self.cDB.schema, ddesc1D2D[ID]["inchikey"], self.nameMap)
+                    cmdInclude = "SELECT count(*) FROM chemical_description_user WHERE inchikey='%s' AND map_name = '%s';"%(ddesc1D2D[ID]["inchikey"], self.nameMap)
                     included = int(self.cDB.execCMD(cmdInclude)[0][0])
                     if included == 0: 
                         self.cDB.verbose = 0
                         self.cDB.addElement("chemical_description_user", ["source_id", "dim1d2d", "dim3d", "d3_cube", "inchikey", "map_name", "status"], [ddesc1D2D[ID]["SMILES"], '{%s, %s}'%(dcoords[ID][0],dcoords[ID][1]), '{%s}'%(dcoords[ID][2]), '{%s, %s, %s}'%(dcoords[ID][0],dcoords[ID][1], dcoords[ID][2]),ddesc1D2D[ID]["inchikey"],self.nameMap, "user"])
                     else:
-                        cmdSQL = "UPDATE %s.chemical_description_user SET dim1d2d = '{%s, %s}', dim3d = '{%s}', d3_cube='{%s, %s, %s}'  WHERE inchikey='%s' AND map_name = '%s';"%(self.cDB.schema, dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], ddesc1D2D[ID]["inchikey"],self.nameMap)
+                        cmdSQL = "UPDATE chemical_description_user SET dim1d2d = '{%s, %s}', dim3d = '{%s}', d3_cube='{%s, %s, %s}'  WHERE inchikey='%s' AND map_name = '%s';"%(dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], ddesc1D2D[ID]["inchikey"],self.nameMap)
                         err = self.cDB.updateElement(cmdSQL)
                     
 
@@ -439,20 +439,20 @@ class JSbuilder:
                 else:
                     if self.nameMap == "dsstox":
                         # need to check if it is in user table
-                        cmdExtract = "SELECT dsstox_id FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
-                            where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema,inch, nbneighbor)
+                        cmdExtract = "SELECT dsstox_id FROM mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM chemical_description_user \
+                            where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(inch, nbneighbor)
                     
                     elif self.nameMap == "pfas":
-                        cmdExtract = "SELECT dsstox_id FROM %s.mvwchemmap_mappfas ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
-                            where inchikey='%s' AND map_name='pfas' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, inch, nbneighbor)
+                        cmdExtract = "SELECT dsstox_id FROM mvwchemmap_mappfas ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM chemical_description_user \
+                            where inchikey='%s' AND map_name='pfas' limit (1)) limit (%s);"%(inch, nbneighbor)
 
                     elif self.nameMap == "tox21":
-                        cmdExtract = "SELECT dsstox_id FROM %s.mvwchemmap_maptox21 ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
-                            where inchikey='%s' AND map_name='tox21' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, inch,nbneighbor)
+                        cmdExtract = "SELECT dsstox_id FROM mvwchemmap_maptox21 ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM chemical_description_user \
+                            where inchikey='%s' AND map_name='tox21' limit (1)) limit (%s);"%(inch,nbneighbor)
 
                     elif self.nameMap == "drugbank":
-                        cmdExtract = "SELECT drugbank_id FROM %s.mvwchemmap_mapdrugbank ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
-                            where inchikey='%s' AND map_name='drugbank' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, inch, nbneighbor)
+                        cmdExtract = "SELECT drugbank_id FROM mvwchemmap_mapdrugbank ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM chemical_description_user \
+                            where inchikey='%s' AND map_name='drugbank' limit (1)) limit (%s);"%(inch, nbneighbor)
 
 
                     lID = self.cDB.execCMD(cmdExtract)
@@ -462,7 +462,7 @@ class JSbuilder:
                         self.dchemAdd["neighbor"][ID] = lID
                 
                         # add in the user DB
-                        cmdSQL = "UPDATE %s.chemical_description_user SET neighbors_dim3 = '{%s}' WHERE inchikey='%s' AND map_name = '%s' AND status = 'user';"%(self.cDB.schema, ",".join("\"" + ID + "\"" for ID in lID), self.dchemAdd["SMILESClass"][ID]["inchikey"], self.nameMap)
+                        cmdSQL = "UPDATE chemical_description_user SET neighbors_dim3 = '{%s}' WHERE inchikey='%s' AND map_name = '%s' AND status = 'user';"%(",".join("\"" + ID + "\"" for ID in lID), self.dchemAdd["SMILESClass"][ID]["inchikey"], self.nameMap)
                         self.cDB.updateElement(cmdSQL)
 
 

@@ -7,7 +7,6 @@ class DB:
         self.dbconfig = path.abspath("./database.ini")
         self.conn = None
         self.verbose = verbose
-        self.schema = "chemmap_proc_v2" 
 
 
     def config(self, section='postgresql'):
@@ -17,7 +16,10 @@ class DB:
         if parser.has_section(section):
             params = parser.items(section)
             for param in params:
-                dparams[param[0]] = param[1]
+                if param[0] == "schema":
+                    dparams["options"] = "-c search_path=dbo," + param[1]
+                else:
+                    dparams[param[0]] = param[1]
         else:
             raise Exception('Section {0} not found in the {1} file'.format(section, self.dbconfig))
 
@@ -41,7 +43,7 @@ class DB:
 
     def addElement(self, nameTable, lcoloumn, lval):
         self.connOpen()
-        sqlCMD = "INSERT INTO %s.%s(%s) VALUES(%s);"%(self.schema, nameTable, ",".join(lcoloumn), ",".join(["\'%s\'"%(val) for val in lval]))
+        sqlCMD = "INSERT INTO %s(%s) VALUES(%s);"%(nameTable, ",".join(lcoloumn), ",".join(["\'%s\'"%(val) for val in lval]))
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
@@ -75,7 +77,7 @@ class DB:
     def extractColoumn(self, nameTable, column, condition=""):
         self.verbose=0
         self.connOpen()
-        sqlCMD = "SELECT %s FROM %s.%s %s" % (column, self.schema, nameTable, condition)
+        sqlCMD = "SELECT %s FROM %s %s" % (column, nameTable, condition)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
@@ -117,7 +119,7 @@ class DB:
 
     def getTable(self, nameTable):
         self.connOpen()
-        sqlCMD = "SELECT * FROM %s.%s;" % (self.schema, nameTable)
+        sqlCMD = "SELECT * FROM %s;" % (nameTable)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:
@@ -138,7 +140,7 @@ class DB:
     def getRow(self, table, condition):
 
         self.connOpen()
-        sqlCMD = "SELECT * FROM %s.%s WHERE %s;" % (self.schema, table, condition)
+        sqlCMD = "SELECT * FROM %s WHERE %s;" % (table, condition)
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:

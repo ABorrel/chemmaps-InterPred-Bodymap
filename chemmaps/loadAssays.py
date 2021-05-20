@@ -11,7 +11,7 @@ class loadAssays:
         l_rows = self.cDB.getTable("tox21_assays")
         
         self.cDB.connOpen()
-        l_assays_ICE = self.cDB.execCMD("SELECT DISTINCT aenm from %s.ice_tox21"%(self.cDB.schema))
+        l_assays_ICE = self.cDB.execCMD("SELECT DISTINCT aenm from ice_tox21")
         self.cDB.connClose()
         l_assays_ICE = [assay_ICE[0] for assay_ICE in l_assays_ICE]
 

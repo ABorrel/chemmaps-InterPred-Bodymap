@@ -14,11 +14,11 @@ class mapChem :
            
     def loadFromDB(self, tableAssayMap, tableAC50, tableGene):
 
-        dac50 = self.cDB.execCMD("SELECT assay, ac50 FROM %s.%s WHERE casn='%s'"%(self.cDB.schema, tableAC50, self.CASin))
+        dac50 = self.cDB.execCMD("SELECT assay, ac50 FROM %s WHERE casn='%s'"%(tableAC50, self.CASin))
         self.dac50 = dac50
 
         # load premap
-        lassayMapped = self.cDB.execCMD("SELECT assay, gene, type_map, organ, system FROM %s.%s"%(self.cDB.schema, tableAssayMap))
+        lassayMapped = self.cDB.execCMD("SELECT assay, gene, type_map, organ, system FROM %s"%(tableAssayMap))
         dassayMapped = {}
         for assayMapped in lassayMapped:
             assay = assayMapped[0]
@@ -96,7 +96,7 @@ class mapChem :
 
             elif typeMap == "gene":
                 gene = self.dassayMapped[assay]["gene"]
-                llexp = self.cDB.execCMD("SELECT gene, system, organ, expression, control FROM %s.%s WHERE gene='%s'"%(self.cDB.schema, self.tableGene, self.dassayMapped[assay]["gene"]))
+                llexp = self.cDB.execCMD("SELECT gene, system, organ, expression, control FROM %s WHERE gene='%s'"%(self.tableGene, self.dassayMapped[assay]["gene"]))
                 
                 for lexp in llexp:
                     system = lexp[1]

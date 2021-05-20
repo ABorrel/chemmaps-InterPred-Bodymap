@@ -244,9 +244,9 @@ def clearuserchem(request):
     # open connrection to server
     cDBrequest = DBrequest.DBrequest(verbose=0)
     cDBrequest.openConnection()
-    cmd_chemical_users = "DELETE FROM %s.chemicals_user WHERE status = 'user'"%(cDBrequest.DB.schema)
+    cmd_chemical_users = "DELETE FROM chemicals_user WHERE status = 'user'"
     cDBrequest.DB.updateElement(cmd_chemical_users)
-    cmd_chemical_description_users = "DELETE FROM %s.chemical_description_user WHERE status = 'user'"%(cDBrequest.DB.schema)
+    cmd_chemical_description_users = "DELETE FROM chemical_description_user WHERE status = 'user'"
     cDBrequest.DB.updateElement(cmd_chemical_description_users)
 
     # extract information from the DB

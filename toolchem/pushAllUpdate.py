@@ -31,7 +31,7 @@ class pushAllUpdate:
 
         # extract list of chemicals in chemicals users
         self.cDB.openConnection()
-        l_chem_user_DB = self.cDB.runCMD("SELECT smiles_origin, smiles_clean, inchikey, dsstox_id, drugbank_id, mol_clean, casn, name FROM %s.chemicals_user WHERE status = 'update'"%(self.cDB.schema))
+        l_chem_user_DB = self.cDB.runCMD("SELECT smiles_origin, smiles_clean, inchikey, dsstox_id, drugbank_id, mol_clean, casn, name FROM chemicals_user WHERE status = 'update'")
         d_chem_user = {}
         for chem_user_db in l_chem_user_DB:
             if chem_user_db[3] != None:
@@ -45,7 +45,7 @@ class pushAllUpdate:
                 d_chem_user[chem_user_db[3]]["casn"] = chem_user_db[6]
                 d_chem_user[chem_user_db[3]]["name"] = chem_user_db[7]               
 
-        l_chem_prod_DB = self.cDB.runCMD("SELECT dsstox_id FROM %s.chemicals"%(self.cDB.schema))
+        l_chem_prod_DB = self.cDB.runCMD("SELECT dsstox_id FROM chemicals")
         l_chem_prod = []
         for chem_prod_db in l_chem_prod_DB:
             if chem_prod_db[0] != None:
@@ -60,7 +60,7 @@ class pushAllUpdate:
                 id_DB = self.cDB.runCMD("SELECT MAX(id) from chemicals")
                 id_DB = int(id_DB[0][0]) + 1
 
-                cmd_sql = "INSERT INTO %s.chemicals (id, smiles_origin, dsstox_id) VALUES('%s', '%s', '%s') ;" %(self.cDB.schema, id_DB, d_chem_user[chem]["smiles_origin"], d_chem_user[chem]["dsstox_id"])
+                cmd_sql = "INSERT INTO chemicals (id, smiles_origin, dsstox_id) VALUES('%s', '%s', '%s') ;" %(id_DB, d_chem_user[chem]["smiles_origin"], d_chem_user[chem]["dsstox_id"])
                 self.cDB.DB.addElementCMD(cmd_sql)
 
 
@@ -71,7 +71,7 @@ class pushAllUpdate:
                     if k == "name":
                         l_cmd_update.append("%s='%s'"%(k, d_chem_user[chem][k].replace("'", "''")))
                 
-            cmd_sql = "UPDATE %s.chemicals SET %s WHERE dsstox_id='%s'"%(",".join(self.cDB.schema, l_cmd_update), chem)
+            cmd_sql = "UPDATE chemicals SET %s WHERE dsstox_id='%s'"%(",".join(l_cmd_update), chem)
             self.cDB.DB.updateElement(cmd_sql)
 
         self.cDB.closeConnection()
@@ -80,7 +80,7 @@ class pushAllUpdate:
 
         # extract list of chemicals in chemicals users
         self.cDB.openConnection()
-        l_chem_user_DB = self.cDB.runCMD("SELECT source_id, inchikey, dim1d2d, dim3d, map_name, d3_cube, desc_1d2d, desc_3d, interference_prediction, desc_opera, status FROM %s.chemical_description_user WHERE status != 'user'"%(self.cDB.schema))
+        l_chem_user_DB = self.cDB.runCMD("SELECT source_id, inchikey, dim1d2d, dim3d, map_name, d3_cube, desc_1d2d, desc_3d, interference_prediction, desc_opera, status FROM chemical_description_user WHERE status != 'user'")
         self.cDB.closeConnection()
 
         d_chem_user = {}
@@ -110,29 +110,29 @@ class pushAllUpdate:
         self.cDB.openConnection()
         #self.cDB.DB.verbose = 1
         # update coords
-        cmd_map = "SELECT DISTINCT map_name FROM %s.chemical_description_user WHERE status='coords'"%(self.cDB.schema)
+        cmd_map = "SELECT DISTINCT map_name FROM chemical_description_user WHERE status='coords'"
         l_map_full_coords = self.cDB.runCMD(cmd_map)
         if l_map_full_coords != []:
             for map in l_map_full_coords:
                 map_in = str(map[0])
-                cmd_remove_neighbor = "UPDATE %s.chemical_description SET neighbors_dim3 = null, neighbors_dimn = null WHERE map_name='%s';"%(self.cDB.schema, map_in)
+                cmd_remove_neighbor = "UPDATE chemical_description SET neighbors_dim3 = null, neighbors_dimn = null WHERE map_name='%s';"%(map_in)
                 self.cDB.DB.updateElement(cmd_remove_neighbor)
 
-                cmd_update_coords = "UPDATE %s.chemical_description SET dim1d2d = %s.chemical_description_user.dim1d2d, "\
-                    "dim3d = %s.chemical_description_user.dim3d, d3_cube=%s.chemical_description_user.d3_cube FROM %s.chemical_description_user "\
-                    "WHERE %s.chemical_description.inchikey=%s.chemical_description_user.inchikey AND %s.chemical_description.map_name='%s' "\
-                    "AND %s.chemical_description_user.map_name='%s' AND %s.chemical_description_user.status='coords'"%(self.cDB.schema,self.cDB.schema,self.cDB.schema,self.cDB.schema,self.cDB.schema,self.cDB.schema,self.cDB.schema,self.cDB.schema,map_in, self.cDB.schema, map_in,self.cDB.schema)
+                cmd_update_coords = "UPDATE chemical_description SET dim1d2d = chemical_description_user.dim1d2d, "\
+                    "dim3d = chemical_description_user.dim3d, d3_cube=chemical_description_user.d3_cube FROM chemical_description_user "\
+                    "WHERE chemical_description.inchikey=chemical_description_user.inchikey AND chemical_description.map_name='%s' "\
+                    "AND chemical_description_user.map_name='%s' AND chemical_description_user.status='coords'"%(map_in, map_in)
                 self.cDB.DB.updateElement(cmd_update_coords)
 
 
         for inchikey in d_chem_user.keys():
-            cmd_in_db = "SELECT COUNT(*) FROM %s.chemical_description WHERE inchikey='%s' and map_name = '%s'"%(self.cDB.schema, inchikey, d_chem_user[inchikey]["map_name"])
+            cmd_in_db = "SELECT COUNT(*) FROM chemical_description WHERE inchikey='%s' and map_name = '%s'"%(inchikey, d_chem_user[inchikey]["map_name"])
             in_db = int(self.cDB.runCMD(cmd_in_db)[0][0])
             if in_db == 0:
                 # update DB
-                id_DB = self.cDB.runCMD("SELECT MAX(id) from %s.chemical_description;"%(self.cDB.schema))
+                id_DB = self.cDB.runCMD("SELECT MAX(id) FROM chemical_description;")
                 id_DB = int(id_DB[0][0]) + 1
-                cmd_sql = "INSERT INTO %s.chemical_description (id, inchikey, map_name) VALUES('%s', '%s', '%s') ;" %(self.cDB.schema, id_DB, d_chem_user[inchikey]["inchikey"], d_chem_user[inchikey]["map_name"])
+                cmd_sql = "INSERT INTO chemical_description (id, inchikey, map_name) VALUES('%s', '%s', '%s') ;" %(id_DB, d_chem_user[inchikey]["inchikey"], d_chem_user[inchikey]["map_name"])
                 self.cDB.DB.addElementCMD(cmd_sql)
 
             l_cmd_update = []
@@ -140,10 +140,10 @@ class pushAllUpdate:
                 if k == "status":
                     continue
                 if d_chem_user[inchikey][k] != None and d_chem_user[inchikey][k] != "" and d_chem_user[inchikey][k] != "NA" and d_chem_user[inchikey][k] != [] and k != "inchikey":
-                    l_cmd_update.append("%s=%s.chemical_description_user.%s"%(k, self.cDB.schema, k))
-            cmd_sql = "UPDATE %s.chemical_description SET %s FROM %s.chemical_description_user WHERE %s.chemical_description.inchikey='%s' AND %s.chemical_description_user.inchikey='%s '\
-                'AND %s.chemical_description.map_name='%s' AND %s.chemical_description_user.map_name='%s' AND %s.chemical_description_user.status != 'coords'"%(self.cDB.schema, ",".join(l_cmd_update), self.cDB.schema, self.cDB.schema,
-                 inchikey, self.cDB.schema, inchikey, self.cDB.schema, d_chem_user[inchikey]["map_name"], self.cDB.schema, d_chem_user[inchikey]["map_name"], self.cDB.schema)
+                    l_cmd_update.append("%s=chemical_description_user.%s"%(k, k))
+            cmd_sql = "UPDATE chemical_description SET %s FROM chemical_description_user WHERE chemical_description.inchikey='%s' AND chemical_description_user.inchikey='%s '\
+                'AND chemical_description.map_name='%s' AND chemical_description_user.map_name='%s' AND chemical_description_user.status != 'coords'"%(",".join(l_cmd_update), 
+                 inchikey, inchikey, d_chem_user[inchikey]["map_name"], d_chem_user[inchikey]["map_name"])
             self.cDB.DB.updateElement(cmd_sql)
         self.cDB.closeConnection()
 
@@ -151,7 +151,7 @@ class pushAllUpdate:
 
        # extract chemical that need neighbor computation
         self.cDB.openConnection()
-        l_chem_db = self.cDB.runCMD("SELECT id, inchikey, map_name FROM %s.chemical_description WHERE neighbors_dim3 is null AND d3_cube is not null;"%(self.cDB.schema))
+        l_chem_db = self.cDB.runCMD("SELECT id, inchikey, map_name FROM chemical_description WHERE neighbors_dim3 is null AND d3_cube is not null;")
         d_chem = {}
         for chem_db in l_chem_db:
             d_chem[chem_db[0]] = {}
@@ -166,14 +166,14 @@ class pushAllUpdate:
         i = 0
 
         while i < imax:
-            cmdExtract = "SELECT inchikey FROM %s.chemical_description WHERE map_name = '%s' ORDER BY cube(d3_cube) <->  (select cube (d3_cube) FROM %s.chemical_description where id='%s' "\
-                "AND map_name = '%s' limit (1))  limit (%s);"%(self.cDB.schema, d_chem[l_id[i]]["map"], self.cDB.schema, l_id[i], d_chem[l_id[i]]["map"], nb_neighbors + 1)
+            cmdExtract = "SELECT inchikey FROM chemical_description WHERE map_name = '%s' ORDER BY cube(d3_cube) <->  (select cube (d3_cube) FROM chemical_description where id='%s' "\
+                "AND map_name = '%s' limit (1))  limit (%s);"%(d_chem[l_id[i]]["map"], l_id[i], d_chem[l_id[i]]["map"], nb_neighbors + 1)
             lchem_neighbor = self.cDB.runCMD(cmdExtract)
             lchem_w = []
             for chem in lchem_neighbor:
                 lchem_w.append(chem[0])
             w_neighbors = "{" + ",".join(["\"%s\"" % (str(chem_w)) for chem_w in lchem_w[1:]]) + "}" # remove the inchikey in the list
-            cmd_update = "UPDATE %s.chemical_description SET neighbors_dim3 = '%s' WHERE id='%s';" %(self.cDB.schema, w_neighbors, l_id[i])
+            cmd_update = "UPDATE chemical_description SET neighbors_dim3 = '%s' WHERE id='%s';" %(w_neighbors, l_id[i])
             self.cDB.DB.updateElement(cmd_update)     
             i = i + 1     
         self.cDB.closeConnection()
@@ -182,7 +182,7 @@ class pushAllUpdate:
 
         # select map for full update
         self.cDB.openConnection()
-        cmd_map = "SELECT DISTINCT map_name FROM %s.chemical_description_user WHERE status='coords'"%(self.cDB.schema)
+        cmd_map = "SELECT DISTINCT map_name FROM chemical_description_user WHERE status='coords'"
         
         l_map_full_coords = self.cDB.runCMD(cmd_map)
         if l_map_full_coords != []:
@@ -230,15 +230,15 @@ class pushAllUpdate:
         self.cDB.openConnection()
 
         # clean table chemicals
-        nb_to_remove = self.cDB.runCMD("SELECT COUNT(*) FROM %s.chemicals_user WHERE status != 'user'"%(self.cDB.schema))[0][0]
-        cmd_clean_chemical_user = "DELETE FROM %s.chemicals_user WHERE status != 'user'"%(self.cDB.schema)
+        nb_to_remove = self.cDB.runCMD("SELECT COUNT(*) FROM chemicals_user WHERE status != 'user'")[0][0]
+        cmd_clean_chemical_user = "DELETE FROM chemicals_user WHERE status != 'user'"
         self.cDB.DB.updateElement(cmd_clean_chemical_user)
         self.notice.append("%s have been updated in the chemicals table"%(nb_to_remove))
 
 
         # clean table description
-        nb_to_remove_description = self.cDB.runCMD("SELECT COUNT(*) FROM %s.chemical_description_user WHERE status != 'user'"%(self.cDB.schema))[0][0]
-        cmd_clean_chemical_description_user = "DELETE FROM %s.chemical_description_user WHERE status != 'user'"%(self.cDB.schema)
+        nb_to_remove_description = self.cDB.runCMD("SELECT COUNT(*) FROM chemical_description_user WHERE status != 'user'")[0][0]
+        cmd_clean_chemical_description_user = "DELETE FROM chemical_description_user WHERE status != 'user'"
         self.cDB.DB.updateElement(cmd_clean_chemical_description_user)
         self.notice.append("%s have been updated in the chemical_description table"%(nb_to_remove_description))
 

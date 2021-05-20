@@ -37,12 +37,11 @@ class DSSToxPrep:
             self.err = 1
             return
 
-
         # case of DTXID
         if search("DTXSID", center_chem):
             # check if include in the DB
-            cmd_search = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1] FROM %s.mvwchemmap_mapdsstox\
-                WHERE dsstox_id = '%s'" %(self.cDB.schema, center_chem)
+            cmd_search = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1] FROM mvwchemmap_mapdsstox\
+                WHERE dsstox_id = '%s'" %(center_chem)
             
             chem_center = self.cDB.execCMD(cmd_search)
             if chem_center == []:
@@ -57,22 +56,22 @@ class DSSToxPrep:
             
 
             cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                FROM %s.mvwchemmap_mapdsstox ORDER BY %s.cube(d3_cube) <->  (SELECT %s.cube(d3_cube) FROM %s.mvwchemmap_mapdsstox \
-                where dsstox_id='%s' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, self.cDB.schema, self.cDB.schema, center_chem, nbChem)
+                FROM mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube(d3_cube) FROM mvwchemmap_mapdsstox \
+                where dsstox_id='%s' limit (1)) limit (%s);"%(center_chem, nbChem)
 
         else:
 
             # need to check if it is in user table
-            cmd_count = "SELECT COUNT(*) FROM %s.chemical_description_user WHERE inchikey = '%s' AND map_name = 'dsstox'"%(self.cDB.schema, center_chem)
+            cmd_count = "SELECT COUNT(*) FROM chemical_description_user WHERE inchikey = '%s' AND map_name = 'dsstox'"%(center_chem)
             inUser = self.cDB.execCMD(cmd_count)[0][0]
 
             if inUser == 1:
                 cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                    FROM %s.mvwchemmap_mapdsstox ORDER BY %s.cube(d3_cube) <->  (SELECT %s.cube (d3_cube) FROM %s.chemical_description_user \
-                    where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema,self.cDB.schema,self.cDB.schema, center_chem, nbChem)
+                    FROM mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM chemical_description_user \
+                    where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(center_chem, nbChem)
 
                 if center == 1:
-                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM %s.chemical_description_user WHERE inchikey = '%s' AND map_name = 'dsstox'"%(self.cDB.schema, center_chem))[0]
+                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM chemical_description_user WHERE inchikey = '%s' AND map_name = 'dsstox'"%(center_chem))[0]
                     x = coords_center[0][0]
                     y = coords_center[0][1]
                     z = coords_center[0][2]
@@ -80,11 +79,11 @@ class DSSToxPrep:
             else:
                 # have to be a inch
                 cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                    FROM %s.mvwchemmap_mapdsstox ORDER BY %s.cube(d3_cube) <->  (SELECT %s.cube (d3_cube) FROM %s.mvwchemmap_mapdsstox \
-                    where inchikey='%s' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, self.cDB.schema, self.cDB.schema, center_chem, nbChem)
+                    FROM mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM mvwchemmap_mapdsstox \
+                    where inchikey='%s' limit (1)) limit (%s);"%(center_chem, nbChem)
 
                 if center == 1:
-                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM %s.mvwchemmap_mapdsstox WHERE inchikey = '%s'"%(self.cDB.schema, center_chem))[0]
+                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM mvwchemmap_mapdsstox WHERE inchikey = '%s'"%(center_chem))[0]
                     x = coords_center[0][0]
                     y = coords_center[0][1]
                     z = coords_center[0][2]

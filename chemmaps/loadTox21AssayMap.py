@@ -23,7 +23,7 @@ class loadTox21AssayMap:
 
         self.cDB.connOpen()
         # load assays results
-        l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, new_hitc_flag, qc_omit_src, ac50, aenm FROM %s.ice_tox21 WHERE new_hitc = 1"%(self.cDB.schema))
+        l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, new_hitc_flag, qc_omit_src, ac50, aenm FROM ice_tox21 WHERE new_hitc = 1")
         self.cDB.connClose()
 
         l_dsstoxid_run = []
@@ -98,7 +98,7 @@ class loadTox21AssayMap:
         # assays targeted
         self.cDB.connOpen()
         # load assays results
-        l_assay = self.cDB.execCMD("SELECT DISTINCT aenm FROM %s.ice_tox21"%(self.cDB.schema))
+        l_assay = self.cDB.execCMD("SELECT DISTINCT aenm FROM ice_tox21")
         self.cDB.connClose()
 
         self.nb_assays = len(l_assay)
@@ -107,7 +107,7 @@ class loadTox21AssayMap:
 
         self.cDB.connOpen()
         # load assays results
-        l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, new_hitc_flag, qc_omit_src, ac50, aenm FROM %s.ice_tox21 INNER JOIN %s.tox21_assays ON tox21_assays.protocol_name = ice_tox21.aenm WHERE assay_target='%s'"%(self.cDB.schema, self.cDB.schema, self.assay))
+        l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, new_hitc_flag, qc_omit_src, ac50, aenm FROM ice_tox21 INNER JOIN tox21_assays ON tox21_assays.protocol_name = ice_tox21.aenm WHERE assay_target='%s'"%(self.assay))
         self.cDB.connClose()
 
         l_dsstoxid_run = []
@@ -197,7 +197,7 @@ class loadTox21AssayMap:
         # assays targeted
         self.cDB.connOpen()
         # load assays results
-        l_assay = self.cDB.execCMD("SELECT DISTINCT aenm FROM %s.ice_tox21 INNER JOIN %s.tox21_assays ON tox21_assays.protocol_name = ice_tox21.aenm WHERE assay_target='%s'"%(self.cDB.schema, self.cDB.schema, self.assay))
+        l_assay = self.cDB.execCMD("SELECT DISTINCT aenm FROM ice_tox21 INNER JOIN tox21_assays ON tox21_assays.protocol_name = ice_tox21.aenm WHERE assay_target='%s'"%(self.assay))
         self.cDB.connClose()
 
         self.nb_assays = len(l_assay)
@@ -206,7 +206,7 @@ class loadTox21AssayMap:
 
         self.cDB.connOpen()
         # load assays results
-        l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, new_hitc_flag, qc_omit_src, ac50 FROM %s.ice_tox21 WHERE aenm='%s'"%(self.cDB.schema, self.assay))
+        l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, new_hitc_flag, qc_omit_src, ac50 FROM ice_tox21 WHERE aenm='%s'"%(self.assay))
         self.cDB.connClose()
 
         nb_active_chemical = 0
