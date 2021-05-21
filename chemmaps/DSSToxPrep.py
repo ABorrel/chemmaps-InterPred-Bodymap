@@ -43,6 +43,7 @@ class DSSToxPrep:
             cmd_search = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1] FROM mvwchemmap_mapdsstox\
                 WHERE dsstox_id = '%s'" %(center_chem)
             
+            
             chem_center = self.cDB.execCMD(cmd_search)
             if chem_center == []:
                 self.err = 1
@@ -71,7 +72,12 @@ class DSSToxPrep:
                     where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(center_chem, nbChem)
 
                 if center == 1:
-                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM chemical_description_user WHERE inchikey = '%s' AND map_name = 'dsstox'"%(center_chem))[0]
+                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM chemical_description_user WHERE inchikey = '%s' AND map_name = 'dsstox'"%(center_chem))
+                    if coords_center == []:
+                        self.err = 1
+                        return
+                    else:
+                         coords_center = coords_center[0]
                     x = coords_center[0][0]
                     y = coords_center[0][1]
                     z = coords_center[0][2]
@@ -83,7 +89,12 @@ class DSSToxPrep:
                     where inchikey='%s' limit (1)) limit (%s);"%(center_chem, nbChem)
 
                 if center == 1:
-                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM mvwchemmap_mapdsstox WHERE inchikey = '%s'"%(center_chem))[0]
+                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM mvwchemmap_mapdsstox WHERE inchikey = '%s'"%(center_chem))
+                    if coords_center == []:
+                        self.err = 1
+                        return
+                    else:
+                         coords_center = coords_center[0]
                     x = coords_center[0][0]
                     y = coords_center[0][1]
                     z = coords_center[0][2]
@@ -156,18 +167,17 @@ class DSSToxPrep:
             dinch[inch] = dsstox
             i = i + 1 
 
-        # Change name in the neighbor
-        for chem in dinch.values():
+        # Change name in the neighbor ===> need to do it with a sql request
+        for chem_dtx in self.dneighbor.keys():
+            inch = self.dSMILES[chem_dtx]["inchikey"]
+            
             lneighbors = []
-            if not chem in list(self.dneighbor.keys()):
-                continue
-            #a = self.dneighbor[chem] # for inspect error
-            for n in self.dneighbor[chem]:
+            for n in self.dneighbor[chem_dtx]:
                 try: 
                     lneighbors.append(dinch[n])
                 except: 
                     pass
-            self.dneighbor[chem] = lneighbors
+            self.dneighbor[chem_dtx] = lneighbors
 
     def loadChemMapAddMap(self):
         
