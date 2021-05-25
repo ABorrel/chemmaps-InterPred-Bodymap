@@ -19,10 +19,14 @@
 {% block content %}
     {% if map == "pfas" %}
         <div id="backPFAS">
+    {% elif map == "tox21" %}   
+        <div id="backTox21">
     {% elif map == "drugbank" %}
         <div id="backDrugmap">
-    {% else %}
+    {% elif map == "dsstox" %}
         <div id="backDSSTOX">
+    {% else %}
+        <div id="backTox21">
     {% endif %}
 
 

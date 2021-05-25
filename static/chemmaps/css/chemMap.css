@@ -29,6 +29,10 @@ body {
     background-image: url("../img/chem_background.png");
 }
 
+#backTox21{
+    background-image: url("../img/Tox21Banner.png");
+}
+
 a:link {
     color: yellow;
     text-decoration: none;
