@@ -1,7 +1,7 @@
 # ChemMaps - Interpred -Tox21BodyMap V.3
 Release version 3 - Scheduled May 2021
 
-## Dependency updates
+## Updates VM
 - python3.5 -> python 3.9
 - django-3.0 -> django-3.2
 - OPERA 2.3 -> OPERA 2.6
@@ -43,6 +43,11 @@ Release version 3 - Scheduled May 2021
 - Fix bug on chemical selection on panel, remove chemical in scene not hide
 - Change color range and color scale on map 
 - Change png path to improve speed
+- Correct chemical selection on map
+- Url format for an easy integration in other webservers
+    - DSSTOX: https://sandbox.ntp.niehs.nih.gov/chemmaps/DSSTox/DTXSID1026902
+    - assay in Tox21: https://sandbox.ntp.niehs.nih.gov/chemmaps/tox21/ATG_PPARg_TRANS_dn
+    - target: https://sandbox.ntp.niehs.nih.gov/chemmaps/tox21/target=LTB4R
 
 ### Minor update
 - Update help pages and general website design to fit better with the NTP template
@@ -58,6 +63,7 @@ Release version 3 - Scheduled May 2021
 - Process results only if the QC passed
 - Add in results page the number of assay tested
 - Use ICE tox21 assay results instead of invitroDB
+- Url with the chemical casrn (https://sandbox.ntp.niehs.nih.gov/bodymap/bychem/10016-20-3)
 
 ## Update in interpred v1.5
 - Compute descriptor using the CompDesc packages and OPERA 2.6
