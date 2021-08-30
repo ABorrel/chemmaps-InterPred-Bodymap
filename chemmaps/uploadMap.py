@@ -114,10 +114,6 @@ class loadingMap:
             lprop = chem[7]
             lprop_tox = chem[8]
 
-
-            #if lprop == None:
-            #    continue
-
             #coords
             dout["coord"][db_id] = [float(xadd), float(yadd), float(zadd)]
 
@@ -142,7 +138,7 @@ class loadingMap:
                     except: dout["info"][db_id][DDESCDRUGMAP[descMap]] = val
                 else:
                     if descMap in self.lallProp:
-                        if lprop == None:
+                        if lprop == None or lprop == []:
                             val = "NA"
                         else:
                             val = lprop[self.lallProp.index(descMap)]
