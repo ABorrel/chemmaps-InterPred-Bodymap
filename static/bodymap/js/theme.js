@@ -7,7 +7,7 @@ function InfoChemical(dchem){
     
     if (map == 'pfas' || map == 'dsstox' || map == 'tox21') {
         document.getElementById('CompoundID').href =
-            'https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=' + ID;
+            'https://comptox.epa.gov/dashboard/chemical/details/' + ID;
     } else if (map == 'drugbank') {
         document.getElementById('CompoundID').href = 'https://www.drugbank.ca/drugs/' + ID;
     }

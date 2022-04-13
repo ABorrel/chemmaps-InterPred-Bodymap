@@ -21,6 +21,7 @@ Current download => 866794 chemicals => limited to 500,000 structures
 
 # TO DO
 ## URGENT
+- ~~1-25-2022: update link to dsstox from the map~~
 - ~~fix static file and check with docker version~~
 - ~~fix duplicate code for DB interaction~~
 - ~~Add QC data in bodymap~~
@@ -167,3 +168,4 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - 09-20: add ILS ICE data
 - 12-20: update bodymap with the assays results from ICE and QC 
 - 18-05-21: fix map navigation bug on color and selection 
+- 4-13-22: Fix help page

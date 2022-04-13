@@ -7,7 +7,7 @@ function updateInfoBox(intersect) {
     CompoundID.innerHTML = ID;
     if (map == 'pfas' || map == 'dsstox' || map == 'tox21'|| map == 'Tox21Assay' || map == 'Tox21Target' || map == 'Tox21MostActive') {
         document.getElementById('CompoundID').href =
-            'https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=' + ID;
+            'https://comptox.epa.gov/dashboard/chemical/details/' + ID;
 
         document.getElementById('LinkDSSTOX').href = "DSSTox/" + ID;
 

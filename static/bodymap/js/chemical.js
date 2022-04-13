@@ -21,7 +21,7 @@ function chemPanel(dchem) {
 
     DSSTOX.innerHTML = dchem.DSSTOX;
     document.getElementById('DSSTOX').href =
-            'https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=' + dchem.DSSTOX;
+            'https://comptox.epa.gov/dashboard/chemical/details/' + dchem.DSSTOX;
     
     ChemicalName.innerHTML = dchem.Name;
     SMILES.innerHTML = dchem.SMILES;

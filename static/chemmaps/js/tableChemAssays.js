@@ -13,7 +13,7 @@ function defineColumnDef() {
         cellClass: "grid-cell-left",
         cellRenderer: function(params) {
             let keyData = params.data.dtxid;
-            let newLink = `<a href= https://comptox.epa.gov/dashboard/dsstoxdb/results?utf8=%E2%9C%93&search=${keyData}#invitrodb target="_blank">${keyData}</a>`;
+            let newLink = `<a href= https://comptox.epa.gov/dashboard/chemical/invitrodb/${keyData} target="_blank">${keyData}</a>`;
             return newLink;
         },
     });
