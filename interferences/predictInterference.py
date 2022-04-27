@@ -144,7 +144,7 @@ class Predict:
                     self.dpred[chemID][modelInt].append(float(self.resultPred[modelInt][modelPart][chemIn]["pred"]))
 
         # add SMILES
-        d2D = loadMatrixToDict(self.pdes2D)
+        d2D = loadMatrixToDict(self.prSession + "2D.csv") #not self.pr2D because only included chem not in DB
         #a = self.dpred
         for chem in self.dpred.keys():
             flagDB = 0
