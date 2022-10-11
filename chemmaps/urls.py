@@ -5,6 +5,8 @@ from django.conf import settings
 
 from . import views
 
+handler404 = "chemmaps.views.handler404"
+handler500 = "chemmaps.views.handler500"
 app_name = "chemmaps"
 
 urlpatterns = [

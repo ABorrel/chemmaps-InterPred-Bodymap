@@ -1,17 +1,15 @@
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.core.files.storage import default_storage
+from django.template import RequestContext
 from random import randint
 import json
 from re import search
 
-
 from .forms import UploadChemList, descDrugMapChoice, descDSSToxMapChoice, descDSSToxChoice, uploadList
 from .content import uploadSMILES
-from .toolbox import loadMatrixToDict
 from .JSbuilder import JSbuilder
-from .toolbox import createFolder
 from .DSSToxPrep import DSSToxPrep
 from .loadAssays import loadAssays
 from .loadTox21AssayMap import loadTox21AssayMap
@@ -22,11 +20,18 @@ from os import path
 from chemmaps import toolbox
 
 
+def handler404(request, exception):
+    return render(request, '404.html', status=404)
+
+def handler500(request, *args, **argv):
+    response = render(request,'500.html', {},
+                                  context_instance=RequestContext(request))
+    response.status_code = 500
+    return response
+
 def test(request, toto):
 
     return HttpResponse('Slug parameter is: ' + toto)
-
-
 
 def index(request):
 
@@ -36,10 +41,8 @@ def index(request):
         request.session["name_session"] = a
     return render(request, 'chemmaps/index.html', {"DTXSID":""})
 
-
 def launchHelp(request, map="all"):
     return render(request, 'chemmaps/help.html', {"map": map})
-
 
 def download(request, name):
 
@@ -53,7 +56,6 @@ def download(request, name):
             response['Content-Disposition'] = 'inline; filename=' + path.basename(file_path)
             return response
     raise Http404
-
 
 def launchMap(request, map):
 
@@ -103,7 +105,7 @@ def launchMap(request, map):
                                                            "from_upload": formUpload, "ErrorLine": "1", "map":map, "dassays":d_assays})
 
         prsession = path.abspath("./temp") + "/" + str(name_session) + "/"
-        createFolder(prsession, 1)
+        toolbox.createFolder(prsession, 1)
 
         cinput = uploadSMILES(content, prsession)
         cinput.prepListSMILES()
@@ -115,7 +117,7 @@ def launchMap(request, map):
     elif formUpload.is_valid() == True:
 
         prsession = path.abspath("./temp") + "/" + str(name_session) + "/"
-        createFolder(prsession, 1)
+        toolbox.createFolder(prsession, 1)
 
         pfileserver = prsession + "upload.txt"
         with open(pfileserver, 'wb+') as destination:
@@ -198,7 +200,6 @@ def launchMap(request, map):
         return render(request, 'chemmaps/launchMap.html', {"form_info":formDesc, "form_smiles":form_smiles,
                                                            "from_upload": formUpload, "Error": "0", "map":map, "dassays":d_assays})
 
-
 def launchTox21AssayMap(request, assay):
 
     
@@ -222,7 +223,6 @@ def launchTox21AssayMap(request, assay):
     return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
                                                              "dSMILESClass":dSMILESClass,
                                                              "ldesc":ldescJS, "map":"Tox21Assay", "mapJS": mapJS, "prSessionJS":prSessionJS, "assay":assay, "nb_active": cloadAssays.nb_active, "nb_tested":  cloadAssays.nb_tested })
-
 
 def launchTox21TagetMap(request, target):
 
@@ -248,7 +248,6 @@ def launchTox21TagetMap(request, target):
                                                              "dSMILESClass":dSMILESClass,
                                                              "ldesc":ldescJS, "map":"Tox21Target", "mapJS": mapJS, "prSessionJS":prSessionJS, "target":target, "assay":"", "nb_assays": cloadAssays.nb_assays})#, "nb_active": cloadAssays.nb_active, "nb_tested":  cloadAssays.nb_tested })
 
-
 def launchTox21MostPotent(request):
 
 
@@ -273,7 +272,6 @@ def launchTox21MostPotent(request):
                                                              "dSMILESClass":dSMILESClass,
                                                              "ldesc":ldescJS, "map":"Tox21Target", "mapJS": mapJS, "prSessionJS":prSessionJS, "target":"Most active", "assay":"", "nb_assays": cloadAssays.nb_assays})#, "nb_active": cloadAssays.nb_active, "nb_tested":  cloadAssays.nb_tested })
 
-
 def browseChemicals(request):
 
     name_session = request.session.get("name_session")
@@ -288,7 +286,6 @@ def browseChemicals(request):
 
 
     return render(request, 'chemmaps/chemicalBrowser.html', {"d_chem":d_chem_JS, "d_assays":d_assays_JS})
-
 
 # case of automatic launch -> Comptox
 def launchDSSToxMap(request, DTXSID):
@@ -314,9 +311,6 @@ def launchDSSToxMap(request, DTXSID):
 
         return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor, "dSMILESClass":dSMILESClass, "ldesc":ldescJS, "map":"dsstox", "mapJS": mapJS,"prSessionJS":prSessionJS, "center_map":DTXSID, "assay":"" })
 
-    return 
-
-
 def computeDescriptor(request, map):
 
 
@@ -326,7 +320,7 @@ def computeDescriptor(request, map):
     # open file with
     prsession = path.abspath("./temp") + "/" + str(name_session) + "/"
     
-    dSMI = loadMatrixToDict(prsession + "smiClean.csv", sep="\t")
+    dSMI = toolbox.loadMatrixToDict(prsession + "smiClean.csv", sep="\t")
 
     cinput = uploadSMILES(dSMI, prsession)
     lfileDesc = cinput.computeDesc(map)

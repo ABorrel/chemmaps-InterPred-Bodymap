@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'n7)bc%gfm=4jo&xc^nbsg)c@mq)hwloo)mlun&dkgc&sol)kx#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['sandbox.ntp.niehs.nih.gov', 'localhost', '10.0.2.15']#,'152.1.45.108', 'www.chemmaps.com', "www.alexborrel.com"]
 
@@ -61,7 +61,7 @@ ROOT_URLCONF = 'django_server.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(PROJECT_PATH, 'templates')],
+        'DIRS': [os.path.join(PROJECT_PATH, 'templates'), os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
