@@ -73,3 +73,10 @@ Release version 3 - Scheduled May 2021
 ## TO CHECK IN PRODUCTION
 - link to the png folder and case where chemicals are added => link to static/png (search text "// TO CHECK IN PRODUCTION" )
 - sql injection
+
+
+## bug correction
+### 7/26/2022
+- update version python to python 3.10
+- fix error descriptor 3d in compdesc (update CompDesc 0.22)
+- !!!! need to fix error to load page after coord computation
