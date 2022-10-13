@@ -29,10 +29,6 @@ def handler500(request, *args, **argv):
     response.status_code = 500
     return response
 
-def test(request, toto):
-
-    return HttpResponse('Slug parameter is: ' + toto)
-
 def index(request):
 
     if not "name_session" in request.session.keys():
@@ -157,7 +153,6 @@ def launchMap(request, map):
                                                            "from_upload": formUpload, "Error": "1", "map":map, "dassays":d_assays})
 
         if map == "dsstox":
-
             chemIn = formDesc.cleaned_data['chem']
             build = DSSToxPrep(chemIn, ldescMap, prsession)
             if not search("DTXSID", chemIn):
@@ -353,7 +348,6 @@ def computeDescriptor(request, map):
                                                             "form_info": formDesc, "Error": "1"})
         else:
             if map == "dsstox":
-
                 build = JSbuilder(map, ldescMap, prsession)
                 build.generateCoords(lfileDesc[0], lfileDesc[1])
                 build.findinfoTable()
@@ -390,7 +384,12 @@ def computeDescriptor(request, map):
             prSessionJS = json.dumps(prsession[1:])
             mapJS = json.dumps(map)
 
-
+        
+        print(len(list(dJS["coord"].keys())))
+        print(len(list(dJS["info"].keys())))
+        print(len(list(dJS["neighbor"].keys())))
+        print(len(list(dJS["SMILESClass"].keys())))
+        print(len(ldesc))
         return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
                                                            "dSMILESClass": dSMILESClass, "ldesc": ldesc,
                                                             "map": map, "mapJS": mapJS, "prSessionJS":prSessionJS,

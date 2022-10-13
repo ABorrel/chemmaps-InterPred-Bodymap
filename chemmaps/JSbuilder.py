@@ -489,7 +489,7 @@ class JSbuilder:
                 self.dchemAdd["SMILESClass"][IDadd]["SMILES"] = d2Ddesc[IDadd]["SMILES"]
 
 
-                if self.nameMap == "DrugMap":
+                if self.nameMap == "drugbank":
                     self.dchemAdd["SMILESClass"][IDadd]["DRUG_GROUPS"] = "add"
                     self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = d2Ddesc[IDadd]["inchikey"]
                 else:

@@ -8,7 +8,7 @@ function posPointIndividuallyDrugMap(repos) {
         position[0] = parseFloat(dcoords[i][0] * fact);
         position[1] = parseFloat(dcoords[i][1] * fact);
         position[2] = parseFloat(dcoords[i][2] * fact);
-        //console.log(dSMILESClass);
+        console.log(dSMILESClass[i]);
         if (dSMILESClass[i]['DRUG_GROUPS'].search('approved') !== -1) {
             var typeDrug = 'approved';
         } else if (dSMILESClass[i]['DRUG_GROUPS'].search('withdraw') !== -1) {

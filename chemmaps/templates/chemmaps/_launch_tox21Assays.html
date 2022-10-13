@@ -1,10 +1,8 @@
 {% load static %}
 
-
-<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css"> 
-<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
-
-<script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js" type="text/javascript"></script>
+<link href="{% static 'css/ag-grid.min.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'css/ag-theme-balham.min.css' %}" rel="stylesheet" type="text/css">
+<script src="{% static 'js/ag-grid-community.min.noStyle.js' %}" type="text/javascript"></script>
 <script src="{% static 'chemmaps/js/tableAssays.js' %}" type="text/javascript"></script>
 
 <br>
