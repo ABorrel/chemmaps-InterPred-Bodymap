@@ -7,7 +7,7 @@ function createpanel() {
     //console.log(lchem);
     //console.log(dinfo);
     var lonMap = Object.keys(dinfo[lchem[1]]);
-    console.log(lonMap);
+    //console.log(lonMap);
     var settings = {};
 
     if (map == 'drugbank') {
@@ -110,7 +110,7 @@ function createpanel() {
     // check other parameters
     for (var i in lonMap) {
         var desc = lonMap[i];
-        console.log(desctype[lonMap[i]]);
+        //console.log(desctype[lonMap[i]]);
         if (desctype[lonMap[i]] == 'range') {
             // use to create specific function by descriptors
             var spfunction = {
@@ -137,7 +137,7 @@ function createpanel() {
             settings[desc] = outfunction;
         }
     }
-    console.log(settings);
+    //console.log(settings);
     // panel selection
     if (map == 'drugbank') {
         folder1.add(settingsDefault, 'Approved drugs').onChange(viewDBapproved);
@@ -247,7 +247,7 @@ function drawChemicals(visibility) {
         scene.traverse(function(child) {
             if (child instanceof THREE.Points) numOfPoints++;
         });
-        console.log(numOfPoints);
+        //console.log(numOfPoints);
         if (numOfPoints > 50) {
             alert('Draw on the Map only less than 50 chemicals');
             return;
@@ -323,7 +323,7 @@ function Help() {
 
 // color
 function colorbyType(descin) {
-    console.log(descin);
+    //console.log(descin);
     if (descin == 'Drug group') {
         for (ktype in dpoints) {
             for (var i = 0; i < dpoints[ktype].length; i++) {

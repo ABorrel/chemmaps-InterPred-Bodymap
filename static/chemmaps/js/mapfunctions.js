@@ -1,35 +1,5 @@
 //position points on the map
 
-function posPoint(lcoord, name, colorhexa, sprite, size, fact, scene) {
-    var textureLoader = new THREE.TextureLoader();
-
-    var position = new Float32Array(3);
-    var sizes = new Float32Array(1);
-    position[0] = parseFloat(lcoord[0] * fact);
-    position[1] = parseFloat(lcoord[1] * fact);
-    position[2] = parseFloat(lcoord[2] * fact);
-    // manage geometry
-    var geometry = new THREE.BufferGeometry();
-    geometry.addAttribute('position', new THREE.BufferAttribute(position, 3));
-    geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
-    // have to fix for the rayscatting
-    geometry.computeBoundingSphere();
-    geometry.boundingSphere.radius = size;
-    var material = new THREE.PointsMaterial({
-        size: size,
-        map: sprite,
-        alphaTest: 0.1,
-        color: colorhexa,
-        transparent: true,
-    });
-    var particule = new THREE.Points(geometry, material);
-    particule.name = name;
-    particule.col = colorhexa;
-    scene.add(particule);
-    return particule;
-}
-
-
 function posPointIndividuallyDrugMap(repos) {
     //console.log(color);
     // textures and material
@@ -38,7 +8,7 @@ function posPointIndividuallyDrugMap(repos) {
         position[0] = parseFloat(dcoords[i][0] * fact);
         position[1] = parseFloat(dcoords[i][1] * fact);
         position[2] = parseFloat(dcoords[i][2] * fact);
-        console.log(dSMILESClass);
+        //console.log(dSMILESClass);
         if (dSMILESClass[i]['DRUG_GROUPS'].search('approved') !== -1) {
             var typeDrug = 'approved';
         } else if (dSMILESClass[i]['DRUG_GROUPS'].search('withdraw') !== -1) {
@@ -56,8 +26,8 @@ function posPointIndividuallyDrugMap(repos) {
         var sprite = dsprite[typeDrug];
         // manage geometry
         var geometry = new THREE.BufferGeometry();
-        geometry.addAttribute('position', new THREE.BufferAttribute(position, 3));
-        geometry.addAttribute('size', new THREE.BufferAttribute(size, 1));
+        geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( position, 3 ) );
+        geometry.size = new THREE.BufferAttribute(size, 1);
         // have to fix for the rayscatting
         geometry.computeBoundingSphere();
         geometry.boundingSphere.radius = size;
@@ -264,8 +234,9 @@ function buildAxes(length, x, y, z) {
 }
 
 function buildLine(src, dst, colorHex, dashed, dashedsize) {
-    var geom = new THREE.Geometry(),
+    var geom = new THREE.BufferGeometry(),
         mat;
+    
     if (dashed) {
         mat = new THREE.LineDashedMaterial({
             linewidth: 5,
@@ -276,9 +247,14 @@ function buildLine(src, dst, colorHex, dashed, dashedsize) {
     } else {
         mat = new THREE.LineBasicMaterial({ linewidth: 5, color: colorHex });
     }
-    geom.vertices.push(src.clone());
-    geom.vertices.push(dst.clone());
-    geom.computeLineDistances(); // This one is SUPER important, otherwise dashed lines will appear as simple plain lines
+    const points = [];
+    points.push(src.clone());
+    points.push(dst.clone());
+    
+    geom.setFromPoints(points);
+    //geom.computeLineDistances(); // This one is SUPER important, otherwise dashed lines will appear as simple plain lines
+    const line = new THREE.Line( geom, mat );
+    
     var axis = new THREE.Line(geom, mat, THREE.LinePieces);
     return axis;
 }
@@ -389,8 +365,8 @@ function downloadNeighbor() {
     //console.log(ID);
     
     var ldesc = Object.keys(dinfo[ID]);
-    console.log(ldesc);
-    console.log(dSMILESClass[ID]);
+    //console.log(ldesc);
+    //console.log(dSMILESClass[ID]);
     // write header
     for (var idesc in ldesc) {
         textin = textin + '\t' + ldesc[idesc];
