@@ -180,8 +180,7 @@ class JSbuilder:
             else:
                 lextract = self.cDB.extractColoumn("mvwchemmap_mapdsstox", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox", "WHERE inchikey = '%s' AND d3_cube is not null limit (1)"%(inchikey))
             
-            
-            if lextract != []:
+            if lextract != [] and lextract[0][0] != "":
                 lextract = lextract[0]
                 inch = lextract[2]
                 smiles = lextract[1]
@@ -382,7 +381,8 @@ class JSbuilder:
             except:pass
 
             # run R script
-            cmd = "%s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath("./chemmaps/Rscripts"), p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
+            ## add Rscript for  windows install!
+            cmd = "Rscript %s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath("./chemmaps/Rscripts"), p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
             system(cmd)
 
             if path.exists(p1D2Dcoord) and path.exists(p3Dcoord):
@@ -489,7 +489,7 @@ class JSbuilder:
                 self.dchemAdd["SMILESClass"][IDadd]["SMILES"] = d2Ddesc[IDadd]["SMILES"]
 
 
-                if self.nameMap == "DrugMap":
+                if self.nameMap == "drugbank":
                     self.dchemAdd["SMILESClass"][IDadd]["DRUG_GROUPS"] = "add"
                     self.dchemAdd["SMILESClass"][IDadd]["inchikey"] = d2Ddesc[IDadd]["inchikey"]
                 else:

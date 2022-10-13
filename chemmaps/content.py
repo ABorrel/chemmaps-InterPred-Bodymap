@@ -154,12 +154,14 @@ class uploadSMILES:
                     # compute desc in case of no where
                     if lval1D2D_3D == []:
                         chemical = CompDesc.CompDesc(SMICLEAN, self.prout)
-                        chemical.prepChem()
-                        chemical.generateInchiKey()
-                        chemical.computeAll2D()
-                        chemical.set3DChemical()
-                        chemical.computeAll3D()
-
+                        try:
+                            chemical.prepChem()
+                            chemical.generateInchiKey()
+                            chemical.computeAll2D()
+                            chemical.set3DChemical()
+                            chemical.computeAll3D()
+                        except:
+                            chemical.err = 1
                         if chemical.err == 1:
                             dout[k]["desc"] = "img/checkNo.png"
                             dout[k]["Descriptor"] = "Error"
@@ -229,6 +231,10 @@ def downloadDescFromDB(cDB, ldesc1D2D, ldesc3D, table, inchikey, mapName=""):
             lval3D = lval[0][1]
         except:
             return []
+
+    #case in DB but no descriptors computed
+    if lval1D2D == [] or lval3D == []:
+        return []
 
     d1D2D = {}
     i = 0
