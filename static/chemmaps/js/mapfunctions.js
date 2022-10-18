@@ -342,9 +342,23 @@ function drawChemical() {
             if (ID == dpoints[ktype][i].name) {
                 var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
                 // TO CHECK IN PRODUCTION ===> NEED to add in case of in the repertory
-                var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                var ppng = "/static_chemmaps/chemmaps/png/" + namepng.substring(0, 2) + "/" + namepng.substring(2, 4) + "/" + namepng + ".png"
-                var texture = textureLoader.load(ppng);
+                
+                //var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
+                //var ppng = "/static_chemmaps/chemmaps/png/" + namepng.substring(0, 2) + "/" + namepng.substring(2, 4) + "/" + namepng + ".png"
+                
+                //const canvas = document.querySelector('neighbor1');
+                //const renderer = new THREE.WebGLRenderer({canvas});
+                const ctx = document.createElement('canvas').getContext('2d');
+                ctx.fillStyle = "#FF0000";
+                ctx.fillRect(20, 20, 150, 100);
+                // draw chemicals
+                console.log(dSMILESClass[dpoints[ktype][i].name]['SMILES']);
+                //SmilesDrawer.parse(dSMILESClass[dpoints[ktype][i].name]['SMILES'], function(tree) {
+                    // Draw to the canvas
+                //    smilesDrawer.draw(tree, ctx, 'white', false);
+                //});
+                
+                const texture = new THREE.CanvasTexture(ctx.canvas);
                 dpoints[ktype][i].material.map = texture;
                 dpoints[ktype][i].material.size = 15;
                 dpoints[ktype][i].material.color.setHex(0xffffff);
