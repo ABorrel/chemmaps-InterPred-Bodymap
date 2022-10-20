@@ -340,30 +340,35 @@ function drawChemical() {
     for (ktype in dpoints) {
         for (var i = 0; i < dpoints[ktype].length; i++) {
             if (ID == dpoints[ktype][i].name) {
-                var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                // TO CHECK IN PRODUCTION ===> NEED to add in case of in the repertory
-                
-                //var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                //var ppng = "/static_chemmaps/chemmaps/png/" + namepng.substring(0, 2) + "/" + namepng.substring(2, 4) + "/" + namepng + ".png"
-                
-                //const canvas = document.querySelector('neighbor1');
-                //const renderer = new THREE.WebGLRenderer({canvas});
-                const ctx = document.createElement('canvas').getContext('2d');
-                ctx.fillStyle = "#FF0000";
-                ctx.fillRect(20, 20, 150, 100);
+                // define smiles to chemicals builder
+                var options = {};
+                var smilesDrawer = new SmilesDrawer.Drawer(options);
+
+                // define on fly canvas
+                const canvas = document.createElement('canvas');
+                canvas.id = "chemOnFly"
+                canvas.width = 500;
+                canvas.height = 500;
+
+                // put the canvas in the html body
+                var body = document.getElementsByTagName("body")[0];
+                body.appendChild(canvas);
+
+                chemOnFly = document.getElementById("chemOnFly");
+
                 // draw chemicals
                 console.log(dSMILESClass[dpoints[ktype][i].name]['SMILES']);
-                //SmilesDrawer.parse(dSMILESClass[dpoints[ktype][i].name]['SMILES'], function(tree) {
+                SmilesDrawer.parse(dSMILESClass[dpoints[ktype][i].name]['SMILES'], function(tree) {
                     // Draw to the canvas
-                //    smilesDrawer.draw(tree, ctx, 'white', false);
-                //});
-                
-                const texture = new THREE.CanvasTexture(ctx.canvas);
+                    smilesDrawer.draw(tree, 'chemOnFly', 'dark', false);
+                    //svgDrawer.draw(tree, '/static_chemmaps/chemmaps/png/out.svg', 'dark', false);
+                });
+                const texture = new THREE.CanvasTexture(chemOnFly);
                 dpoints[ktype][i].material.map = texture;
                 dpoints[ktype][i].material.size = 15;
                 dpoints[ktype][i].material.color.setHex(0xffffff);
                 dpoints[ktype][i].col = 0xffffff;
-                //dpoints[ktype][i].material.map.needsUpdate = true;
+               // dpoints[ktype][i].material.map.needsUpdate = true;
                 //dpoints[ktype][i].material.size.needsUpdate = true;
             }
         }
