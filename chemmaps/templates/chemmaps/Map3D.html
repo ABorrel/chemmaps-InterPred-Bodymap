@@ -158,11 +158,12 @@
 
     <script>
 
-
+                var strDownloadMime = "image/octet-stream";
                 //for the function generalisation
                 var map = {{mapJS | safe}};
                 var prSession = {{prSessionJS | safe}};
                 
+
                 // format properly descriptors
                 if (map == "drugbank"){
                     var desctype = {"Rotable bond": "range", "Polar surface": "range",
@@ -302,7 +303,7 @@
                 
 
                 // ==== renderer initialization  ====
-                var renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+                var renderer = new THREE.WebGLRenderer({antialias: true, alpha: true,  preserveDrawingBuffer: true});
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 container.appendChild(renderer.domElement);
@@ -328,6 +329,11 @@
                 window.addEventListener('dblclick', blockview, false);
                 // === recurcive animation
                 animate(); // recurcive animation
+
+
+                const screenshotTarget = document.body;
+
+
 
 
     </script>

@@ -1,5 +1,34 @@
 //position points on the map
 
+function posPoint(lcoord, name, colorhexa, sprite, size, fact, scene) {
+    var textureLoader = new THREE.TextureLoader();
+
+    var position = new Float32Array(3);
+    var sizes = new Float32Array(1);
+    position[0] = parseFloat(lcoord[0] * fact);
+    position[1] = parseFloat(lcoord[1] * fact);
+    position[2] = parseFloat(lcoord[2] * fact);
+    // manage geometry
+    var geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(position, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    // have to fix for the rayscatting
+    geometry.computeBoundingSphere();
+    geometry.boundingSphere.radius = size;
+    var material = new THREE.PointsMaterial({
+        size: size,
+        map: sprite,
+        alphaTest: 0.1,
+        color: colorhexa,
+        transparent: true,
+    });
+    var particule = new THREE.Points(geometry, material);
+    particule.name = name;
+    particule.col = colorhexa;
+    scene.add(particule);
+    return particule;
+}
+
 function posPointIndividuallyDrugMap(repos) {
     //console.log(color);
     // textures and material
@@ -8,7 +37,6 @@ function posPointIndividuallyDrugMap(repos) {
         position[0] = parseFloat(dcoords[i][0] * fact);
         position[1] = parseFloat(dcoords[i][1] * fact);
         position[2] = parseFloat(dcoords[i][2] * fact);
-        console.log(dSMILESClass[i]);
         if (dSMILESClass[i]['DRUG_GROUPS'].search('approved') !== -1) {
             var typeDrug = 'approved';
         } else if (dSMILESClass[i]['DRUG_GROUPS'].search('withdraw') !== -1) {
@@ -336,40 +364,20 @@ function callbackFunc(response) {
 // map function
 function drawChemical() {
     document.getElementById('drawChemical');
-    var textureLoader = new THREE.TextureLoader();
+    console.log("INN");
+    console.log(ID);
     for (ktype in dpoints) {
         for (var i = 0; i < dpoints[ktype].length; i++) {
             if (ID == dpoints[ktype][i].name) {
-                // define smiles to chemicals builder
-                var options = {};
-                var smilesDrawer = new SmilesDrawer.Drawer(options);
-
-                // define on fly canvas
-                const canvas = document.createElement('canvas');
-                canvas.id = "chemOnFly"
-                canvas.width = 500;
-                canvas.height = 500;
-
-                // put the canvas in the html body
-                var body = document.getElementsByTagName("body")[0];
-                body.appendChild(canvas);
-
-                chemOnFly = document.getElementById("chemOnFly");
-
-                // draw chemicals
-                console.log(dSMILESClass[dpoints[ktype][i].name]['SMILES']);
-                SmilesDrawer.parse(dSMILESClass[dpoints[ktype][i].name]['SMILES'], function(tree) {
-                    // Draw to the canvas
-                    smilesDrawer.draw(tree, 'chemOnFly', 'dark', false);
-                    //svgDrawer.draw(tree, '/static_chemmaps/chemmaps/png/out.svg', 'dark', false);
-                });
+                // duplicate texture from the compound2 info box
+                const chemOnFly = document.getElementById("Compoundpng2");
                 const texture = new THREE.CanvasTexture(chemOnFly);
+                //console.log(texture);
                 dpoints[ktype][i].material.map = texture;
                 dpoints[ktype][i].material.size = 15;
                 dpoints[ktype][i].material.color.setHex(0xffffff);
                 dpoints[ktype][i].col = 0xffffff;
-               // dpoints[ktype][i].material.map.needsUpdate = true;
-                //dpoints[ktype][i].material.size.needsUpdate = true;
+                dpoints[ktype][i].material.map.needsUpdate;
             }
         }
     }
