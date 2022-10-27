@@ -235,7 +235,6 @@ function resetPoint(){
     }
 }
 
-
 // Build axes and text
 function buildAxes(length, x, y, z) {
     var axes = new THREE.Object3D();
@@ -364,8 +363,6 @@ function callbackFunc(response) {
 // map function
 function drawChemical() {
     document.getElementById('drawChemical');
-    console.log("INN");
-    console.log(ID);
     for (ktype in dpoints) {
         for (var i = 0; i < dpoints[ktype].length; i++) {
             if (ID == dpoints[ktype][i].name) {
@@ -377,7 +374,7 @@ function drawChemical() {
                 dpoints[ktype][i].material.size = 15;
                 dpoints[ktype][i].material.color.setHex(0xffffff);
                 dpoints[ktype][i].col = 0xffffff;
-                dpoints[ktype][i].material.map.needsUpdate;
+                dpoints[ktype][i].material.map.needsUpdate = true;
             }
         }
     }

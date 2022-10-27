@@ -248,30 +248,38 @@ function viewClassified(visibility) {
 
 // functions to draw chemical on map
 function drawChemicals(visibility) {
-    var textureLoader = new THREE.TextureLoader();
+    var sizeCanvas = resizeCanvas();
+    var options = { width: sizeCanvas, height: sizeCanvas };
+    var smilesDrawer = new SmilesDrawer.Drawer(options);
+    
     if (visibility == true) {
         var numOfPoints = 0;
         scene.traverse(function(child) {
             if (child instanceof THREE.Points) numOfPoints++;
         });
-        //console.log(numOfPoints);
+        console.log(numOfPoints);
         if (numOfPoints > 50) {
             alert('Draw on the Map only less than 50 chemicals');
             return;
         }
         for (ktype in dpoints) {
-            for (var i = 0; i < dpoints[ktype].length; i++) {
-                // TO CHECK IN PRODUCTION 
-                var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                    dpoints[ktype][i].material.map = texture;
-                var ppng = "/static_chemmaps/chemmaps/png/" + namepng.substring(0, 2) + "/" + namepng.substring(2, 4) + "/" + namepng + ".png"
-                var texture = textureLoader.load(ppng);
-                dpoints[ktype][i].material.map = texture;
-                dpoints[ktype][i].material.size = 15;
-                dpoints[ktype][i].material.color.setHex(0xffffff);
-                dpoints[ktype][i].col = 0xffffff;
-                dpoints[ktype][i].material.map.needsUpdate = true;
-                dpoints[ktype][i].material.size.needsUpdate = true;
+            for (var i_draw = 0; i_draw < dpoints[ktype].length; i_draw++) {
+                let id_canvas = "canvas_" + i_draw.toString();
+                SmilesDrawer.parse(dSMILESClass[dpoints[ktype][i_draw].name]['SMILES'], function(tree) {
+                    // Draw to the canvas
+                    smilesDrawer.draw(tree, id_canvas, 'dark', false, width=400, height=400);
+
+                    
+                });
+
+                let chemOnFly = document.getElementById(id_canvas);
+                const texture = new THREE.CanvasTexture(chemOnFly);
+
+                dpoints[ktype][i_draw].material.map = texture;
+                dpoints[ktype][i_draw].material.size = 15;
+                dpoints[ktype][i_draw].material.color.setHex(0xffffff);
+                dpoints[ktype][i_draw].col = 0xffffff;
+                dpoints[ktype][i_draw].material.map.needsUpdate = true;
             }
         }
     } else {
@@ -355,7 +363,6 @@ var saveFile = function (strData, filename) {
         location.replace(uri);
     }
 }
-
 
 // color
 function colorbyType(descin) {
