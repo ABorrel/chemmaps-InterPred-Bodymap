@@ -246,44 +246,70 @@ function viewClassified(visibility) {
     }
 }
 
-// functions to draw chemical on map
-function drawChemicals(visibility) {
+
+
+function updateCanvas(){
+
+    // only do if less that 50 chemicals
+    
     var sizeCanvas = resizeCanvas();
     var options = { width: sizeCanvas, height: sizeCanvas };
     var smilesDrawer = new SmilesDrawer.Drawer(options);
+
+    let i_canvas = 0; // i not in loop to avoid duplicate with ktype
+    for (ktype in dpoints) {
+        for (var i_draw = 0; i_draw < dpoints[ktype].length; i_draw++) {
+            let id_canvas = "canvas_" + i_canvas;
+            i_canvas = i_canvas + 1;
+            
+            SmilesDrawer.parse(dSMILESClass[dpoints[ktype][i_draw].name]['SMILES'], function(tree) {
+                // Draw to the canvas
+                smilesDrawer.draw(tree, id_canvas, 'dark', false, width=400, height=400);
+            });
+        } 
+    }   
+
+}
+
+
+// functions to draw chemical on map
+function drawChemicals(visibility) {
+
     
     if (visibility == true) {
         var numOfPoints = 0;
         scene.traverse(function(child) {
             if (child instanceof THREE.Points) numOfPoints++;
         });
-        console.log(numOfPoints);
         if (numOfPoints > 50) {
             alert('Draw on the Map only less than 50 chemicals');
             return;
         }
+        
+        // need to reproduce loop
+        updateCanvas();
+
+        
+        let i_canvas = 0; // i not in loop to avoid duplicate with ktype
         for (ktype in dpoints) {
             for (var i_draw = 0; i_draw < dpoints[ktype].length; i_draw++) {
-                let id_canvas = "canvas_" + i_draw.toString();
-                SmilesDrawer.parse(dSMILESClass[dpoints[ktype][i_draw].name]['SMILES'], function(tree) {
-                    // Draw to the canvas
-                    smilesDrawer.draw(tree, id_canvas, 'dark', false, width=400, height=400);
-
-                    
-                });
-
+                let id_canvas = "canvas_" + i_canvas;
                 let chemOnFly = document.getElementById(id_canvas);
+                i_canvas = i_canvas + 1;
+                
                 const texture = new THREE.CanvasTexture(chemOnFly);
-
                 dpoints[ktype][i_draw].material.map = texture;
                 dpoints[ktype][i_draw].material.size = 15;
                 dpoints[ktype][i_draw].material.color.setHex(0xffffff);
                 dpoints[ktype][i_draw].col = 0xffffff;
                 dpoints[ktype][i_draw].material.map.needsUpdate = true;
+
             }
         }
+    // need to reproduce loop
     } else {
-        resetPoint()
+        resetPoint();
+
     }
 }
 // functions to see manage the view

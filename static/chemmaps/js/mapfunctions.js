@@ -413,6 +413,7 @@ function downloadNeighbor() {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+
 }
 
 function createLineWriteForTable(IDchem, IDcenter, ldesc) {
@@ -637,6 +638,7 @@ function extractNeighbor(that) {
             }
         }
     }
+    updateCanvas(); // update smiles in the canvas
 }
 
 function cameraCenterPoint() {
