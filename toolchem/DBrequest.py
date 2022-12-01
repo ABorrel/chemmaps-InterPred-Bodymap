@@ -100,7 +100,7 @@ class DBrequest:
         return self.DB.execCMD(cmd)
 
     def extractOPERADesc(self):
-        cmd = "SELECT name FROM chem_descriptor_opera_name_new ORDER BY id"
+        cmd = "SELECT name FROM chem_descriptor_opera_name ORDER BY id"
         return self.DB.execCMD(cmd)
 
     def extractInterPredDesc(self):

@@ -22,7 +22,7 @@ class DSSToxPrep:
         self.cDB = DBrequest()
         self.cDB.verbose = 0
 
-        lprop = self.cDB.extractColoumn("chem_descriptor_opera_name_new", "name")
+        lprop = self.cDB.extractColoumn("chem_descriptor_opera_name", "name")
         self.lallProp = [prop [0] for prop in lprop]
 
         lprop = self.cDB.extractColoumn("chem_toxexp_name", "name")
