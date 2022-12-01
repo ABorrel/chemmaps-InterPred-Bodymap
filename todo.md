@@ -1,5 +1,6 @@
 # TO DO
 ## URGENT
+- check source id pull from the drugbank value
 - ~~1-25-2022: update link to dsstox from the map~~
 - ~~fix static file and check with docker version~~
 - ~~fix duplicate code for DB interaction~~
