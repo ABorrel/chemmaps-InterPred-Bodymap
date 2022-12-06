@@ -1,4 +1,10 @@
 # TO DO
+
+## TO PUSH IN PRODUCTION
+- update python 
+- update compdes
+- add version in help page
+
 ## URGENT
 - check source id pull from the drugbank value
 - ~~1-25-2022: update link to dsstox from the map~~
