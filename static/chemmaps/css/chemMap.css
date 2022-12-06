@@ -62,7 +62,7 @@ a:hover {
     text-align: center;
 }
 
-#info {
+div.info {
     position: absolute;
     top: 75%;
     width: 50%;
@@ -74,43 +74,54 @@ a:hover {
     opacity: 0.88;
     border-color: #ffffff;
     border-style: solid;
+
 }
+
+@media screen and (max-width: 800px) {
+    div.info {
+      display: none;
+    }
+  }
+
+  @media screen and (max-height: 620px) {
+    div.info {
+      display: none;
+    }
+  }
+
 
 #pngcompound {
     position: absolute;
     top: 10%;
     bottom: 10%;
+    left:1%;
     max-width: 25%;
     max-height: 100%;
     height: auto;
     width: auto;
-    display: flex;
-    align-items: center;
 }
 
-/*#Compoundpng2 {
+#Compoundpng2 {
     max-height: 100%;
     max-width: 100%;
     height: auto;
     width: auto;
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-}*/
+}
 
 #infotext {
     position: absolute;
     left: 25%;
     top: 16%;
     width: 55%;
-    font-size: 1.6vmin;
+    font-size: 14px;
 }
 
 #commandExtract {
     position: absolute;
     left: 75%;
     top: 6%;
-    font-size: 1.4vmin;
+    font-size: 14px;
 }
 
 #searchbar {
@@ -134,16 +145,16 @@ a:hover {
 
 
 .control {
-    font-size: 1.6vmin;
+    font-size: 14px;
     width: 100%;
 }
 
 button {
-    font-size: 1.3vmin;
+    font-size: 14px;
 }
 
 select {
-    font-size: 1.6vmin;
+    font-size: 14px;
 }
 
 input[type='text'] {

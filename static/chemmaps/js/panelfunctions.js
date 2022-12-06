@@ -31,6 +31,9 @@ function createpanel() {
             Help: function() {
                 Help();
             },
+            "Save map view": function() {
+                Screenshot();
+            },
         };
         var spfunction = {
             desc: 'Drug group',
@@ -58,6 +61,9 @@ function createpanel() {
             },
             Help: function() {
                 Help();
+            },
+            'Save map view': function() {
+                Screenshot();
             },
         };
     
@@ -166,6 +172,7 @@ function createpanel() {
     panel.add(settingsDefault, 'Reset view');
     panel.add(settingsDefault, 'Reset map');
     panel.add(settingsDefault, 'Help');
+    panel.add(settingsDefault, 'Save map view');
     return panel;
 }
 // functions to select chemicals
@@ -239,36 +246,70 @@ function viewClassified(visibility) {
     }
 }
 
+
+
+function updateCanvas(){
+
+    // only do if less that 50 chemicals
+    
+    var sizeCanvas = resizeCanvas();
+    var options = { width: sizeCanvas, height: sizeCanvas };
+    var smilesDrawer = new SmilesDrawer.Drawer(options);
+
+    let i_canvas = 0; // i not in loop to avoid duplicate with ktype
+    for (ktype in dpoints) {
+        for (var i_draw = 0; i_draw < dpoints[ktype].length; i_draw++) {
+            let id_canvas = "canvas_" + i_canvas;
+            i_canvas = i_canvas + 1;
+            
+            SmilesDrawer.parse(dSMILESClass[dpoints[ktype][i_draw].name]['SMILES'], function(tree) {
+                // Draw to the canvas
+                smilesDrawer.draw(tree, id_canvas, 'dark', false, width=400, height=400);
+            });
+        } 
+    }   
+
+}
+
+
 // functions to draw chemical on map
 function drawChemicals(visibility) {
-    var textureLoader = new THREE.TextureLoader();
+
+    
     if (visibility == true) {
         var numOfPoints = 0;
         scene.traverse(function(child) {
             if (child instanceof THREE.Points) numOfPoints++;
         });
-        //console.log(numOfPoints);
         if (numOfPoints > 50) {
             alert('Draw on the Map only less than 50 chemicals');
             return;
         }
+        
+        // need to reproduce loop
+        updateCanvas();
+
+        
+        let i_canvas = 0; // i not in loop to avoid duplicate with ktype
         for (ktype in dpoints) {
-            for (var i = 0; i < dpoints[ktype].length; i++) {
-                // TO CHECK IN PRODUCTION 
-                var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                    dpoints[ktype][i].material.map = texture;
-                var ppng = "/static_chemmaps/chemmaps/png/" + namepng.substring(0, 2) + "/" + namepng.substring(2, 4) + "/" + namepng + ".png"
-                var texture = textureLoader.load(ppng);
-                dpoints[ktype][i].material.map = texture;
-                dpoints[ktype][i].material.size = 15;
-                dpoints[ktype][i].material.color.setHex(0xffffff);
-                dpoints[ktype][i].col = 0xffffff;
-                dpoints[ktype][i].material.map.needsUpdate = true;
-                dpoints[ktype][i].material.size.needsUpdate = true;
+            for (var i_draw = 0; i_draw < dpoints[ktype].length; i_draw++) {
+                let id_canvas = "canvas_" + i_canvas;
+                let chemOnFly = document.getElementById(id_canvas);
+                i_canvas = i_canvas + 1;
+                
+                const texture = new THREE.CanvasTexture(chemOnFly);
+                dpoints[ktype][i_draw].material.map = texture;
+                dpoints[ktype][i_draw].material.size = 15;
+                dpoints[ktype][i_draw].material.color.setHex(0xffffff);
+                dpoints[ktype][i_draw].col = 0xffffff;
+                dpoints[ktype][i_draw].material.map.needsUpdate = true;
+
             }
         }
+    // need to reproduce loop
     } else {
-        resetPoint()
+        resetPoint();
+
     }
 }
 // functions to see manage the view
@@ -318,6 +359,34 @@ function Help() {
         window.open('PFASMapHelp');
     } else if (map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target' || map == 'Tox21MostActive') {
         window.open('Tox21MapHelp');
+    }
+}
+
+function Screenshot() {
+    var imgData, imgNode;
+
+    try {
+        var strMime = "image/jpeg";
+        imgData = renderer.domElement.toDataURL(strMime);
+
+        saveFile(imgData.replace(strMime, strDownloadMime), "test.jpg");
+
+    } catch (e) {
+        console.log(e);
+        return;
+    }
+}
+
+var saveFile = function (strData, filename) {
+    var link = document.createElement('a');
+    if (typeof link.download === 'string') {
+        document.body.appendChild(link); //Firefox requires the link to be in the body
+        link.download = filename;
+        link.href = strData;
+        link.click();
+        document.body.removeChild(link); //remove the link when done
+    } else {
+        location.replace(uri);
     }
 }
 

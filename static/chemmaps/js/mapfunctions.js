@@ -1,5 +1,34 @@
 //position points on the map
 
+function posPoint(lcoord, name, colorhexa, sprite, size, fact, scene) {
+    var textureLoader = new THREE.TextureLoader();
+
+    var position = new Float32Array(3);
+    var sizes = new Float32Array(1);
+    position[0] = parseFloat(lcoord[0] * fact);
+    position[1] = parseFloat(lcoord[1] * fact);
+    position[2] = parseFloat(lcoord[2] * fact);
+    // manage geometry
+    var geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(position, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    // have to fix for the rayscatting
+    geometry.computeBoundingSphere();
+    geometry.boundingSphere.radius = size;
+    var material = new THREE.PointsMaterial({
+        size: size,
+        map: sprite,
+        alphaTest: 0.1,
+        color: colorhexa,
+        transparent: true,
+    });
+    var particule = new THREE.Points(geometry, material);
+    particule.name = name;
+    particule.col = colorhexa;
+    scene.add(particule);
+    return particule;
+}
+
 function posPointIndividuallyDrugMap(repos) {
     //console.log(color);
     // textures and material
@@ -8,7 +37,6 @@ function posPointIndividuallyDrugMap(repos) {
         position[0] = parseFloat(dcoords[i][0] * fact);
         position[1] = parseFloat(dcoords[i][1] * fact);
         position[2] = parseFloat(dcoords[i][2] * fact);
-        console.log(dSMILESClass[i]);
         if (dSMILESClass[i]['DRUG_GROUPS'].search('approved') !== -1) {
             var typeDrug = 'approved';
         } else if (dSMILESClass[i]['DRUG_GROUPS'].search('withdraw') !== -1) {
@@ -207,7 +235,6 @@ function resetPoint(){
     }
 }
 
-
 // Build axes and text
 function buildAxes(length, x, y, z) {
     var axes = new THREE.Object3D();
@@ -336,21 +363,18 @@ function callbackFunc(response) {
 // map function
 function drawChemical() {
     document.getElementById('drawChemical');
-    var textureLoader = new THREE.TextureLoader();
     for (ktype in dpoints) {
         for (var i = 0; i < dpoints[ktype].length; i++) {
             if (ID == dpoints[ktype][i].name) {
-                var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                // TO CHECK IN PRODUCTION ===> NEED to add in case of in the repertory
-                var namepng = dSMILESClass[dpoints[ktype][i].name]['inchikey'];
-                var ppng = "/static_chemmaps/chemmaps/png/" + namepng.substring(0, 2) + "/" + namepng.substring(2, 4) + "/" + namepng + ".png"
-                var texture = textureLoader.load(ppng);
+                // duplicate texture from the compound2 info box
+                const chemOnFly = document.getElementById("Compoundpng2");
+                const texture = new THREE.CanvasTexture(chemOnFly);
+                //console.log(texture);
                 dpoints[ktype][i].material.map = texture;
                 dpoints[ktype][i].material.size = 15;
                 dpoints[ktype][i].material.color.setHex(0xffffff);
                 dpoints[ktype][i].col = 0xffffff;
-                //dpoints[ktype][i].material.map.needsUpdate = true;
-                //dpoints[ktype][i].material.size.needsUpdate = true;
+                dpoints[ktype][i].material.map.needsUpdate = true;
             }
         }
     }
@@ -389,6 +413,7 @@ function downloadNeighbor() {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+
 }
 
 function createLineWriteForTable(IDchem, IDcenter, ldesc) {
@@ -613,6 +638,7 @@ function extractNeighbor(that) {
             }
         }
     }
+    updateCanvas(); // update smiles in the canvas
 }
 
 function cameraCenterPoint() {

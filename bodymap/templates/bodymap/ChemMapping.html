@@ -1,31 +1,28 @@
 {% extends "base.html" %}
 {% load static %}
 {% block extra-css %}
-<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css"
-          rel="stylesheet" type="text/css"/> 
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css"
-          rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css"
-          rel="stylesheet" type="text/css"/> 
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css" rel="stylesheet" type="text/css"/> 
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css" rel="stylesheet" type="text/css"/>
+<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css" rel="stylesheet" type="text/css"/> 
 
-<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
-<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+<link href="{% static 'css/ag-grid.min.css' %}" rel="stylesheet" type="text/css"/>
+<link href="{% static 'css/ag-theme-balham.min.css' %}" rel="stylesheet" type="text/css"/>
+<link href="{% static 'css/vis.min.css" rel="stylesheet" type="text/css"/>
           
-<link href="{% static 'bodymap/css/table.css' %}" rel="stylesheet">
-<link href="{% static 'bodymap/css/theme.css' %}" rel="stylesheet">
-<link href="{% static 'bodymap/css/chemical.css'%}" rel="stylesheet">
-<link href="{% static 'bodymap/css/network.css' %}" rel="stylesheet">
+<link href="{% static 'bodymap/css/table.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'bodymap/css/theme.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'bodymap/css/chemical.css'%}" rel="stylesheet" type="text/css">
+<link href="{% static 'bodymap/css/network.css' %}" rel="stylesheet" type="text/css">
 
 
 
 {% endblock %}
 {% block title %}Chemical mapping{% endblock %}
 {% block content %}
-<script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+<script src="{% static 'js/ag-grid-community.min.noStyle.js' %}"></script>
+<script src="{% static 'js/vis.min.js' %}"></script>
 
 <script src="{% static 'bodymap/js/table.js' %}"></script>
 <script src="{% static 'bodymap/js/theme.js' %}"></script>
@@ -35,8 +32,8 @@
 <script src="{% static 'bodymap/js/plotFunctions.js' %}"></script> 
 
 
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
+<script src="{% static 'js/plotly.min.js' %}"></script>
+<script src="{% static 'js/smiles-drawer.min.js' %}"></script>
 
 <div role="navigation"> {% include 'bodymap/includes/navbar.html' %}</div> 
 

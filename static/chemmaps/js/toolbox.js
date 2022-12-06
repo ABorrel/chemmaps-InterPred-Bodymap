@@ -155,26 +155,12 @@ function centroid(din) {
 ;
 
 
-function generatePNG(SMILES, inchikey) {
-
-    $.ajax({
-        type: 'GET',
-        url: '/chemmaps/molconvert',
-        cache: false,
-        async: false,
-        dataType: 'text',
-        data: {SMI: SMILES, ICK: inchikey},
-        success: function (data) {
-            console.log(JSON.stringify(data));
-            //return(JSON.stringify(data));
-        },
-        
-        error: function (request, status, error) {
-            console.log(request);
-            console.log(status);
-            console.log("Error: " + error);
-        }
-    });
-    ;
-
-}
+function genRandonString(length) {
+    var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var charLength = chars.length;
+    var result = '';
+    for ( var i = 0; i < length; i++ ) {
+       result += chars.charAt(Math.floor(Math.random() * charLength));
+    }
+    return result;
+ }

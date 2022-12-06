@@ -29,9 +29,11 @@
         <div id="backTox21">
     {% endif %}
 
+    <!-- Define info box canvas -->
 
+    
     <div id="container"></div>
-    <div id="info">
+    <div class = "info" id="info">
         <div style="font-size: 1px;">'</div>
         <div id="pngcompound">
             <canvas id="Compoundpng2"></canvas>
@@ -134,10 +136,32 @@
             {% endif %}
         {% endif %}
     </div>
+    <canvas id="canvas_0"></canvas>
+    <canvas id="canvas_1"></canvas>
+    <canvas id="canvas_2"></canvas>
+    <canvas id="canvas_3"></canvas>
+    <canvas id="canvas_4"></canvas>
+    <canvas id="canvas_5"></canvas>
+    <canvas id="canvas_6"></canvas>
+    <canvas id="canvas_7"></canvas>
+    <canvas id="canvas_8"></canvas>
+    <canvas id="canvas_9"></canvas>
+    <canvas id="canvas_10"></canvas>
+    <canvas id="canvas_11"></canvas>
+    <canvas id="canvas_12"></canvas>
+    <canvas id="canvas_13"></canvas>
+    <canvas id="canvas_14"></canvas>
+    <canvas id="canvas_15"></canvas>
+    <canvas id="canvas_16"></canvas>
+    <canvas id="canvas_17"></canvas>
+    <canvas id="canvas_18"></canvas>
+    <canvas id="canvas_19"></canvas>
+    <canvas id="canvas_20"></canvas>
 
     <div id="blockdiv">
         <a id = "blockflag"></a>
     </div>
+
 
 
     <script src="{% static 'chemmaps/js/three.js/three.min.js' %}" type="text/javascript"></script>
@@ -158,11 +182,12 @@
 
     <script>
 
-
+                var strDownloadMime = "image/octet-stream";
                 //for the function generalisation
                 var map = {{mapJS | safe}};
                 var prSession = {{prSessionJS | safe}};
                 
+
                 // format properly descriptors
                 if (map == "drugbank"){
                     var desctype = {"Rotable bond": "range", "Polar surface": "range",
@@ -302,7 +327,7 @@
                 
 
                 // ==== renderer initialization  ====
-                var renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+                var renderer = new THREE.WebGLRenderer({antialias: true, alpha: true,  preserveDrawingBuffer: true});
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 container.appendChild(renderer.domElement);
@@ -328,6 +353,8 @@
                 window.addEventListener('dblclick', blockview, false);
                 // === recurcive animation
                 animate(); // recurcive animation
+
+                const screenshotTarget = document.body;
 
 
     </script>
