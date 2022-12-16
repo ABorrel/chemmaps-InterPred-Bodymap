@@ -93,6 +93,9 @@ function createpanel() {
             Help: function() {
                 Help();
             },
+            'Save map view': function() {
+                Screenshot();
+            },
         };
     
         var spfunction = {
