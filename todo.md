@@ -4,6 +4,10 @@
 - update python 
 - update compdes
 - add version in help page
+- cookie form - not checking cookie but ask for autorisation 
+> install with 
+pip install git+https://github.com/jazzband/django-cookie-consent@master#egg=django-cookie-consent
+
 
 ## URGENT
 - check source id pull from the drugbank value
