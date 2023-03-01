@@ -108,8 +108,9 @@ function posPointIndividuallyDSSTox(repos) {
 
             // manage geometry
             var geometry = new THREE.BufferGeometry();
-            geometry.addAttribute('position', new THREE.BufferAttribute(position, 3));
-            geometry.addAttribute('size', new THREE.BufferAttribute(size, 1));
+            geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( position, 3 ) );
+            geometry.size = new THREE.BufferAttribute(size, 1);
+            
             // have to fix for the rayscatting
             geometry.computeBoundingSphere();
             geometry.boundingSphere.radius = size;
@@ -149,8 +150,8 @@ function posPointIndividuallyDSSTox(repos) {
 
             // manage geometry
             var geometry = new THREE.BufferGeometry();
-            geometry.addAttribute('position', new THREE.BufferAttribute(position, 3));
-            geometry.addAttribute('size', new THREE.BufferAttribute(size, 1));
+            geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( position, 3 ) );
+            geometry.size = new THREE.BufferAttribute(size, 1);
             // have to fix for the rayscatting
             geometry.computeBoundingSphere();
             geometry.boundingSphere.radius = size;
