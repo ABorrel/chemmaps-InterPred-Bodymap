@@ -3,38 +3,59 @@ function defineColumnDef(din) {
     var columnDefs = [];
     for (var assay in din){
         for(var prop in din[assay]){
-            if(prop == "protocol_name"){
+            if(prop == "assay"){
                 columnDefs.push({
                     headerName: prop.charAt(0).toUpperCase() + prop.slice(1).replace("_", " "),
                     field: prop,
                     sortable: true,
                     filter: true,
-                    width: 500,
+                    width: 450,
                     resizable: true,
                     lockVisible: true,
                     cellRenderer: function(params) {
-                        let keyData = params.data.protocol_name;
+                        let keyData = params.data.assay;
                         let newLink = `<a href= /chemmaps/tox21/${keyData} target="_blank">${keyData}</a>`;
                         return newLink;
                     },
                 });
-            }else if (prop == "assay_target"){
+            }else if (prop == "gene"){
                 columnDefs.push({
                     headerName: prop.charAt(0).toUpperCase() + prop.slice(1).replace("_", " "),
                     field: prop,
                     sortable: true,
                     filter: true,
-                    width: 500,
+                    width: 350,
                     resizable: true,
                     lockVisible: true,
                     cellRenderer: function(params) {
-                        let keyData = params.data.assay_target;
+                        let keyData = params.data.gene;
                         if (keyData != null){
                             let newLink = `<a href= /chemmaps/tox21/target=${keyData} target="_blank">${keyData}</a>`;
                             return newLink;
                         };
                     },
                 });
+            }else if (prop == "invitro_assay_format"){
+                columnDefs.push({
+                    headerName: "Cell line",
+                    field: prop,
+                    sortable: true,
+                    filter: true,
+                    width: 250,
+                    resizable: true,
+                    lockVisible: true,
+                });            
+            }else if (prop == "mechanistic_target"){
+                columnDefs.push({
+                    headerName: prop.charAt(0).toUpperCase() + prop.slice(1).replace("_", " "),
+                    field: prop,
+                    sortable: true,
+                    filter: true,
+                    width: 250,
+                    resizable: true,
+                    lockVisible: true,
+                });             
+            
             }else{
                 columnDefs.push({
                     headerName: prop.charAt(0).toUpperCase() + prop.slice(1).replace("_", " "),

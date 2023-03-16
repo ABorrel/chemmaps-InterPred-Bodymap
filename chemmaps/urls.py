@@ -191,7 +191,7 @@ urlpatterns = [
     ),
 
     url(
-        r'DSSTox/(?P<DTXSID>[-\w]+)$', views.launchDSSToxMap, name="DSSToxSp",
+        r'.*DSSTox/(?P<DTXSID>[-\w]+)$', views.launchDSSToxMap, name="DSSToxSp",
     ),
     url(
         r'^tox21/target=(?P<target>[-\w]+)', views.launchTox21TagetMap, name="Tox21Target",
@@ -218,4 +218,3 @@ urlpatterns = [
         views.download, {"name": "lowestAC50"}, name="lowestAC50",
     )
 ]
-

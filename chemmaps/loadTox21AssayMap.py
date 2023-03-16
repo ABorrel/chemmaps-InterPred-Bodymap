@@ -103,6 +103,130 @@ class loadTox21AssayMap:
 
         self.nb_assays = len(l_assay)
 
+    def loadAssayMostActive_edited(self):
+        """
+        In case of edit - it probable needs to be fix for better return most active
+        """
+        self.cDB.connOpen()
+        # load assays results
+        l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, new_hitc_flag, qc_omit_src, ac50, aenm FROM ice_tox21 WHERE new_hitc = 1")
+        l_chemassay = self.cDB.execCMD("SELECT dsstox_id, response, response_unit, assay, endpoint FROM chts_invitrodb")
+        self.cDB.connClose()
+
+        l_dsstoxid_run = []
+        nb_active_chemical = 0
+
+        # format output assays
+        d_assay = {}
+        for chem in l_chemassay:
+            dtxsid = chem[0]
+            response = chem[1]
+            response_unit = chem[2]
+            assay = chem[3]
+            endpoint = chem[4]
+
+            if not dtxsid in list(d_assay.keys()):
+                d_assay[dtxsid] = {}
+                d_assay[dtxsid]["Most active assay"] = "None"
+                d_assay[dtxsid]["Active assays"] = 0
+                d_assay[dtxsid]["Inactive assays"] = 0
+                d_assay[dtxsid]["Inconclusive assays"] = 0
+                d_assay[dtxsid]["lowest_ac50"] = "-"
+                d_assay[dtxsid]["Assay Outcome"] = "-"
+
+            
+            if endpoint == "Call":
+                if response == "Active":
+                    d_assay[dtxsid]["Active assays"] = d_assay[dtxsid]["Active assays"] + 1
+                    # d_assay[dtxsid]["Assay Outcome"] = "active"
+                elif response == "Inactive":
+                    d_assay[dtxsid]["Inactive assays"] =  d_assay[dtxsid]["Inactive assays"] + 1 
+                else:
+                    d_assay[dtxsid]["Inconclusive assays"] =  d_assay[dtxsid]["Inconclusive assays"] + 1 
+            elif endpoint == "ACC":
+                try:response = float(response)
+                except:pass
+                if response == 0.0:
+                    d_assay[dtxsid]["Inactive assays"] =  d_assay[dtxsid]["Inactive assays"] + 1 
+                elif type(response) == float:
+                    d_assay[dtxsid]["Active assays"] = d_assay[dtxsid]["Active assays"] + 1
+                else:
+                    d_assay[dtxsid]["Inconclusive assays"] =  d_assay[dtxsid]["Inconclusive assays"] + 1 
+            elif endpoint == "AC50":
+                try:response = float(response)
+                except:pass
+                if response == 0.0:
+                    d_assay[dtxsid]["Inactive assays"] =  d_assay[dtxsid]["Inactive assays"] + 1 
+                elif type(response) == float:
+                    d_assay[dtxsid]["Active assays"] = d_assay[dtxsid]["Active assays"] + 1
+                    # d_assay[dtxsid]["l_ac50"].append(response)
+                    # d_assay[dtxsid]["l_assays"].append(assay)
+                    # retrieve on the fly the lowest ac50
+                    if d_assay[dtxsid]["lowest_ac50"] == "-" or response < d_assay[dtxsid]["lowest_ac50"]:
+                        d_assay[dtxsid]["Most active assay"] = assay
+                        d_assay[dtxsid]["lowest_ac50"] = response
+                        # d_assay[dtxsid]["Assay Outcome"] = "Active"
+                else:
+                    d_assay[dtxsid]["Inconclusive assays"] =  d_assay[dtxsid]["Inconclusive assays"] + 1 
+            elif endpoint == "Top of curve":
+                try:response = float(response)
+                except:pass
+                if response == 0.0:
+                    d_assay[dtxsid]["Inactive assays"] =  d_assay[dtxsid]["Inactive assays"] + 1 
+                elif type(response) == float:
+                    d_assay[dtxsid]["Active assays"] = d_assay[dtxsid]["Active assays"] + 1
+                else:
+                    d_assay[dtxsid]["Inconclusive assays"] =  d_assay[dtxsid]["Inconclusive assays"] + 1 
+
+        self.d_assays = d_assay
+            
+            
+        for DTXSID in self.dmap["info"].keys():
+            if not DTXSID in list(d_assay.keys()):
+                self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "-"
+                self.dmap["info"][DTXSID]["Assay Outcome"] = "-"
+                self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "Not tested"
+                self.dmap["info"][DTXSID]["Most active assay"] = "-"
+
+            else:
+                if d_assay[DTXSID]["Assay Outcome"] == "active":
+                    if d_assay[DTXSID]["lowest_ac50"] == 0.0:
+                        self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "< 0.001 (%s positive assay(s))"%(d_assay[DTXSID]["Active assays"])
+                    elif d_assay[DTXSID]["lowest_ac50"] == "-":
+                        self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "No AC50 reported"
+                    else:
+                        self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "%.3f (%s positive assay(s))"%(d_assay[DTXSID]["lowest_ac50"], d_assay[DTXSID]["Active assays"])
+                    self.dmap["info"][DTXSID]["Assay Outcome"] = "active"
+                    self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "active"
+                    self.dmap["info"][DTXSID]["Most active assay"] = d_assay[DTXSID]["Most active assay"]
+
+                elif d_assay[DTXSID]["Assay Outcome"] == "inactive":
+                    self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "0.0"
+                    self.dmap["info"][DTXSID]["Assay Outcome"] = "inactive"
+                    self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "inactive"
+                
+                else:
+                    self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "NA"
+                    self.dmap["info"][DTXSID]["Assay Outcome"] = "inconclusive"
+                    self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "inconclusive"                    
+
+
+        # chemicals active
+        nb_active = 0
+        for chem in d_assay.keys():
+            if d_assay[chem]['Assay Outcome'] == "active":
+                nb_active = nb_active + 1
+        self.nb_active = nb_active
+
+
+        # assays targeted
+        self.cDB.connOpen()
+        # load assays results
+        l_assay = self.cDB.execCMD("SELECT DISTINCT assay FROM chts_assays")
+        self.cDB.connClose()
+
+        self.nb_assays = len(l_assay)
+
     def loadAssayTargeted(self):
 
         self.cDB.connOpen()

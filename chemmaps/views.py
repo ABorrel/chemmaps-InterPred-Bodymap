@@ -59,7 +59,7 @@ def launchMap(request, map, *args, **kwargs):
     # load assays from map Tox21
     if map == "tox21":
         cloadAssays = loadAssays()
-        d_assays = cloadAssays.DBtoDict("tox21_assays")
+        d_assays = cloadAssays.assays_to_dict()
     else:
         d_assays = {}
     d_assays = json.dumps(d_assays)
@@ -192,7 +192,6 @@ def launchMap(request, map, *args, **kwargs):
 
 def launchTox21AssayMap(request, assay):
 
-    
     cloadAssays = loadTox21AssayMap(assay)
     cloadAssays.loadMapCoords()
     cloadAssays.loadAssayResults()

@@ -143,7 +143,6 @@ class DSSToxPrep:
                 self.coord[dsstox] = [float(xadd), float(yadd), float(zadd)]
         
             # info
-
             self.dinfo[dsstox] = {}
             for descMap in self.ldescMap:
                 if descMap in self.lallProp:
