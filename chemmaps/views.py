@@ -217,6 +217,7 @@ def launchTox21TagetMap(request, target):
 
 
     cloadAssays = loadTox21AssayMap(target)
+    cloadAssays.l_desc = ["MolWeight"] # put only MW to add count of active assays by chemicals
     cloadAssays.loadMapCoords()
     cloadAssays.loadAssayTargeted()
 
@@ -272,9 +273,10 @@ def browseChemicals(request):
 
     d_chem_JS = json.dumps(c_loadTox21Chem.d_chem)
     d_assays_JS = json.dumps(c_loadTox21Chem.d_assays)
+    d_fail_JS = json.dumps(c_loadTox21Chem.d_fail)
 
 
-    return render(request, 'chemmaps/chemicalBrowser.html', {"d_chem":d_chem_JS, "d_assays":d_assays_JS})
+    return render(request, 'chemmaps/chemicalBrowser.html', {"d_chem":d_chem_JS, "d_assays":d_assays_JS, "d_fail":d_fail_JS})
 
 # case of automatic launch -> Comptox
 def launchDSSToxMap(request, DTXSID):

@@ -95,6 +95,10 @@ function posPointIndividuallyDSSTox(repos) {
                     var colorhexa = dcol['inconclusive'];
                     var typechem = 'noclassified';
                     var size = dsize[typechem];
+            }else if(Assaycat.search("QC omit") !== -1){
+                var colorhexa = dcol['QC omit'];
+                var typechem = 'noclassified';
+                var size = dsize[typechem];
             }else{
                 var typechem = 'classified';
                 var colorhexa =  dcol['active'];
@@ -389,7 +393,7 @@ function downloadNeighbor() {
     var IDcenter = ID;
     //console.log(ID);
     
-    var ldesc = Object.keys(dinfo[ID]);
+    //var ldesc = Object.keys(dinfo[ID]);
     //console.log(ldesc);
     //console.log(dSMILESClass[ID]);
     // write header

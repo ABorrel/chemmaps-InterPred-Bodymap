@@ -6,11 +6,22 @@ class loadBrowseTox21Chem:
         self.c_DB = DB.DB()
     
     def loadAssaysAndChem(self):
-
         self.c_DB.connOpen()
         
         # load chemicals with lowest AC50
-        l_chemDB = self.c_DB.execCMD("SELECT DISTINCT c.dsstox_id , c.name , c.casn FROM chts_invitrodb ch INNER JOIN chemicals c ON ch.dsstox_id = c.dsstox_id WHERE ch.dsstox_id is not null")
+        l_chemDB = self.c_DB.execCMD("SELECT DISTINCT dtxsid, chemicals.name, chemicals.casn FROM ice_tox21 INNER JOIN chemicals ON ice_tox21.dtxsid = chemicals.dsstox_id where ice_tox21.dtxsid is not null")
+        
+        # add col with QC omit
+        l_chem_fail = self.c_DB.execCMD("SELECT dsstox_id, niceatm_qc_summary_call FROM chts_chemicalqc")
+        d_fail = {}
+        for chem_fail in l_chem_fail:
+            dsstox = chem_fail[0]
+            if not dsstox in list(d_fail.keys()):
+                d_fail[dsstox] = []
+            if not chem_fail[1] in d_fail[dsstox]:
+                d_fail[dsstox].append(chem_fail[1])
+
+
         d_chem = {}
         for chemDB in l_chemDB:
             dtxsid = chemDB[0]
@@ -24,20 +35,17 @@ class loadBrowseTox21Chem:
         self.d_chem = d_chem
         
         # load assay results 
-        l_chemassayresults = self.c_DB.execCMD("SELECT dsstox_id, response, response_unit, assay, endpoint FROM chts_invitrodb")
+        l_chemassayresults = self.c_DB.execCMD("SELECT dtxsid, new_hitc, ac50, aenm FROM ice_tox21 WHERE new_hitc = 1")
         self.c_DB.connClose()
 
         d_assays = {}
         for chem in l_chemassayresults:
             dtxsid = chem[0]
-            response = chem[1]
-            #hitc = int(chem[1])
-            #ac50 = chem[2]
-            #if ac50 == None: ac50 = 0.0
-            #else: ac50 = float(ac50)
-            unit = chem[2]
-            assay = chem[3]
-            endpoint = chem[4]
+            hitc = int(chem[1])
+            ac50 = chem[2]
+            if ac50 == None: ac50 = 0.0
+            else: ac50 = float(ac50)
+            aenm = chem[3]
         
             if dtxsid == None:
                 continue
@@ -53,48 +61,19 @@ class loadBrowseTox21Chem:
                 d_assays[dtxsid]["l_assays"] = []
 
 
-            if endpoint == "Call":
-                if response == "Active":
-                    d_assays[dtxsid]["Active assays"] = d_assays[dtxsid]["Active assays"] + 1
-                elif response == "Inactive":
-                    d_assays[dtxsid]["Inactive assays"] =  d_assays[dtxsid]["Inactive assays"] + 1 
-                else:
-                    d_assays[dtxsid]["Inconclusive assays"] =  d_assays[dtxsid]["Inconclusive assays"] + 1 
-            elif endpoint == "ACC":
-                try:response = float(response)
-                except:pass
-                if response == 0.0:
-                    d_assays[dtxsid]["Inactive assays"] =  d_assays[dtxsid]["Inactive assays"] + 1 
-                elif type(response) == float:
-                    d_assays[dtxsid]["Active assays"] = d_assays[dtxsid]["Active assays"] + 1
-                else:
-                    d_assays[dtxsid]["Inconclusive assays"] =  d_assays[dtxsid]["Inconclusive assays"] + 1 
-            elif endpoint == "AC50":
-                try:response = float(response)
-                except:pass
-                if response == 0.0:
-                    d_assays[dtxsid]["Inactive assays"] =  d_assays[dtxsid]["Inactive assays"] + 1 
-                elif type(response) == float:
-                    d_assays[dtxsid]["Active assays"] = d_assays[dtxsid]["Active assays"] + 1
-                    d_assays[dtxsid]["l_ac50"].append(response)
-                    d_assays[dtxsid]["l_assays"].append(assay)
-                    # retrieve on the fly the lowest ac50
-                    if d_assays[dtxsid]["lowest_ac50"] == "NA" or response < d_assays[dtxsid]["lowest_ac50"]:
-                        d_assays[dtxsid]["Most active assay"] = assay
-                        d_assays[dtxsid]["lowest_ac50"] = response
-                else:
-                    d_assays[dtxsid]["Inconclusive assays"] =  d_assays[dtxsid]["Inconclusive assays"] + 1 
-            elif endpoint == "Top of curve":
-                try:response = float(response)
-                except:pass
-                if response == 0.0:
-                    d_assays[dtxsid]["Inactive assays"] =  d_assays[dtxsid]["Inactive assays"] + 1 
-                elif type(response) == float:
-                    d_assays[dtxsid]["Active assays"] = d_assays[dtxsid]["Active assays"] + 1
-                else:
-                    d_assays[dtxsid]["Inconclusive assays"] =  d_assays[dtxsid]["Inconclusive assays"] + 1 
-
+            if hitc == 0 or hitc == -1:
+                d_assays[dtxsid]["Inactive assays"] =  d_assays[dtxsid]["Inactive assays"] + 1 
+            elif hitc == 2 or hitc == 3:
+                d_assays[dtxsid]["Inconclusive assays"] =  d_assays[dtxsid]["Inconclusive assays"] + 1 
+            else:
+                d_assays[dtxsid]["Active assays"] = d_assays[dtxsid]["Active assays"] + 1
+                if d_assays[dtxsid]["Most active assay"] == "None" or ac50 < min(d_assays[dtxsid]["l_ac50"]):
+                    d_assays[dtxsid]["Most active assay"] = aenm
+                    d_assays[dtxsid]["lowest_ac50"] = ac50
+                d_assays[dtxsid]["l_ac50"].append(ac50)
+                
         self.d_assays = d_assays
+        self.d_fail = d_fail
                
     def writeTable(self, pr_session):
 

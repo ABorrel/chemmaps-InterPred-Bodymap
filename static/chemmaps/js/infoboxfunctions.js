@@ -25,7 +25,6 @@ function updateInfoBox(intersect) {
         Group.innerHTML = dSMILESClass[ID]['DRUG_GROUPS'];
     }
 
-    var ldesc = Object.keys(dinfo[ID]);
     var lboxes = [box1, box2, box3, box4, box5];
     for (var i in ldesc) {
         if (desctype[ldesc[i]] == 'str') {
@@ -42,6 +41,8 @@ function updateInfoBox(intersect) {
             }else{
                 lboxes[i].innerHTML = round(dinfo[ID][ldesc[i]], 2).toString();
             }
+        } else {
+            lboxes[i].innerHTML = dinfo[ID][ldesc[i]].toString();
         }
     }
 

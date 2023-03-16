@@ -50,7 +50,8 @@
 <script>
     var d_assays = {{ d_assays | safe }};
     var d_chem = {{ d_chem | safe }};
-    console.log(d_assays)
+    var d_fail = {{ d_fail | safe }}
+    console.log(d_fail);
     // lookup the container we want the Grid to use
     var eGridDiv = document.querySelector('#myGrid');
     // create the grid passing in the div to use together with the columns & data we want to use

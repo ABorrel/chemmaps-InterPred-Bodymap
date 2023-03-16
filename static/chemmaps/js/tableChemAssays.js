@@ -41,11 +41,22 @@ function defineColumnDef() {
     });
 
     columnDefs.push({
+        headerName: "Chemical QC",
+        field: "Chemical QC",
+        sortable: true,
+        filter: true,
+        width: 220,
+        resizable: true,
+        lockVisible: true,
+        cellClass: "grid-cell-left",
+    });
+
+    columnDefs.push({
         headerName: "Number of active assays",
         field: "nb_active",
         sortable: true,
         filter: true,
-        width: 280,
+        width: 220,
         resizable: true,
         lockVisible: true,
         cellClass: "grid-cell-left",
@@ -100,11 +111,19 @@ function defineGridOption(d_chem, d_assays) {
 function defineRawData(d_chem, d_assays) {
     var rowData = [];
     for (var chem in d_chem) {
+        var d_to_push = {};
         if(chem in d_assays){
-            rowData.push({"dtxid":chem, "casrn":d_chem[chem]["casn"], "name":d_chem[chem]["name"], "nb_active":d_assays[chem]["Active assays"] , "lowest_ac50":d_assays[chem]["lowest_ac50"], "lowest_active_assay":d_assays[chem]["Most active assay"]});
+            d_to_push = {"dtxid":chem, "casrn":d_chem[chem]["casn"], "name":d_chem[chem]["name"], "nb_active":d_assays[chem]["Active assays"] , "lowest_ac50":d_assays[chem]["lowest_ac50"], "lowest_active_assay":d_assays[chem]["Most active assay"]};
         }else{
-            rowData.push({"dtxid":chem, "casrn":d_chem[chem]["casn"], "name":d_chem[chem]["name"], "nb_active":0 , "lowest_ac50":"NA", "lowest_active_assay":""});
+            d_to_push = {"dtxid":chem, "casrn":d_chem[chem]["casn"], "name":d_chem[chem]["name"], "nb_active":0 , "lowest_ac50":"NA", "lowest_active_assay":""};
         };
+
+        if(chem in d_fail){
+            d_to_push['Chemical QC'] = d_fail[chem].toString();
+        }else{
+            d_to_push['Chemical QC'] = ''
+        };
+        rowData.push(d_to_push);
     };
     return rowData;
 }
