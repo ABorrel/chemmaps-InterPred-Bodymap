@@ -6,11 +6,22 @@ class loadBrowseTox21Chem:
         self.c_DB = DB.DB()
     
     def loadAssaysAndChem(self):
-
         self.c_DB.connOpen()
         
         # load chemicals with lowest AC50
         l_chemDB = self.c_DB.execCMD("SELECT DISTINCT dtxsid, chemicals.name, chemicals.casn FROM ice_tox21 INNER JOIN chemicals ON ice_tox21.dtxsid = chemicals.dsstox_id where ice_tox21.dtxsid is not null")
+        
+        # add col with QC omit
+        l_chem_fail = self.c_DB.execCMD("SELECT dsstox_id, niceatm_qc_summary_call FROM chts_chemicalqc")
+        d_fail = {}
+        for chem_fail in l_chem_fail:
+            dsstox = chem_fail[0]
+            if not dsstox in list(d_fail.keys()):
+                d_fail[dsstox] = []
+            if not chem_fail[1] in d_fail[dsstox]:
+                d_fail[dsstox].append(chem_fail[1])
+
+
         d_chem = {}
         for chemDB in l_chemDB:
             dtxsid = chemDB[0]
@@ -60,11 +71,10 @@ class loadBrowseTox21Chem:
                     d_assays[dtxsid]["Most active assay"] = aenm
                     d_assays[dtxsid]["lowest_ac50"] = ac50
                 d_assays[dtxsid]["l_ac50"].append(ac50)
-                #d_assays[dtxsid]["l_assays"].append(aenm)
                 
         self.d_assays = d_assays
-        
-        
+        self.d_fail = d_fail
+               
     def writeTable(self, pr_session):
 
         p_filout = pr_session + "lowestAC50.csv"

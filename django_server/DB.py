@@ -20,6 +20,7 @@ class DB:
                     dparams["options"] = "-c search_path=dbo," + param[1]
                 else:
                     dparams[param[0]] = param[1]
+                    
         else:
             raise Exception('Section {0} not found in the {1} file'.format(section, self.dbconfig))
 
@@ -98,8 +99,9 @@ class DB:
 
     def getColnames(self, nameTable):
 
+        self.config()
         self.connOpen()
-        sqlCMD = "SELECT COLUMN_NAME FROM information_schema.columns WHERE table_name='%s';" % (nameTable)
+        sqlCMD = "SELECT COLUMN_NAME FROM information_schema.columns WHERE table_name='%s' AND table_schema='%s';" % (nameTable, self.params["options"].split(",")[-1])
         if self.verbose == 1: print(sqlCMD)
         if self.conn != None:
             try:

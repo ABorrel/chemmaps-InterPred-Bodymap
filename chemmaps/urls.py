@@ -2,7 +2,6 @@ from django.urls import re_path as url
 from django.views.generic import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
-
 from . import views
 
 handler404 = "chemmaps.views.handler404"
@@ -192,7 +191,7 @@ urlpatterns = [
     ),
 
     url(
-        r'DSSTox/(?P<DTXSID>[-\w]+)$', views.launchDSSToxMap, name="DSSToxSp",
+        r'.*DSSTox/(?P<DTXSID>[-\w]+)$', views.launchDSSToxMap, name="DSSToxSp",
     ),
     url(
         r'^tox21/target=(?P<target>[-\w]+)', views.launchTox21TagetMap, name="Tox21Target",
@@ -219,4 +218,3 @@ urlpatterns = [
         views.download, {"name": "lowestAC50"}, name="lowestAC50",
     )
 ]
-

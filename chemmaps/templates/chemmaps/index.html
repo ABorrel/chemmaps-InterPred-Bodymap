@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% block extra-css %}
+{% load cookie_consent_tags %}
+
 <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
 <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 <link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css" rel="stylesheet" type="text/css" />
@@ -11,6 +13,22 @@
 {% endblock %}
 {% block title %} Index chemmaps{% endblock %}
 {% block content %}
+
+
+<style type="text/css" media="screen">
+    body.with-cookie-bar {
+      padding-top: 35px;
+    }
+    .cookie-bar {
+      position: fixed;
+      width: 100%;
+      top:0;
+      text-align:center;
+      height:40px;
+      line-height: 25px;
+      background: #eee;
+    }
+  </style>
 
 
 <style>
@@ -47,6 +65,48 @@
     }
 </style>
 
+
+<!== Probably not the cleanest but form cookie add ==>
+<script type="text/javascript" src={% static "cookie_consent/cookiebar.js" %}></script>
+{% if request|cookie_consent_enabled %}
+    {% not_accepted_or_declined_cookie_groups request as cookie_groups %}
+    {% url "cookie_consent_cookie_group_list" as url_cookies %}
+    {% cookie_consent_accept_url cookie_groups as url_accept %}
+    {% cookie_consent_decline_url cookie_groups as url_decline %}
+  
+    <script type="text/javascript">
+        var cookie_groups = [];
+        {% for cookie_group in cookie_groups %}
+        cookie_groups.push("{{ cookie_group.varname }}");
+        {% endfor %}
+
+        function ready(fn) {
+            if (document.readyState != 'loading') {
+            fn();
+            } else if (document.addEventListener) {
+            document.addEventListener('DOMContentLoaded', fn);
+            } else {
+            document.attachEvent('onreadystatechange', function() {
+                if (document.readyState != 'loading')
+                fn();
+            });
+            }
+        }
+
+        ready(function() {
+            showCookieBar({
+            content: "{% filter escapejs %}{% with cookie_groups=cookie_groups|join:", " %}<div class="cookie-bar">This site uses {{ cookie_groups }} cookies for better performance and user experience. Do you agree to use cookies? <a href="{{ url_accept }}" class="cc-cookie-accept">Accept</a> <a href="https://ntp.niehs.nih.gov/" target = "_self">Decline</a></div>{% endwith %}{% endfilter %}",
+            cookie_groups: cookie_groups,
+            cookie_decline: "{% get_decline_cookie_groups_cookie_string request cookie_groups %}",
+            beforeDeclined: function() {
+            document.cookie = "{% get_decline_cookie_groups_cookie_string request cookie_groups %}";
+            }
+        });
+        });
+    </script>
+{% endif %}
+
+
 <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
 
 <div class="container-fluid bgindex text-center padding-left: 0px">
@@ -56,9 +116,11 @@
     {% endif %}
     <br><br><br><br><br>
     <htitle>www.chemmaps.com</htitle><br><br>
-    <p><i>"A way to navigate in the chemical space"</i></p>
-    <p>Choose a map among the four maps available and navigate in the space</p>
-    <br><br><br><br>
+    <p><i>"A way to navigate in the chemical space"</i><br>
+    This website is free and open to all users and there is no login requirement.</p><br>
+    <p style="text-align:  center; font-size: 30px">Choose a map among the four maps available and navigate in the space</p>
+
+    <br><br><br>
 </div>
 
 <div class="container padding: 0px">
@@ -122,16 +184,16 @@
     <p style="text-align:  center; font-size: 30px">
         Please cite: <a href="https://doi.org/10.1093/bioinformatics/bty412" class="aurl">
             A. Borrel, N. C. Kleinstreuer, & D. Fourches. (2018) Exploring drug space with ChemMaps.com.
-            Bioinformatics, (1), 1–3.</a><br>
-        <br><br>
+            Bioinformatics, (1), 1–3.</a><br></p><br><br><br>
+        <br>
 </div>
 
 <div class="container text-center padding: 0px">
     <br>
     <h4>Contact us</h4>
-    <p><a a class="aurl" style="color: #232b5f" href="mailto:chemmaps@mail.nih.gov"> chemmaps@mail.nih.gov</a><br>
+    <p><a a class="aurl" style="color: #232b5f" href="mailto:alexandre.borrel[at]nih.gov"> chemmaps@mail.nih.gov</a><br>
     </p>
-    <div style="text-align: left;"><i>Last update: 12/2022</i></div>
+    <div style="text-align: left;"><i>Last update: 03/2023</i></div>
 </div>
 
 {% endblock content %}
