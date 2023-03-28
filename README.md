@@ -1,4 +1,4 @@
-# Dependancies
+# Dependencies
 
 ## installtion with pip -> computation descriptor RDKIT developed in parrallel
 $pip install -i https://test.pypi.org/simple/ CompDesc

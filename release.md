@@ -1,5 +1,5 @@
 # ChemMaps - Interpred -Tox21BodyMap V.3
-Release version 3 - Scheduled May 2021
+Release version 2 - Scheduled March 2023
 
 ## Updates VM
 - python3.5 -> python 3.9
