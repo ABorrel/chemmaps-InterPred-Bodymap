@@ -14,23 +14,6 @@
 {% block title %} Index chemmaps{% endblock %}
 {% block content %}
 
-
-<style type="text/css" media="screen">
-    body.with-cookie-bar {
-      padding-top: 35px;
-    }
-    .cookie-bar {
-      position: fixed;
-      width: 100%;
-      top:0;
-      text-align:center;
-      height:40px;
-      line-height: 25px;
-      background: #eee;
-    }
-  </style>
-
-
 <style>
 
     /* Float four columns side by side */
@@ -66,45 +49,123 @@
 </style>
 
 
-<!== Probably not the cleanest but form cookie add ==>
-<script type="text/javascript" src={% static "cookie_consent/cookiebar.js" %}></script>
-{% if request|cookie_consent_enabled %}
-    {% not_accepted_or_declined_cookie_groups request as cookie_groups %}
-    {% url "cookie_consent_cookie_group_list" as url_cookies %}
-    {% cookie_consent_accept_url cookie_groups as url_accept %}
-    {% cookie_consent_decline_url cookie_groups as url_decline %}
-  
-    <script type="text/javascript">
-        var cookie_groups = [];
-        {% for cookie_group in cookie_groups %}
-        cookie_groups.push("{{ cookie_group.varname }}");
-        {% endfor %}
+<div id="cookie-consent" class="cookie-consent">
+    <p>This site uses cookies for better performance and user experience. Do you agree to use cookies?</p>
+    <button id="accept-cookie-btn">Accept</button>
+    <button id="reject-cookie-btn">Decline</button>
+</div>
 
-        function ready(fn) {
-            if (document.readyState != 'loading') {
-            fn();
-            } else if (document.addEventListener) {
-            document.addEventListener('DOMContentLoaded', fn);
-            } else {
-            document.attachEvent('onreadystatechange', function() {
-                if (document.readyState != 'loading')
-                fn();
-            });
-            }
+<script>
+
+    // Get the cookie consent element and the accept and reject buttons
+    var cookieConsent = document.getElementById("cookie-consent");
+    var acceptBtn = document.getElementById("accept-cookie-btn");
+    var rejectBtn = document.getElementById("reject-cookie-btn");
+
+    // Check if the user has already accepted or rejected the cookie policy
+    var cookieConsentStatus = getCookie("cookie_consent");
+    if (cookieConsentStatus === "accepted") {
+        // If the user has already accepted the cookie policy, hide the cookie consent form
+        cookieConsent.style.display = "none";
+    } else if (cookieConsentStatus === "rejected") {
+        // If the user has already rejected the cookie policy, remove any existing cookies and hide the cookie consent form
+        removeCookie("cookie_consent");
+        removeCookie("other_cookies");
+        cookieConsent.style.display = "none";
+    } else {
+        // If the user has not accepted or rejected the cookie policy, show the cookie consent form
+        cookieConsent.style.display = "block";
+    }
+
+    // When the user clicks on the accept button, set a cookie and hide the cookie consent form
+    acceptBtn.onclick = function() {
+        // Set a cookie to remember that the user has accepted the cookie policy
+        setCookie("cookie_consent", "accepted", 365);
+
+        // Set any other cookies that are necessary for the website to function
+        setCookie("other_cookies", "example_cookie_value", 365);
+
+        // Hide the cookie consent form
+        cookieConsent.style.display = "none";
+    }
+
+    // When the user clicks on the reject button, set a cookie to remember that the user has rejected the cookie policy and remove any existing cookies
+    rejectBtn.onclick = function() {
+        // Set a cookie to remember that the user has rejected the cookie policy
+        setCookie("cookie_consent", "rejected", 365);
+
+        // Remove any other cookies that were previously set
+        removeCookie("other_cookies");
+
+        // Hide the cookie consent form
+        cookieConsent.style.display = "none";
+
+        // exist website
+        window.location.href = "https://ntp.niehs.nih.gov/";
+    }
+
+    // Helper function to set a cookie
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
         }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
 
-        ready(function() {
-            showCookieBar({
-            content: "{% filter escapejs %}{% with cookie_groups=cookie_groups|join:", " %}<div class="cookie-bar">This site uses {{ cookie_groups }} cookies for better performance and user experience. Do you agree to use cookies? <a href="{{ url_accept }}" class="cc-cookie-accept">Accept</a> <a href="https://ntp.niehs.nih.gov/" target = "_self">Decline</a></div>{% endwith %}{% endfilter %}",
-            cookie_groups: cookie_groups,
-            cookie_decline: "{% get_decline_cookie_groups_cookie_string request cookie_groups %}",
-            beforeDeclined: function() {
-            document.cookie = "{% get_decline_cookie_groups_cookie_string request cookie_groups %}";
-            }
-        });
-        });
-    </script>
-{% endif %}
+    // Helper function to get a cookie
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    // Helper function to remove a cookie
+    function removeCookie(name) {
+        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+
+</script>
+
+<style>
+    .cookie-consent {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 10px;
+        background-color: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+    }
+
+    .cookie-consent p {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .cookie-consent button {
+        background-color: #4285f4;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .cookie-consent button:hover {
+        background-color: #2d6eb3;
+    }
+</style>
+
 
 
 <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
