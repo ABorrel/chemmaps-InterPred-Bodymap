@@ -25,5 +25,4 @@ urlpatterns = [
     url(r'^interferences/', include(('interferences.urls', 'interferences'), namespace='interferences')),
     url(r'^bodymap/', include(('bodymap.urls', 'bodymap'), namespace='bodymap')),
     url(r'^toolchem/', include(('toolchem.urls', 'toolchem'), namespace='toolchem')),
-    path("cookies/", include("cookie_consent.urls")),
 ]
