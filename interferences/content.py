@@ -122,7 +122,7 @@ class formatSMILES:
         ldesc1D2D = self.cDB.extractColoumn("chem_descriptor_1d2d_name", "name")
         ldesc1D2D = [desc [0] for desc in ldesc1D2D]
 
-        ldescOPERA = self.cDB.extractColoumn("chem_descriptor_opera_name_new", "name")
+        ldescOPERA = self.cDB.extractColoumn("chem_descriptor_opera_name", "name")
         ldescOPERA = [desc [0] for desc in ldescOPERA]
         dout = {} # for table in descriptor coloumn
 

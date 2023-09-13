@@ -17,6 +17,7 @@ class DBrequest:
             for param in params:
                 if param[0] == "schema":
                     dparams["options"] = "-c search_path=dbo," + param[1]
+                    self.schema = param[1]
                 else:
                     dparams[param[0]] = param[1]
         else:

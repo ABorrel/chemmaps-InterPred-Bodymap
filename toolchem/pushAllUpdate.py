@@ -166,8 +166,8 @@ class pushAllUpdate:
         i = 0
 
         while i < imax:
-            cmdExtract = "SELECT inchikey FROM chemical_description WHERE map_name = '%s' ORDER BY cube(d3_cube) <->  (select cube (d3_cube) FROM chemical_description where id='%s' "\
-                "AND map_name = '%s' limit (1))  limit (%s);"%(d_chem[l_id[i]]["map"], l_id[i], d_chem[l_id[i]]["map"], nb_neighbors + 1)
+            cmdExtract = "SELECT inchikey FROM %s.chemical_description WHERE map_name = '%s' ORDER BY cube(d3_cube) <->  (select cube (d3_cube) FROM %s.chemical_description where id='%s' "\
+                "AND map_name = '%s' limit (1))  limit (%s);"%(self.cDB.schema,d_chem[l_id[i]]["map"], self.cDB.schema, l_id[i], d_chem[l_id[i]]["map"], nb_neighbors + 1)
             lchem_neighbor = self.cDB.runCMD(cmdExtract)
             lchem_w = []
             for chem in lchem_neighbor:

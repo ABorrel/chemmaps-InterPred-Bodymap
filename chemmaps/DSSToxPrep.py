@@ -57,8 +57,8 @@ class DSSToxPrep:
             
 
             cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                FROM mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube(d3_cube) FROM mvwchemmap_mapdsstox \
-                where dsstox_id='%s' limit (1)) limit (%s);"%(center_chem, nbChem)
+                FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube(d3_cube) FROM %s.mvwchemmap_mapdsstox \
+                where dsstox_id='%s' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, center_chem, nbChem)
 
         else:
 
@@ -68,8 +68,8 @@ class DSSToxPrep:
 
             if inUser == 1:
                 cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                    FROM mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM chemical_description_user \
-                    where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(center_chem, nbChem)
+                    FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
+                    where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, center_chem, nbChem)
 
                 if center == 1:
                     coords_center = self.cDB.execCMD("SELECT d3_cube FROM chemical_description_user WHERE inchikey = '%s' AND map_name = 'dsstox'"%(center_chem))
@@ -85,11 +85,11 @@ class DSSToxPrep:
             else:
                 # have to be a inch
                 cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                    FROM mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM mvwchemmap_mapdsstox \
-                    where inchikey='%s' limit (1)) limit (%s);"%(center_chem, nbChem)
+                    FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.mvwchemmap_mapdsstox \
+                    where inchikey='%s' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, center_chem, nbChem)
 
                 if center == 1:
-                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM mvwchemmap_mapdsstox WHERE inchikey = '%s'"%(center_chem))
+                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM %s.mvwchemmap_mapdsstox WHERE inchikey = '%s'"%(self.cDB.schema, center_chem))
                     if coords_center == []:
                         self.err = 1
                         return
