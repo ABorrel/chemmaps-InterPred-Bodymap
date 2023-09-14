@@ -57,7 +57,7 @@ class DSSToxPrep:
             
 
             cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                FROM %s.mvwchemmap_mapdsstox ORDER BY public.cube(d3_cube) <->  (SELECT public.cube(d3_cube) FROM %s.mvwchemmap_mapdsstox \
+                FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube(d3_cube) FROM %s.mvwchemmap_mapdsstox \
                 where dsstox_id='%s' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, center_chem, nbChem)
 
         else:
@@ -68,7 +68,7 @@ class DSSToxPrep:
 
             if inUser == 1:
                 cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                    FROM %s.mvwchemmap_mapdsstox ORDER BY public.cube(d3_cube) <->  (SELECT public.cube (d3_cube) FROM %s.chemical_description_user \
+                    FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
                     where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, center_chem, nbChem)
 
                 if center == 1:
@@ -85,7 +85,7 @@ class DSSToxPrep:
             else:
                 # have to be a inch
                 cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                    FROM %s.mvwchemmap_mapdsstox ORDER BY public.cube(d3_cube) <->  (SELECT public.cube (d3_cube) FROM %s.mvwchemmap_mapdsstox \
+                    FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.mvwchemmap_mapdsstox \
                     where inchikey='%s' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, center_chem, nbChem)
 
                 if center == 1:
