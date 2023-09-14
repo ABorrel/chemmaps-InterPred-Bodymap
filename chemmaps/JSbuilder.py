@@ -440,11 +440,11 @@ class JSbuilder:
                     if self.nameMap == "dsstox":
                         # need to check if it is in user table
                         cmdExtract = "SELECT dsstox_id FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
-                            where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, inch,nbneighbor)
+                            where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, inch, nbneighbor)
                     
                     elif self.nameMap == "pfas":
-                        cmdExtract = "SELECT dsstox_id FROM mvwchemmap_mappfas ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM chemical_description_user \
-                            where inchikey='%s' AND map_name='pfas' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, inch,nbneighbor)
+                        cmdExtract = "SELECT dsstox_id FROM %s.mvwchemmap_mappfas ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
+                            where inchikey='%s' AND map_name='pfas' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, inch, nbneighbor)
 
                     elif self.nameMap == "tox21":
                         cmdExtract = "SELECT dsstox_id FROM %s.mvwchemmap_maptox21 ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
