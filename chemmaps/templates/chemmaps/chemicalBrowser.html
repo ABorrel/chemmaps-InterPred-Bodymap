@@ -24,6 +24,8 @@
         <p><div id="myGrid" style="height: 600px; width: 1500px; margin-left: 30px; margin-right: 100px;" class="ag-theme-balham"></div></p>
         <br>
         <div style="margin-left: 30px;"><form method="get" action="/chemmaps/lowestAC50.csv"><button class="btn"><i class="fa fa-download"></i> Download table</button></form></div>
+        <br>
+        <div style="margin-left: 30px;"><button class="btn"><i class="fa fa-arrow-left"></i><a href="{% url 'chemmaps:Tox21Map' %}" style="color:#fff;"> Return to Tox21Map</a></button></div>
         <br><br>
         
 </div>
@@ -45,6 +47,12 @@
     .grid-cell-left {
         text-align: left;
     }
+
+    .ag-icon-menu{
+        color: #fff;  
+    }
+    
+
 </style>
 
 <script>

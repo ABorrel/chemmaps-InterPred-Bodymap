@@ -46,11 +46,45 @@
             {% else %}
                 GHS category: <text id="GHS"></text><br>
             {% endif %}
-            {{ ldesc.0 }}: <text id="box1"></text><br>
-            {{ ldesc.1 }}: <text id="box2"></text><br>
-            {{ ldesc.2 }}: <text id="box3"></text><br>
-            {{ ldesc.3 }}: <text id="box4"></text><br>
-            {{ ldesc.4 }}: <text id="box5"></text><br>
+            
+            
+            {% if ldesc|length == 4 %}
+                {{ ldesc.0 }}: <text id="box1"></text><br>
+                {{ ldesc.1 }}: <text id="box2"></text><br>
+                {{ ldesc.2 }}: <text id="box3"></text><br>
+                {{ ldesc.3 }}: <text id="box4"></text><br>
+                {{ ldesc.4 }} <text id="box5"></text><br>
+            {% elif ldesc|length == 3 %}
+                {{ ldesc.0 }}: <text id="box1"></text><br>
+                {{ ldesc.1 }}: <text id="box2"></text><br>
+                {{ ldesc.2 }}: <text id="box3"></text><br>
+                {{ ldesc.3 }} <text id="box4"></text><br>
+                {{ ldesc.4 }} <text id="box5"></text><br>
+            {% elif ldesc|length == 2 %}
+                {{ ldesc.0 }}: <text id="box1"></text><br>
+                {{ ldesc.1 }}: <text id="box2"></text><br>
+                {{ ldesc.2 }} <text id="box3"></text><br>
+                {{ ldesc.3 }} <text id="box4"></text><br>
+                {{ ldesc.4 }} <text id="box5"></text><br>
+            {% elif ldesc|length == 1 %}
+                {{ ldesc.0 }}: <text id="box1"></text><br>
+                {{ ldesc.1 }} <text id="box2"></text><br>
+                {{ ldesc.2 }} <text id="box3"></text><br>
+                {{ ldesc.3 }} <text id="box4"></text><br>
+                {{ ldesc.4 }} <text id="box5"></text><br>
+            {% elif ldesc|length == 0 %}
+                {{ ldesc.0 }} <text id="box1"></text><br>
+                {{ ldesc.1 }} <text id="box2"></text><br>
+                {{ ldesc.2 }} <text id="box3"></text><br>
+                {{ ldesc.3 }} <text id="box4"></text><br>
+                {{ ldesc.4 }} <text id="box5"></text><br>
+            {% else %}
+                {{ ldesc.0 }}: <text id="box1"></text><br>
+                {{ ldesc.1 }}: <text id="box2"></text><br>
+                {{ ldesc.2 }}: <text id="box3"></text><br>
+                {{ ldesc.3 }}: <text id="box4"></text><br>
+                {{ ldesc.4 }}: <text id="box5"></text><br>
+            {% endif %}
         </div>
 
         <div id="commandExtract">
