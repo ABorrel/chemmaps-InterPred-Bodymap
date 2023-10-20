@@ -63,6 +63,7 @@ class loadTox21AssayMap:
                 self.dmap["info"][DTXSID]["Lowest AC50 (µM)"] = "-"
                 self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "Not tested"
                 self.dmap["info"][DTXSID]["Most active assay"] = "-"
+                self.dmap["info"][DTXSID]["Number of active assay"] = 0
                 if DTXSID in list(d_fail.keys()):
                     self.dmap["info"][DTXSID]["Assay Outcome"] = "QC omit"
                     self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = 'QC omit'
@@ -76,6 +77,7 @@ class loadTox21AssayMap:
                 self.dmap["info"][DTXSID]["Assay Outcome"] = "active"
                 self.dmap["SMILESClass"][DTXSID]["Assay Outcome"] = "active"
                 self.dmap["info"][DTXSID]["Most active assay"] = d_assay[DTXSID]["Most active assay"]
+                self.dmap["info"][DTXSID]["Number of active assay"] = d_assay[DTXSID]["Active assays"]
 
         # chemicals active
         nb_active = 0

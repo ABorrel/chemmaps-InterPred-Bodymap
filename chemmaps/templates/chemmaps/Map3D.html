@@ -251,7 +251,7 @@
                             "Log vapor pressure (mmHg)":"range", "Log Water solubility":"range", "MW":"range",
                             "Log Atmospheric constant (cm3/molsec)": "range", "Biodegradation half-life": "range",
                             "Boiling Point":"range", "Lipinski Failures": "class", "AC50 (µM)":"str", "Assay Outcome":"str",
-                            "QC":"str", "Most active assay": "str","Lowest AC50 (µM)":"str", 'Number of active assay':"class"};
+                            "QC":"str", "Most active assay": "str","Lowest AC50 (µM)":"str", 'Number of active assay':"range"};
                 }
                 ;
 
@@ -261,7 +261,7 @@
                 
                 // info for compound bar
                 var dinfo = {{dinfo | safe}};
-                //console.log(dinfo);
+                console.log(dinfo);
 
                 // neighbors
                 var dneighbors = {{dneighbor | safe}};

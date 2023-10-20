@@ -21,6 +21,29 @@ urlpatterns = [
     ),
 
 
+    ### help pages ###
+    ##################
+    url(
+        r'^DrugMap3D/DrugMapHelp',
+        views.launchHelp,
+        {"map":"drugbank"},
+        name='DrugMapHelp'
+    ),
+
+    url(
+        r'^DSSToxMap3D/DSSToxMapHelp',
+        views.launchHelp,
+        {"map": "DSSToxMapHelp"},
+        name='DSSTOXMapHelp'
+    ),
+
+    url(
+        r'^Tox21MapHelp/$',
+        views.launchHelp,
+        {"map": "Tox21MapHelp"},
+        name='Tox21MapHelp'
+    ),
+
     ### DrugMap ###
     ###############
     url(
@@ -35,12 +58,7 @@ urlpatterns = [
         {"map":"drugbank"},
         name='DrugMap3D'
     ),
-    url(
-        r'^DrugMap3D/DrugMapHelp',
-        views.launchHelp,
-        {"map":"drugbank"},
-        name='DrugMapHelp'
-    ),
+
     url(
         r'^DrugMapSmilesUploaded/$',
         views.launchMap,
@@ -74,12 +92,7 @@ urlpatterns = [
         {"map":"dsstox"},
         name='DSSToxMap3D'
     ),
-    url(
-        r'^DSSToxMap3D/DSSToxMapHelp',
-        views.launchHelp,
-        {"map": "DSSToxMapHelp"},
-        name='helpMap'
-    ),
+
     url(
         r'^DSSToxMapSmilesUploaded/$',
         views.launchMap,
@@ -112,12 +125,7 @@ urlpatterns = [
         {"map":"tox21"},
         name='Tox21Map3D'
     ),
-    url(
-        r'Tox21MapHelp$',
-        views.launchHelp,
-        {"map": "Tox21MapHelp"},
-        name='helpMap'
-    ),
+
     url(
         r'^Tox21MapSmilesUploaded/$',
         views.launchMap,

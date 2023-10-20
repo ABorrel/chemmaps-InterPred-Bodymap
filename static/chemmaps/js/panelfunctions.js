@@ -495,10 +495,10 @@ function colorbyRange(descin) {
             }
         }
     }
+    lval = [...new Set(lval)]
     var med = getMedian(lval);
     var minval = Math.min.apply(Math, lval);
     var maxval = Math.max.apply(Math, lval);
-
     var ecart = Math.min(med - minval, maxval - med);
 
     var gradval = range(med - ecart, med + ecart, ecart * 2 / nbcol);
