@@ -23,7 +23,8 @@
     <p class = "Errorform" style="margin-right: 0px"> Please choose only 5 categories.</p>
     {% endif %}
     {% if map == "drugbank"  %}
-    <form action='/chemmaps/DrugMap3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
+    <form action='/chemmaps/DrugMap3D/' method='post' onsubmit="ShowLoading()">
+        {% csrf_token %}
         <div class="row">
             <div class="column">
                 {% for aa in form_info.desc %}

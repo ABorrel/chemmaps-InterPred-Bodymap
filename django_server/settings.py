@@ -141,4 +141,5 @@ STATICFILES_FINDERS = (
 
 
 # manage cookies
-CSRF_COOKIE_SECURE = True
+#CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ['https://sandbox.ntp.niehs.nih.gov']
