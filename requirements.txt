@@ -1,0 +1,4 @@
+django=5.1.1
+psycopg2-binary=2.9.9
+rdkit=2024.3.5
+scipy=1.14.1
