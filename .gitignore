@@ -9,3 +9,5 @@
 ./interferences/temp/*
 ./public/
 **/__pycache__/**
+
+./settings/production.py
