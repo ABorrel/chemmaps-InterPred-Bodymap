@@ -38,13 +38,12 @@ class CASUpload(forms.Form):
     cDB = DBrequest(verbose=0)
     lname = cDB.execCMD("SELECT DISTINCT casn, name from bodymap_chemsum WHERE name is not NULL ORDER BY name")
     lcas = cDB.execCMD("SELECT DISTINCT casn, casn from bodymap_chemsum WHERE casn is not NULL ORDER BY casn")
-
+    
     lcas.insert(0, ("---", "---"))
     lname.insert(0, ("---", "---"))
-    name = forms.CharField(label='name', widget=forms.Select(choices=lname))
-    cas = forms.CharField(label='cas', widget=forms.Select(choices=lcas))
-    #chem = forms.CharField(label="", error_messages={'required': ''}, required=True, )
-    exp = forms.CharField(label='expression', widget=forms.RadioSelect(choices=CHOICES), initial="gene", required=True)
+    name = forms.CharField(label='name', widget=forms.Select(choices=lname), max_length=255)
+    cas = forms.CharField(label='cas', widget=forms.Select(choices=lcas), max_length=20)
+    exp = forms.CharField(label='expression', widget=forms.RadioSelect(choices=CHOICES), initial="gene", required=True, max_length=255)
 
 
 

@@ -1,5 +1,6 @@
 import psycopg2
 from configparser import ConfigParser
+from django.db import connection
 from os import path
 
 class DBrequest:
@@ -7,7 +8,6 @@ class DBrequest:
         self.dbconfig = path.abspath("./database.ini")
         self.conn = None
         self.verbose = verbose
-
 
     def config(self, section='postgresql'):
         parser = ConfigParser()
@@ -25,7 +25,6 @@ class DBrequest:
        
         self.params = dparams
 
-
     def connOpen(self):
         try:
             self.config()
@@ -40,7 +39,6 @@ class DBrequest:
         if self.conn is not None:
             self.conn.close()
             if self.verbose == 1: print('Database connection closed.')
-
 
     def addElement(self, nameTable, lcoloumn, lval):
         self.connOpen()
@@ -79,9 +77,14 @@ class DBrequest:
             self.connClose()
             return "ERROR"
 
-
-
     def getRow(self, table, condition):
+
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM %s WHERE %s;" % (table, condition))
+            row = cursor.fetchone()
+        print(row)
+        return row
 
         self.connOpen()
         sqlCMD = "SELECT * FROM %s WHERE %s;" % (table, condition)
@@ -101,8 +104,6 @@ class DBrequest:
         else:
             self.connClose()
             print("Open connection first")
-
-
 
     def execCMD(self, cmdSQL):
         if self.verbose == 1: print(cmdSQL)

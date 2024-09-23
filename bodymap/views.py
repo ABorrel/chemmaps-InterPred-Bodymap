@@ -12,12 +12,9 @@ from .prepInputChem import prepChem
 # Create your views here.
 def index(request):
 
-    if not "name_session" in request.session.keys():
-        a = randint(0, 1000000)
-        request.session.get("name_session", a)
-        request.session["name_session"] = a
     return render(request, 'bodymap/index.html', {
     })
+    
 
 def help(request):
     return render(request, 'bodymap/help.html', {
@@ -25,7 +22,6 @@ def help(request):
 
 
 def mappingChemicalToBody(request):
-
 
     # form for bodypart
     if request.method == 'GET':

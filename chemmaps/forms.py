@@ -3,13 +3,8 @@ from django import forms
 class UploadChemList(forms.Form):
     content = forms.CharField(widget=forms.Textarea(attrs={"class": "textSMILES"}), error_messages={'required': ''})
 
-
-
 class uploadList(forms.Form):
     docfile = forms.FileField()
-
-
-
 
 class descDrugMapChoice(forms.Form):
 
@@ -39,9 +34,6 @@ class descDrugMapChoice(forms.Form):
         if len(self.cleaned_data['desc']) > 5:
             return "ERROR"
         return self.cleaned_data['desc']
-
-
-
 
 class descDSSToxMapChoice(forms.Form):
 
@@ -79,7 +71,6 @@ class descDSSToxMapChoice(forms.Form):
             if len(self.cleaned_data['desc']) > 5:
                 return "ERROR"
             return self.cleaned_data['desc']
-
 
 class descDSSToxChoice(forms.Form):
     CHOICESDESC = (("EPA_category", "EPA category"), ("LD50_mgkg", "LD50 (mg/kg)"),

@@ -1,5 +1,6 @@
 from .toolbox import loadMatrixToDict, createFolder
 from .DBrequest import DBrequest
+from django.db import connection
 
 from os import path, remove
 from re import search
@@ -31,7 +32,6 @@ class uploadSMILES:
                     doutOUT[int(k)]["file"] = "img/checkOK.png"
             self.dclean = {"IN":doutIN, "OUT":doutOUT}
 
-
     def prepListSMILES(self):
 
         lchem_input = self.input
@@ -61,10 +61,14 @@ class uploadSMILES:
                 # inspect the DB with SMILES from users
                 if smiles_clean == [] or smiles_clean == "ERROR":
                     # search in chemical DB and chemical_user
-                    smiles_clean = self.cDB.extractColoumn("chemicals", "smiles_clean, inchikey", "WHERE smiles_origin = '%s' or smiles_clean = '%s'" %(chem_input, chem_input))
+                    with connection.cursor() as cursor:
+                        cursor.execute("SELECT smiles_clean, inchikey FROM chemicals WHERE smiles_origin=%s OR smiles_clean=%s;",[chem_input, chem_input])
+                        smiles_clean = cursor.fetchone()
 
                     if smiles_clean == [] or smiles_clean == "ERROR":
-                        smiles_clean = self.cDB.extractColoumn("chemicals_user", "smiles_clean, inchikey", "WHERE smiles_origin = '%s' or smiles_clean = '%s'" %(chem_input, chem_input))
+                        with connection.cursor() as cursor:
+                            cursor.execute("SELECT smiles_clean, inchikey FROM chemicals_user WHERE smiles_origin=%s OR smiles_clean=%s;",[chem_input, chem_input])
+                            smiles_clean = cursor.fetchone()
 
                 # process the chemicals
                 if smiles_clean == []  or smiles_clean == "ERROR":
@@ -105,7 +109,6 @@ class uploadSMILES:
                 break
 
         self.dclean = {"IN":doutIN, "OUT":doutOUT}
-
 
     def computeDesc(self, mapName):
 
@@ -210,8 +213,6 @@ class uploadSMILES:
 
         self.ddesc = dout
         return [pfilout2D, pfilout3D]
-
-
 
 
 def downloadDescFromDB(cDB, ldesc1D2D, ldesc3D, table, inchikey, mapName=""):

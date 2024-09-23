@@ -1,4 +1,5 @@
 import psycopg2
+
 from configparser import ConfigParser
 from os import path
 
@@ -7,7 +8,6 @@ class DB:
         self.dbconfig = path.abspath("./database.ini")
         self.conn = None
         self.verbose = verbose
-
 
     def config(self, section='postgresql'):
         parser = ConfigParser()
@@ -26,7 +26,6 @@ class DB:
 
         self.params = dparams
 
-
     def connOpen(self):
         try:
             self.config()
@@ -40,7 +39,6 @@ class DB:
         if self.conn is not None:
             self.conn.close()
             if self.verbose == 1: print('Database connection closed.')
-
 
     def addElement(self, nameTable, lcoloumn, lval):
         self.connOpen()
@@ -58,7 +56,6 @@ class DB:
         else:
             print("Open connection first")
 
-
     def addElementCMD(self, sqlCMD):
         #self.connOpen()
         if self.verbose == 1: print(sqlCMD)
@@ -73,7 +70,6 @@ class DB:
                 #self.connClose()
         else:
             print("Open connection first")
-
 
     def extractColoumn(self, nameTable, column, condition=""):
         self.verbose=0
@@ -141,6 +137,11 @@ class DB:
 
     def getRow(self, table, condition):
 
+        #with connection.cursor() as cursor:
+        #    cursor.execute("SELECT * FROM %s WHERE %s;" % (table, condition))
+        #    row = cursor.fetchone()
+        #return row
+        
         self.connOpen()
         sqlCMD = "SELECT * FROM %s WHERE %s;" % (table, condition)
         if self.verbose == 1: print(sqlCMD)

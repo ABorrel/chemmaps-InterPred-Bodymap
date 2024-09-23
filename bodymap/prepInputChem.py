@@ -2,14 +2,16 @@ from os import path
 import urllib.request
 from re import search
 
-from . import DBrequest
+from django.db import connection
 
 
 def prepChem(CASIN):
 
-    cDB = DBrequest.DBrequest()
-    l_chem = cDB.getRow("bodymap_chemsum", "casn='%s'"%(CASIN))[0]
-
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM bodymap_chemsum WHERE casn=%s;",[CASIN])
+        l_chem = cursor.fetchone()
+    
+    
     try:
         dcas = {}
         dcas["CAS"] = CASIN

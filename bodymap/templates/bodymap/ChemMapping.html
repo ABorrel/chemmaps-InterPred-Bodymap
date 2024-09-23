@@ -3,13 +3,10 @@
 {% block extra-css %}
 <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
 <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb-shared.css" rel="stylesheet" type="text/css"/> 
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/base.css" rel="stylesheet" type="text/css"/>
-<link href="https://sandbox.ntp.niehs.nih.gov/static/css/ntpweb.css" rel="stylesheet" type="text/css"/> 
 
 <link href="{% static 'css/ag-grid.min.css' %}" rel="stylesheet" type="text/css"/>
 <link href="{% static 'css/ag-theme-balham.min.css' %}" rel="stylesheet" type="text/css"/>
-<link href="{% static 'css/vis.min.css" rel="stylesheet" type="text/css"/>
+<link href="{% static 'css/vis.min.css' %}" rel="stylesheet" type="text/css"/>
           
 <link href="{% static 'bodymap/css/table.css' %}" rel="stylesheet" type="text/css">
 <link href="{% static 'bodymap/css/theme.css' %}" rel="stylesheet" type="text/css">
@@ -53,8 +50,8 @@
         <b>DSSTOX ID: </b><div class="tooltipBM"><a class = "aurl" id="DSSTOX"></a><span class="tooltipBMtext">Detailed chemical information available via EPA Chemistry Dashboard</span></div><br>
         <b>CASRN: </b><div class="tooltipBM"><a class = "aurl" id="CASID"></a><span class="tooltipBMtext">Detailed chemical information available via EPA Chemistry Dashboard</span></div><br>
         <b>SMILES: </b><text id="SMILES"></text><br>
-        <b>Chemical space: </b>Explore on <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/">chemmaps.com</a><br>
-        <b>Chemical annotation: </b>Explore on <a class = "aurl" href="http://134.129.166.26:8080/tox21enricher/">Tox21 Enricher</a><br>
+        <b>Chemical space: </b>Explore on <a class = "aurl" href="https://sandbox.ntp.niehs.nih.gov/chemmaps/">chemmaps.com</a><br> <!--TO change-->
+        <b>Chemical annotation: </b>Explore on <a class = "aurl" href="http://134.129.166.26:8080/tox21enricher/">Tox21 Enricher</a><br> <!--TO change-->
         <b>Chemical Quality Control (QC) status: </b><div class="tooltipBM"><a class = "aurl" id="QC"></a><span class="tooltipBMtext">Detailed QC information available on the ICE server</span></div><br>
         <b>Number of assays tested: </b>{{Nassay}}/971
     </div>
