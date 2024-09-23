@@ -2,9 +2,15 @@
 
 ## installtion with pip -> computation descriptor RDKIT developed in parrallel
 $pip install -i https://test.pypi.org/simple/ CompDesc
+$pip install rdkit
+$pip install fontawesome
+$pip install django
+$pip install scipy
+$pip install psycopg2
+
 
 ## lib and sofwares
-Development in python3.6 with
+Development in python3.12 with
 - Django
 - RDKit (> 3.1): http://rdkit.org/docs/index.html
 - molVS (> 1): https://molvs.readthedocs.io/en/latest/index.html
@@ -12,6 +18,12 @@ Development in python3.6 with
 (additional some function will not work in case of no install)
 - OPERA2.3_CL (https://github.com/kmansouri/OPERA/releases), fix the minor error in the install folder add a "/" at the path beginning
 - OPERA will install PADEL in the same folder
+
+## run the server
+$python manage makemigrations
+$python migrate
+$python manage.py runserver
+
 
 ## Upade the DSSTOX
 Download chemicals from the pubchem
@@ -52,3 +64,5 @@ Current download => 866794 chemicals => limited to 500,000 structures
 - 12-20: update bodymap with the assays results from ICE and QC 
 - 18-05-21: fix map navigation bug on color and selection 
 - 4-13-22: Fix help page
+- March 2023 release of chemmaps V2
+- July 2024 update python and django
