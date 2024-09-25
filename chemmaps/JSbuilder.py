@@ -124,7 +124,7 @@ class JSbuilder:
         if self.nameMap == "drugbank":
             table_prop_name = "chem_prop_drugbank_name"
         else:
-            table_prop_name = "chem_descriptor_opera_name"
+            table_prop_name = "chem_descriptor_opera_name_new"
 
         # load prop from the DB
         lpropDB = self.cDB.extractColoumn(table_prop_name, "name")

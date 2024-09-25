@@ -11126,7 +11126,7 @@ a[href$='.tiff']::after {
 
 a.external::after,
 a.external-link::after {
-    content: url('//ntp.niehs.nih.gov/images/icons/icon_external.svg');
+    content: url(//ntp.niehs.nih.gov/sites/default/files/images/icons/icon_external.svg);
     width: 10px;
     height: 9px;
 }
@@ -11135,7 +11135,7 @@ a.external.pdf::after,
 a.external.code::after,
 a.external-link.pdf::after,
 a.external-link.code::after {
-    background: url('//ntp.niehs.nih.gov/images/icons/icon_external.svg') center right no-repeat;
+    background: url(//ntp.niehs.nih.gov/sites/default/files/images/icons/icon_external.svg) center right no-repeat;
     background-size: 10px 9px;
     padding-right: 15px;
     width: auto;
@@ -15602,12 +15602,12 @@ li > .toggleContent {
 
 .nav-left .nested li a.external::after,
 .nav-left .nested li a.external-link::after {
-    content: url('//ntp.niehs.nih.gov/images/icons/icon_external.svg');
+    content: url(//ntp.niehs.nih.gov/sites/default/files/images/icons/icon_external.svg);
 }
 
 .nav-left .nested li a.pdf::after {
     content: '\f1c1';
-    background: url('//ntp.niehs.nih.gov/images/icons/icon_external.svg') center right no-repeat;
+    background: url(//ntp.niehs.nih.gov/sites/default/files/images/icons/icon_external.svg) center right no-repeat;
 }
 
 @media print, screen and (min-width: 40em) {
@@ -21439,7 +21439,7 @@ footer#footer .footer-logos a.external::after,
 footer#footer .footer-logos a.external-link::after,
 footer#footer .footer-logos a:visited.external::after,
 footer#footer .footer-logos a:visited.external-link::after {
-    content: url('//ntp.niehs.nih.gov/images/icons/icon_external.svg');
+    content: url(//ntp.niehs.nih.gov/sites/default/files/images/icons/icon_external.svg);
 }
 
 @media print, screen and (max-width: 39.99875em) {
@@ -23154,7 +23154,7 @@ table
 .button.transparent.external-link.pdf::after,
 .button.hollow.external.pdf::after,
 .button.hollow.external-link.pdf::after {
-    background: url('//ntp.niehs.nih.gov/images/icons/icon_external.svg') center right no-repeat;
+    background: url(//ntp.niehs.nih.gov/sites/default/files/images/icons/icon_external.svg) center right no-repeat;
 }
 
 .button::after {

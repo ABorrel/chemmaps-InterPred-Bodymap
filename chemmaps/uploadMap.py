@@ -69,7 +69,7 @@ class loadingMap:
         self.DB.verbose = 0
         self.lprop = lprop
 
-        lprop = self.DB.extractColoumn("chem_descriptor_opera_name", "name")
+        lprop = self.DB.extractColoumn("chem_descriptor_opera_name_new", "name")
         self.lallProp = [prop [0] for prop in lprop]
 
         # load order prop
