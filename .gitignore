@@ -10,4 +10,4 @@
 ./public/
 **/__pycache__/**
 
-./settings/production.py
+settings/production.py
