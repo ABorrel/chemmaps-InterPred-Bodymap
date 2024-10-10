@@ -27,7 +27,6 @@ function updateInfoBox(intersect) {
 
     var lboxes = [box1, box2, box3, box4, box5];
     for (let i = 0; i < 5; i++) {
-        console.log(i)
         if (desctype[ldesc[i]] == 'str') {
             if (dinfo[ID][ldesc[i]].length > 50) {
                 lboxes[i].innerHTML = dinfo[ID][ldesc[i]].substring(0, 60) + '...';

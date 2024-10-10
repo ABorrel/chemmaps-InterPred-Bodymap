@@ -6514,7 +6514,7 @@ footer#footer a.external-link::after,
 footer#footer a.external::after,
 header#top a.external-link::after,
 header#top a.external::after {
-    content: url(//ntp.niehs.nih.gov/sites/default/files/images/icons/icon_external.svg);
+    content: url(/static_chemmaps/images/icon_external.svg);
     width: 10px;
     height: 9px;
 }
@@ -6531,7 +6531,7 @@ header#top a.external-link.code::after,
 header#top a.external-link.pdf::after,
 header#top a.external.code::after,
 header#top a.external.pdf::after {
-    background: url(//ntp.niehs.nih.gov/sites/default/files/images/icons/icon_external.svg) center right no-repeat;
+    background: url(/static_chemmaps/images/icon_external.svg) center right no-repeat;
     background-size: 10px 9px;
     padding-right: 15px;
     width: auto;
@@ -6544,7 +6544,7 @@ footer#footer a.external-link.pdf::after,
 footer#footer a.external.pdf::after,
 header#top a.external-link.pdf::after,
 header#top a.external.pdf::after {
-    content: url(/sites/default/files/images/icons/icon_pdf.svg);
+    content: url(/static_chemmaps/images/icon_pdf.svg);
 }
 
 .callout.outage a.external-link.code::after,
@@ -6562,7 +6562,7 @@ footer#footer a.external-link.white::after,
 footer#footer a.external.white::after,
 header#top a.external-link.white::after,
 header#top a.external.white::after {
-    content: url(/sites/default/files/images/icons/icon_external_white.svg);
+    content: url(/static_chemmaps/images/icon_external_white.svg);
 }
 
 .callout.outage a.external-link.white.pdf::after,
@@ -6571,7 +6571,7 @@ footer#footer a.external-link.white.pdf::after,
 footer#footer a.external.white.pdf::after,
 header#top a.external-link.white.pdf::after,
 header#top a.external.white.pdf::after {
-    background-image: url(/sites/default/files/images/icons/icon_external_white.svg);
+    background-image: url(/static_chemmaps/images/icon_external_white.svg);
 }
 
 .callout.outage a.pdf::after,
@@ -6583,7 +6583,7 @@ footer#footer a[href$='.pdf']::after,
 header#top a.pdf::after,
 header#top a[href$='.PDF']::after,
 header#top a[href$='.pdf']::after {
-    content: url(/sites/default/files/images/icons/icon_pdf.svg);
+    content: url(/images/icon_pdf.svg);
     width: 13px;
     height: 9px;
 }
@@ -6747,7 +6747,7 @@ header#top a.code::after {
 .callout.outage a.maintenance::after,
 footer#footer a.maintenance::after,
 header#top a.maintenance::after {
-    content: url(/sites/default/files/images/notify.png);
+    content: url(/images/notify.png);
     width: 15px;
     height: 14px;
 }
@@ -8193,7 +8193,7 @@ header#top .menu > li > a {
 
 @media print, screen and (min-width: 64em) {
     .environment.dev {
-        background-image: url(/sites/default/files/images/template/corner_environment_dev.png);
+        background-image: url(/images/template/corner_environment_dev.png);
     }
 }
 
@@ -8206,7 +8206,7 @@ header#top .menu > li > a {
 
 @media print, screen and (min-width: 64em) {
     .environment.test {
-        background-image: url(/sites/default/files/images/template/corner_environment_test.png);
+        background-image: url(/images/template/corner_environment_test.png);
     }
 }
 
@@ -8274,7 +8274,7 @@ footer#footer .footer-nav {
 
 footer#footer .footer-nav .row {
     padding: 2.5rem 0;
-    background-image: url(/sites/default/files/images/template/logo_bg.png);
+    background-image: url(/static_chemmaps/images/logo_bg.png);
     background-repeat: no-repeat;
     background-position: center right;
 }
@@ -8879,7 +8879,7 @@ footer#footer .footer-logos a.external-link::after,
 footer#footer .footer-logos a.external::after,
 footer#footer .footer-logos a:visited.external-link::after,
 footer#footer .footer-logos a:visited.external::after {
-    content: url(//ntp.niehs.nih.gov/sites/default/files/images/icons/icon_external.svg);
+    content: url(/static_chemmaps/images/icon_external.svg);
 }
 
 @media print, screen and (max-width: 39.99875em) {
@@ -8887,7 +8887,7 @@ footer#footer .footer-logos a:visited.external::after {
     footer#footer .footer-logos a.external::after,
     footer#footer .footer-logos a:visited.external-link::after,
     footer#footer .footer-logos a:visited.external::after {
-        content: url(/sites/default/files/images/icons/icon_external_white.svg);
+        content: url(/static_chemmaps/images/icon_external_white.svg);
     }
 }
 
@@ -8907,7 +8907,7 @@ footer#footer .footer-links a.external-link::after,
 footer#footer .footer-links a.external::after,
 footer#footer .footer-links a:visited.external-link::after,
 footer#footer .footer-links a:visited.external::after {
-    content: url(/sites/default/files/images/icons/icon_external_white.svg);
+    content: url(/static_chemmaps/images/icon_external_white.svg);
 }
 
 footer#footer .button.transparent,
@@ -8966,12 +8966,12 @@ footer#footer .button.transparent:visited.back-to-top::before {
 
 .callout.outage a.external-link::after,
 .callout.outage a.external::after {
-    content: url(/sites/default/files/images/icons/icon_external_white.svg);
+    content: url(/static_chemmaps/images/icon_external_white.svg);
 }
 
 .callout.outage a.external-link.pdf::after,
 .callout.outage a.external.pdf::after {
-    background-image: url(/sites/default/files/images/icons/icon_external_white.svg);
+    background-image: url(/static_chemmaps/images/icon_external_white.svg);
 }
 
 .callout.outage abbr[title],
@@ -9035,12 +9035,12 @@ header#top div.alert.site-wide a::after {
 header#top div.alert.site-wide a.external-link::after,
 header#top div.alert.site-wide a.external::after {
     color: #fff;
-    content: url(/sites/default/files/images/icons/icon_external_white.svg);
+    content: url(/static_chemmaps/images/icon_external_white.svg);
 }
 
 header#top div.alert.site-wide a.external-link.pdf::after,
 header#top div.alert.site-wide a.external.pdf::after {
-    background: url(/sites/default/files/images/icons/icon_external_white.svg) center right
+    background: url(/static_chemmaps/images/icon_external_white.svg) center right
         no-repeat;
 }
 
@@ -9050,12 +9050,12 @@ header#top div.alert.site-wide a.external.pdf::after {
  */
 @font-face {
     font-family: FontAwesome;
-    src: url(//ntp.niehs.nih.gov/fonts/fontawesome-webfont.eot?v=4.7.0);
-    src: url(//ntp.niehs.nih.gov/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0) format('embedded-opentype'),
-        url(//ntp.niehs.nih.gov/fonts/fontawesome-webfont.woff2?v=4.7.0) format('woff2'),
-        url(//ntp.niehs.nih.gov/fonts/fontawesome-webfont.woff?v=4.7.0) format('woff'),
-        url(//ntp.niehs.nih.gov/fonts/fontawesome-webfont.ttf?v=4.7.0) format('truetype'),
-        url(//ntp.niehs.nih.gov/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular) format('svg');
+    src: url(/static_chemmaps/fonts/fontawesome-webfont.eot?v=4.7.0);
+    src: url(/static_chemmaps/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0) format('embedded-opentype'),
+        url(/static_chemmaps/fonts/fontawesome-webfont.woff2?v=4.7.0) format('woff2'),
+        url(/static_chemmaps/fonts/fontawesome-webfont.woff?v=4.7.0) format('woff'),
+        url(/static_chemmaps/fonts/fontawesome-webfont.ttf?v=4.7.0) format('truetype'),
+        url(/static_chemmaps/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular) format('svg');
     font-weight: 400;
     font-style: normal;
 }
@@ -12093,9 +12093,9 @@ header#top div.alert.site-wide a.external.pdf::after {
     font-style: normal;
     font-weight: 300;
     src: local('Source Sans Pro Light'), local('SourceSansPro-Light'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-300.woff2) format('woff2'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-300.woff) format('woff'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-300.ttf) format('truetype');
+        url(/static_chemmaps/fonts/sourcesanspro-300.woff2) format('woff2'),
+        url(/static_chemmaps/fonts/sourcesanspro-300.woff) format('woff'),
+        url(/static_chemmaps/fonts/sourcesanspro-300.ttf) format('truetype');
 }
 
 @font-face {
@@ -12113,9 +12113,9 @@ header#top div.alert.site-wide a.external.pdf::after {
     font-style: normal;
     font-weight: 400;
     src: local('Source Sans Pro'), local('SourceSansPro-Regular'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-400.woff2) format('woff2'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-400.woff) format('woff'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-400.ttf) format('truetype');
+        url(/static_chemmaps/fonts/sourcesanspro-400.woff2) format('woff2'),
+        url(/static_chemmaps/fonts/sourcesanspro-400.woff) format('woff'),
+        url(/static_chemmaps/fonts/sourcesanspro-400.ttf) format('truetype');
 }
 
 @font-face {
@@ -12123,9 +12123,9 @@ header#top div.alert.site-wide a.external.pdf::after {
     font-style: italic;
     font-weight: 400;
     src: local('Source Sans Pro Italic'), local('SourceSansPro-It'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-400i.woff2) format('woff2'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-400i.woff) format('woff'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-400i.ttf) format('truetype');
+        url(/static_chemmaps/fonts/sourcesanspro-400i.woff2) format('woff2'),
+        url(/static_chemmaps/fonts/sourcesanspro-400i.woff) format('woff'),
+        url(/static_chemmaps/fonts/sourcesanspro-400i.ttf) format('truetype');
 }
 
 @font-face {
@@ -12133,9 +12133,9 @@ header#top div.alert.site-wide a.external.pdf::after {
     font-style: normal;
     font-weight: 600;
     src: local('Source Sans Pro Semibold'), local('SourceSansPro-Semibold'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-600.woff2) format('woff2'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-600.woff) format('woff'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-600.ttf) format('truetype');
+        url(/static_chemmaps/fonts/sourcesanspro-600.woff2) format('woff2'),
+        url(/static_chemmaps/fonts/sourcesanspro-600.woff) format('woff'),
+        url(/static_chemmaps/fonts/sourcesanspro-600.ttf) format('truetype');
 }
 
 @font-face {
@@ -12143,9 +12143,9 @@ header#top div.alert.site-wide a.external.pdf::after {
     font-style: italic;
     font-weight: 600;
     src: local('Source Sans Pro Semibold Italic'), local('SourceSansPro-SemiboldIt'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-600i.woff2) format('woff2'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-600i.woff) format('woff'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-600i.ttf) format('truetype');
+        url(/static_chemmaps/fonts/sourcesanspro-600i.woff2) format('woff2'),
+        url(/static_chemmaps/fonts/sourcesanspro-600i.woff) format('woff'),
+        url(/static_chemmaps/fonts/sourcesanspro-600i.ttf) format('truetype');
 }
 
 @font-face {
@@ -12153,9 +12153,9 @@ header#top div.alert.site-wide a.external.pdf::after {
     font-style: normal;
     font-weight: 700;
     src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-700.woff2) format('woff2'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-700.woff) format('woff'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-700.ttf) format('truetype');
+        url(/static_chemmaps/fonts/sourcesanspro-700.woff2) format('woff2'),
+        url(/static_chemmaps/fonts/sourcesanspro-700.woff) format('woff'),
+        url(/static_chemmaps/fonts/sourcesanspro-700.ttf) format('truetype');
 }
 
 @font-face {
@@ -12163,9 +12163,9 @@ header#top div.alert.site-wide a.external.pdf::after {
     font-style: italic;
     font-weight: 700;
     src: local('Source Sans Pro Bold Italic'), local('SourceSansPro-BoldIt'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-700i.woff2) format('woff2'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-700i.woff) format('woff'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-700i.ttf) format('truetype');
+        url(/static_chemmaps/fonts/sourcesanspro-700i.woff2) format('woff2'),
+        url(/static_chemmaps/fonts/sourcesanspro-700i.woff) format('woff'),
+        url(/static_chemmaps/fonts/sourcesanspro-700i.ttf) format('truetype');
 }
 
 @font-face {
@@ -12173,9 +12173,9 @@ header#top div.alert.site-wide a.external.pdf::after {
     font-style: normal;
     font-weight: 900;
     src: local('Source Sans Pro Black'), local('SourceSansPro-Black'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-900.woff2) format('woff2'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-900.woff) format('woff'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-900.ttf) format('truetype');
+        url(/static_chemmaps/fonts/sourcesanspro-900.woff2) format('woff2'),
+        url(/static_chemmaps/fonts/sourcesanspro-900.woff) format('woff'),
+        url(/static_chemmaps/fonts/sourcesanspro-900.ttf) format('truetype');
 }
 
 @font-face {
@@ -12183,9 +12183,9 @@ header#top div.alert.site-wide a.external.pdf::after {
     font-style: italic;
     font-weight: 900;
     src: local('Source Sans Pro Black Italic'), local('SourceSansPro-BlackIt'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-900i.woff2) format('woff2'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-900i.woff) format('woff'),
-        url(//ntp.niehs.nih.gov/fonts/sourcesanspro-900i.ttf) format('truetype');
+        url(/static_chemmaps/fonts/sourcesanspro-900i.woff2) format('woff2'),
+        url(/static_chemmaps/fonts/sourcesanspro-900i.woff) format('woff'),
+        url(/static_chemmaps/fonts/sourcesanspro-900i.ttf) format('truetype');
 }
 
 @media print, screen and (max-width: 63.99875em) {

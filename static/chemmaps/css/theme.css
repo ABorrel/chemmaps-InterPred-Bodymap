@@ -173,7 +173,7 @@ p {
     color: #333333;
     -webkit-border-radius: 5px;
     border-radius: 5px;
-    padding: 8px 25px;
+    padding: 8px 8px;
 }
 
 
@@ -217,6 +217,7 @@ input[type='submit']:hover {
 .column-checkbox,
 label {
     color: #ffffff;
+    font-size: 12px;
 }
 
 .column-checkbox,
@@ -228,17 +229,18 @@ li {
 textarea {
     font-size: 22px;
     /*font-size: 2vmin;*/
+    color: #000;
 }
 
 #UploadBox {
-    font-size: 22px;
+    font-size: 35px;
     /*font-size: 2vmin;*/
 }
 
 #UploadBox,
 upload_button {
     width: 25%;
-    font-size: 22px;
+    font-size: 20px;
     /*font-size: 2.5vmin*/
     margin-top: 1px;
     margin-bottom: 2px;
@@ -246,6 +248,7 @@ upload_button {
     color: #333333;
     -webkit-border-radius: 5px;
     border-radius: 5px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #UploadBox,

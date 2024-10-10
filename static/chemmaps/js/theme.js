@@ -1,7 +1,7 @@
 function ShowLoading(e) {
     var div = document.createElement('div');
     var img = document.createElement('img');
-    img.src = ("{% static '/chemmaps/img/LOADING.gif' %}");
+    img.src = ("/static_chemmaps/chemmaps/img/LOADING.gif");
     //img.style.display = "";
     div.innerHTML = 'Loading....';
     div.appendChild(img);

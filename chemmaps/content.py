@@ -71,6 +71,8 @@ class uploadSMILES:
                             smiles_clean = cursor.fetchone()
 
                 # process the chemicals
+                if smiles_clean == None:
+                    smiles_clean = []
                 if smiles_clean == []  or smiles_clean == "ERROR":
                     chemical = CompDesc.CompDesc(chem_input, self.prout)
                     chemical.prepChem()
@@ -80,8 +82,12 @@ class uploadSMILES:
                         # add in the DB
                         self.cDB.addElement("chemicals_user", ["smiles_origin", "smiles_clean", "inchikey", "status"], [chem_input, smiles_clean, inch, "user"])
                 else:
-                    inch = smiles_clean[0][1]
-                    smiles_clean = smiles_clean[0][0]
+                    if type(smiles_clean) == list:
+                        inch = smiles_clean[0][1]
+                        smiles_clean = smiles_clean[0][0]
+                    else:
+                        inch = smiles_clean[1]
+                        smiles_clean = smiles_clean[0]
 
                 if smiles_clean != [] and smiles_clean != "ERROR" :
                     doutOUT[i]["SMILES"] = smiles_clean
@@ -187,15 +193,6 @@ class uploadSMILES:
                     dout[k]["desc"] = "img/checkOK.png"
                     filout2D.write("%i\t%s\t%s\t%s\n"%(k, SMICLEAN, inch, "\t".join([str(lval1D2D_3D[0][d]) for d in ldesc1D2D])))
                     filout3D.write("%i\t%s\t%s\n" % (k, SMICLEAN, "\t".join([str(lval1D2D_3D[1][d]) for d in ldesc3D])))
-                    # run png generation -- HERE CHANGE PNG FOLDER
-                    prPNG = createFolder(path.abspath(self.prout + "/png") + "/")
-                    p_png = chemical.computePNG(prPNG, bg="None")
-                    if p_png != "ERROR: PNG Generation":
-                        pr_static_png =  path.abspath("./static/chemmaps/png") + "/"
-                        pr_static_png = createFolder(pr_static_png + chemical.inchikey[0:2] + "/" + chemical.inchikey[2:4] + "/")
-                        print(pr_static_png)
-                        copy2(p_png, pr_static_png + chemical.inchikey + ".png")
-                
         filout2D.close()
         filout3D.close()
 

@@ -29,7 +29,14 @@ SECRET_KEY = 'n7)bc%gfm=4jo&xc^nbsg)c@mq)hwloo)mlun&dkgc&sol)kx#'
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['sandbox.ntp.niehs.nih.gov', 'localhost', '10.0.2.15']#,'152.1.45.108', 'www.chemmaps.com', "www.alexborrel.com"]
+ALLOWED_HOSTS = ['localhost']#,'152.1.45.108', 'www.chemmaps.com', "www.alexborrel.com"]
+
+# CORS
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+  'http://localhost:8000',
+  'https://ntp.niehs.nih.gov',
+)
 
 
 # Application definition
@@ -46,6 +53,7 @@ INSTALLED_APPS = [
     'bodymap',
     'toolchem',
     'fontawesomefree',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +63,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'django_server.urls'
@@ -147,4 +157,3 @@ STATICFILES_FINDERS = (
 
 # manage cookies
 CSRF_COOKIE_SECURE = True
-CSRF_TRUSTED_ORIGINS = ['https://sandbox.ntp.niehs.nih.gov']

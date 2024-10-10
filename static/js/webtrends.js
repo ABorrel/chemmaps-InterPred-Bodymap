@@ -25,7 +25,7 @@ function WebTrends() {
     this.FPCConfig = {
         enabled: this.cookieTypes === 'all' || this.cookieTypes == 'firstPartyOnly',
         name: 'WT_FPC',
-        domain: '.sandbox.ntp.niehs.nih.gov',
+        domain: '.chemmaps.ntp.niehs.nih.gov',
         expires: 63113851500,
     };
     this.TPCConfig = {
