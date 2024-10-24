@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.core.files.storage import default_storage
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
 from random import randint
 import json
 from re import search
@@ -52,6 +53,7 @@ def download(request, name):
             return response
     raise Http404
 
+@csrf_exempt 
 def launchMap(request, map, *args, **kwargs):
 
     name_session = request.session.get("name_session")
@@ -302,6 +304,7 @@ def launchDSSToxMap(request, DTXSID):
 
         return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor, "dSMILESClass":dSMILESClass, "ldesc":ldescJS, "map":"dsstox", "mapJS": mapJS,"prSessionJS":prSessionJS, "center_map":DTXSID, "assay":"" })
 
+@csrf_exempt 
 def computeDescriptor(request, map):
 
 

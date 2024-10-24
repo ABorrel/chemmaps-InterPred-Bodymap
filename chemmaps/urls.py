@@ -1,6 +1,5 @@
 from django.urls import re_path as url
 from django.views.generic import TemplateView
-from django.conf.urls.static import static
 from django.conf import settings
 from . import views
 

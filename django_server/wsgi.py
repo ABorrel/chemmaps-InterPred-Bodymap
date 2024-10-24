@@ -19,7 +19,5 @@ from django.core.wsgi import get_wsgi_application
 #    print ('%-30s %s' % (k,v[:70]))
 
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_server.settings')
-
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_server.settings.production')
 application = get_wsgi_application()
-#application = "FUCK"
