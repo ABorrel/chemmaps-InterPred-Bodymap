@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.views.decorators.csrf import csrf_exempt
 from random import randint
 from os import path
 import json
@@ -24,6 +25,7 @@ def help(request):
     return render(request, 'interferences/help.html', {
     })
 
+@csrf_exempt 
 def uploadSMILES(request):
 
     name_session = request.session.get("name_session")
@@ -94,7 +96,7 @@ def uploadSMILES(request):
 
     return render(request, 'interferences/uploadSMILES.html', {"form_smiles":form_smiles,
                                                            "from_upload": formUpload, "ErrorLine": "0"})
-
+@csrf_exempt 
 def computeDesc(request):
 
     name_session = request.session.get("name_session")

@@ -1,7 +1,7 @@
 function ShowLoadingInterferences(e) {
     var div = document.createElement('div');
     var img = document.createElement('img');
-    img.src = '//static_chemmaps/interferences/img/loading.gif';
+    img.src = ('/static_chemmaps/interferences/img/loading.gif');
     //img.style.display = "";
     div.innerHTML = 'Loading....';
     div.appendChild(img);

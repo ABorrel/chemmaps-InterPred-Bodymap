@@ -51,7 +51,7 @@ class JSbuilder:
         self.prout = prout
         self.ldescMap = ldescMap
         self.cDB = DBrequest()
-        self.pMap = path.abspath("./static/chemmaps/map/" + self.nameMap + "/") + "/"
+        self.pMap = path.abspath(path.dirname(__file__) + "/../static/chemmaps/map/" + self.nameMap + "/") + "/"
         self.cDB.verbose = 0
         self.err = 0
 
@@ -382,7 +382,7 @@ class JSbuilder:
 
             # run R script
             ## add Rscript for  windows install!
-            cmd = "Rscript %s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath("./chemmaps/Rscripts"), p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
+            cmd = "%s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath(path.dirname(__file__) + "/Rscripts"), p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
             system(cmd)
 
             if path.exists(p1D2Dcoord) and path.exists(p3Dcoord):

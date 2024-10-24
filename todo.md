@@ -43,6 +43,8 @@ pip install git+https://github.com/jazzband/django-cookie-consent@master#egg=dja
 
 ### BodyMap
 #### Priority high
+- redone chemsum with proper chemical name
+
 
 ### Priority low
 

@@ -157,10 +157,12 @@ def launchMap(request, map, *args, **kwargs):
                     build.err = 1
                 else:
                     build.loadChemMapCenterChem(chemIn, center = 1, nbChem = 10000)
+                
                 if build.err == 1:
                     reponse = render(request, 'chemmaps/launchMap.html', {"form_info": formDesc, "form_smiles": form_smiles,
                                                                     "from_upload": formUpload, "Error": "0", "map": map,
                                                                     "ErrorDSSTox":"1", "dassays":d_assays})
+                    return reponse
                 dcoord = json.dumps(build.coord)
                 dinfo = json.dumps(build.dinfo)
                 dneighbor = json.dumps(build.dneighbor)
@@ -192,6 +194,7 @@ def launchMap(request, map, *args, **kwargs):
                                                            "from_upload": formUpload, "Error": "0", "map":map, "dassays":d_assays})
     return reponse
 
+@csrf_exempt
 def launchTox21AssayMap(request, assay):
 
     cloadAssays = loadTox21AssayMap(assay)
@@ -239,7 +242,7 @@ def launchTox21TagetMap(request, target):
     return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
                                                              "dSMILESClass":dSMILESClass,
                                                              "ldesc":ldescJS, "map":"Tox21Target", "mapJS": mapJS, "prSessionJS":prSessionJS, "target":target, "assay":"", "nb_assays": cloadAssays.nb_assays})#, "nb_active": cloadAssays.nb_active, "nb_tested":  cloadAssays.nb_tested })
-
+@csrf_exempt
 def launchTox21MostPotent(request):
 
 

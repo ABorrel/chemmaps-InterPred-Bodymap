@@ -7,6 +7,7 @@ from .forms import bodypartChoice, CASUpload
 from .loadMapping import assaysMapping
 from .mapChem import mapChem
 from .prepInputChem import prepChem
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
@@ -20,7 +21,7 @@ def help(request):
     return render(request, 'bodymap/help.html', {
     })
 
-
+@csrf_exempt 
 def mappingChemicalToBody(request):
 
     # form for bodypart

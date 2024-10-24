@@ -28,7 +28,7 @@ class computeCoords:
         self.cDBresquest.closeConnection()
 
         # run R script
-        cmd = "%s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath("./chemmaps/Rscripts"), p_desc1D2D, p_desc1D3D, self.p_staticMap, self.p_staticMap, self.p_staticMap, self.p_staticMap, self.pr_session)
+        cmd = "%s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath(path.dirname(__file__) + "/Rscripts"), p_desc1D2D, p_desc1D3D, self.p_staticMap, self.p_staticMap, self.p_staticMap, self.p_staticMap, self.pr_session)
         system(cmd)
 
         p_coords1D2D = self.pr_session + "coord1D2D.csv"
