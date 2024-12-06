@@ -9050,12 +9050,12 @@ header#top div.alert.site-wide a.external.pdf::after {
  */
 @font-face {
     font-family: FontAwesome;
-    src: url(/static_chemmaps/fonts/fontawesome-webfont.eot?v=4.7.0);
-    src: url(/static_chemmaps/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0) format('embedded-opentype'),
-        url(/static_chemmaps/fonts/fontawesome-webfont.woff2?v=4.7.0) format('woff2'),
-        url(/static_chemmaps/fonts/fontawesome-webfont.woff?v=4.7.0) format('woff'),
-        url(/static_chemmaps/fonts/fontawesome-webfont.ttf?v=4.7.0) format('truetype'),
-        url(/static_chemmaps/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular) format('svg');
+    src: url('https://ntp.niehs.nih.gov/sites/default/files/fonts/fontawesome-webfont.eot?v=4.7.0');
+    src: url('https://ntp.niehs.nih.gov/sites/default/files/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'),
+        url('https://ntp.niehs.nih.gov/sites/default/files/fonts/fontawesome-webfont.woff2?v=4.7.0') format('woff2'),
+        url('https://ntp.niehs.nih.gov/sites/default/files/fonts/fontawesome-webfont.woff?v=4.7.0') format('woff'),
+        url('https://ntp.niehs.nih.gov/sites/default/files/fonts/fontawesome-webfont.ttf?v=4.7.0') format('truetype'),
+        url('https://ntp.niehs.nih.gov/sites/default/files/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
     font-weight: 400;
     font-style: normal;
 }
@@ -12113,9 +12113,9 @@ header#top div.alert.site-wide a.external.pdf::after {
     font-style: normal;
     font-weight: 400;
     src: local('Source Sans Pro'), local('SourceSansPro-Regular'),
-        url(/static_chemmaps/fonts/sourcesanspro-400.woff2) format('woff2'),
-        url(/static_chemmaps/fonts/sourcesanspro-400.woff) format('woff'),
-        url(/static_chemmaps/fonts/sourcesanspro-400.ttf) format('truetype');
+        url('https://ntp.niehs.nih.gov/sites/default/files/fonts/sourcesanspro-400.woff2') format('woff2'),
+        url('https://ntp.niehs.nih.gov/sites/default/files/fonts/sourcesanspro-400.woff') format('woff'),
+        url('https://ntp.niehs.nih.gov/sites/default/files/fonts/sourcesanspro-400.ttf') format('truetype');
 }
 
 @font-face {
@@ -12123,9 +12123,9 @@ header#top div.alert.site-wide a.external.pdf::after {
     font-style: italic;
     font-weight: 400;
     src: local('Source Sans Pro Italic'), local('SourceSansPro-It'),
-        url(/static_chemmaps/fonts/sourcesanspro-400i.woff2) format('woff2'),
-        url(/static_chemmaps/fonts/sourcesanspro-400i.woff) format('woff'),
-        url(/static_chemmaps/fonts/sourcesanspro-400i.ttf) format('truetype');
+        url('https://ntp.niehs.nih.gov/sites/default/files/fonts/sourcesanspro-400i.woff2') format('woff2'),
+        url('https://ntp.niehs.nih.gov/sites/default/files/fonts/sourcesanspro-400i.woff') format('woff'),
+        url('https://ntp.niehs.nih.gov/sites/default/files/fonts/sourcesanspro-400i.ttf') format('truetype');
 }
 
 @font-face {
