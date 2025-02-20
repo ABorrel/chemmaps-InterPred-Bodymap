@@ -103,17 +103,10 @@ class DSSToxPrep:
 
 
         # format for JS dictionnary
-        if not "coord" in self.__dict__:
-            self.coord = {}
-        
-        if not "dinfo" in self.__dict__:
-            self.dinfo = {}
-        
-        if not "dSMILES" in self.__dict__:
-            self.dSMILES = {}
-
-        if not "dneighbor" in self.__dict__:
-            self.dneighbor = {}
+        coord = {}
+        dinfo = {}
+        dSMILES = {}
+        dneighbor = {}
 
         dinch = {}
 
@@ -138,45 +131,47 @@ class DSSToxPrep:
 
             #coords
             if center == 1:
-                self.coord[dsstox] = [float(xadd - x), float(yadd - y), float(zadd - z)]
+                coord[dsstox] = [float(xadd - x), float(yadd - y), float(zadd - z)]
             else:
-                self.coord[dsstox] = [float(xadd), float(yadd), float(zadd)]
+                coord[dsstox] = [float(xadd), float(yadd), float(zadd)]
         
             # info
-            self.dinfo[dsstox] = {}
+            dinfo[dsstox] = {}
             for descMap in self.ldescMap:
                 if descMap in self.lallProp:
                     val = lprop[self.lallProp.index(descMap)]
                 else:
                     val = l_prop_tox[self.lPropTox.index(descMap)]
 
-                try: self.dinfo[dsstox][DDESCDSSTOX[descMap]] = round(float(val),1)
-                except: self.dinfo[dsstox][DDESCDSSTOX[descMap]] = val
+                try: dinfo[dsstox][DDESCDSSTOX[descMap]] = round(float(val),1)
+                except: dinfo[dsstox][DDESCDSSTOX[descMap]] = val
 
             #SMILES
-            self.dSMILES[dsstox] = {}
-            self.dSMILES[dsstox]["inchikey"] = inch
-            self.dSMILES[dsstox]["SMILES"] = smiles
-            self.dSMILES[dsstox]["GHS_category"] = str(l_prop_tox[self.lPropTox.index("GHS_category")])
+            dSMILES[dsstox] = {}
+            dSMILES[dsstox]["inchikey"] = inch
+            dSMILES[dsstox]["SMILES"] = smiles
+            dSMILES[dsstox]["GHS_category"] = str(l_prop_tox[self.lPropTox.index("GHS_category")])
 
             # neighbor
-            self.dneighbor[dsstox] = lneighbors
+            dneighbor[dsstox] = lneighbors
 
             # dictionnary of comparison inch / dsstox
             dinch[inch] = dsstox
             i = i + 1 
 
         # Change name in the neighbor ===> need to do it with a sql request
-        for chem_dtx in self.dneighbor.keys():
-            inch = self.dSMILES[chem_dtx]["inchikey"]
+        for chem_dtx in dneighbor.keys():
+            inch = dSMILES[chem_dtx]["inchikey"]
             
             lneighbors = []
-            for n in self.dneighbor[chem_dtx]:
+            for n in dneighbor[chem_dtx]:
                 try: 
                     lneighbors.append(dinch[n])
                 except: 
                     pass
-            self.dneighbor[chem_dtx] = lneighbors
+            dneighbor[chem_dtx] = lneighbors
+
+        return [coord, dinfo, dSMILES, dneighbor]
 
     def loadChemMapAddMap(self):
         
@@ -189,51 +184,68 @@ class DSSToxPrep:
         else:
             center_map = 0
 
+        coord = {}
+        dinfo = {}
+        dSMILES = {}
+        dneighbor = {}
 
         for chem in self.input["SMILESClass"].keys():
             if chem in list(self.input["db_id"].keys()) and search("DTXSID", self.input["db_id"][chem]):
                 dsstoxID = self.input["db_id"][chem]
                 #ldsstoxAdd.append(dsstoxID)
-                self.loadChemMapCenterChem(dsstoxID, center_map, nbChemInMap)
+                l_dict = self.loadChemMapCenterChem(dsstoxID, center_map, nbChemInMap)
+                coord.update(deepcopy(l_dict[0]))
+                dinfo.update(deepcopy(l_dict[1]))
+                dSMILES.update(deepcopy(l_dict[2]))
+                dneighbor.update(deepcopy(l_dict[3]))
                 
-                try:self.coord[chem] = deepcopy(self.coord[dsstoxID])
-                except:continue
+                try:
+                    coord[chem] = deepcopy(coord[dsstoxID])
+                except:
+                    continue
 
 
-                self.dinfo[chem] = {}
+                dinfo[chem] = {}
+
                 for desc in self.input["info"][chem]:
-                    self.dinfo[chem][DDESCDSSTOX[desc]] = self.input["info"][chem][desc]
+                    try:dinfo[chem][DDESCDSSTOX[desc]] = self.input["info"][chem][desc]
+                    except:dinfo[chem][desc] = self.input["info"][chem][desc]
 
-                self.dneighbor[chem] = deepcopy(self.dneighbor[dsstoxID])
-                self.dSMILES[chem] = {}
-                self.dSMILES[chem]["SMILES"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
-                self.dSMILES[chem]["inchikey"] = deepcopy(self.input["SMILESClass"][chem]["inchikey"])
-                self.dSMILES[chem]["GHS_category"] = "add"
+                dneighbor[chem] = deepcopy(dneighbor[dsstoxID])
+                dSMILES[chem] = {}
+                dSMILES[chem]["SMILES"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
+                dSMILES[chem]["inchikey"] = deepcopy(self.input["SMILESClass"][chem]["inchikey"])
+                dSMILES[chem]["GHS_category"] = "add"
 
                  # dell already in DB
-                del self.coord[dsstoxID]
-                del self.dinfo[dsstoxID]
-                del self.dneighbor[dsstoxID]
-                del self.dSMILES[dsstoxID]
+                del coord[dsstoxID]
+                del dinfo[dsstoxID]
+                del dneighbor[dsstoxID]
+                del dSMILES[dsstoxID]
 
             else:
                 inch = self.input["SMILESClass"][chem]["inchikey"]
                 
-                self.loadChemMapCenterChem(inch, center_map, nbChemInMap)
+                l_dict = self.loadChemMapCenterChem(inch, center_map, nbChemInMap)
+                coord.update(deepcopy(l_dict[0]))
+                dinfo.update(deepcopy(l_dict[1]))
+                dSMILES.update(deepcopy(l_dict[2]))
+                dneighbor.update(deepcopy(l_dict[3]))
 
                 if center_map == 1:
-                    self.coord[chem] = [0,0,0]
+                    coord[chem] = [0,0,0]
                 else:
-                    self.coord[chem] = deepcopy(self.input["coord"][chem])
-                self.dinfo[chem] = {}
+                    coord[chem] = deepcopy(self.input["coord"][chem])
+                dinfo[chem] = {}
                 
 
                 for desc in list(self.input["info"][chem].keys()):
-                    self.dinfo[chem][desc] = self.input["info"][chem][desc]
-                self.dneighbor[chem] = deepcopy(self.input["neighbor"][chem])
-                self.dSMILES[chem] = {}
-                self.dSMILES[chem]["SMILES"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
-                self.dSMILES[chem]["inchikey"] = deepcopy(self.input["SMILESClass"][chem]["inchikey"])
-                self.dSMILES[chem]["GHS_category"] = "add"
+                    dinfo[chem][desc] = self.input["info"][chem][desc]
+                dneighbor[chem] = deepcopy(self.input["neighbor"][chem])
+                dSMILES[chem] = {}
+                dSMILES[chem]["SMILES"] = deepcopy(self.input["SMILESClass"][chem]["SMILES"])
+                dSMILES[chem]["inchikey"] = deepcopy(self.input["SMILESClass"][chem]["inchikey"])
+                dSMILES[chem]["GHS_category"] = "add"
 
+        return [coord, dinfo, dSMILES, dneighbor]
 

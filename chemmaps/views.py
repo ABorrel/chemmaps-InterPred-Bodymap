@@ -156,18 +156,18 @@ def launchMap(request, map, *args, **kwargs):
                 if not search("DTXSID", chemIn):
                     build.err = 1
                 else:
-                    build.loadChemMapCenterChem(chemIn, center = 1, nbChem = 10000)
+                    l_dict_out = build.loadChemMapCenterChem(chemIn, center = 1, nbChem = 10000)
                 
                 if build.err == 1:
                     reponse = render(request, 'chemmaps/launchMap.html', {"form_info": formDesc, "form_smiles": form_smiles,
                                                                     "from_upload": formUpload, "Error": "0", "map": map,
                                                                     "ErrorDSSTox":"1", "dassays":d_assays})
                     return reponse
-                dcoord = json.dumps(build.coord)
-                dinfo = json.dumps(build.dinfo)
-                dneighbor = json.dumps(build.dneighbor)
-                dSMILESClass = json.dumps(build.dSMILES)
-                ldescJS = list(build.dinfo[list(build.dinfo.keys())[0]].keys())
+                dcoord = json.dumps(l_dict_out[0])
+                dinfo = json.dumps(l_dict_out[1])
+                dneighbor = json.dumps(l_dict_out[3])
+                dSMILESClass = json.dumps(l_dict_out[2])
+                ldescJS = list(dinfo[list(dinfo.keys())[0]].keys())
                 center_chem = chemIn
 
             else:
@@ -355,16 +355,16 @@ def computeDescriptor(request, map):
                 build.findinfoTable()
                 build.findneighbor()
 
+
                 cDSSTox = DSSToxPrep(build.dchemAdd, ldescMap, prsession)
-                cDSSTox.loadChemMapAddMap()
+                l_dict_out = cDSSTox.loadChemMapAddMap()
 
-                dcoord = json.dumps(cDSSTox.coord)
-                dinfo = json.dumps(cDSSTox.dinfo)
-                dneighbor = json.dumps(cDSSTox.dneighbor)
-                dSMILESClass = json.dumps(cDSSTox.dSMILES)
+                dcoord = json.dumps(l_dict_out[0])
+                dinfo = json.dumps(l_dict_out[1])
+                dneighbor = json.dumps(l_dict_out[3])
+                dSMILESClass = json.dumps(l_dict_out[2])
 
-                ldesc = list(cDSSTox.dinfo[list(cDSSTox.dinfo.keys())[0]].keys())
-
+                ldesc = list(l_dict_out[1][list(l_dict_out[1].keys())[0]].keys())
 
             else:
 

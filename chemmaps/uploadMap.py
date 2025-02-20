@@ -114,6 +114,11 @@ class loadingMap:
             lprop = chem[7]
             lprop_tox = chem[8]
 
+
+            ### ERROR IN THE DRUGBANK - NEED TO RELOAD THE DB
+            #if db_id == "DB13524":
+            #    print(lprop_tox)
+
             #coords
             dout["coord"][db_id] = [float(xadd), float(yadd), float(zadd)]
 
