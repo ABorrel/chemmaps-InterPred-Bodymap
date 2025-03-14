@@ -46,7 +46,7 @@ def uploadSMILES(request, *args, **kwargs):
         content = content.replace("\r", "")
         content = content.split("\n")
         content = list(dict.fromkeys(content))
-        if len(content) > 120:
+        if len(content) > 5000:
             return render(request, 'interferences/uploadSMILES.html', {"form_smiles":form_smiles,
                                                            "from_upload": formUpload, "ErrorLine": "1"})
 
@@ -79,7 +79,7 @@ def uploadSMILES(request, *args, **kwargs):
 
             lsmiles = content.split("\n")
             lsmiles = list(dict.fromkeys(lsmiles))
-            if len(lsmiles) > 100:
+            if len(lsmiles) > 5000:
                 return render(request, 'chemmaps/uploadSMILES.html', {"form_smiles":form_smiles,
                                                            "from_upload": formUpload, "ErrorFile": "1"})
             cinput = formatSMILES(lsmiles, prSession)
