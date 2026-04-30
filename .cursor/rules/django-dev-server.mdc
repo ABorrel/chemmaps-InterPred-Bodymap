@@ -1,0 +1,27 @@
+---
+description: How to run the Django dev server locally (WSL + conda env + settings)
+alwaysApply: true
+---
+
+# Django development server
+
+Run from **WSL** with the working directory set to this repository root.
+
+## Recommended command
+
+Use the `chemmaps-dev` conda environment (Miniforge under the WSL user home):
+
+```bash
+cd /mnt/c/Users/alex.borrel/work/ChemMaps/chemmaps-InterPred-Bodymap
+/home/alexborrel/miniforge3/envs/chemmaps-dev/bin/python manage.py runserver 0.0.0.0:8000 --settings=settings.local --skip-checks
+```
+
+## Alternatives
+
+- If `chemmaps-dev` is already activated: `python manage.py runserver 0.0.0.0:8000 --settings=settings.local --skip-checks`
+- Omit `--skip-checks` once Django system checks pass without errors.
+
+## Prerequisites
+
+- PostgreSQL reachable per `database.ini` (legacy psycopg2 helpers) and `settings/local.py` `DATABASES` (port/host/user/db).
+- Listen URL: `http://localhost:8000/` or `http://127.0.0.1:8000/` (`127.0.0.1` is in `ALLOWED_HOSTS` for local).
