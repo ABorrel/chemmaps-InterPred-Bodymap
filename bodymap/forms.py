@@ -16,7 +16,7 @@ class bodypartChoice(forms.Form):
                ("Respiratory System", "Respiratory System"),
                ("Urogenital System", "Urogenital System"),
                ("Visual System", "Visual System"))
-            
+
 
     bodypart = forms.MultipleChoiceField(choices=CHOICES, widget=forms.CheckboxSelectMultiple(), required=True)
 
@@ -34,22 +34,28 @@ class CASUpload(forms.Form):
 
     CHOICES = (("gene", "Gene expression cutoff based on median expression by gene for all organs"), ("organ", "Gene expression cutoff based on organ median expression for all genes"))
 
-    # extract list of available chemical from DB
-    cDB = DBrequest(verbose=0)
-    lname = cDB.execCMD("SELECT DISTINCT casn, name from bodymap_chemsum WHERE name is not NULL ORDER BY name")
-    lcas = cDB.execCMD("SELECT DISTINCT casn, casn from bodymap_chemsum WHERE casn is not NULL ORDER BY casn")
-    
-    lcas.insert(0, ("---", "---"))
-    lname.insert(0, ("---", "---"))
-    name = forms.CharField(label='name', widget=forms.Select(choices=lname), max_length=255)
-    cas = forms.CharField(label='cas', widget=forms.Select(choices=lcas), max_length=20)
+    name = forms.CharField(label='name', widget=forms.Select(choices=[]), max_length=255)
+    cas = forms.CharField(label='cas', widget=forms.Select(choices=[]), max_length=20)
     exp = forms.CharField(label='expression', widget=forms.RadioSelect(choices=CHOICES), initial="gene", required=True, max_length=255)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        cDB = DBrequest(verbose=0)
+        lname = cDB.execCMD(
+            "SELECT DISTINCT casn, name from bodymap_chemsum WHERE name is not NULL ORDER BY name"
+        )
+        lcas = cDB.execCMD(
+            "SELECT DISTINCT casn, casn from bodymap_chemsum WHERE casn is not NULL ORDER BY casn"
+        )
+        if not isinstance(lname, list):
+            lname = []
+        if not isinstance(lcas, list):
+            lcas = []
+        lcas_choices = [("---", "---")] + list(lcas)
+        lname_choices = [("---", "---")] + list(lname)
+        self.fields["name"].widget.choices = lname_choices
+        self.fields["cas"].widget.choices = lcas_choices
 
 
     def clean_upload(self):
         return [str(self.data['name']), str(self.data['cas']), str(self.data['exp'])]
-    
-
-
-

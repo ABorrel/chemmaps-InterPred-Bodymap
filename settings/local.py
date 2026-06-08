@@ -29,7 +29,7 @@ SECRET_KEY = 'n7)bc%gfm=4jo&xc^nbsg)c@mq)hwloo)mlun&dkgc&sol)kx#'
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['localhost', '192.168.167.131']#,'152.1.45.108', 'www.chemmaps.com', "www.alexborrel.com"]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.167.131']#,'152.1.45.108', 'www.chemmaps.com', "www.alexborrel.com"]
 
 # CORS
 CORS_ORIGIN_ALLOW_ALL = False
@@ -97,7 +97,7 @@ DATABASES = {
         'HOST':  'localhost',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'PORT': 5432,
+        'PORT': 5433,
         'NAME': 'chemmaps_local',
     }
 }

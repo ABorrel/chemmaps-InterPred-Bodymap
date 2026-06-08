@@ -121,10 +121,9 @@ def launchMap(request, map, *args, **kwargs):
                 destination.write(chunk)
         destination.close()
 
-        filin = open(pfileserver, "r")
         try:
-            content = filin.read()
-            filin.close()
+            with open(pfileserver, "r") as filin:
+                content = filin.read()
 
             lsmiles = content.split("\n")
             lsmiles = list(dict.fromkeys(lsmiles))
@@ -138,10 +137,19 @@ def launchMap(request, map, *args, **kwargs):
                 reponse = render(request, 'chemmaps/smilesprocess.html', {"dSMILESIN": cinput.dclean["IN"],
                                                                     "ERRORSmiles": str(cinput.err),
                                                                     "dSMILESOUT": cinput.dclean["OUT"], "map": map})
-        except:
-            filin.close()
-            reponse =  render(request, 'chemmaps/launchMap.html', {"form_info": formDesc, "form_smiles": form_smiles,
-                                                               "from_upload": formUpload, "ErrorFile": "1", "map": map, "dassays":d_assays})
+        except (OSError, UnicodeDecodeError, ValueError):
+            reponse = render(
+                request,
+                "chemmaps/launchMap.html",
+                {
+                    "form_info": formDesc,
+                    "form_smiles": form_smiles,
+                    "from_upload": formUpload,
+                    "ErrorFile": "1",
+                    "map": map,
+                    "dassays": d_assays,
+                },
+            )
 
     elif formDesc.is_valid() == True:
 
