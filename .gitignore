@@ -1,3 +1,5 @@
+.cursor/
+
 ./static/chemmaps/png/*
 ./static/bodymap/mapping/*
 **/admin/**
