@@ -62,19 +62,131 @@ a:hover {
     text-align: center;
 }
 
+#infoDock {
+    pointer-events: none;
+}
+
+#infoDock .info,
+#infoDock .info-show-tab,
+#infoDock .info-resize-handle {
+    pointer-events: auto;
+}
+
 div.info {
-    position: absolute;
-    top: 75%;
-    width: 50%;
-    right: 1%;
-    bottom: 1%;
+    position: fixed;
+    right: 12px;
+    left: auto;
+    bottom: 12px;
+    width: 480px;
+    height: 200px;
+    min-width: 280px;
+    min-height: 140px;
+    max-width: 55vw;
+    max-height: 38vh;
     color: #ffffff;
     font-family: Monospace;
-    background: #000000;
-    opacity: 0.88;
-    border-color: #ffffff;
-    border-style: solid;
+    background-color: #000000;
+    border: 1px solid #ffffff;
+    box-sizing: border-box;
+    z-index: 200;
+    overflow: hidden;
+}
 
+div.info.is-hidden {
+    display: none !important;
+}
+
+.info-chrome {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    border-bottom: 1px solid #ffffff;
+    background-color: #000000;
+    z-index: 2;
+    cursor: move;
+    user-select: none;
+}
+
+.info-title {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+#infoHideBtn {
+    background: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 1;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+#infoHideBtn:hover {
+    background-color: #333333;
+}
+
+.info-body {
+    position: absolute;
+    top: 26px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    gap: 6px;
+    padding: 6px 18px 18px 6px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.info-show-tab {
+    position: fixed;
+    right: 12px;
+    left: auto;
+    bottom: 12px;
+    color: #ffffff;
+    font-family: Monospace;
+    font-size: 13px;
+    background-color: #000000;
+    border: 1px solid #ffffff;
+    padding: 6px 12px;
+    cursor: pointer;
+    z-index: 200;
+}
+
+.info-show-tab:hover {
+    background-color: #333333;
+}
+
+.info-resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 16px;
+    height: 16px;
+    cursor: nwse-resize;
+    z-index: 3;
+    touch-action: none;
+    background: linear-gradient(
+        135deg,
+        transparent 45%,
+        #ffffff 45%,
+        #ffffff 55%,
+        transparent 55%,
+        transparent 65%,
+        #ffffff 65%,
+        #ffffff 75%,
+        transparent 75%
+    );
 }
 
 @media screen and (max-width: 800px) {
@@ -91,14 +203,13 @@ div.info {
 
 
 #pngcompound {
-    position: absolute;
-    top: 10%;
-    bottom: 10%;
-    left:1%;
-    max-width: 25%;
-    max-height: 100%;
-    height: auto;
-    width: auto;
+    flex: 0 0 22%;
+    min-width: 64px;
+    max-width: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
 #Compoundpng2 {
@@ -109,19 +220,50 @@ div.info {
     display: block;
 }
 
+.info-details {
+    flex: 1;
+    min-width: 0;
+    overflow: auto;
+    font-size: 13px;
+}
+
 #infotext {
-    position: absolute;
-    left: 25%;
-    top: 16%;
-    width: 55%;
-    font-size: 14px;
+    font-size: 13px;
+    margin-top: 2px;
 }
 
 #commandExtract {
-    position: absolute;
-    left: 75%;
-    top: 6%;
-    font-size: 14px;
+    flex: 0 0 30%;
+    min-width: 100px;
+    max-width: 38%;
+    font-size: 12px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#commandExtract .control {
+    margin: 0;
+}
+
+#commandExtract .control br {
+    display: none;
+}
+
+#commandExtract button,
+#commandExtract select {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-top: 2px;
+}
+
+#commandExtract a {
+    display: inline-block;
+    margin-top: 4px;
+    word-break: break-word;
 }
 
 #searchbar {
@@ -146,6 +288,10 @@ div.info {
 .control {
     font-size: 14px;
     width: 100%;
+}
+
+#infoDock .control {
+    font-size: 12px;
 }
 
 button {
