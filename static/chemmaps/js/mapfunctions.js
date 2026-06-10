@@ -1,5 +1,18 @@
 //position points on the map
 
+function registerPointBasePosition(particule, size) {
+    var pos = particule.geometry.attributes.position;
+    particule.userData.basePosition = new THREE.Vector3(
+        pos.getX(0),
+        pos.getY(0),
+        pos.getZ(0)
+    );
+    particule.userData.pickRadius = size;
+    if (!particule.userData.displayPosition) {
+        particule.userData.displayPosition = particule.userData.basePosition.clone();
+    }
+}
+
 function posPoint(lcoord, name, colorhexa, sprite, size, fact, scene) {
     var textureLoader = new THREE.TextureLoader();
 
@@ -25,6 +38,7 @@ function posPoint(lcoord, name, colorhexa, sprite, size, fact, scene) {
     var particule = new THREE.Points(geometry, material);
     particule.name = name;
     particule.col = colorhexa;
+    registerPointBasePosition(particule, size);
     scene.add(particule);
     return particule;
 }
@@ -69,6 +83,7 @@ function posPointIndividuallyDrugMap(repos) {
         var particule = new THREE.Points(geometry, material);
         particule.name = i;
         particule.col = colorhexa;
+        registerPointBasePosition(particule, size);
         dpoints[typeDrug].push(particule);
         scene.add(particule);
     }
@@ -128,6 +143,7 @@ function posPointIndividuallyDSSTox(repos) {
             var particule = new THREE.Points(geometry, material);
             particule.name = i;
             particule.col = colorhexa;
+            registerPointBasePosition(particule, size);
             dpoints[typechem].push(particule);
             scene.add(particule);
 
@@ -169,6 +185,7 @@ function posPointIndividuallyDSSTox(repos) {
             var particule = new THREE.Points(geometry, material);
             particule.name = i;
             particule.col = colorhexa;
+            registerPointBasePosition(particule, size);
             dpoints[typechem].push(particule);
             scene.add(particule);
         }
@@ -337,6 +354,9 @@ function render() {
     }
     controls.update();
     TWEEN.update();
+    if (typeof updatePointSpread === 'function') {
+        updatePointSpread();
+    }
     renderer.render(scene, camera);
 }
 

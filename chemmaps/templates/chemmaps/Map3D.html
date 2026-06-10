@@ -225,6 +225,7 @@
 
     <script src="{% static 'chemmaps/js/panelfunctions.js' %}" type="text/javascript"></script>
     <script src="{% static 'chemmaps/js/infoboxfunctions.js' %}" type="text/javascript"></script>
+    <script src="{% static 'chemmaps/js/pointSpread.js' %}" type="text/javascript"></script>
     <script src="{% static 'chemmaps/js/mapfunctions.js' %}" type="text/javascript"></script>
     <script src="{% static 'chemmaps/js/toolbox.js' %}" type="text/javascript"></script>
 
@@ -398,6 +399,13 @@
                 controls.staticMoving = false;
                 controls.dynamicDampingFactor = 0.3;
                 controls.enabled = true;
+
+                initPointSpread({
+                    camera: camera,
+                    controls: controls,
+                    renderer: renderer,
+                    dpoints: dpoints,
+                });
                 
                 // event on the window
                 var lpointload = [];
