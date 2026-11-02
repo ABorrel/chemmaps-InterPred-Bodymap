@@ -12,88 +12,34 @@
 <div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
 
 <div class="container-fluid bgindex padding-left: 0px">
-    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Generate the {{map.capitalize}}Map</h2>
-    <p>Select up to 5 features you would like put on the map:</p>
+    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Open the {{map.capitalize}}Map</h2>
+    <p>The map opens immediately. Choose any feature on the map when you want to color or inspect by it.</p>
 
-    {% if Error == "1" %}
-    <p class = "Errorform" style="margin-right: 0px"> Please choose only 5 categories.</p>
-    {% endif %}
-    {% if map == "drugbank"  %}
-    <form action='/chemmaps/DrugMap3D/' method='post' onsubmit="ShowLoading()">
-        {% csrf_token %}
-        <div class="row">
-            <div class="column">
-                {% for aa in form_info.desc %}
-                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
-                {% if forloop.counter == 1 %} <b>Chemical information</b>{% endif %}
-                {% if forloop.counter == 7 %} <b>Chemical rules</b>{% endif %}
-                {% if forloop.counter == 11 %} <b>Descriptors</b>{% endif %}
-                <div class="checkbox" id = {{aa.label}} aria-label="DescChoice" aria-labelledby={{aa.label}}>{{ aa }}</div>
-                {%endfor%}
-                <br>
-                <input type='submit' value='Generate DrugMap'>
-            </div>
-        </div>
+    {% if map == "drugbank" %}
+    <form action="/chemmaps/DrugMap3D/" method="get" onsubmit="ShowLoading()">
+        <input type="submit" value="Open DrugMap">
     </form>
     {% endif %}
-    {% if map == "tox21"%}
-    <form action='/chemmaps/Tox21Map3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-        <div class="row">
-            <div class="column">
-                {% for aa in form_info.desc %}
-                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
-                {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
-                {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
-                {% if forloop.counter == 13 %} <b>Physicochemical prediction</b>{% endif %}
-                {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
-                <div class="checkbox">{{ aa }}</div>
-                {%endfor%}
-                <br>
-                <input type='submit' value='Generate Tox21Map'>
-            </div>
-        </div>
+    {% if map == "tox21" %}
+    <form action="/chemmaps/Tox21Map3D/" method="get" onsubmit="ShowLoading()">
+        <input type="submit" value="Open Tox21Map">
     </form>
     {% endif %}
-    {% if map == "pfas"%}
-    <form action='/chemmaps/PFASMap3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-        <div class="row">
-            <div class="column">
-                {% for aa in form_info.desc %}
-                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
-                {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
-                {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
-                {% if forloop.counter == 13 %} <b>Physicochemical prediction</b>{% endif %}
-                {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
-                <div class="checkbox">{{ aa }}</div>
-                {%endfor%}
-                <br>
-                <input type='submit' value='Generate PFASMap'>
-            </div>
-        </div>
+    {% if map == "pfas" %}
+    <form action="/chemmaps/PFASMap3D/" method="get" onsubmit="ShowLoading()">
+        <input type="submit" value="Open PFASMap">
     </form>
     {% endif %}
-    {% if map == "dsstox"%}
-    <form action='/chemmaps/DSSToxMap3D/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-        <div class="row">
-            <div class="column">
-                {% for aa in form_info.desc %}
-                {% if forloop.counter0|divisibleby:10 %}  </div><div class="column"> {% endif %}
-                {% if forloop.counter == 1 %} <b>Chemical classification</b>{% endif %}
-                {% if forloop.counter == 3 %} <b>Toxicology prediction</b>{% endif %}
-                {% if forloop.counter == 13 %} <b>Physicochemical prediction</b>{% endif %}
-                {% if forloop.counter == 31 %} <b>Descriptors</b>{% endif %}
-                <div class="checkbox">{{ aa }}</div>
-                {%endfor%}
-                {% if ErrorDSSTox == "1" %}
-                <p class = "Errorform" style="margin-right: 30px">Chemical not recognized</p>
-                {% endif %}
-                Chemical in the center of the map (DTXSID):
-                <br>
-                <div style="margin-right: 30px">{{form_info.chem}}</div>
-                <br>
-                <input type='submit' value='Generate DSSToxMap'>
-            </div>
-        </div>
+    {% if map == "dsstox" %}
+    <form action="/chemmaps/DSSToxMap3D/" method="get" onsubmit="ShowLoading()">
+        {% if ErrorDSSTox == "1" %}
+        <p class="Errorform" style="margin-right: 30px">Chemical not recognized</p>
+        {% endif %}
+        Chemical in the center of the map (DTXSID):
+        <br>
+        <input name="center" required>
+        <br>
+        <input type="submit" value="Open DSSToxMap">
     </form>
     {% endif %}  
 

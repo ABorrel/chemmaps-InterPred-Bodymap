@@ -397,16 +397,17 @@ function downloadNeighbor() {
     //console.log(ldesc);
     //console.log(dSMILESClass[ID]);
     // write header
-    for (var idesc in ldesc) {
-        textin = textin + '\t' + ldesc[idesc];
+    var exportLabels = cardFeatureLabels();
+    for (var idesc in exportLabels) {
+        textin = textin + '\t' + exportLabels[idesc];
     }
     textin = textin + '\tdistance\n';
-    textin = textin + createLineWriteForTable(IDcenter, IDcenter, ldesc);
+    textin = textin + createLineWriteForTable(IDcenter, IDcenter, exportLabels);
     
     //console.log(dneighbors[IDcenter]);
     for (var p = 0; p < dneighbors[IDcenter].length; p++) {
         if(dneighbors[IDcenter][p] in dSMILESClass){
-            textin = textin + createLineWriteForTable(dneighbors[IDcenter][p], IDcenter, ldesc);
+            textin = textin + createLineWriteForTable(dneighbors[IDcenter][p], IDcenter, exportLabels);
         }
         ;
     }
@@ -437,7 +438,8 @@ function createLineWriteForTable(IDchem, IDcenter, ldesc) {
         lineW = lineW + dSMILESClass[IDchem]['GHS_category'];
     }
     for (var idesc in ldesc) {
-        lineW = lineW + '\t' + dinfo[IDchem][ldesc[idesc]].toString();
+        var cell = dinfo[IDchem] && dinfo[IDchem][ldesc[idesc]] != null ? dinfo[IDchem][ldesc[idesc]] : "NA";
+        lineW = lineW + '\t' + cell.toString();
     }
     dist = computeEuclidian(IDchem, IDcenter); // add var?
     lineW = lineW + "\t" + dist.toString() + '\n';

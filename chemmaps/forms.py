@@ -1,5 +1,4 @@
 from django import forms
-from django.core.exceptions import ValidationError
 
 class UploadChemList(forms.Form):
     content = forms.CharField(widget=forms.Textarea(attrs={"class": "textSMILES"}), error_messages={'required': ''})
@@ -32,10 +31,7 @@ class descDrugMapChoice(forms.Form):
                                                                "ALOGPS_LOGP", "JCHEM_RULE_OF_FIVE"], required=True)
 
     def clean_desc(self):
-        desc = self.cleaned_data['desc']
-        if len(desc) > 5:
-            raise ValidationError("Select at most 5 descriptors.")
-        return desc
+        return self.cleaned_data['desc']
 
 class descDSSToxMapChoice(forms.Form):
 
@@ -70,10 +66,7 @@ class descDSSToxMapChoice(forms.Form):
 
 
         def clean_desc(self):
-            desc = self.cleaned_data['desc']
-            if len(desc) > 5:
-                raise ValidationError("Select at most 5 descriptors.")
-            return desc
+            return self.cleaned_data['desc']
 
 class descDSSToxChoice(forms.Form):
     CHOICESDESC = (("EPA_category", "EPA category"), ("LD50_mgkg", "LD50 (mg/kg)"),
@@ -102,9 +95,6 @@ class descDSSToxChoice(forms.Form):
 
 
     def clean_desc(self):
-        desc = self.cleaned_data['desc']
-        if len(desc) > 5:
-            raise ValidationError("Select at most 5 descriptors.")
-        return desc
+        return self.cleaned_data['desc']
 
 

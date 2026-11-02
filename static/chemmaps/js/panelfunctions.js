@@ -1,12 +1,202 @@
+var colorRow = null;
+var textRow = null;
+var pins = [];
+var loadedFeatures = {};
+var featureRequests = {};
+var colorRequest = 0;
+
+function prepareCatalogTypes() {
+    if (!onDemand || !catalog) {
+        return;
+    }
+    for (var i = 0; i < catalog.length; i++) {
+        desctype[catalog[i].label] = catalog[i].type;
+    }
+}
+
+function catalogEntry(label) {
+    for (var i = 0; i < catalog.length; i++) {
+        if (catalog[i].label === label) {
+            return catalog[i];
+        }
+    }
+    return null;
+}
+
+function ensureFeature(entry) {
+    if (loadedFeatures[entry.label]) {
+        return Promise.resolve(true);
+    }
+    if (featureRequests[entry.key]) {
+        return featureRequests[entry.key];
+    }
+    var url = featureRoot + entry.key + "/";
+    if (centerMap) {
+        url += "?center=" + encodeURIComponent(centerMap);
+    }
+    var request = fetch(url, {credentials: "same-origin"}).then(function(response) {
+        if (!response.ok) {
+            throw new Error("feature");
+        }
+        return response.json();
+    }).then(function(body) {
+        if (!body.values || body.values.length !== chemIds.length) {
+            throw new Error("feature");
+        }
+        for (var i = 0; i < chemIds.length; i++) {
+            if (!dinfo[chemIds[i]]) {
+                dinfo[chemIds[i]] = {};
+            }
+            dinfo[chemIds[i]][entry.label] = body.values[i];
+        }
+        loadedFeatures[entry.label] = true;
+        return true;
+    }).catch(function() {
+        return false;
+    }).then(function(ok) {
+        delete featureRequests[entry.key];
+        return ok;
+    });
+    featureRequests[entry.key] = request;
+    return request;
+}
+
+function featureFailed() {
+    var status = document.getElementById("feature-status");
+    if (status) {
+        status.textContent = "That feature did not load.";
+    }
+}
+
+function featureCleared() {
+    var status = document.getElementById("feature-status");
+    if (status) {
+        status.textContent = "";
+    }
+}
+
+function onColorChoice(label) {
+    var requestId = ++colorRequest;
+    if (label === classLabel) {
+        colorRow = null;
+        colorbyType(classLabel);
+        featureCleared();
+        renderFeatureRows();
+        return;
+    }
+    var entry = catalogEntry(label);
+    if (!entry) {
+        return;
+    }
+    ensureFeature(entry).then(function(ok) {
+        if (requestId !== colorRequest) {
+            return;
+        }
+        if (!ok) {
+            featureFailed();
+            return;
+        }
+        featureCleared();
+        pins = pins.filter(function(item) { return item !== entry.label; });
+        if (entry.type === "str") {
+            textRow = entry.label;
+        } else {
+            colorRow = entry.label;
+            if (entry.type === "range") {
+                colorbyRange(entry.label);
+            } else {
+                colorbyType(entry.label);
+            }
+        }
+        renderFeatureRows();
+    });
+}
+
+function resetPinControl(pinController) {
+    pinController.setValue("Pin a feature");
+}
+
+function onPinChoice(label, pinController) {
+    if (!label || label === "Pin a feature") {
+        return;
+    }
+    if (label === colorRow || label === textRow || pins.indexOf(label) !== -1) {
+        resetPinControl(pinController);
+        return;
+    }
+    var entry = catalogEntry(label);
+    if (!entry) {
+        return;
+    }
+    ensureFeature(entry).then(function(ok) {
+        resetPinControl(pinController);
+        if (!ok) {
+            featureFailed();
+            return;
+        }
+        if (label !== colorRow && label !== textRow && pins.indexOf(label) === -1) {
+            pins.push(label);
+        }
+        featureCleared();
+        renderFeatureRows();
+    });
+}
+
+function removePin(label) {
+    pins = pins.filter(function(item) { return item !== label; });
+    renderFeatureRows();
+}
+
+function cardFeatureLabels() {
+    if (!onDemand) {
+        return ldesc;
+    }
+    var labels = [];
+    function add(label) {
+        if (label && labels.indexOf(label) === -1) {
+            labels.push(label);
+        }
+    }
+    add(colorRow);
+    add(textRow);
+    for (var i = 0; i < pins.length; i++) {
+        add(pins[i]);
+    }
+    return labels;
+}
+
+function addOnDemandControls(folder) {
+    prepareCatalogTypes();
+    var colorNames = [classLabel];
+    var pinNames = ["Pin a feature"];
+    for (var i = 0; i < catalog.length; i++) {
+        if (catalog[i].type !== "str") {
+            colorNames.push(catalog[i].label);
+        }
+        pinNames.push(catalog[i].label);
+    }
+    var colorState = {feature: classLabel};
+    var pinState = {feature: "Pin a feature"};
+    folder.add(colorState, "feature", colorNames).name("Color by").onChange(onColorChoice);
+    var pinController = folder.add(pinState, "feature", pinNames).name("Pin to card");
+    pinController.onChange(function(label) {
+        onPinChoice(label, pinController);
+    });
+}
+
 function createpanel() {
     var panel = new dat.GUI({ size: 12, left: 20 });
     var folder1 = panel.addFolder('Hide Chemicals');
     // folder 2 -> real time update function of information selected by user
     var folder2 = panel.addFolder('Colors by');
     var lchem = Object.keys(dSMILESClass);
-    //console.log(lchem);
-    //console.log(dinfo);
-    var lonMap = Object.keys(dinfo[lchem[1]]);
+    var lonMap = [];
+    if (!onDemand) {
+        var sampleInfo = dinfo[lchem[0]];
+        if (sampleInfo) {
+            lonMap = Object.keys(sampleInfo);
+        }
+    }
     //console.log(lonMap);
     var settings = {};
 
@@ -164,10 +354,13 @@ function createpanel() {
         folder1.add(settingsDefault, 'Inconclusive').onChange(viewNoClassified);
         folder1.add(settingsDefault, 'Draw structures').onChange(drawChemicals);
     }
-    // panel specific descriptor
-    var lsetcolor = Object.keys(settings);
-    for (var i in lsetcolor) {
-        folder2.add(settings, lsetcolor[i]);
+    if (onDemand) {
+        addOnDemandControls(folder2);
+    } else {
+        var lsetcolor = Object.keys(settings);
+        for (var i in lsetcolor) {
+            folder2.add(settings, lsetcolor[i]);
+        }
     }
     // default
     panel.add(settingsDefault, 'Axes').onChange(viewAxes);
@@ -462,7 +655,7 @@ function colorbyType(descin) {
         var dcoltemp = {};
         var i = 1;
         for (var i = 0; i < lval.length; i++) {
-            dcoltemp[lval[i]] = lcol[i];
+            dcoltemp[lval[i]] = lcol[i % lcol.length];
         }
         dcoltemp[''] = '#ffffff';
         dcoltemp['NA'] = '#ffffff';
@@ -471,7 +664,11 @@ function colorbyType(descin) {
             for (var i = 0; i < dpoints[ktype].length; i++) {
                 // black for NA
                 var valtemp = dinfo[dpoints[ktype][i].name][descin];
-                var coltemp = new THREE.Color(dcoltemp[valtemp]).getHex();
+                var hex = dcoltemp[valtemp];
+                if (hex == null) {
+                    hex = '#ffffff';
+                }
+                var coltemp = new THREE.Color(hex).getHex();
                 dpoints[ktype][i].material.color.setHex(coltemp);
                 dpoints[ktype][i].col = coltemp;
                 dpoints[ktype][i].material.map.needsUpdate = true;
@@ -496,6 +693,9 @@ function colorbyRange(descin) {
         }
     }
     lval = [...new Set(lval)]
+    if (lval.length == 0) {
+        return;
+    }
     var med = getMedian(lval);
     var minval = Math.min.apply(Math, lval);
     var maxval = Math.max.apply(Math, lval);

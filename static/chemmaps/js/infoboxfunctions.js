@@ -26,22 +26,7 @@ function updateInfoBox(intersect) {
         Group.textContent = dSMILESClass[ID]['DRUG_GROUPS'] == null ? "" : String(dSMILESClass[ID]['DRUG_GROUPS']);
     }
 
-    var lboxes = [box1, box2, box3, box4, box5];
-    for (let i = 0; i < 5; i++) {
-        var raw = dinfo[ID][ldesc[i]];
-        var shown;
-        if (desctype[ldesc[i]] == 'str') {
-            shown = raw == null ? "" : String(raw);
-            if (shown.length > 50) {
-                shown = shown.substring(0, 60) + '...';
-            }
-        } else if (desctype[ldesc[i]] == 'range') {
-            shown = raw == "NA" || raw == null ? "NA" : round(raw, 2).toString();
-        } else {
-            shown = raw == null ? "" : String(raw);
-        }
-        lboxes[i].textContent = shown;
-    }
+    renderFeatureRows();
 
     SmilesDrawer.parse(dSMILESClass[ID]['SMILES'], function(tree) {
         // Draw to the canvas
@@ -57,6 +42,51 @@ function updateInfoBox(intersect) {
     lpointload.push(intersect);
     intersect.material.color.set(0xff0000);
 }
+function formatFeatureValue(label) {
+    var raw = dinfo[ID] ? dinfo[ID][label] : null;
+    if (desctype[label] == 'str') {
+        var shown = raw == null ? "" : String(raw);
+        if (shown.length > 50) {
+            return shown.substring(0, 60) + '...';
+        }
+        return shown;
+    }
+    if (desctype[label] == 'range') {
+        return raw == "NA" || raw == null ? "NA" : round(raw, 2).toString();
+    }
+    return raw == null ? "" : String(raw);
+}
+
+function renderFeatureRows() {
+    var host = document.getElementById("feature-rows");
+    if (!host || typeof ID === "undefined" || ID == null) {
+        return;
+    }
+    host.textContent = "";
+    var labels = cardFeatureLabels();
+    for (var i = 0; i < labels.length; i++) {
+        var label = labels[i];
+        var line = document.createElement("div");
+        var name = document.createElement("span");
+        name.textContent = label + ": ";
+        var value = document.createElement("span");
+        value.textContent = formatFeatureValue(label);
+        line.appendChild(name);
+        line.appendChild(value);
+        if (onDemand && pins.indexOf(label) !== -1) {
+            var button = document.createElement("button");
+            button.type = "button";
+            button.textContent = "Remove";
+            button.setAttribute("data-label", label);
+            button.onclick = function() {
+                removePin(this.getAttribute("data-label"));
+            };
+            line.appendChild(button);
+        }
+        host.appendChild(line);
+    }
+}
+
 //for png in infobox
 function resizeCanvas() {
     var con = document.getElementById('pngcompound');

@@ -1,9 +1,11 @@
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from re import fullmatch
 
-from .forms import UploadChemList, descDrugMapChoice, descDSSToxMapChoice, descDSSToxChoice, uploadList
+from .forms import UploadChemList, uploadList
+from .features import feature_by_key
+from .mapdata import dsstox_column, full_column, ids_column, user_overrides
 from .content import uploadSMILES
 from .JSbuilder import JSbuilder
 from .DSSToxPrep import DSSToxPrep
@@ -42,6 +44,100 @@ def download(request, name):
             return response
     raise Http404
 
+FEATURE_ROOT = {
+    "drugbank": "/chemmaps/DrugMap3D/feature/",
+    "dsstox": "/chemmaps/DSSToxMap3D/feature/",
+    "tox21": "/chemmaps/Tox21Map3D/feature/",
+    "pfas": "/chemmaps/PFASMap3D/feature/",
+}
+
+
+def _order_key(map_name, center):
+    return "%s:%s" % (map_name, center or "")
+
+
+def _remember_ids(request, map_name, center, ids):
+    orders = dict(request.session.get("chemmaps_ids") or {})
+    orders[_order_key(map_name, center)] = [str(item) for item in ids]
+    request.session["chemmaps_ids"] = orders
+
+
+def _feature_fields(map_name, center, ids, ondemand):
+    from .features import catalog_for, class_label
+    if not ondemand:
+        return {
+            "ondemand": False,
+            "catalog": [],
+            "class_label": "",
+            "feature_root": "",
+            "chem_ids": [str(item) for item in (ids or [])],
+        }
+    return {
+        "ondemand": True,
+        "catalog": catalog_for(map_name),
+        "class_label": class_label(map_name),
+        "feature_root": FEATURE_ROOT[map_name],
+        "chem_ids": [str(item) for item in ids],
+        "center_map": center or "",
+    }
+
+
+def _render_catalog_map(request, map_name, dcoord, dneighbor, dsmiles, center):
+    ids = [str(item) for item in dcoord.keys()]
+    _remember_ids(request, map_name, center, ids)
+    context = {
+        "dcoord": dcoord,
+        "dinfo": {},
+        "dneighbor": dneighbor,
+        "dSMILESClass": dsmiles,
+        "ldesc": [],
+        "map": map_name,
+        "assay": "",
+        "center_map": center or "",
+    }
+    context.update(_feature_fields(map_name, center, ids, True))
+    return render(request, "chemmaps/Map3D.html", context)
+
+
+def _open_catalog_map(request, map_name, center=""):
+    if map_name == "dsstox":
+        build = DSSToxPrep(center, [], "")
+        loaded = build.loadChemMapCenterChem(center, center=1, nbChem=10000)
+        if build.err == 1 or not loaded or not loaded[0]:
+            return None
+        dcoord, _dinfo, dsmiles, dneighbor = loaded
+    else:
+        build = JSbuilder(map_name, [])
+        build.loadMap()
+        generated = build.generateJS()
+        dcoord = generated["coord"]
+        dneighbor = generated["neighbor"]
+        dsmiles = generated["SMILESClass"]
+        if not dcoord:
+            return None
+    return _render_catalog_map(request, map_name, dcoord, dneighbor, dsmiles, center)
+
+
+def map_feature(request, map, key):
+    if feature_by_key(map, key) is None:
+        raise Http404
+    center = request.GET.get("center", "") or ""
+    if center and not fullmatch(r"DTXSID\d+", center):
+        raise Http404
+    order = (request.session.get("chemmaps_ids") or {}).get(_order_key(map, center))
+    if not order:
+        raise Http404
+    if map == "dsstox" and center:
+        column = dsstox_column(center, key)
+    elif map == "dsstox":
+        column = ids_column(map, key, order)
+    else:
+        column = full_column(map, key)
+    overrides = user_overrides(toolbox.session_dir(request), key)
+    values = [overrides.get(chem_id, column.get(chem_id, "NA")) for chem_id in order]
+    return JsonResponse({"values": values})
+
+
 def launchMap(request, map, *args, **kwargs):
 
     # load assays from map Tox21
@@ -51,28 +147,42 @@ def launchMap(request, map, *args, **kwargs):
     else:
         d_assays = {}
 
-    prsession = toolbox.session_dir(request)
+    if request.method == "GET" and request.path.rstrip("/").endswith("Map3D"):
+        center = ""
+        if map == "dsstox":
+            center = request.GET.get("center", "") or ""
+            if not fullmatch(r"DTXSID\d+", center):
+                return render(request, "chemmaps/launchMap.html", {
+                    "form_smiles": UploadChemList(),
+                    "from_upload": uploadList(),
+                    "ErrorDSSTox": "1",
+                    "map": map,
+                    "dassays": d_assays,
+                })
+        opened = _open_catalog_map(request, map, center)
+        if opened is None:
+            return render(request, "chemmaps/launchMap.html", {
+                "form_smiles": UploadChemList(),
+                "from_upload": uploadList(),
+                "ErrorDSSTox": "1" if map == "dsstox" else "0",
+                "map": map,
+                "dassays": d_assays,
+            })
+        return opened
 
-    # load forms
     if request.method == 'GET':
         form_smiles = UploadChemList()
-        if map == "drugbank":
-            formDesc = descDrugMapChoice()
-        elif map == "pfas" or map == "tox21":
-            formDesc = descDSSToxChoice()
-        else:
-            formDesc = descDSSToxMapChoice()
         formUpload = uploadList()
     else:
         form_smiles = UploadChemList(request.POST)
-        if map == "drugbank":
-            formDesc = descDrugMapChoice(request.POST)
-        elif map == "pfas" or map == "tox21":
-            formDesc = descDSSToxChoice(request.POST)
-        else:
-            formDesc = descDSSToxMapChoice(request.POST)
         formUpload = uploadList(request.POST, request.FILES)
 
+    launch_context = {
+        "form_smiles": form_smiles,
+        "from_upload": formUpload,
+        "map": map,
+        "dassays": d_assays,
+    }
 
     # If data is valid, proceeds to create a new post and redirect the user
     if form_smiles.is_valid() == True:
@@ -82,8 +192,7 @@ def launchMap(request, map, *args, **kwargs):
         content = content.split("\n")
         content = list(dict.fromkeys(content))
         if len(content) > 200:
-            reponse = render(request, 'chemmaps/launchMap.html', {"form_info":formDesc, "form_smiles":form_smiles,
-                                                           "from_upload": formUpload, "ErrorLine": "1", "map":map, "dassays":d_assays})
+            reponse = render(request, 'chemmaps/launchMap.html', dict(launch_context, ErrorLine="1"))
         else:
             prsession = toolbox.session_dir(request)
             toolbox.createFolder(prsession, 1)
@@ -112,9 +221,7 @@ def launchMap(request, map, *args, **kwargs):
             lsmiles = content.split("\n")
             lsmiles = list(dict.fromkeys(lsmiles))
             if len(lsmiles) > 200:
-                reponse = render(request, 'chemmaps/launchMap.html', {"form_info": formDesc, "form_smiles": form_smiles,
-                                                                   "from_upload": formUpload, "ErrorFile": "1",
-                                                                   "map": map, "dassays":d_assays})
+                reponse = render(request, 'chemmaps/launchMap.html', dict(launch_context, ErrorFile="1"))
             else:
                 cinput = uploadSMILES(lsmiles, prsession)
                 cinput.prepListSMILES()
@@ -122,62 +229,9 @@ def launchMap(request, map, *args, **kwargs):
                                                                     "ERRORSmiles": str(cinput.err),
                                                                     "dSMILESOUT": cinput.dclean["OUT"], "map": map})
         except (OSError, UnicodeDecodeError, ValueError):
-            reponse = render(
-                request,
-                "chemmaps/launchMap.html",
-                {
-                    "form_info": formDesc,
-                    "form_smiles": form_smiles,
-                    "from_upload": formUpload,
-                    "ErrorFile": "1",
-                    "map": map,
-                    "dassays": d_assays,
-                },
-            )
-
-    elif formDesc.is_valid() == True:
-
-        ldescMap = formDesc.cleaned_data["desc"]
-        if map == "dsstox":
-            chemIn = formDesc.cleaned_data['chem']
-            if not fullmatch(r"DTXSID\d+", chemIn or ""):
-                return render(request, 'chemmaps/launchMap.html', {"form_info": formDesc, "form_smiles": form_smiles,
-                                                                "from_upload": formUpload, "Error": "0", "map": map,
-                                                                "ErrorDSSTox":"1", "dassays":d_assays})
-            build = DSSToxPrep(chemIn, ldescMap, prsession)
-            l_dict_out = build.loadChemMapCenterChem(chemIn, center = 1, nbChem = 10000)
-
-            if build.err == 1 or not l_dict_out:
-                return render(request, 'chemmaps/launchMap.html', {"form_info": formDesc, "form_smiles": form_smiles,
-                                                                "from_upload": formUpload, "Error": "0", "map": map,
-                                                                "ErrorDSSTox":"1", "dassays":d_assays})
-            dcoord = l_dict_out[0]
-            dinfo = l_dict_out[1]
-            dneighbor = l_dict_out[3]
-            dSMILESClass = l_dict_out[2]
-            ldescJS = list(dinfo[list(dinfo.keys())[0]].keys())
-            center_chem = chemIn
-
-        else:
-            build = JSbuilder(map, list(ldescMap))
-            build.loadMap()
-
-            dJS = build.generateJS()
-            dcoord = dJS["coord"]
-            dinfo = dJS["info"]
-            dneighbor = dJS["neighbor"]
-            dSMILESClass = dJS["SMILESClass"]
-            ldescJS = list(dinfo[list(dinfo.keys())[0]].keys())
-            center_chem = ""
-
-        reponse = render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
-                                                            "dSMILESClass":dSMILESClass,
-                                                            "ldesc":ldescJS, "map":map, "assay":"" , "center_map":center_chem})
+            reponse = render(request, "chemmaps/launchMap.html", dict(launch_context, ErrorFile="1"))
     else:
-        reponse = render(request, 'chemmaps/launchMap.html', {"form_info":formDesc, "form_smiles":form_smiles,
-                                                           "from_upload": formUpload,
-                                                           "Error": "1" if "desc" in formDesc.errors else "0",
-                                                           "map":map, "dassays":d_assays})
+        reponse = render(request, "chemmaps/launchMap.html", launch_context)
     return reponse
 
 def launchTox21AssayMap(request, assay):
@@ -189,9 +243,12 @@ def launchTox21AssayMap(request, assay):
     dmap = cloadAssays.dmap
     ldescJS = list(dmap["info"][list(dmap["info"].keys())[0]].keys())
 
-    return render(request, 'chemmaps/Map3D.html', {"dcoord": dmap["coord"], "dinfo": dmap["info"], "dneighbor": dmap["neighbor"],
-                                                             "dSMILESClass": dmap["SMILESClass"],
-                                                             "ldesc":ldescJS, "map":"Tox21Assay", "assay":assay, "nb_active": cloadAssays.nb_active, "nb_tested":  cloadAssays.nb_tested })
+    context = {"dcoord": dmap["coord"], "dinfo": dmap["info"], "dneighbor": dmap["neighbor"],
+               "dSMILESClass": dmap["SMILESClass"],
+               "ldesc": ldescJS, "map": "Tox21Assay", "assay": assay,
+               "nb_active": cloadAssays.nb_active, "nb_tested": cloadAssays.nb_tested}
+    context.update(_feature_fields("tox21", "", dmap["coord"].keys(), False))
+    return render(request, 'chemmaps/Map3D.html', context)
 
 def launchTox21TagetMap(request, target):
 
@@ -204,9 +261,12 @@ def launchTox21TagetMap(request, target):
     dmap = cloadAssays.dmap
     ldescJS = list(dmap["info"][list(dmap["info"].keys())[0]].keys())
 
-    return render(request, 'chemmaps/Map3D.html', {"dcoord": dmap["coord"], "dinfo": dmap["info"], "dneighbor": dmap["neighbor"],
-                                                             "dSMILESClass": dmap["SMILESClass"],
-                                                             "ldesc":ldescJS, "map":"Tox21Target", "target":target, "assay":"", "nb_assays": cloadAssays.nb_assays})
+    context = {"dcoord": dmap["coord"], "dinfo": dmap["info"], "dneighbor": dmap["neighbor"],
+               "dSMILESClass": dmap["SMILESClass"],
+               "ldesc": ldescJS, "map": "Tox21Target", "target": target, "assay": "",
+               "nb_assays": cloadAssays.nb_assays}
+    context.update(_feature_fields("tox21", "", dmap["coord"].keys(), False))
+    return render(request, 'chemmaps/Map3D.html', context)
 
 def launchTox21MostPotent(request):
 
@@ -217,9 +277,12 @@ def launchTox21MostPotent(request):
     dmap = cloadAssays.dmap
     ldescJS = list(dmap["info"][list(dmap["info"].keys())[0]].keys())
 
-    return render(request, 'chemmaps/Map3D.html', {"dcoord": dmap["coord"], "dinfo": dmap["info"], "dneighbor": dmap["neighbor"],
-                                                             "dSMILESClass": dmap["SMILESClass"],
-                                                             "ldesc":ldescJS, "map":"Tox21MostActive", "target":"Most active", "assay":"", "nb_assays": cloadAssays.nb_assays})
+    context = {"dcoord": dmap["coord"], "dinfo": dmap["info"], "dneighbor": dmap["neighbor"],
+               "dSMILESClass": dmap["SMILESClass"],
+               "ldesc": ldescJS, "map": "Tox21MostActive", "target": "Most active", "assay": "",
+               "nb_assays": cloadAssays.nb_assays}
+    context.update(_feature_fields("tox21", "", dmap["coord"].keys(), False))
+    return render(request, 'chemmaps/Map3D.html', context)
 
 def browseChemicals(request):
 
@@ -238,25 +301,13 @@ def browseChemicals(request):
 # case of automatic launch -> Comptox
 def launchDSSToxMap(request, DTXSID):
 
-    # fault Ldesc
-    ldescMap = ["nbLipinskiFailures", "CoMPARA_Bind_pred", "CERAPP_Bind_pred", "MolWeight",
-                                                   "LogP_pred"]
-
     if not fullmatch(r"DTXSID\d+", DTXSID or ""):
         return render(request, 'chemmaps/index.html', {"DTXSID": DTXSID})
 
-    build = DSSToxPrep(DTXSID, ldescMap, "")
-    l_dict_out = build.loadChemMapCenterChem(DTXSID, center = 1, nbChem = 10000)
-    if build.err == 1 or not l_dict_out:
-        return render(request, 'chemmaps/index.html', {"DTXSID":DTXSID})
-
-    dinfo = l_dict_out[1]
-    ldescJS = list(dinfo[list(dinfo.keys())[0]].keys())
-    return render(request, 'chemmaps/Map3D.html', {
-        "dcoord": l_dict_out[0], "dinfo": dinfo, "dneighbor": l_dict_out[3],
-        "dSMILESClass": l_dict_out[2], "ldesc": ldescJS, "map": "dsstox",
-        "center_map": DTXSID, "assay": "",
-    })
+    opened = _open_catalog_map(request, "dsstox", DTXSID)
+    if opened is None:
+        return render(request, 'chemmaps/index.html', {"DTXSID": DTXSID})
+    return opened
 
 @require_POST
 def computeDescriptor(request, map):
@@ -273,44 +324,21 @@ def computeDescriptor(request, map):
                                                             "ddesc":{}, "dSMILESOUT": cinput.dclean["OUT"],
                                                             "ErrorDesc": "1"})
 
-    if "desc" not in request.POST:
-        if map == "drugbank":
-            formDesc = descDrugMapChoice()
-        elif map == "pfas" or map == "tox21":
-            formDesc = descDSSToxChoice()
-        else:
-            formDesc = descDSSToxMapChoice()
-        return render(request, 'chemmaps/descriptor.html', {"map": map, "dSMILESIN": cinput.dclean["IN"],
-                                                            "dSMILESOUT": cinput.dclean["OUT"], "ddesc": cinput.ddesc,
-                                                            "form_info": formDesc, "Error": "0"})
-
-    if map == "drugbank":
-        formDesc = descDrugMapChoice(request.POST)
-    else:
-        formDesc = descDSSToxChoice(request.POST)
-
-    if formDesc.is_valid() != True:
-        return render(request, 'chemmaps/descriptor.html', {"map": map, "dSMILESIN": cinput.dclean["IN"],
-                                                            "dSMILESOUT": cinput.dclean["OUT"], "ddesc": cinput.ddesc,
-                                                            "form_info": formDesc,
-                                                            "Error": "1" if "desc" in formDesc.errors else "0"})
-
-    ldescMap = formDesc.cleaned_data["desc"]
     if map == "dsstox":
-        build = JSbuilder(map, ldescMap, prsession)
+        build = JSbuilder(map, [], prsession)
         build.generateCoords(lfileDesc[0], lfileDesc[1])
         build.findinfoTable()
         build.findneighbor()
 
-        cDSSTox = DSSToxPrep(build.dchemAdd, ldescMap, prsession)
+        cDSSTox = DSSToxPrep(build.dchemAdd, [], prsession)
         l_dict_out = cDSSTox.loadChemMapAddMap()
+        if not l_dict_out:
+            l_dict_out = [{}, {}, {}, {}]
         dcoord = l_dict_out[0]
-        dinfo = l_dict_out[1]
         dneighbor = l_dict_out[3]
         dSMILESClass = l_dict_out[2]
-        ldesc = list(dinfo[list(dinfo.keys())[0]].keys())
     else:
-        build = JSbuilder(map, ldescMap, prsession)
+        build = JSbuilder(map, [], prsession)
         build.loadMap()
         build.generateCoords(lfileDesc[0], lfileDesc[1])
         build.findinfoTable()
@@ -318,11 +346,7 @@ def computeDescriptor(request, map):
 
         dJS = build.generateJS()
         dcoord = dJS["coord"]
-        dinfo = dJS["info"]
         dneighbor = dJS["neighbor"]
         dSMILESClass = dJS["SMILESClass"]
-        ldesc = list(dinfo[list(dinfo.keys())[0]].keys())
 
-    return render(request, 'chemmaps/Map3D.html', {"dcoord": dcoord, "dinfo": dinfo, "dneighbor": dneighbor,
-                                                       "dSMILESClass": dSMILESClass, "ldesc": ldesc,
-                                                        "map": map, "assay": ""})
+    return _render_catalog_map(request, map, dcoord, dneighbor, dSMILESClass, "")

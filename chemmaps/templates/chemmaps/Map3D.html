@@ -49,43 +49,8 @@
             {% endif %}
             
             
-            {% if ldesc|length == 4 %}
-                {{ ldesc.0 }}: <text id="box1"></text><br>
-                {{ ldesc.1 }}: <text id="box2"></text><br>
-                {{ ldesc.2 }}: <text id="box3"></text><br>
-                {{ ldesc.3 }}: <text id="box4"></text><br>
-                {{ ldesc.4 }} <text id="box5"></text><br>
-            {% elif ldesc|length == 3 %}
-                {{ ldesc.0 }}: <text id="box1"></text><br>
-                {{ ldesc.1 }}: <text id="box2"></text><br>
-                {{ ldesc.2 }}: <text id="box3"></text><br>
-                {{ ldesc.3 }} <text id="box4"></text><br>
-                {{ ldesc.4 }} <text id="box5"></text><br>
-            {% elif ldesc|length == 2 %}
-                {{ ldesc.0 }}: <text id="box1"></text><br>
-                {{ ldesc.1 }}: <text id="box2"></text><br>
-                {{ ldesc.2 }} <text id="box3"></text><br>
-                {{ ldesc.3 }} <text id="box4"></text><br>
-                {{ ldesc.4 }} <text id="box5"></text><br>
-            {% elif ldesc|length == 1 %}
-                {{ ldesc.0 }}: <text id="box1"></text><br>
-                {{ ldesc.1 }} <text id="box2"></text><br>
-                {{ ldesc.2 }} <text id="box3"></text><br>
-                {{ ldesc.3 }} <text id="box4"></text><br>
-                {{ ldesc.4 }} <text id="box5"></text><br>
-            {% elif ldesc|length == 0 %}
-                {{ ldesc.0 }} <text id="box1"></text><br>
-                {{ ldesc.1 }} <text id="box2"></text><br>
-                {{ ldesc.2 }} <text id="box3"></text><br>
-                {{ ldesc.3 }} <text id="box4"></text><br>
-                {{ ldesc.4 }} <text id="box5"></text><br>
-            {% else %}
-                {{ ldesc.0 }}: <text id="box1"></text><br>
-                {{ ldesc.1 }}: <text id="box2"></text><br>
-                {{ ldesc.2 }}: <text id="box3"></text><br>
-                {{ ldesc.3 }}: <text id="box4"></text><br>
-                {{ ldesc.4 }}: <text id="box5"></text><br>
-            {% endif %}
+            <div id="feature-rows"></div>
+            <div id="feature-status"></div>
         </div>
 
         <div id="commandExtract">
@@ -212,9 +177,9 @@
     <script src="{% static 'js/jquery-ui.min.js' %}"></script>
     <script src="{% static 'js/smiles-drawer.min.js' %}"></script>
 
-    <script src="{% static 'chemmaps/js/panelfunctions.js' %}" type="text/javascript"></script>
-    <script src="{% static 'chemmaps/js/infoboxfunctions.js' %}" type="text/javascript"></script>
-    <script src="{% static 'chemmaps/js/mapfunctions.js' %}" type="text/javascript"></script>
+    <script src="{% static 'chemmaps/js/panelfunctions.js' %}?v=ondemand5" type="text/javascript"></script>
+    <script src="{% static 'chemmaps/js/infoboxfunctions.js' %}?v=ondemand3" type="text/javascript"></script>
+    <script src="{% static 'chemmaps/js/mapfunctions.js' %}?v=ondemand3" type="text/javascript"></script>
     <script src="{% static 'chemmaps/js/toolbox.js' %}" type="text/javascript"></script>
 
     {{ map|json_safe|json_script:"chemmaps-map" }}
@@ -223,6 +188,12 @@
     {{ dneighbor|json_safe|json_script:"chemmaps-dneighbor" }}
     {{ dSMILESClass|json_safe|json_script:"chemmaps-dsmiles" }}
     {{ ldesc|json_safe|json_script:"chemmaps-ldesc" }}
+    {{ ondemand|json_safe|json_script:"chemmaps-ondemand" }}
+    {{ catalog|json_safe|json_script:"chemmaps-catalog" }}
+    {{ class_label|json_safe|json_script:"chemmaps-class-label" }}
+    {{ feature_root|json_safe|json_script:"chemmaps-feature-root" }}
+    {{ chem_ids|json_safe|json_script:"chemmaps-ids" }}
+    {{ center_map|default:""|json_safe|json_script:"chemmaps-center" }}
     <script>
 
                 function chemmapsJson(id) {
@@ -232,6 +203,12 @@
                 var strDownloadMime = "image/octet-stream";
                 //for the function generalisation
                 var map = chemmapsJson("chemmaps-map");
+                var onDemand = chemmapsJson("chemmaps-ondemand");
+                var catalog = chemmapsJson("chemmaps-catalog");
+                var classLabel = chemmapsJson("chemmaps-class-label");
+                var featureRoot = chemmapsJson("chemmaps-feature-root");
+                var chemIds = chemmapsJson("chemmaps-ids");
+                var centerMap = chemmapsJson("chemmaps-center");
                 var prSession = "";
                 
 
@@ -281,7 +258,7 @@
                 var dSMILESClass = chemmapsJson("chemmaps-dsmiles");
 
                 //nb chemical
-                nbchem.textContent = Object.keys(dinfo).length;
+                nbchem.textContent = Object.keys(dcoords).length;
 
                 // import ldesc
                 var ldesc = chemmapsJson("chemmaps-ldesc");

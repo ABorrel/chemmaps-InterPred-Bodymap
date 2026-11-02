@@ -2,6 +2,7 @@ from . import toolbox
 from .JSbuilder import DDESCDSSTOX
 from .DBrequest import DBrequest
 from .uploadMap import propToDict
+from .mapdata import class_sql, class_text
 
 from os import path
 from math import sqrt
@@ -57,7 +58,7 @@ class DSSToxPrep:
             
 
             cmdExtract = (
-                "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox "
+                "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, " + class_sql("dsstox") + " "
                 "FROM " + map_rel + " ORDER BY cube(d3_cube) <-> (SELECT cube(d3_cube) FROM " + map_rel +
                 " WHERE dsstox_id = %s LIMIT 1) LIMIT %s"
             )
@@ -75,7 +76,7 @@ class DSSToxPrep:
 
             if inUser == 1:
                 cmdExtract = (
-                    "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox "
+                    "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, " + class_sql("dsstox") + " "
                     "FROM " + map_rel + " ORDER BY cube(d3_cube) <-> (SELECT cube(d3_cube) FROM " + user_rel +
                     " WHERE inchikey = %s AND map_name = 'dsstox' LIMIT 1) LIMIT %s"
                 )
@@ -98,7 +99,7 @@ class DSSToxPrep:
             else:
                 # have to be a inch
                 cmdExtract = (
-                    "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox "
+                    "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, " + class_sql("dsstox") + " "
                     "FROM " + map_rel + " ORDER BY cube(d3_cube) <-> (SELECT cube(d3_cube) FROM " + map_rel +
                     " WHERE inchikey = %s LIMIT 1) LIMIT %s"
                 )
@@ -141,12 +142,7 @@ class DSSToxPrep:
             yadd = lchem[i][4]
             zadd = lchem[i][5]
             lneighbors = lchem[i][6]
-            lprop = lchem[i][7]
-            l_prop_tox = lchem[i][8]
-            if l_prop_tox == None: l_prop_tox = ["NA" for toxname in self.lPropTox]
-            
-
-            if lprop == None or lprop==[] or lneighbors == None:
+            if lneighbors == None:
                 i = i + 1
                 continue
 
@@ -156,22 +152,10 @@ class DSSToxPrep:
             else:
                 coord[dsstox] = [float(xadd), float(yadd), float(zadd)]
         
-            # info
-            dinfo[dsstox] = {}
-            for descMap in self.ldescMap:
-                if descMap in self.lallProp:
-                    val = lprop[self.lallProp.index(descMap)]
-                else:
-                    val = l_prop_tox[self.lPropTox.index(descMap)]
-
-                try: dinfo[dsstox][DDESCDSSTOX[descMap]] = round(float(val),1)
-                except: dinfo[dsstox][DDESCDSSTOX[descMap]] = val
-
-            #SMILES
             dSMILES[dsstox] = {}
             dSMILES[dsstox]["inchikey"] = inch
             dSMILES[dsstox]["SMILES"] = smiles
-            dSMILES[dsstox]["GHS_category"] = str(l_prop_tox[self.lPropTox.index("GHS_category")])
+            dSMILES[dsstox]["GHS_category"] = class_text(lchem[i][7])
 
             # neighbor
             dneighbor[dsstox] = lneighbors

@@ -57,6 +57,12 @@ urlpatterns = [
         {"map":"drugbank"},
         name='DrugMap3D'
     ),
+    url(
+        r'^DrugMap3D/feature/(?P<key>[A-Za-z0-9_]+)/$',
+        views.map_feature,
+        {"map": "drugbank"},
+        name='DrugMapFeature',
+    ),
 
     url(
         r'^DrugMapSmilesUploaded/$',
@@ -91,6 +97,12 @@ urlpatterns = [
         {"map":"dsstox"},
         name='DSSToxMap3D'
     ),
+    url(
+        r'^DSSToxMap3D/feature/(?P<key>[A-Za-z0-9_]+)/$',
+        views.map_feature,
+        {"map": "dsstox"},
+        name='DSSToxFeature',
+    ),
 
     url(
         r'^DSSToxMapSmilesUploaded/$',
@@ -123,6 +135,12 @@ urlpatterns = [
         views.launchMap,
         {"map":"tox21"},
         name='Tox21Map3D'
+    ),
+    url(
+        r'^Tox21Map3D/feature/(?P<key>[A-Za-z0-9_]+)/$',
+        views.map_feature,
+        {"map": "tox21"},
+        name='Tox21Feature',
     ),
 
     url(
@@ -157,6 +175,12 @@ urlpatterns = [
         views.launchMap,
         {"map":"pfas"},
         name='PFASMap3D'
+    ),
+    url(
+        r'^PFASMap3D/feature/(?P<key>[A-Za-z0-9_]+)/$',
+        views.map_feature,
+        {"map": "pfas"},
+        name='PFASFeature',
     ),
     url(
         r'^PFASMap3D/PFASMapHelp',

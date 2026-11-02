@@ -1,4 +1,5 @@
 from .DBrequest import DBrequest
+from .mapdata import class_text, geometry_rows
 
 DDESCDRUGMAP = {"JCHEM_ROTATABLE_BOND_COUNT":"Rotable bond", "JCHEM_POLAR_SURFACE_AREA": "Polar surface",
                "MOLECULAR_WEIGHT": "Molecular weight", "JCHEM_PHYSIOLOGICAL_CHARGE": "Physio charge",
@@ -74,36 +75,6 @@ class loadingMap:
         self.DB.verbose = 0
         self.lprop = lprop
 
-        self.DB.connOpen()
-        try:
-            rows_all = self.DB.extractColoumn(
-                "chem_descriptor_opera_name", "name", close_conn=False
-            )
-            self.lallProp = (
-                [prop[0] for prop in rows_all]
-                if isinstance(rows_all, list)
-                else []
-            )
-
-            if map == "drugbank":
-                rows_tox = self.DB.extractColoumn(
-                    "chem_prop_drugbank_name", "name", close_conn=False
-                )
-            else:
-                rows_tox = self.DB.extractColoumn(
-                    "chem_toxexp_name", "name", close_conn=False
-                )
-            self.lPropTox = (
-                [prop[0] for prop in rows_tox]
-                if isinstance(rows_tox, list)
-                else []
-            )
-        finally:
-            self.DB.connClose()
-
-        self._idx_all = {n: i for i, n in enumerate(self.lallProp)}
-        self._idx_tox = {n: i for i, n in enumerate(self.lPropTox)}
-
 
     def loadMap(self):
         dout = {}
@@ -113,119 +84,31 @@ class loadingMap:
         dout["SMILESClass"] = {}
         dout["inchikey"] = {}
 
-        if self.map == "drugbank":
-            lchem = self.DB.extractColoumn(
-                "mvwchemmap_mapdrugbank",
-                "drugbank_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox",
-            )
-        elif self.map == "pfas":
-            lchem = self.DB.extractColoumn(
-                "mvwchemmap_mappfas",
-                "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox",
-            )
-        elif self.map == "tox21":
-            lchem = self.DB.extractColoumn(
-                "mvwchemmap_maptox21",
-                "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox",
-            )
-        else:
-            lchem = []
+        if self.map not in ("drugbank", "pfas", "tox21"):
+            return dout
 
-        if not isinstance(lchem, list):
-            dout["inchikey"] = {}
+        lchem = geometry_rows(self.map)
+        if not lchem:
             return dout
 
         dinch = {}
-        ia = self._idx_all.get
-        it = self._idx_tox.get
+        class_field = "DRUG_GROUPS" if self.map == "drugbank" else "GHS_category"
 
         for chem in lchem:
-            if len(chem) < 9:
+            if len(chem) < 8 or chem[3] is None or chem[4] is None or chem[5] is None:
                 continue
             inch = chem[2]
             smiles = chem[1]
             db_id = chem[0]
-            xadd = chem[3]
-            yadd = chem[4]
-            zadd = chem[5]
             lneighbors = chem[6]
-            lprop_row = chem[7]
-            lprop_tox = chem[8]
 
-            dout["coord"][db_id] = [float(xadd), float(yadd), float(zadd)]
-
-            dout["info"][db_id] = {}
-            for descMap in self.lprop:
-                if self.map == "drugbank":
-                    ia_i = ia(descMap)
-                    it_i = it(descMap)
-                    if ia_i is not None:
-                        val = lprop_row[ia_i]
-                    elif it_i is not None:
-                        if lprop_tox is None:
-                            val = "NA"
-                        else:
-                            val = lprop_tox[it_i]
-                    else:
-                        val = "NA"
-
-                    if val == -9999 or val == "NaN":
-                        val = "NA"
-                    label = DDESCDRUGMAP.get(descMap)
-                    if label is None:
-                        continue
-                    try:
-                        dout["info"][db_id][label] = round(float(val), 1)
-                    except (ValueError, TypeError):
-                        dout["info"][db_id][label] = val
-                else:
-                    ia_i = ia(descMap)
-                    it_i = it(descMap)
-                    if ia_i is not None:
-                        if lprop_row is None or lprop_row == []:
-                            val = "NA"
-                        else:
-                            val = lprop_row[ia_i]
-                    elif it_i is not None:
-                        if lprop_tox is None:
-                            val = "NA"
-                        else:
-                            val = lprop_tox[it_i]
-                    else:
-                        val = "NA"
-
-                    if val == -9999 or val == "NaN":
-                        val = "NA"
-                    label = DDESCDSSTOX.get(descMap)
-                    if label is None:
-                        continue
-                    try:
-                        dout["info"][db_id][label] = round(float(val), 1)
-                    except (ValueError, TypeError):
-                        dout["info"][db_id][label] = val
-
-
-            dout["SMILESClass"][db_id] = {}
-            dout["SMILESClass"][db_id]["inchikey"] = inch
-            dout["SMILESClass"][db_id]["SMILES"] = smiles
-
-
-            if self.map == "drugbank":
-                dg_i = it("DRUG_GROUPS")
-                if lprop_tox is None or dg_i is None:
-                    dout["SMILESClass"][db_id]["DRUG_GROUPS"] = "NA"
-                else:
-                    dout["SMILESClass"][db_id]["DRUG_GROUPS"] = lprop_tox[dg_i]
-            else:
-                gh_i = it("GHS_category")
-                if lprop_tox is None or gh_i is None:
-                    dout["SMILESClass"][db_id]["GHS_category"] = "NA"
-                else:
-                    dout["SMILESClass"][db_id]["GHS_category"] = lprop_tox[gh_i]
-
-
-            dout["neighbor"][db_id] = lneighbors
-
+            dout["coord"][db_id] = [float(chem[3]), float(chem[4]), float(chem[5])]
+            dout["SMILESClass"][db_id] = {
+                "inchikey": inch,
+                "SMILES": smiles,
+                class_field: class_text(chem[7]),
+            }
+            dout["neighbor"][db_id] = lneighbors if lneighbors is not None else []
             dinch[inch] = db_id
 
         for chem in dout["neighbor"].keys():
