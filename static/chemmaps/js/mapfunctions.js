@@ -1,5 +1,21 @@
 //position points on the map
 
+var drawMode = "objects";
+var cloudRoot = "";
+var chemicalRoot = "";
+var cloudPoints = {classified: null, noclassified: null};
+var showClassified = true;
+var showPlain = true;
+var cloudById = {};
+var addedIds = [];
+var cloudHighlight = null;
+var structurePoint = null;
+var cloudFrameDistance = 1;
+var cloudFullRadius = 1;
+var pointerDirty = false;
+var detailToken = 0;
+var chemicalRequests = {};
+
 function posPoint(lcoord, name, colorhexa, sprite, size, fact, scene) {
     var textureLoader = new THREE.TextureLoader();
 
@@ -175,6 +191,391 @@ function posPointIndividuallyDSSTox(repos) {
     }
 }
 
+function circleSprite() {
+    var canvas = document.createElement("canvas");
+    canvas.width = 32;
+    canvas.height = 32;
+    var ctx = canvas.getContext("2d");
+    ctx.beginPath();
+    ctx.arc(16, 16, 15, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    return new THREE.CanvasTexture(canvas);
+}
+
+function makeCloud(positions, colors, ids, sprite, size) {
+    var geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    var material = new THREE.PointsMaterial({
+        size: size,
+        map: sprite,
+        alphaTest: 0.1,
+        transparent: true,
+        vertexColors: true,
+        sizeAttenuation: false,
+    });
+    var cloud = new THREE.Points(geometry, material);
+    cloud.userData.ids = ids;
+    scene.add(cloud);
+    return cloud;
+}
+
+function posPointCloud(payload) {
+    var classifiedPos = [];
+    var classifiedCol = [];
+    var classifiedIds = [];
+    var plainPos = [];
+    var plainCol = [];
+    var plainIds = [];
+    var color = new THREE.Color();
+    cloudById = {};
+    for (var i = 0; i < payload.ids.length; i++) {
+        var id = payload.ids[i];
+        var x = payload.x[i];
+        var y = payload.y[i];
+        var z = payload.z[i];
+        if (!(id in dcoords)) {
+            dcoords[id] = [x, y, z];
+        }
+        var ghs = payload.ghs[i] == null || payload.ghs[i] === "" ? "NA" : String(payload.ghs[i]);
+        if (!dSMILESClass[id]) {
+            dSMILESClass[id] = {GHS_category: ghs, SMILES: "", inchikey: ""};
+        } else if (!dSMILESClass[id].GHS_category) {
+            dSMILESClass[id].GHS_category = ghs;
+        }
+        var hex = dcolGHS[ghs];
+        if (hex == null) {
+            hex = dcolGHS["NA"];
+        }
+        color.setHex(hex);
+        var bucketPos = ghs === "NA" ? plainPos : classifiedPos;
+        var bucketCol = ghs === "NA" ? plainCol : classifiedCol;
+        var bucketIds = ghs === "NA" ? plainIds : classifiedIds;
+        bucketPos.push(x * fact, y * fact, z * fact);
+        bucketCol.push(color.r, color.g, color.b);
+        bucketIds.push(id);
+    }
+    var dot = circleSprite();
+    if (classifiedIds.length) {
+        cloudPoints.classified = makeCloud(
+            classifiedPos, classifiedCol, classifiedIds, dot, 8
+        );
+        cloudPoints.classified.visible = showClassified;
+        for (var c = 0; c < classifiedIds.length; c++) {
+            cloudById[classifiedIds[c]] = {object: cloudPoints.classified, index: c};
+        }
+    }
+    if (plainIds.length) {
+        cloudPoints.noclassified = makeCloud(
+            plainPos, plainCol, plainIds, dot, 7
+        );
+        cloudPoints.noclassified.visible = showPlain;
+        for (var n = 0; n < plainIds.length; n++) {
+            cloudById[plainIds[n]] = {object: cloudPoints.noclassified, index: n};
+        }
+    }
+    chemIds = payload.ids.slice();
+    var extra = 0;
+    for (var a = 0; a < addedIds.length; a++) {
+        if (!cloudById[addedIds[a]]) {
+            extra++;
+        }
+    }
+    nbchem.textContent = String(payload.ids.length + extra);
+}
+
+function placeAdded() {
+    for (var i = 0; i < addedIds.length; i++) {
+        var id = addedIds[i];
+        if (!dcoords[id]) {
+            continue;
+        }
+        var point = posPoint(dcoords[id], id, 0xffffff, dsprite.add, dsize.add, fact, scene);
+        dpoints.add.push(point);
+    }
+}
+
+function frameCloud() {
+    var box = new THREE.Box3();
+    if (cloudPoints.classified) {
+        box.expandByObject(cloudPoints.classified);
+    }
+    if (cloudPoints.noclassified) {
+        box.expandByObject(cloudPoints.noclassified);
+    }
+    if (box.isEmpty()) {
+        return;
+    }
+    var center = box.getCenter(new THREE.Vector3());
+    var size = box.getSize(new THREE.Vector3());
+    var radius = 0.5 * Math.sqrt(size.x * size.x + size.y * size.y + size.z * size.z);
+    if (radius < 1) {
+        radius = 1;
+    }
+    camera.fov = 60;
+    camera.near = Math.max(radius / 1000, 0.1);
+    camera.far = radius * 20;
+    camera.updateProjectionMatrix();
+    controls.target.copy(center);
+    cloudFullRadius = radius;
+    // Closer than a fit-all view, so neighboring chemicals sit apart on screen.
+    // Point size stays in pixels. Attenuation would swell the chemicals nearest the camera.
+    cloudFrameDistance = radius * 0.28;
+    camera.position.set(center.x + radius * 0.06, center.y - radius * 0.08, center.z + cloudFrameDistance);
+    if (cloudPoints.classified) {
+        cloudPoints.classified.material.size = 8;
+        cloudPoints.classified.material.needsUpdate = true;
+    }
+    if (cloudPoints.noclassified) {
+        cloudPoints.noclassified.material.size = 7;
+        cloudPoints.noclassified.material.needsUpdate = true;
+    }
+    controls.maxDistance = radius * 4;
+    controls.update();
+}
+
+function clearCloudHighlight() {
+    if (!cloudHighlight) {
+        return;
+    }
+    var colors = cloudHighlight.object.geometry.getAttribute("color");
+    colors.setXYZ(cloudHighlight.index, cloudHighlight.r, cloudHighlight.g, cloudHighlight.b);
+    colors.needsUpdate = true;
+    cloudHighlight = null;
+}
+
+function highlightCloudIndex(object, index) {
+    if (cloudHighlight && cloudHighlight.object === object && cloudHighlight.index === index) {
+        return;
+    }
+    clearCloudHighlight();
+    var colors = object.geometry.getAttribute("color");
+    cloudHighlight = {
+        object: object,
+        index: index,
+        r: colors.getX(index),
+        g: colors.getY(index),
+        b: colors.getZ(index),
+    };
+    colors.setXYZ(index, 1, 0, 0);
+    colors.needsUpdate = true;
+}
+
+function paintCloud(hexForId) {
+    clearCloudHighlight();
+    var color = new THREE.Color();
+    var groups = [cloudPoints.classified, cloudPoints.noclassified];
+    for (var g = 0; g < groups.length; g++) {
+        var points = groups[g];
+        if (!points) {
+            continue;
+        }
+        var ids = points.userData.ids;
+        var colors = points.geometry.getAttribute("color");
+        for (var i = 0; i < ids.length; i++) {
+            color.setHex(hexForId(ids[i]));
+            colors.setXYZ(i, color.r, color.g, color.b);
+        }
+        colors.needsUpdate = true;
+    }
+    if (dpoints && dpoints.add) {
+        for (var a = 0; a < dpoints.add.length; a++) {
+            var hex = hexForId(dpoints.add[a].name);
+            dpoints.add[a].col = hex;
+            dpoints.add[a].material.color.setHex(dpoints.add[a].name === ID ? 0xff0000 : hex);
+        }
+    }
+    if (ID && cloudById[ID]) {
+        highlightCloudIndex(cloudById[ID].object, cloudById[ID].index);
+    }
+}
+
+function ensureChemical(id) {
+    if (!id) {
+        return Promise.resolve(false);
+    }
+    var known = dSMILESClass[id];
+    if (known && (known.detailLoaded || (known.SMILES && dneighbors[id]))) {
+        return Promise.resolve(true);
+    }
+    if (chemicalRequests[id]) {
+        return chemicalRequests[id];
+    }
+    var request = fetch(chemicalRoot + encodeURIComponent(id) + "/", {credentials: "same-origin"}).then(function(response) {
+        if (!response.ok) {
+            throw new Error("chemical");
+        }
+        return response.json();
+    }).then(function(body) {
+        if (!dSMILESClass[id]) {
+            dSMILESClass[id] = {};
+        }
+        dSMILESClass[id].SMILES = body.smiles || "";
+        dSMILESClass[id].inchikey = body.inchikey || "";
+        if (body.ghs) {
+            dSMILESClass[id].GHS_category = body.ghs;
+        }
+        dneighbors[id] = body.neighbors || [];
+        dSMILESClass[id].detailLoaded = true;
+        return true;
+    }).catch(function() {
+        return false;
+    }).then(function(ok) {
+        delete chemicalRequests[id];
+        return ok;
+    });
+    chemicalRequests[id] = request;
+    return request;
+}
+
+function selectCloudId(id, object, index) {
+    if (block != 0) {
+        return;
+    }
+    var record = dSMILESClass[id];
+    var known = record && (record.detailLoaded || (record.SMILES && dneighbors[id]));
+    if (object && index != null) {
+        highlightCloudIndex(object, index);
+    }
+    if (ID === id && (known || chemicalRequests[id])) {
+        return;
+    }
+    ID = id;
+    if (object && index != null) {
+        highlightCloudIndex(object, index);
+    }
+    var coords = dcoords[id];
+    if (coords) {
+        coorblock.x = coords[0] * fact;
+        coorblock.y = coords[1] * fact;
+        coorblock.z = coords[2] * fact;
+    }
+    var token = ++detailToken;
+    updateInfoBox(null);
+    ensureChemical(id).then(function(ok) {
+        if (token !== detailToken || ID !== id) {
+            return;
+        }
+        if (ok || (dSMILESClass[id] && dSMILESClass[id].GHS_category)) {
+            updateInfoBox(null);
+        }
+    });
+}
+
+function focusCloud(id) {
+    var loc = cloudById[id];
+    var coords = dcoords[id];
+    if (!loc && !coords) {
+        return;
+    }
+    if (coords) {
+        var distance = cloudFullRadius * 0.12;
+        controls.target.set(coords[0] * fact, coords[1] * fact, coords[2] * fact);
+        camera.position.set(
+            coords[0] * fact + distance * 0.2,
+            coords[1] * fact - distance * 0.3,
+            coords[2] * fact + distance
+        );
+        controls.update();
+    }
+    if (loc) {
+        selectCloudId(id, loc.object, loc.index);
+    }
+}
+
+function cloudThreshold() {
+    var dist = camera.position.distanceTo(controls.target);
+    var fov = (camera.fov || 60) * Math.PI / 180;
+    var worldPerPixel = 2 * Math.tan(fov / 2) * dist / window.innerHeight;
+    return worldPerPixel * 8;
+}
+
+function intersectCloud() {
+    raycaster.params.Points.threshold = cloudThreshold();
+    var hits = [];
+    if (cloudPoints.classified && cloudPoints.classified.visible) {
+        hits = hits.concat(raycaster.intersectObject(cloudPoints.classified, false));
+    }
+    if (cloudPoints.noclassified && cloudPoints.noclassified.visible) {
+        hits = hits.concat(raycaster.intersectObject(cloudPoints.noclassified, false));
+    }
+    for (var typedrug in dpoints) {
+        if (dpoints[typedrug].length) {
+            hits = hits.concat(raycaster.intersectObjects(dpoints[typedrug], true));
+        }
+    }
+    if (!hits.length || block != 0) {
+        return;
+    }
+    hits.sort(function(a, b) {
+        var rayA = a.distanceToRay == null ? a.distance : a.distanceToRay;
+        var rayB = b.distanceToRay == null ? b.distance : b.distanceToRay;
+        return rayA - rayB;
+    });
+    var hit = hits[0];
+    if (hit.index != null && hit.object.userData && hit.object.userData.ids) {
+        selectCloudId(hit.object.userData.ids[hit.index], hit.object, hit.index);
+        return;
+    }
+    ID = hit.object.name;
+    coorblock.x = hit.point.x;
+    coorblock.y = hit.point.y;
+    coorblock.z = hit.point.z;
+    updateInfoBox(hit.object);
+}
+
+function connectCloudNeighbor(that) {
+    if (!ID) {
+        return;
+    }
+    ensureChemical(ID).then(function(ok) {
+        if (!ok || ID == null) {
+            return;
+        }
+        var lneighbor = Object.assign([], dneighbors[ID] || []);
+        lneighbor = lneighbor.splice(0, that.value);
+        if (ID in dlines) {
+            for (var i = 0; i < dlines[ID].length; i++) {
+                scene.remove(dlines[ID][i]);
+            }
+            dlines[ID] = [];
+        }
+        var origin = dcoords[ID];
+        if (!origin) {
+            return;
+        }
+        for (var n = 0; n < lneighbor.length; n++) {
+            var neighbor = dcoords[lneighbor[n]];
+            if (!neighbor) {
+                continue;
+            }
+            var line = buildLine(
+                new THREE.Vector3(origin[0] * fact, origin[1] * fact, origin[2] * fact),
+                new THREE.Vector3(neighbor[0] * fact, neighbor[1] * fact, neighbor[2] * fact),
+                0xff0000,
+                false
+            );
+            scene.add(line);
+            if (!(ID in dlines)) {
+                dlines[ID] = [];
+            }
+            dlines[ID].push(line);
+        }
+    });
+}
+
+function neighborhoodCenter(id) {
+    if (/^DTXSID\d+$/.test(id)) {
+        return id;
+    }
+    var inchikey = dSMILESClass[id] && dSMILESClass[id].inchikey;
+    if (inchikey) {
+        return inchikey;
+    }
+    return id;
+}
+
 function resetPoint(){
 
     for (typechem in dpoints) {
@@ -337,6 +738,11 @@ function render() {
     }
     controls.update();
     TWEEN.update();
+    if (pointerDirty) {
+        pointerDirty = false;
+        raycaster.setFromCamera(mouse, camera);
+        intersectCompound();
+    }
     renderer.render(scene, camera);
 }
 
@@ -344,8 +750,7 @@ function onMouseMove(event) {
     //console.log(event.preventDefault());
     mouse.x = event.clientX / window.innerWidth * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-    intersectCompound();
+    pointerDirty = true;
 }
 
 function blockview(event) {
@@ -368,6 +773,19 @@ function callbackFunc(response) {
 // map function
 function drawChemical() {
     document.getElementById('drawChemical');
+    if (drawMode === "cloud" && cloudById[ID] && dcoords[ID]) {
+        var chemOnFly = document.getElementById("Compoundpng2");
+        var texture = new THREE.CanvasTexture(chemOnFly);
+        if (!structurePoint) {
+            structurePoint = posPoint(dcoords[ID], ID, 0xffffff, texture, 15, fact, scene);
+        } else {
+            structurePoint.position.set(dcoords[ID][0] * fact, dcoords[ID][1] * fact, dcoords[ID][2] * fact);
+            structurePoint.material.map = texture;
+            structurePoint.material.map.needsUpdate = true;
+            structurePoint.material.color.setHex(0xffffff);
+        }
+        return;
+    }
     for (ktype in dpoints) {
         for (var i = 0; i < dpoints[ktype].length; i++) {
             if (ID == dpoints[ktype][i].name) {
@@ -386,6 +804,15 @@ function drawChemical() {
 }
 
 function downloadNeighbor() {
+    var detail = ID && dSMILESClass[ID];
+    if (drawMode === "cloud" && ID && !(detail && (detail.detailLoaded || (detail.SMILES && dneighbors[ID])))) {
+        ensureChemical(ID).then(function(ok) {
+            if (ok) {
+                downloadNeighbor();
+            }
+        });
+        return;
+    }
     var element = document.createElement('a');
     var filname = ID + '.csv';
     var textin = 'ID\tSMILES\tinchikey\tGroup';
@@ -472,6 +899,10 @@ function onWindowResize() {
 }
 
 function intersectCompound() {
+    if (drawMode === "cloud") {
+        intersectCloud();
+        return;
+    }
     for (var typedrug in dpoints) {
         var intersects = raycaster.intersectObjects(dpoints[typedrug], true);
         if (intersects.length >= 1) {
@@ -489,6 +920,10 @@ function intersectCompound() {
 }
 
 function connectNeighbor(that) {
+    if (drawMode === "cloud") {
+        connectCloudNeighbor(that);
+        return;
+    }
 
     var lneighbor = Object.assign([], dneighbors[ID]);
     lneighbor = lneighbor.splice(0, that.value);
@@ -545,6 +980,13 @@ function connectNeighbor(that) {
 
 // see if it can be generalized for any map
 function extractNeighbor(that) {
+    if (drawMode === "cloud") {
+        if (!ID) {
+            return;
+        }
+        window.location = "/chemmaps/DSSToxMap3D/?center=" + encodeURIComponent(neighborhoodCenter(ID)) + "&view=neighborhood";
+        return;
+    }
     var lneighbor = Object.assign([], dneighbors[ID]);
     lneighbor = lneighbor.splice(0, that.value);
     var count = 0; // equal 1 because keep center point
@@ -675,6 +1117,14 @@ function cameraCenterPoint() {
 
 function searchID(that) {
     var thatUpper = that.toUpperCase();
+    if (drawMode === "cloud") {
+        if (cloudById[thatUpper] || dcoords[thatUpper]) {
+            focusCloud(thatUpper);
+            return;
+        }
+        alert(that + ' is not a valide request\nReset the map and/or check your request\n\n');
+        return;
+    }
     for (ktype in dpoints) {
         for (var i = 0; i < dpoints[ktype].length; i++) {
             if (thatUpper == dpoints[ktype][i].name) {

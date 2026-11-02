@@ -31,7 +31,12 @@ function ensureFeature(entry) {
         return featureRequests[entry.key];
     }
     var url = featureRoot + entry.key + "/";
-    if (centerMap) {
+    if (drawMode === "cloud") {
+        if (!chemIds || !chemIds.length) {
+            return Promise.resolve(false);
+        }
+        url += "?draw=cloud";
+    } else if (centerMap) {
         url += "?center=" + encodeURIComponent(centerMap);
     }
     var request = fetch(url, {credentials: "same-origin"}).then(function(response) {
@@ -48,6 +53,14 @@ function ensureFeature(entry) {
                 dinfo[chemIds[i]] = {};
             }
             dinfo[chemIds[i]][entry.label] = body.values[i];
+        }
+        if (body.extra) {
+            for (var extraId in body.extra) {
+                if (!dinfo[extraId]) {
+                    dinfo[extraId] = {};
+                }
+                dinfo[extraId][entry.label] = body.extra[extraId];
+            }
         }
         loadedFeatures[entry.label] = true;
         return true;
@@ -406,6 +419,12 @@ function viewDBwithdraw(visibility) {
 }
 
 function viewAdded(visibility) {
+    if (drawMode === "cloud") {
+        for (var i = 0; i < dpoints.add.length; i++) {
+            dpoints.add[i].visible = visibility;
+        }
+        return;
+    }
     if (visibility == false) {
         for (var i = 0; i < dpoints['add'].length; i++) {
             scene.remove(dpoints['add'][i]);
@@ -421,6 +440,13 @@ function viewAdded(visibility) {
 }
 
 function viewNoClassified(visibility) {
+    if (drawMode === "cloud") {
+        showPlain = visibility;
+        if (cloudPoints.noclassified) {
+            cloudPoints.noclassified.visible = visibility;
+        }
+        return;
+    }
     if (visibility == false) {
         for (var i = 0; i < dpoints['noclassified'].length; i++) {
             scene.remove(dpoints['noclassified'][i]);
@@ -432,6 +458,13 @@ function viewNoClassified(visibility) {
 }
 
 function viewClassified(visibility) {
+    if (drawMode === "cloud") {
+        showClassified = visibility;
+        if (cloudPoints.classified) {
+            cloudPoints.classified.visible = visibility;
+        }
+        return;
+    }
     if (visibility == false) {
         for (var i = 0; i < dpoints['classified'].length; i++) {
             scene.remove(dpoints['classified'][i]);
@@ -587,8 +620,52 @@ var saveFile = function (strData, filename) {
 }
 
 // color
+function ghsHex(id) {
+    var ghs = dSMILESClass[id] && dSMILESClass[id].GHS_category;
+    if (ghs == null || dcolGHS[ghs] == null) {
+        return 0xffffff;
+    }
+    return dcolGHS[ghs];
+}
+
+function classPalette(descin) {
+    var lval = [];
+    for (var chem in dinfo) {
+        var val = dinfo[chem][descin];
+        if (lval.indexOf(val) === -1 && isNaN(val) == false && val !== "" && val != null) {
+            lval.push(val);
+        }
+    }
+    var lcol = lval.length == 2 ? ['#40B0A6', '#FEFE62'] : ['#40B0A6', '#006CD1', '#E66100', '#D41159', '#FEFE62'];
+    var palette = {'': '#ffffff', 'NA': '#ffffff'};
+    for (var i = 0; i < lval.length; i++) {
+        palette[lval[i]] = lcol[i % lcol.length];
+    }
+    return palette;
+}
+
+function colorCloudType(descin) {
+    if (descin == 'GHS category') {
+        paintCloud(ghsHex);
+        return;
+    }
+    var palette = classPalette(descin);
+    paintCloud(function(id) {
+        var val = dinfo[id] ? dinfo[id][descin] : 'NA';
+        var hex = palette[val];
+        if (hex == null) {
+            hex = '#ffffff';
+        }
+        return new THREE.Color(hex).getHex();
+    });
+}
+
 function colorbyType(descin) {
     //console.log(descin);
+    if (drawMode === "cloud") {
+        colorCloudType(descin);
+        return;
+    }
     if (descin == 'Drug group') {
         for (ktype in dpoints) {
             for (var i = 0; i < dpoints[ktype].length; i++) {
@@ -678,6 +755,10 @@ function colorbyType(descin) {
 }
 
 function colorbyRange(descin) {
+    if (drawMode === "cloud") {
+        colorCloudRange(descin);
+        return;
+    }
     var lval = [];
     for (var chem in dinfo) {
         for (var desc in dinfo[chem]) {
@@ -749,4 +830,44 @@ function colorbyRange(descin) {
             }
         }
     }
+}
+
+function colorCloudRange(descin) {
+    var lval = [];
+    for (var chem in dinfo) {
+        var val = parseFloat(dinfo[chem][descin]);
+        if (descin == "AC50" && val == 0.0) {
+            continue;
+        }
+        if (isNaN(val) == false) {
+            lval.push(val);
+        }
+    }
+    lval = [...new Set(lval)];
+    if (lval.length == 0) {
+        return;
+    }
+    var med = getMedian(lval);
+    var minval = Math.min.apply(Math, lval);
+    var maxval = Math.max.apply(Math, lval);
+    var ecart = Math.min(med - minval, maxval - med);
+    var gradval = range(med - ecart, med + ecart, ecart * 2 / nbcol);
+    var gradcol = generateColor('#005AB5', '#FEFE62', nbcol);
+    var bins = [];
+    for (var i = 0; i < gradval.length - 1; i++) {
+        bins.push({limit: parseFloat(gradval[i]), hex: gradcol[i]});
+    }
+    paintCloud(function(id) {
+        var raw = dinfo[id] ? dinfo[id][descin] : null;
+        var value = parseFloat(raw);
+        if (isNaN(value) || (descin == "AC50" && value == 0.0)) {
+            return new THREE.Color('#000000').getHex();
+        }
+        for (var b = 0; b < bins.length; b++) {
+            if (value < bins[b].limit) {
+                return new THREE.Color(bins[b].hex).getHex();
+            }
+        }
+        return new THREE.Color('#061094').getHex();
+    });
 }

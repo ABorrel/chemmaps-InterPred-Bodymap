@@ -20,18 +20,25 @@ function updateInfoBox(intersect) {
 
 
     // case of DSStoxMap and PFASmap -> GHS
+    var chemClass = (dSMILESClass && ID != null && dSMILESClass[ID]) || {};
     if (map == 'pfas' || map == 'dsstox' || map == 'tox21' || map == 'Tox21Assay' || map == 'Tox21Target' || map == 'Tox21MostActive') {
-        GHS.textContent = dSMILESClass[ID]['GHS_category'] == null ? "" : String(dSMILESClass[ID]['GHS_category']);
+        GHS.textContent = chemClass['GHS_category'] == null ? "" : String(chemClass['GHS_category']);
     } else if (map == 'drugbank') {
-        Group.textContent = dSMILESClass[ID]['DRUG_GROUPS'] == null ? "" : String(dSMILESClass[ID]['DRUG_GROUPS']);
+        Group.textContent = chemClass['DRUG_GROUPS'] == null ? "" : String(chemClass['DRUG_GROUPS']);
     }
 
     renderFeatureRows();
 
-    SmilesDrawer.parse(dSMILESClass[ID]['SMILES'], function(tree) {
-        // Draw to the canvas
-        smilesDrawer.draw(tree, 'Compoundpng2', 'dark', false);
-    });
+    var smiles = dSMILESClass[ID] && dSMILESClass[ID]['SMILES'];
+    if (smiles) {
+        SmilesDrawer.parse(smiles, function(tree) {
+            smilesDrawer.draw(tree, 'Compoundpng2', 'dark', false);
+        });
+    }
+
+    if (!intersect || !intersect.material || (intersect.userData && intersect.userData.ids)) {
+        return;
+    }
 
     for (var j = 0; j < lpointload.length; j++) {
         if (lpointload[j] != intersect) {

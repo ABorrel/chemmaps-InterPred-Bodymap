@@ -20,6 +20,9 @@ _NAME_LISTS = {}
 _FULL_COLUMNS = {}
 _DSSTOX_CENTERS = OrderedDict()
 _DSSTOX_CAP = 32
+_DSSTOX_CLOUD = None
+NEIGHBORHOOD_LIMIT = 20000
+_DTXSID = re.compile(r"^DTXSID\d+$")
 
 
 def _names(table):
@@ -262,7 +265,7 @@ def dsstox_column(center, key):
             "SELECT dsstox_id, %s FROM %s ORDER BY cube(d3_cube) <-> "
             "(SELECT cube(d3_cube) FROM %s WHERE dsstox_id = %%s LIMIT 1) LIMIT %%s"
         ) % (chosen, relation, relation)
-        fetched = _rows(sql, [center, 10000])
+        fetched = _rows(sql, [center, NEIGHBORHOOD_LIMIT])
         if slot:
             column = _tox_column(fetched, slot[0], slot[1])
         else:
@@ -290,6 +293,104 @@ def ids_column(map_name, key, ids):
     if slot:
         return _tox_column(fetched, slot[0], slot[1])
     return _column_dict(fetched)
+
+
+def _finite(value):
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    if math.isnan(number) or math.isinf(number):
+        return None
+    return round(number, 5)
+
+
+def dsstox_cloud():
+    """Every DSSTox position and GHS category, ordered by dsstox_id.
+
+    Rows with no DTXSID are left out: the cloud identifies chemicals by that id.
+    The result stays in this process until restart.
+    """
+    global _DSSTOX_CLOUD
+    if _DSSTOX_CLOUD is not None:
+        return _DSSTOX_CLOUD
+    db = DBrequest()
+    relation = db.relation("mvwchemmap_mapdsstox")
+    sql = (
+        "SELECT dsstox_id, dim1d2d[1], dim1d2d[2], dim3d[1], %s "
+        "FROM %s WHERE dsstox_id LIKE 'DTXSID%%' ORDER BY dsstox_id"
+    ) % (class_sql("dsstox"), relation)
+    ids = []
+    x_values = []
+    y_values = []
+    z_values = []
+    ghs_values = []
+    for row in _rows(sql, None):
+        dsstox_id = str(row[0] or "")
+        if not _DTXSID.fullmatch(dsstox_id):
+            continue
+        x_value = _finite(row[1])
+        y_value = _finite(row[2])
+        z_value = _finite(row[3])
+        if x_value is None or y_value is None or z_value is None:
+            continue
+        ghs = class_text(row[4])
+        if not ghs:
+            ghs = "NA"
+        ids.append(dsstox_id)
+        x_values.append(x_value)
+        y_values.append(y_value)
+        z_values.append(z_value)
+        ghs_values.append(ghs)
+    payload = {"ids": ids, "x": x_values, "y": y_values, "z": z_values, "ghs": ghs_values}
+    if ids:
+        _DSSTOX_CLOUD = payload
+    return payload
+
+
+def dsstox_chemical(dsstox_id):
+    """SMILES, GHS category, and neighbor DTXSIDs for one DSSTox chemical.
+
+    neighbors_dim3 stores InChIKeys. They are resolved to DTXSIDs in that order.
+    """
+    if not _DTXSID.fullmatch(dsstox_id or ""):
+        return None
+    db = DBrequest()
+    relation = db.relation("mvwchemmap_mapdsstox")
+    sql = (
+        "SELECT smiles_clean, inchikey, neighbors_dim3, %s FROM %s WHERE dsstox_id = %%s"
+    ) % (class_sql("dsstox"), relation)
+    rows = _rows(sql, [dsstox_id])
+    if not rows:
+        return None
+    smiles, inchikey, neighbors, ghs_value = rows[0]
+    inchikeys = []
+    if isinstance(neighbors, (list, tuple)):
+        for item in neighbors:
+            text = str(item or "")
+            if text and text not in inchikeys:
+                inchikeys.append(text)
+    by_inchikey = {}
+    if inchikeys:
+        lookup = "SELECT inchikey, dsstox_id FROM %s WHERE inchikey = ANY(%%s)" % relation
+        for found_inchikey, found_id in _rows(lookup, [inchikeys]):
+            found_id = str(found_id or "")
+            if _DTXSID.fullmatch(found_id):
+                by_inchikey[str(found_inchikey)] = found_id
+    resolved = []
+    for item in inchikeys:
+        match = by_inchikey.get(item)
+        if match and match not in resolved:
+            resolved.append(match)
+    ghs = class_text(ghs_value)
+    if not ghs:
+        ghs = "NA"
+    return {
+        "smiles": smiles or "",
+        "inchikey": inchikey or "",
+        "ghs": ghs,
+        "neighbors": resolved,
+    }
 
 
 def user_overrides(session_dir, key):

@@ -177,9 +177,9 @@
     <script src="{% static 'js/jquery-ui.min.js' %}"></script>
     <script src="{% static 'js/smiles-drawer.min.js' %}"></script>
 
-    <script src="{% static 'chemmaps/js/panelfunctions.js' %}?v=ondemand5" type="text/javascript"></script>
-    <script src="{% static 'chemmaps/js/infoboxfunctions.js' %}?v=ondemand3" type="text/javascript"></script>
-    <script src="{% static 'chemmaps/js/mapfunctions.js' %}?v=ondemand3" type="text/javascript"></script>
+    <script src="{% static 'chemmaps/js/panelfunctions.js' %}?v=cloud1" type="text/javascript"></script>
+    <script src="{% static 'chemmaps/js/infoboxfunctions.js' %}?v=cloud1" type="text/javascript"></script>
+    <script src="{% static 'chemmaps/js/mapfunctions.js' %}?v=cloud7" type="text/javascript"></script>
     <script src="{% static 'chemmaps/js/toolbox.js' %}" type="text/javascript"></script>
 
     {{ map|json_safe|json_script:"chemmaps-map" }}
@@ -194,6 +194,9 @@
     {{ feature_root|json_safe|json_script:"chemmaps-feature-root" }}
     {{ chem_ids|json_safe|json_script:"chemmaps-ids" }}
     {{ center_map|default:""|json_safe|json_script:"chemmaps-center" }}
+    {{ draw_mode|default:"objects"|json_safe|json_script:"chemmaps-draw" }}
+    {{ cloud_root|default:""|json_safe|json_script:"chemmaps-cloud-root" }}
+    {{ chemical_root|default:""|json_safe|json_script:"chemmaps-chemical-root" }}
     <script>
 
                 function chemmapsJson(id) {
@@ -209,6 +212,9 @@
                 var featureRoot = chemmapsJson("chemmaps-feature-root");
                 var chemIds = chemmapsJson("chemmaps-ids");
                 var centerMap = chemmapsJson("chemmaps-center");
+                drawMode = chemmapsJson("chemmaps-draw");
+                cloudRoot = chemmapsJson("chemmaps-cloud-root");
+                chemicalRoot = chemmapsJson("chemmaps-chemical-root");
                 var prSession = "";
                 
 
@@ -258,7 +264,9 @@
                 var dSMILESClass = chemmapsJson("chemmaps-dsmiles");
 
                 //nb chemical
-                nbchem.textContent = Object.keys(dcoords).length;
+                if (drawMode !== "cloud") {
+                    nbchem.textContent = Object.keys(dcoords).length;
+                }
 
                 // import ldesc
                 var ldesc = chemmapsJson("chemmaps-ldesc");
@@ -345,6 +353,29 @@
                 if (map == "drugbank"){
                     var dpoints = { approved: [], withdraw: [], indev: [], add: [] };
                     posPointIndividuallyDrugMap("all");
+                }else if (drawMode === "cloud"){
+                    var dpoints = { classified: [], noclassified: [], add: [] };
+                    addedIds = Object.keys(dcoords);
+                    nbchem.textContent = "...";
+                    fetch(cloudRoot, {credentials: "same-origin"}).then(function(response) {
+                        if (!response.ok) {
+                            throw new Error("cloud");
+                        }
+                        return response.json();
+                    }).then(function(body) {
+                        posPointCloud(body);
+                        placeAdded();
+                        frameCloud();
+                        if (centerMap) {
+                            focusCloud(centerMap);
+                        }
+                    }).catch(function() {
+                        nbchem.textContent = "0";
+                        var status = document.getElementById("feature-status");
+                        if (status) {
+                            status.textContent = "The DSSTox map did not load.";
+                        }
+                    });
                 }else{
                     var dpoints = { classified: [], noclassified: [], add: [] };
                     posPointIndividuallyDSSTox("all");

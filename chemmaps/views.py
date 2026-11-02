@@ -1,11 +1,19 @@
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
-from re import fullmatch
+from re import compile, fullmatch
 
 from .forms import UploadChemList, uploadList
 from .features import feature_by_key
-from .mapdata import dsstox_column, full_column, ids_column, user_overrides
+from .mapdata import (
+    NEIGHBORHOOD_LIMIT,
+    dsstox_chemical,
+    dsstox_cloud,
+    dsstox_column,
+    full_column,
+    ids_column,
+    user_overrides,
+)
 from .content import uploadSMILES
 from .JSbuilder import JSbuilder
 from .DSSToxPrep import DSSToxPrep
@@ -43,6 +51,8 @@ def download(request, name):
             response['Content-Disposition'] = 'inline; filename="%s.csv"' % name
             return response
     raise Http404
+
+_INCHIKEY = compile(r"^[A-Z]{14}-[A-Z]{10}-[A-Z]$")
 
 FEATURE_ROOT = {
     "drugbank": "/chemmaps/DrugMap3D/feature/",
@@ -99,10 +109,33 @@ def _render_catalog_map(request, map_name, dcoord, dneighbor, dsmiles, center):
     return render(request, "chemmaps/Map3D.html", context)
 
 
+def _neighborhood_center(value):
+    text = value or ""
+    return bool(fullmatch(r"DTXSID\d+", text) or _INCHIKEY.fullmatch(text))
+
+
+def _render_cloud_map(request, center, added=None):
+    added = added or {}
+    context = {
+        "dcoord": added.get("coord") or {},
+        "dinfo": {},
+        "dneighbor": added.get("neighbor") or {},
+        "dSMILESClass": added.get("SMILESClass") or {},
+        "ldesc": [],
+        "map": "dsstox",
+        "assay": "",
+        "draw_mode": "cloud",
+        "cloud_root": "/chemmaps/DSSToxMap3D/cloud/",
+        "chemical_root": "/chemmaps/DSSToxMap3D/chemical/",
+    }
+    context.update(_feature_fields("dsstox", center, [], True))
+    return render(request, "chemmaps/Map3D.html", context)
+
+
 def _open_catalog_map(request, map_name, center=""):
     if map_name == "dsstox":
         build = DSSToxPrep(center, [], "")
-        loaded = build.loadChemMapCenterChem(center, center=1, nbChem=10000)
+        loaded = build.loadChemMapCenterChem(center, center=1, nbChem=NEIGHBORHOOD_LIMIT)
         if build.err == 1 or not loaded or not loaded[0]:
             return None
         dcoord, _dinfo, dsmiles, dneighbor = loaded
@@ -124,18 +157,36 @@ def map_feature(request, map, key):
     center = request.GET.get("center", "") or ""
     if center and not fullmatch(r"DTXSID\d+", center):
         raise Http404
-    order = (request.session.get("chemmaps_ids") or {}).get(_order_key(map, center))
-    if not order:
-        raise Http404
-    if map == "dsstox" and center:
-        column = dsstox_column(center, key)
-    elif map == "dsstox":
-        column = ids_column(map, key, order)
-    else:
+    draw = request.GET.get("draw", "") or ""
+    if map == "dsstox" and draw == "cloud":
         column = full_column(map, key)
+        order = dsstox_cloud()["ids"]
+    else:
+        order = (request.session.get("chemmaps_ids") or {}).get(_order_key(map, center))
+        if not order:
+            raise Http404
+        if map == "dsstox" and center:
+            column = dsstox_column(center, key)
+        elif map == "dsstox":
+            column = ids_column(map, key, order)
+        else:
+            column = full_column(map, key)
     overrides = user_overrides(toolbox.session_dir(request), key)
+    known = set(order)
+    extra = {item: value for item, value in overrides.items() if item not in known}
     values = [overrides.get(chem_id, column.get(chem_id, "NA")) for chem_id in order]
-    return JsonResponse({"values": values})
+    return JsonResponse({"values": values, "extra": extra})
+
+
+def dsstox_cloud_view(request):
+    return JsonResponse(dsstox_cloud())
+
+
+def dsstox_chemical_view(request, dsstox_id):
+    detail = dsstox_chemical(dsstox_id)
+    if detail is None:
+        raise Http404
+    return JsonResponse(detail)
 
 
 def launchMap(request, map, *args, **kwargs):
@@ -151,14 +202,19 @@ def launchMap(request, map, *args, **kwargs):
         center = ""
         if map == "dsstox":
             center = request.GET.get("center", "") or ""
-            if not fullmatch(r"DTXSID\d+", center):
-                return render(request, "chemmaps/launchMap.html", {
-                    "form_smiles": UploadChemList(),
-                    "from_upload": uploadList(),
-                    "ErrorDSSTox": "1",
-                    "map": map,
-                    "dassays": d_assays,
-                })
+            if request.GET.get("view") == "neighborhood":
+                if not _neighborhood_center(center):
+                    return render(request, "chemmaps/launchMap.html", {
+                        "form_smiles": UploadChemList(),
+                        "from_upload": uploadList(),
+                        "ErrorDSSTox": "1",
+                        "map": map,
+                        "dassays": d_assays,
+                    })
+            else:
+                if center and not fullmatch(r"DTXSID\d+", center):
+                    center = ""
+                return _render_cloud_map(request, center)
         opened = _open_catalog_map(request, map, center)
         if opened is None:
             return render(request, "chemmaps/launchMap.html", {
@@ -304,10 +360,7 @@ def launchDSSToxMap(request, DTXSID):
     if not fullmatch(r"DTXSID\d+", DTXSID or ""):
         return render(request, 'chemmaps/index.html', {"DTXSID": DTXSID})
 
-    opened = _open_catalog_map(request, "dsstox", DTXSID)
-    if opened is None:
-        return render(request, 'chemmaps/index.html', {"DTXSID": DTXSID})
-    return opened
+    return _render_cloud_map(request, DTXSID)
 
 @require_POST
 def computeDescriptor(request, map):
@@ -329,14 +382,12 @@ def computeDescriptor(request, map):
         build.generateCoords(lfileDesc[0], lfileDesc[1])
         build.findinfoTable()
         build.findneighbor()
-
-        cDSSTox = DSSToxPrep(build.dchemAdd, [], prsession)
-        l_dict_out = cDSSTox.loadChemMapAddMap()
-        if not l_dict_out:
-            l_dict_out = [{}, {}, {}, {}]
-        dcoord = l_dict_out[0]
-        dneighbor = l_dict_out[3]
-        dSMILESClass = l_dict_out[2]
+        added_src = getattr(build, "dchemAdd", None) or {}
+        return _render_cloud_map(request, "", {
+            "coord": added_src.get("coord") or {},
+            "neighbor": added_src.get("neighbor") or {},
+            "SMILESClass": added_src.get("SMILESClass") or {},
+        })
     else:
         build = JSbuilder(map, [], prsession)
         build.loadMap()

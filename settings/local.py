@@ -97,8 +97,8 @@ DATABASES = {
         'HOST':  'localhost',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'PORT': 5433,
-        'NAME': 'chemmaps_local',
+        'PORT': 5432,
+        'NAME': 'chemmaps_dev',
     }
 }
 
@@ -156,4 +156,10 @@ STATICFILES_FINDERS = (
 
 
 # manage cookies
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+CSRF_TRUSTED_ORIGINS = [
+    'http://192.168.167.131:8001',
+    'http://127.0.0.1:8001',
+    'http://localhost:8001',
+]

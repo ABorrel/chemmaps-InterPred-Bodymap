@@ -2,7 +2,7 @@ from . import toolbox
 from .JSbuilder import DDESCDSSTOX
 from .DBrequest import DBrequest
 from .uploadMap import propToDict
-from .mapdata import class_sql, class_text
+from .mapdata import NEIGHBORHOOD_LIMIT, class_sql, class_text
 
 from os import path
 from math import sqrt
@@ -184,7 +184,7 @@ class DSSToxPrep:
         if nbChemAdd == 0:
             self.err = 1
             return [{}, {}, {}, {}]
-        nbChemInMap = 10000 // nbChemAdd
+        nbChemInMap = NEIGHBORHOOD_LIMIT // nbChemAdd
         
         # case of only one chemical add => center view
         if nbChemAdd == 1:

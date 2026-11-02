@@ -98,6 +98,16 @@ urlpatterns = [
         name='DSSToxMap3D'
     ),
     url(
+        r'^DSSToxMap3D/cloud/$',
+        views.dsstox_cloud_view,
+        name='DSSToxCloud',
+    ),
+    url(
+        r'^DSSToxMap3D/chemical/(?P<dsstox_id>DTXSID\d+)/$',
+        views.dsstox_chemical_view,
+        name='DSSToxChemical',
+    ),
+    url(
         r'^DSSToxMap3D/feature/(?P<key>[A-Za-z0-9_]+)/$',
         views.map_feature,
         {"map": "dsstox"},
