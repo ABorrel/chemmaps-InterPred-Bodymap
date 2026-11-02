@@ -5,53 +5,28 @@
 <script src="{% static 'js/ag-grid-community.min.noStyle.js' %}" type="text/javascript"></script>
 <script src="{% static 'chemmaps/js/tableAssays.js' %}" type="text/javascript"></script>
 
-<br>
-<br>
-<br>
-<h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Project Tox21 assay results</h2>
-
-<p>Choose a assay protocol or an assay target. Assay target will provide you a concensus of all Tox21 assays that target the same gene. Tox21 assay results have been extracted from the <a class = "aurl" target="_blank" href="htps://ice.ntp.niehs.nih.gov/">Integrated Chemical Environement</a>.
-</p>
-<p><div id="myGrid" style="height: 400px;margin-left: 30px; margin-right: 30px;" class="ag-theme-balham"></div></p>
-<br>
-<h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Project by chemical the most active assay</h2>
-<p>Only the most active assay result is projected for each chemical.</p>
-<form action='/chemmaps/tox21/mostactive/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-    <input type='submit' value='Tox21Map with lowest AC50 by chemicals'>
-</form>
-<br>
-<div style="margin-left: 10px;"><form method="post" action="/chemmaps/tox21/browsechemicals/" onsubmit="ShowLoading()">{% csrf_token %}<button class="btn"><i class="fa fa-space-shuttle"></i> Browse the chemical list with the lowest AC50</button></form></div>
-    
-
-<style>
-    .ag-theme-balham {
-        /* use theme parameters where possible */
-        font-size: 15px;
-
-    }
-    .ag-theme-balham .ag-header {
-        font-style: normal;
-        font-size: 20px;
-        background-color: #232b5f;
-    }
-    .ag-theme-balham .ag-header-cell-label {
-        color: #fff; 
-    }
-    .ag-icon-menu{
-        color: #fff;  
-    }
-    
-</style>
-
-
+<section class="entry-section">
+    <h2>Color the map by a Tox21 assay</h2>
+    <p>Choose an assay protocol or an assay target. An assay target colors the map with the consensus of every Tox21 assay for that gene. Results come from the <a href="https://ice.ntp.niehs.nih.gov/">Integrated Chemical Environment</a>.</p>
+    <div id="myGrid" style="height: 400px; width: 100%; max-width: 100%;" class="ag-theme-balham"></div>
+</section>
+<section class="entry-section">
+    <h2>Color by the most active assay</h2>
+    <p>This opens the map with only the most active assay result for each chemical.</p>
+    <div class="entry-actions">
+        <form method="post" action="{% url 'chemmaps:Tox21MostPotent' %}">{% csrf_token %}
+            <button type="submit" class="entry-button entry-button-secondary" data-waiting="Opening the map">Open Tox21Map colored by lowest AC50</button>
+        </form>
+        <form method="post" action="{% url 'chemmaps:browseChemicals' %}">{% csrf_token %}
+            <button type="submit" class="entry-button entry-button-secondary" data-waiting="Opening the map">Browse chemicals by lowest AC50</button>
+        </form>
+    </div>
+</section>
 
 {{ dassays|json_script:"chemmaps-dassays" }}
 <script>
     var dassays = JSON.parse(document.getElementById("chemmaps-dassays").textContent);
-    // lookup the container we want the Grid to use
-    var eGridDiv = document.querySelector('#myGrid');
-    // create the grid passing in the div to use together with the columns & data we want to use
+    var eGridDiv = document.querySelector("#myGrid");
     gridOptions = defineGridOption(dassays);
     new agGrid.Grid(eGridDiv, gridOptions);
-    
 </script>

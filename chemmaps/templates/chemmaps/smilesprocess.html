@@ -1,143 +1,98 @@
-<style>
-    * {
-        box-sizing: border-box;
-    }
-
-    /* Create three equal columns that floats next to each other */
-    .column {
-        float: left;
-        width: 33.33%;
-        padding: 10px;
-    }
-
-    /* Clear floats after the columns */
-    .row:after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-
-    /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
-    @media screen and (max-width: 600px) {
-        .column {
-            width: 100%;
-        }
-    }
-</style>
-
 {% extends "base_light.html" %}
 {% load static %}
 {% block extra-css %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="{% static 'chemmaps/css/theme.css' %}" rel="stylesheet">
+<link href="{% static 'css/entry.css' %}" rel="stylesheet">
 {% endblock %}
-
-{% block title %} Upload chemical - {{map}}{% endblock %}
+{% block title %}QSAR-ready SMILES{% endblock %}
 {% block content %}
-<script src="{% static 'chemmaps/js/theme.js' %}" type="text/javascript"></script> 
-<div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
-<div id = "bg">
-<br>    
-    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page">QSAR-ready SMILES</h2>
-    <br>
-    
-    {% if ERRORSmiles == "1" %}
-    <p class = "Errorform" style="margin-right: 0px"> No valid SMILES found.</p>
-    {% endif %}
-
-    <div class="row" style="margin: auto;">
-        <div class="column" style="background-color:#232b5f;">
-            <h3>Inputs</h3>
-            <div class="divTable">
-                    <div class="divTableHeading">
-                        <div class="divTableHead">&nbsp;ID</div>
-                        <div class="divTableHead">&nbsp;Input</div>
-                    </div>
-                    <div class="divTableBody">
-                            {% for lk, lv in dSMILESIN.items %}
-                            <div class="divTableRow">
-                                    <div class="divTableCell">&nbsp;{{lk}}</div>
-                                    <div class="divTableCell">&nbsp;{{lv}}</div>
-                            </div>
+<main id="content" class="entry-page">
+    {% include 'chemmaps/includes/entry_header.html' %}
+    <div class="entry">
+        <h1>QSAR-ready SMILES</h1>
+        <p>These are the chemicals ready for descriptor computation. Compute descriptors before they are added to the map.</p>
+        {% if ERRORSmiles == "1" %}
+        <p class="entry-error" role="alert">Error. No valid SMILES was found. Check the identifiers and submit the list again.</p>
+        {% endif %}
+        <div class="entry-cards">
+            <article class="entry-card">
+                <h2>Inputs</h2>
+                <table class="entry-table">
+                    <thead>
+                        <tr>
+                            <th class="entry-id" scope="col">ID</th>
+                            <th scope="col">Input</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lk, lv in dSMILESIN.items %}
+                        <tr>
+                            <td class="entry-id">{{ lk }}</td>
+                            <td>{{ lv }}</td>
+                        </tr>
                         {% endfor %}
-                    </div>
-            </div>
-        </div>
-        <div class="column" style="background-color:#232b8b;">
-            <h3>QSAR-ready SMILES</h3>
-            <div class="divTable">
-                    <div class="divTableHeading">
-                        <div class="divTableHead">&nbsp;ID</div>
-                        <div class="divTableHead">&nbsp;SMILES</div>
-                        <div class="divTableHead">&nbsp;</div>
-                    </div>
-                    <div class="divTableBody">
-                            {% for k1, dout in dSMILESOUT.items %}
-                            <div class="divTableRow">
-                                    <div class="divTableCell">&nbsp;{{k1}}</div>
-                                    <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
-                                    {% if dout.file == 'img/checkOK.png' %}
-                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkOK.png' %}" width="25px" alt="Valide upload"></div>
-                                    {% else %}
-                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkNo.png' %}" width="25px" alt="Error upload"></div>
-                                    {% endif %}
-                            </div>
+                    </tbody>
+                </table>
+            </article>
+            <article class="entry-card">
+                <h2>QSAR-ready SMILES</h2>
+                <table class="entry-table">
+                    <thead>
+                        <tr>
+                            <th class="entry-id" scope="col">ID</th>
+                            <th scope="col">SMILES</th>
+                            <th class="entry-status" scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for k1, dout in dSMILESOUT.items %}
+                        <tr>
+                            <td class="entry-id">{{ k1 }}</td>
+                            <td>{{ dout.SMILES }}</td>
+                            <td class="entry-status">
+                                {% if dout.file == 'img/checkOK.png' %}
+                                <img src="{% static 'chemmaps/img/checkOK.png' %}" alt="Valid">
+                                {% else %}
+                                <img src="{% static 'chemmaps/img/checkNo.png' %}" alt="Not valid">
+                                {% endif %}
+                            </td>
+                        </tr>
                         {% endfor %}
-                    </div>
-            </div>
-
-            <br><br>
-
-            {% if map == "drugbank"  %}
-            <form action='/chemmaps/DrugMap' method='get'>
-                <input type='submit' value='Resubmit Chemicals' />
-            </form>
-            {% endif %}
-            {% if map == "dsstox"  %}
-            <form action='/chemmaps/DSSToxMap' method='get'>
-                <input type='submit' value='Resubmit Chemicals' />
-            </form>
-            {% endif %}
-            {% if map == "pfas"  %}
-            <form action='/chemmaps/PFASMap' method='get'>
-                <input type='submit' value='Resubmit Chemicals' />
-            </form>
-            {% endif %}
-            {% if map == "tox21"  %}
-            <form action='/chemmaps/Tox21Map' method='get'>
-                <input type='submit' value='Resubmit Chemicals' />
-            </form>
-            {% endif %}
-
-            {% if ERRORSmiles == "0" %}
-            {% if map == "drugbank"  %}
-            <form action='/chemmaps/DrugMapDescriptors' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-                <input type='submit' value='Compute descriptors' />
-            </form>
-            {% endif %}
-            {% if map == "dsstox"  %}
-            <form action='/chemmaps/DSSToxMapDescriptors' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-                <input type='submit' value='Compute descriptors' />
-            </form>
-            {% endif %}
-            {% if map == "pfas"  %}
-            <form action='/chemmaps/PFASMapDescriptors' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-                <input type='submit' value='Compute descriptors' />
-            </form>
-            {% endif %}
-            {% if map == "tox21"  %}
-            <form action='/chemmaps/Tox21MapDescriptors' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-                <input type='submit' value='Compute descriptors' />
-            </form>
-            {% endif %}
-            {% endif %}
-            <br>
+                    </tbody>
+                </table>
+                <div class="entry-actions">
+                    {% if map == "drugbank" %}<a class="entry-button entry-button-secondary" href="{% url 'chemmaps:DrugMap' %}">Resubmit chemicals</a>{% endif %}
+                    {% if map == "dsstox" %}<a class="entry-button entry-button-secondary" href="{% url 'chemmaps:DSSToxMap' %}">Resubmit chemicals</a>{% endif %}
+                    {% if map == "pfas" %}<a class="entry-button entry-button-secondary" href="{% url 'chemmaps:PFASMap' %}">Resubmit chemicals</a>{% endif %}
+                    {% if map == "tox21" %}<a class="entry-button entry-button-secondary" href="{% url 'chemmaps:Tox21Map' %}">Resubmit chemicals</a>{% endif %}
+                    {% if ERRORSmiles == "0" %}
+                    <form method="post" action="{% if map == 'drugbank' %}{% url 'chemmaps:DrugMapDescriptors' %}{% elif map == 'dsstox' %}{% url 'chemmaps:DSSToxMapDescriptors' %}{% elif map == 'pfas' %}{% url 'chemmaps:PFASMapDescriptors' %}{% elif map == 'tox21' %}{% url 'chemmaps:Tox21MapDescriptors' %}{% endif %}">
+                        {% csrf_token %}
+                        <button type="submit" class="entry-button" data-waiting="Computing descriptors">Compute descriptors</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </article>
         </div>
     </div>
-    <br>
-    <br>
-    <br>
-</div>
+</main>
+<script>
+    (function () {
+        var controls = document.querySelectorAll("[data-waiting]");
+        for (var i = 0; i < controls.length; i++) {
+            controls[i].addEventListener("click", function (event) {
+                var control = event.currentTarget;
+                if (control.getAttribute("data-armed") === "true") {
+                    event.preventDefault();
+                    return;
+                }
+                control.setAttribute("data-armed", "true");
+                control.setAttribute("aria-disabled", "true");
+                control.textContent = control.getAttribute("data-waiting");
+            });
+        }
+    })();
+</script>
 {% endblock content %}
-

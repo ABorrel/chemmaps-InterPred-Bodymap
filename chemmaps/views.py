@@ -189,6 +189,12 @@ def dsstox_chemical_view(request, dsstox_id):
     return JsonResponse(detail)
 
 
+def _identifier_lines(text):
+    lines = [line.strip() for line in text.replace("\r", "").split("\n")]
+    lines = [line for line in lines if line]
+    return list(dict.fromkeys(lines))
+
+
 def launchMap(request, map, *args, **kwargs):
 
     # load assays from map Tox21
@@ -243,11 +249,10 @@ def launchMap(request, map, *args, **kwargs):
     # If data is valid, proceeds to create a new post and redirect the user
     if form_smiles.is_valid() == True:
 
-        content = form_smiles.cleaned_data["content"]
-        content = content.replace("\r", "")
-        content = content.split("\n")
-        content = list(dict.fromkeys(content))
-        if len(content) > 200:
+        content = _identifier_lines(form_smiles.cleaned_data["content"])
+        if not content:
+            reponse = render(request, "chemmaps/launchMap.html", dict(launch_context, ErrorEmpty="1"))
+        elif len(content) > 100:
             reponse = render(request, 'chemmaps/launchMap.html', dict(launch_context, ErrorLine="1"))
         else:
             prsession = toolbox.session_dir(request)
@@ -274,10 +279,11 @@ def launchMap(request, map, *args, **kwargs):
             with open(pfileserver, "r") as filin:
                 content = filin.read()
 
-            lsmiles = content.split("\n")
-            lsmiles = list(dict.fromkeys(lsmiles))
-            if len(lsmiles) > 200:
-                reponse = render(request, 'chemmaps/launchMap.html', dict(launch_context, ErrorFile="1"))
+            lsmiles = _identifier_lines(content)
+            if not lsmiles:
+                reponse = render(request, "chemmaps/launchMap.html", dict(launch_context, ErrorFileEmpty="1"))
+            elif len(lsmiles) > 100:
+                reponse = render(request, "chemmaps/launchMap.html", dict(launch_context, ErrorFileLine="1"))
             else:
                 cinput = uploadSMILES(lsmiles, prsession)
                 cinput.prepListSMILES()
@@ -286,6 +292,10 @@ def launchMap(request, map, *args, **kwargs):
                                                                     "dSMILESOUT": cinput.dclean["OUT"], "map": map})
         except (OSError, UnicodeDecodeError, ValueError):
             reponse = render(request, "chemmaps/launchMap.html", dict(launch_context, ErrorFile="1"))
+    elif "add_list" in request.POST:
+        reponse = render(request, "chemmaps/launchMap.html", dict(launch_context, ErrorEmpty="1"))
+    elif "upload_file" in request.POST:
+        reponse = render(request, "chemmaps/launchMap.html", dict(launch_context, ErrorFile="1"))
     else:
         reponse = render(request, "chemmaps/launchMap.html", launch_context)
     return reponse

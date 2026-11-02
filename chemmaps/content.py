@@ -243,7 +243,7 @@ def downloadDescFromDB(cDB, ldesc1D2D, ldesc3D, table, inchikey, mapName=""):
             return []
 
     #case in DB but no descriptors computed
-    if lval1D2D == [] or lval3D == []:
+    if lval1D2D is None or lval3D is None or lval1D2D == [] or lval3D == []:
         return []
 
     d1D2D = {}

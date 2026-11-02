@@ -1,10 +1,17 @@
 from django import forms
 
 class UploadChemList(forms.Form):
-    content = forms.CharField(widget=forms.Textarea(attrs={"class": "textSMILES"}), error_messages={'required': ''})
+    content = forms.CharField(
+        label="Chemical list",
+        widget=forms.Textarea(attrs={"class": "textSMILES", "id": "chemical-list", "rows": 8}),
+        error_messages={"required": ""},
+    )
 
 class uploadList(forms.Form):
-    docfile = forms.FileField()
+    docfile = forms.FileField(
+        label="Chemical file",
+        widget=forms.FileInput(attrs={"id": "chemical-file"}),
+    )
 
 class descDrugMapChoice(forms.Form):
 

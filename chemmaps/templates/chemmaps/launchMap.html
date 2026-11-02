@@ -4,150 +4,106 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="{% static 'chemmaps/css/theme.css' %}" rel="stylesheet">
+<link href="{% static 'css/entry.css' %}" rel="stylesheet">
 {% endblock %}
-
-{% block title %}Launch {{map}}{% endblock %}
+{% block title %}Open {% if map == "drugbank" %}DrugMap{% elif map == "dsstox" %}DSSToxMap{% elif map == "tox21" %}Tox21Map{% elif map == "pfas" %}PFASMap{% endif %}{% endblock %}
 {% block content %}
-<script src="{% static 'chemmaps/js/theme.js' %}" type="text/javascript"></script>
-<div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
-
-<div class="container-fluid bgindex padding-left: 0px">
-    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Open the {{map.capitalize}}Map</h2>
-    <p>The map opens immediately. Choose any feature on the map when you want to color or inspect by it.</p>
-
+<main id="content" class="entry-page">
+    {% include 'chemmaps/includes/entry_header.html' %}
+    <div class="entry">
     {% if map == "drugbank" %}
-    <form action="/chemmaps/DrugMap3D/" method="get" onsubmit="ShowLoading()">
-        <input type="submit" value="Open DrugMap">
-    </form>
-    {% endif %}
-    {% if map == "tox21" %}
-    <form action="/chemmaps/Tox21Map3D/" method="get" onsubmit="ShowLoading()">
-        <input type="submit" value="Open Tox21Map">
-    </form>
-    {% endif %}
-    {% if map == "pfas" %}
-    <form action="/chemmaps/PFASMap3D/" method="get" onsubmit="ShowLoading()">
-        <input type="submit" value="Open PFASMap">
-    </form>
-    {% endif %}
-    {% if map == "dsstox" %}
-    <form action="/chemmaps/DSSToxMap3D/" method="get" onsubmit="ShowLoading()">
+    <h1>Open DrugMap</h1>
+    <p>DrugMap shows marketed and experimental drugs from DrugBank 5.1.10, released 4 January 2023.</p>
+    <a class="entry-button" href="{% url 'chemmaps:DrugMap3D' %}" data-waiting="Opening the map">Open DrugMap</a>
+    {% elif map == "dsstox" %}
+    <h1>Open DSSToxMap</h1>
+    <p>DSSToxMap shows environmental chemicals from the EPA DSSTox library, released February 2022.</p>
+    <form class="entry-form" action="{% url 'chemmaps:DSSToxMap3D' %}" method="get">
+        <label for="dtxsid">DTXSID (optional)</label>
+        <input id="dtxsid" name="center" type="text" value="{{ request.GET.center|default:'' }}"{% if ErrorDSSTox == "1" %} aria-invalid="true" aria-describedby="dtxsid-help dtxsid-error"{% else %} aria-describedby="dtxsid-help"{% endif %}>
+        <p id="dtxsid-help">Leave this empty to open the full map.</p>
         {% if ErrorDSSTox == "1" %}
-        <p class="Errorform" style="margin-right: 30px">Chemical not recognized</p>
+        <p class="entry-error" id="dtxsid-error" role="alert">Error. That DTXSID is not in DSSToxMap. Check the identifier, or leave the field empty to open the full map.</p>
         {% endif %}
-        Open the whole map, or highlight one chemical (DTXSID, optional):
-        <br>
-        <input name="center">
-        <br>
-        <input type="submit" value="Open DSSToxMap">
+        <button type="submit" class="entry-button" data-waiting="Opening the map">Open DSSToxMap</button>
     </form>
-    {% endif %}  
-
-    {% if map == "tox21"%}
-        {% include 'chemmaps/_launch_tox21Assays.html' %}
+    {% elif map == "tox21" %}
+    <h1>Open Tox21Map</h1>
+    <p>Tox21Map shows the Tox21 screening library, released 29 October 2022.</p>
+    <a class="entry-button" href="{% url 'chemmaps:Tox21Map3D' %}" data-waiting="Opening the map">Open Tox21Map</a>
+    {% include 'chemmaps/_launch_tox21Assays.html' %}
+    {% elif map == "pfas" %}
+    <h1>Open PFASMap</h1>
+    <p>PFASMap shows PFAS structures, released 29 October 2022.</p>
+    <a class="entry-button" href="{% url 'chemmaps:PFASMap3D' %}" data-waiting="Opening the map">Open PFASMap</a>
     {% endif %}
 
-    <br>
-    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page"> Upload your list of chemicals (< 100 chemicals)</h2>
-    {% if ErrorLine == "1"  %}
-        <p class = "Errorform">Please upload < 100 chemicals</p>
-    {% endif %}
-    <p>From a list including SMILES, DrugBankID, DTXSID or CAS (not recommended):</p>
-    {% if map == "drugbank"  %}
-        <form action='/chemmaps/DrugMapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-            <p>{{ form_smiles.content }}</p>
-            <input type='submit' value='Submit chemicals'/>
+    <section class="entry-section">
+        <h2>Add up to 100 of your own chemicals</h2>
+        <p id="chemical-list-help">One identifier per line: a SMILES string, a DrugBank ID, a DTXSID, or a CAS number.</p>
+        {% if map == "drugbank" %}
+        <form class="entry-form" action="{% url 'chemmaps:DrugMapSMILES' %}" method="post">{% csrf_token %}
+        {% elif map == "dsstox" %}
+        <form class="entry-form" action="{% url 'chemmaps:DSSToxMapSMILES' %}" method="post">{% csrf_token %}
+        {% elif map == "tox21" %}
+        <form class="entry-form" action="{% url 'chemmaps:Tox21MapSMILES' %}" method="post">{% csrf_token %}
+        {% elif map == "pfas" %}
+        <form class="entry-form" action="{% url 'chemmaps:PFASMapSMILES' %}" method="post">{% csrf_token %}
+        {% endif %}
+            <label for="chemical-list">Chemical list</label>
+            <textarea id="chemical-list" name="content" class="textSMILES" rows="8"{% if ErrorEmpty == "1" or ErrorLine == "1" %} aria-invalid="true" aria-describedby="chemical-list-help chemical-list-error"{% else %} aria-describedby="chemical-list-help"{% endif %}>{{ form_smiles.content.value|default_if_none:"" }}</textarea>
+            {% if ErrorEmpty == "1" %}
+            <p class="entry-error" id="chemical-list-error" role="alert">Error. Enter at least one identifier, one per line.</p>
+            {% elif ErrorLine == "1" %}
+            <p class="entry-error" id="chemical-list-error" role="alert">Error. This list has more than 100 chemicals. Remove some and submit again.</p>
+            {% endif %}
+            <button type="submit" class="entry-button entry-button-secondary" name="add_list" value="1" data-waiting="Checking the list">Add chemicals</button>
         </form>
-    {% endif %}
-    {% if map == "dsstox"  %}
-        <form action='/chemmaps/DSSToxMapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-            <p>{{ form_smiles.content }}</p>
-            <input type='submit' value='Submit chemicals'/>
-        </form>
-    {% endif %}
-    {% if map == "tox21"  %}
-        <form action='/chemmaps/Tox21MapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-            <p>{{ form_smiles.content }}</p>
-            <input type='submit' value='Submit chemicals'/>
-        </form>
-    {% endif %}
-    {% if map == "pfas"  %}
-        <form action='/chemmaps/PFASMapSmilesUploaded/' method='post' onsubmit="ShowLoading()">{% csrf_token %}
-            <p>{{ form_smiles.content }}</p>
-            <input type='submit' value='Submit chemicals'/>
-        </form>
-    {% endif %}
 
-    <p>From a file:</p>
-    {% if ErrorFile == "1"  %}
-        <p class = "Errorform">Please upload a text file with one chemical by line (< 100 lines)</p>
-    {% endif %}
-    {% if map == "drugbank"  %}
-        <form method="post" enctype="multipart/form-data" action='/chemmaps/DrugMapSmilesUploaded/' onsubmit="ShowLoading()">
-            {% csrf_token %}
-            {%for field in from_upload%}
-                <div id="UploadBox">{{field}}</div>
-            {% endfor %}
-            <br>
-            <button type="submit" class="upload_button">Upload list of chemicals</button>
+        {% if map == "drugbank" %}
+        <form class="entry-form" method="post" enctype="multipart/form-data" action="{% url 'chemmaps:DrugMapSMILES' %}">{% csrf_token %}
+        {% elif map == "dsstox" %}
+        <form class="entry-form" method="post" enctype="multipart/form-data" action="{% url 'chemmaps:DSSToxMapSMILES' %}">{% csrf_token %}
+        {% elif map == "tox21" %}
+        <form class="entry-form" method="post" enctype="multipart/form-data" action="{% url 'chemmaps:Tox21MapSMILES' %}">{% csrf_token %}
+        {% elif map == "pfas" %}
+        <form class="entry-form" method="post" enctype="multipart/form-data" action="{% url 'chemmaps:PFASMapSMILES' %}">{% csrf_token %}
+        {% endif %}
+            <label for="chemical-file">Chemical file</label>
+            <input id="chemical-file" type="file" name="docfile"{% if ErrorFile == "1" or ErrorFileEmpty == "1" or ErrorFileLine == "1" %} aria-invalid="true" aria-describedby="chemical-file-error"{% endif %}>
+            {% if ErrorFile == "1" %}
+            <p class="entry-error" id="chemical-file-error" role="alert">Error. Upload a text file with one identifier per line. Use up to 100 lines.</p>
+            {% elif ErrorFileEmpty == "1" %}
+            <p class="entry-error" id="chemical-file-error" role="alert">Error. Enter at least one identifier, one per line.</p>
+            {% elif ErrorFileLine == "1" %}
+            <p class="entry-error" id="chemical-file-error" role="alert">Error. This list has more than 100 chemicals. Remove some and submit again.</p>
+            {% endif %}
+            <button type="submit" class="entry-button entry-button-secondary" name="upload_file" value="1" data-waiting="Checking the list">Upload a file</button>
         </form>
-        <p>Example of input: <a class = "aurl" target="_blank" href="{% static 'chemmaps/test.txt' %}">Test input</a></p>
-    {% endif %}
-    {% if map == "dsstox"  %}
-        <form method="post" enctype="multipart/form-data" action='/chemmaps/DSSToxMapSmilesUploaded/' onsubmit="ShowLoading()">
-            {% csrf_token %}
-            {%for field in from_upload%}
-                <div id="UploadBox">{{field }}</div>
-            {% endfor %}
-            <br>
-            <button type="submit" class="upload_button">Upload list of chemicals</button>
-        </form>
-        <p>Example of input: <a class = "aurl" target="_blank" href="{% static 'chemmaps/test.txt' %}">Test input</a></p>
-    {% endif %}
-    {% if map == "pfas"  %}
-        <form method="post" enctype="multipart/form-data" action='/chemmaps/PFASMapSmilesUploaded/' onsubmit="ShowLoading()">
-            {% csrf_token %}
-            {%for field in from_upload%}
-                <div id="UploadBox">{{field }}</div>
-            {% endfor %}
-            <br>
-            <button type="submit" class="upload_button">Upload list of chemicals</button>
-        </form>
-        <p>Example of input: <a class = "aurl" target="_blank" href="{% static 'chemmaps/test.txt' %}">Test input</a></p>
-    {% endif %}
-    {% if map == "tox21"  %}
-        <form method="post" enctype="multipart/form-data" action='/chemmaps/Tox21MapSmilesUploaded/' onsubmit="ShowLoading()">
-            {% csrf_token %}
-            {%for field in from_upload%}
-                <div id="UploadBox">{{field }}</div>
-            {% endfor %}
-            <br>
-            <button type="submit" class="upload_button">Upload list of chemicals</button>
-        </form>
-        <p>Example of input: <a class = "aurl" target="_blank" href="{% static 'chemmaps/test.txt' %}">Test input</a></p>
-    {% endif %}
-    <br>
-    <br>
-</div>
-
+        <p><a href="{% static 'chemmaps/test.txt' %}">Example file</a></p>
+    </section>
+    </div>
+</main>
 <script>
-    var coll = document.getElementsByClassName("collapsible");
-    var i;
-
-    for (i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function () {
-            this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.display === "block") {
-                content.style.display = "none";
-            } else {
-                content.style.display = "block";
-            }
-        });
-    }
+    (function () {
+        var controls = document.querySelectorAll("[data-waiting]");
+        for (var i = 0; i < controls.length; i++) {
+            controls[i].addEventListener("click", function (event) {
+                var control = event.currentTarget;
+                if (control.getAttribute("data-armed") === "true") {
+                    event.preventDefault();
+                    return;
+                }
+                control.setAttribute("data-armed", "true");
+                control.setAttribute("aria-disabled", "true");
+                var waiting = control.getAttribute("data-waiting");
+                if (control.tagName === "INPUT") {
+                    control.value = waiting;
+                } else {
+                    control.textContent = waiting;
+                }
+            });
+        }
+    })();
 </script>
-
-
-
-
 {% endblock content %}

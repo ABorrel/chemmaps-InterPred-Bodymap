@@ -1,154 +1,108 @@
-<style>
-    * {
-        box-sizing: border-box;
-    }
-
-    /* Create three equal columns that floats next to each other */
-    .column {
-        float: left;
-        width: 33.33%;
-        padding: 10px;
-    }
-
-    /* Clear floats after the columns */
-    .row:after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-
-    /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
-    @media screen and (max-width: 600px) {
-        .column {
-            width: 100%;
-        }
-    }
-</style>
 {% extends "base_light.html" %}
 {% load static %}
 {% block extra-css %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="{% static 'chemmaps/css/theme.css' %}" rel="stylesheet">
+<link href="{% static 'css/entry.css' %}" rel="stylesheet">
 {% endblock %}
-{% block title %} Descriptors - {{map}}{% endblock %}
+{% block title %}Descriptors{% endblock %}
 {% block content %}
-<script src="{% static 'chemmaps/js/theme.js' %}"></script> 
-
-<div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div>
-<div id = "bg">
-    <br>
-    <h2><img src="{% static 'chemmaps/img/arrow.png' %}" style="width:30px" alt="Arrow used to extend the page">Descriptor computation</h2>
-    <br>
-
-    {% if ErrorDesc == "1" %}
-        <p class = "Errorform" style="margin-right: 0px"> No descriptor computed.</p>
-    {% endif %}
-
-    <div class="row" style="margin: auto;">
-        <div class="column" style="background-color:#232b5f;">
-            <h3>Inputs</h3>
-
-            <div class="divTable">
-                <div class="divTableHeading">
-                    <div class="divTableHead">&nbsp;ID</div>
-                    <div class="divTableHead">&nbsp;Input</div>
-                </div>
-                <div class="divTableBody">
-                    {% for lk, lv in dSMILESIN.items %}
-                        <div class="divTableRow">
-                                <div class="divTableCell">&nbsp;{{lk}}</div>
-                                <div class="divTableCell">&nbsp;{{lv}}</div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-        </div>
-        <div class="column" style="background-color:#232b8b;">
-            <h3>QSAR-ready SMILES</h3>
-            
-            <div class="divTable">
-                    <div class="divTableHeading">
-                        <div class="divTableHead">&nbsp;ID</div>
-                        <div class="divTableHead">&nbsp;SMILES</div>
-                        <div class="divTableHead">&nbsp;</div>
-                    </div>
-                    <div class="divTableBody">
-                            {% for k1, dout in dSMILESOUT.items %}
-                            <div class="divTableRow">
-                                    <div class="divTableCell">&nbsp;{{k1}}</div>
-                                    <div class="divTableCell">&nbsp;{{dout.SMILES}}</div>
-                                    {% if dout.file == 'img/checkOK.png' %}
-                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkOK.png' %}" width="25px" alt="Valide upload"></div>
-                                    {% else %}
-                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkNo.png' %}" width="25px" alt="Error upload"></div>
-                                    {% endif %}
-                            </div>
+<main id="content" class="entry-page">
+    {% include 'chemmaps/includes/entry_header.html' %}
+    <div class="entry">
+        <h1>Descriptor computation</h1>
+        {% if ErrorDesc == "1" %}
+        <p class="entry-error" role="alert">Error. No descriptor was computed. Check the list and submit it again.</p>
+        {% else %}
+        <p>Descriptors are ready. Download the tables, or open the map and choose features there.</p>
+        {% endif %}
+        <div class="entry-cards">
+            <article class="entry-card">
+                <h2>Inputs</h2>
+                <table class="entry-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Input</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lk, lv in dSMILESIN.items %}
+                        <tr>
+                            <td>{{ lk }}</td>
+                            <td>{{ lv }}</td>
+                        </tr>
                         {% endfor %}
-                    </div>
-                </div>
-        </div>
-        <div class="column" style="background-color:#08627e;">
-            <h3>Descriptor</h3>
-            <div class="divTable">
-                    <div class="divTableHeading">
-                        <div class="divTableHead">&nbsp;ID</div>
-                        <div class="divTableHead">&nbsp;Descriptor</div>
-                        <div class="divTableHead">&nbsp;</div>
-                    </div>
-                    <div class="divTableBody">
-                            {% for k1, dout in ddesc.items %}
-                            <div class="divTableRow">
-                                    <div class="divTableCell">&nbsp;{{k1}}</div>
-                                    <div class="divTableCell">&nbsp;{{dout.Descriptor}}</div>
-                                    {% if dout.desc == 'img/checkOK.png' %}
-                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkOK.png' %}" width="25px" alt="Valide upload"></div>
-                                    {% else %}
-                                        <div class="divTableCell"><img src="{% static 'chemmaps/img/checkNo.png' %}" width="25px" alt="Error upload"></div>
-                                    {% endif %}
-                            </div>
+                    </tbody>
+                </table>
+            </article>
+            <article class="entry-card">
+                <h2>QSAR-ready SMILES</h2>
+                <table class="entry-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">SMILES</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for k1, dout in dSMILESOUT.items %}
+                        <tr>
+                            <td>{{ k1 }}</td>
+                            <td>{{ dout.SMILES }}</td>
+                            <td>
+                                {% if dout.file == 'img/checkOK.png' %}
+                                <img src="{% static 'chemmaps/img/checkOK.png' %}" alt="Valid">
+                                {% else %}
+                                <img src="{% static 'chemmaps/img/checkNo.png' %}" alt="Not valid">
+                                {% endif %}
+                            </td>
+                        </tr>
                         {% endfor %}
-                    </div>
+                    </tbody>
+                </table>
+            </article>
+            <article class="entry-card">
+                <h2>Descriptors</h2>
+                <table class="entry-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Descriptor</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for k1, dout in ddesc.items %}
+                        <tr>
+                            <td>{{ k1 }}</td>
+                            <td>{{ dout.Descriptor }}</td>
+                            <td>
+                                {% if dout.desc == 'img/checkOK.png' %}
+                                <img src="{% static 'chemmaps/img/checkOK.png' %}" alt="Computed">
+                                {% else %}
+                                <img src="{% static 'chemmaps/img/checkNo.png' %}" alt="Not computed">
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="entry-actions">
+                    {% if ErrorDesc != "1" %}
+                    <a class="entry-button entry-button-secondary" href="{% url 'chemmaps:2D' %}">Download 2D descriptor table</a>
+                    <a class="entry-button entry-button-secondary" href="{% url 'chemmaps:3D' %}">Download 3D descriptor table</a>
+                    {% else %}
+                    {% if map == "drugbank" %}<a class="entry-button" href="{% url 'chemmaps:DrugMap' %}">Resubmit SMILES</a>{% endif %}
+                    {% if map == "dsstox" %}<a class="entry-button" href="{% url 'chemmaps:DSSToxMap' %}">Resubmit SMILES</a>{% endif %}
+                    {% if map == "pfas" %}<a class="entry-button" href="{% url 'chemmaps:PFASMap' %}">Resubmit SMILES</a>{% endif %}
+                    {% if map == "tox21" %}<a class="entry-button" href="{% url 'chemmaps:Tox21Map' %}">Resubmit SMILES</a>{% endif %}
+                    {% endif %}
                 </div>
-            <br>
-            {% if ErrorDesc != "1" %}
-            <div align="right">
-                <form method="get" action="/chemmaps/2D.csv"><button class="btn"><i class="fa fa-download"></i> Download 2D descriptor table</button></form>
-                <form method="get" action="/chemmaps/3D.csv"><button class="btn"><i class="fa fa-download"></i> Download 3D descriptor table</button></form>
-            </div>
-            {% endif %}
-            {% if ErrorDesc == "1" %}
-            {% if map == "drugbank"  %}
-            <form action='/chemmaps/DrugMap' method='get'>
-                <input type='submit' value='Resubmit SMILES' />
-            </form>
-            {% endif %}
-            {% if map == "dsstox"  %}
-            <form action='/chemmaps/DSSToxMap' method='get'>
-                <input type='submit' value='Resubmit SMILES' />
-            </form>
-            {% endif %}
-            {% if map == "pfas"  %}
-            <form action='/chemmaps/PFASMap' method='get'>
-                <input type='submit' value='Resubmit SMILES' />
-            </form>
-            {% endif %}
-            {% if map == "tox21"  %}
-            <form action='/chemmaps/Tox21Map' method='get'>
-                <input type='submit' value='Resubmit SMILES' />
-            </form>
-            {% endif %}
-            {% endif %}
+            </article>
         </div>
     </div>
-    <br><br>
-
-    {% if ErrorDesc != "1" %}
-
-    <p>Descriptors are ready. Open the map and choose features there.</p>
-    {% endif %}
-    <br>
-</div>
+</main>
 {% endblock content %}
-

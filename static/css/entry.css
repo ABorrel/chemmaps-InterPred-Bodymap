@@ -1,0 +1,388 @@
+.entry {
+    color: #1a1a1a;
+    font-size: 1.6rem;
+    line-height: 1.5;
+    margin-inline: auto;
+    max-width: 1120px;
+    padding: 1.6rem 1.5rem 3rem;
+}
+
+.entry-page {
+    background: #f4f6f9;
+}
+
+.entry-hero {
+    background-color: #070b14;
+    background-image:
+        linear-gradient(90deg, rgba(7, 11, 20, 0.82) 0%, rgba(7, 11, 20, 0.5) 36%, rgba(7, 11, 20, 0.28) 100%),
+        url("../chemmaps/img/background.jpg");
+    background-position: center, center 42%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+    padding: 1.4rem 1.5rem 2.2rem;
+    position: relative;
+}
+
+.entry-hero-compact {
+    padding-block: 1rem;
+}
+
+.entry-hero-inner,
+.entry-hero-compact .entry-nav {
+    margin-inline: auto;
+    max-width: 1120px;
+    position: relative;
+    z-index: 1;
+}
+
+.entry-hero h1 {
+    color: #fff;
+    font-size: 4.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 1.6rem 0 0;
+    text-wrap: balance;
+}
+
+.entry-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+}
+
+.entry-hero a {
+    align-items: center;
+    color: #f4f7fb;
+    display: inline-flex;
+    font-size: 1.5rem;
+    gap: 0.45rem;
+    line-height: 1.4;
+    text-decoration: none;
+}
+
+.entry-hero a svg {
+    height: 1.15em;
+    width: 1.15em;
+}
+
+.entry-card-drug { border-block-start: 4px solid #0f766e; }
+.entry-card-dsstox { border-block-start: 4px solid #0891b2; }
+.entry-card-tox21 { border-block-start: 4px solid #b8860b; }
+.entry-card-pfas { border-block-start: 4px solid #6d28d9; }
+
+.entry-card h2 {
+    color: #1a1a1a;
+}
+
+.entry-card .entry-button {
+    margin-top: auto;
+    width: 100%;
+}
+
+.entry-cites {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.entry-cites a {
+    background: #e6eef6;
+    border-radius: 0.4rem;
+    color: #1d3f73;
+    display: block;
+    padding: 0.7rem 0.9rem;
+    text-decoration: none;
+}
+
+.entry-contact,
+.entry-meta {
+    color: #5b6475;
+    font-size: 1.5rem;
+}
+
+.entry-contact a {
+    color: #1d3f73;
+}
+
+.entry h1,
+.entry h2,
+.entry p,
+.entry label {
+    color: #1a1a1a;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.entry h1,
+.entry h2 {
+    color: #1a1a1a;
+    font-weight: 700;
+    overflow-wrap: break-word;
+    text-wrap: balance;
+}
+
+.entry h1 {
+    font-size: 4rem;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 0 0 0.75rem;
+}
+
+.entry h2 {
+    font-size: 2.4rem;
+    line-height: 1.3;
+    margin: 0 0 0.5rem;
+}
+
+.entry h3 {
+    color: #1a1a1a;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 0.6rem;
+}
+
+.entry-table {
+    border-collapse: collapse;
+    color: #1a1a1a;
+    font-size: 1.5rem;
+    line-height: 1.4;
+    width: 100%;
+}
+
+.entry-table th,
+.entry-table td {
+    border-bottom: 1px solid #e6e9ef;
+    overflow-wrap: anywhere;
+    padding: 0.4rem 0.5rem;
+    text-align: start;
+    vertical-align: top;
+}
+
+.entry-table th {
+    font-weight: 700;
+}
+
+.entry-table .entry-id {
+    box-sizing: border-box;
+    min-width: calc(3.6ch + 1rem);
+    overflow-wrap: normal;
+    white-space: nowrap;
+    width: calc(3.6ch + 1rem);
+}
+
+.entry-table .entry-status {
+    box-sizing: border-box;
+    overflow-wrap: normal;
+    white-space: nowrap;
+    width: 1%;
+}
+
+.entry-table img {
+    height: 1.6rem;
+    width: 1.6rem;
+}
+
+.entry p,
+.entry li {
+    font-size: 1.6rem;
+    line-height: 1.5;
+    max-width: 65ch;
+}
+
+.entry p {
+    margin: 0 0 1rem;
+}
+
+.entry a {
+    color: #0b4898;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+
+.entry .nav a {
+    text-decoration: none;
+}
+
+.entry-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1.25rem 0 2.5rem;
+}
+
+.entry-card {
+    background: #fff;
+    border: 1px solid #e6e9ef;
+    border-radius: 0.6rem;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+    display: flex;
+    flex: 1 1 14rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 1.1rem 1.15rem 1.2rem;
+}
+
+.entry-card p {
+    margin: 0;
+}
+
+.entry-meta {
+    color: #1a1a1a;
+    font-size: 1.6rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.entry-section {
+    margin-top: 2.5rem;
+}
+
+.entry-form {
+    margin: 0 0 1.5rem;
+}
+
+.entry label {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 0.25rem;
+}
+
+.entry input[type="text"],
+.entry textarea,
+.entry input[type="file"] {
+    background: #fff;
+    border: 1px solid #4a5568;
+    border-radius: 0.25rem;
+    box-sizing: border-box;
+    color: #1a1a1a;
+    font-size: 1.6rem;
+    line-height: 1.5;
+    margin: 0;
+    max-width: min(40rem, 100%);
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+}
+
+.entry textarea {
+    min-height: 8rem;
+}
+
+.entry-button,
+.entry input.entry-button,
+.entry button.entry-button,
+.entry-page .entry-button {
+    background: #1b2744;
+    border: 1px solid #1b2744;
+    border-radius: 0.4rem;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1.6rem;
+    line-height: 1.5;
+    margin: 0;
+    min-height: 4rem;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    text-decoration: none;
+}
+
+.entry a.entry-button,
+.entry a.entry-button-secondary {
+    text-decoration: none;
+}
+
+.entry-button-secondary,
+.entry input.entry-button-secondary,
+.entry button.entry-button-secondary,
+.entry a.entry-button-secondary {
+    background: #fff;
+    border: 1px solid #1b2744;
+    color: #1b2744;
+}
+
+.entry-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.entry-error {
+    background: #fde8e8;
+    border: 1px solid #5c1212;
+    color: #5c1212;
+    margin: 0 0 1rem;
+    max-width: 65ch;
+    padding: 0.75rem 1rem;
+}
+
+.entry-page > .entry-cookies:not([hidden]) {
+    align-items: center;
+    background: #fff;
+    border-block-end: 1px solid #e6e9ef;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    margin: 0;
+    padding: 1rem 1.5rem;
+}
+
+.entry-cookies p {
+    flex: 1 1 16rem;
+    margin: 0;
+}
+
+.entry-button {
+    transition-duration: 150ms;
+    transition-property: background-color;
+    transition-timing-function: ease-out;
+}
+
+.entry .entry-button:hover,
+.entry-page .entry-button:hover {
+    background: #1b2744;
+    color: #fff;
+}
+
+.entry .entry-button-secondary:hover,
+.entry-page .entry-button-secondary:hover {
+    background: #fff;
+    color: #1b2744;
+}
+
+@media (hover: hover) {
+    .entry .entry-button:hover,
+    .entry-page .entry-button:hover {
+        background: #12192e;
+        color: #fff;
+    }
+
+    .entry .entry-button-secondary:hover,
+    .entry-page .entry-button-secondary:hover {
+        background: #f4f6fb;
+        color: #1b2744;
+    }
+}
+
+.entry-card-drug { border-block-start: 4px solid #0f766e; }
+.entry-card-dsstox { border-block-start: 4px solid #0891b2; }
+.entry-card-tox21 { border-block-start: 4px solid #b8860b; }
+.entry-card-pfas { border-block-start: 4px solid #6d28d9; }
+
+.entry .entry-cites a {
+    background: #e6eef6;
+    color: #1d3f73;
+    text-decoration: none;
+}
+
+.entry-lede {
+    max-width: none;
+}

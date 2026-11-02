@@ -1,25 +1,32 @@
 {% extends "base.html" %}
+{% load static %}
+{% block title %}Chemical tools{% endblock %}
 {% block extra-css %}
+<link href="{% static 'css/entry.css' %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
-
-<h1>Server production</h1>
-<br>
-<li><b>ChemMaps.com</b></li>
-<ul>
-    <li><a href="/chemmaps/">Version 2</a></li>
-</ul>
-
-<li><b>Interference prediction</b></li>
-<ul>
-    <li><a href="/interferences/">Version 2 - update on 2021 with the dsstox update</a></li>
-</ul>
-<li><b>BodyMap</b></li>
-<ul>
-    <li><a href="/bodymap/">Version 1</a></li>
-</ul>
-
-
-
-
+<div class="entry">
+    <h1>Chemical tools</h1>
+    <p>This server hosts three tools for exploring chemicals. Pick one to open.</p>
+    <div class="entry-cards">
+        <article class="entry-card">
+            <h2>ChemMaps</h2>
+            <p>ChemMaps lets you browse large chemical libraries on a map.</p>
+            <p class="entry-meta">Version 2</p>
+            <a class="entry-button entry-button-secondary" href="/chemmaps/">Open ChemMaps</a>
+        </article>
+        <article class="entry-card">
+            <h2>Interference prediction</h2>
+            <p>InterPred predicts whether a chemical may interfere with an assay by blocking luciferase or glowing on its own.</p>
+            <p class="entry-meta">Version 2, updated in 2021 for the DSSTox release</p>
+            <a class="entry-button entry-button-secondary" href="/interferences/">Open interference prediction</a>
+        </article>
+        <article class="entry-card">
+            <h2>BodyMap</h2>
+            <p>Tox21BodyMap shows where Tox21 and ToxCast assay targets fall on the human body.</p>
+            <p class="entry-meta">Version 1</p>
+            <a class="entry-button entry-button-secondary" href="/bodymap/">Open BodyMap</a>
+        </article>
+    </div>
+</div>
 {% endblock content %}

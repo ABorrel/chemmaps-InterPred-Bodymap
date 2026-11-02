@@ -1,105 +1,88 @@
 {% extends "base_light.html" %}
 {% load static %}
 {% block extra-css %}
-
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="{% static 'chemmaps/css/theme.css' %}" rel="stylesheet">
+<link href="{% static 'css/entry.css' %}" rel="stylesheet">
 {% endblock %}
-{% block title %} Index chemmaps{% endblock %}
+{% block title %}ChemMaps{% endblock %}
 {% block content %}
-
-<style>
-
-    /* Float four columns side by side */
-    .columnCard {
-        float: center;
-        width: 25%;
-    }
-
-    .column {
-        float: center;
-        padding: 0 10px;
-        width: auto;
-    }
-
-    /* Remove extra left and right margins, due to padding */
-    .row {
-        margin: auto;
-    }
-
-    /* Clear floats after the columns */
-    .row:after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-
-
-    .card-custom {
-        max-width: 400px;
-        min-width: 200px;
-        margin: 0 auto;
-    }
-</style>
-
-
-<div id="cookie-consent" class="cookie-consent">
-    <p>This site uses cookies for better performance and user experience. Do you agree to use cookies?</p>
-    <button id="accept-cookie-btn">Accept</button>
-    <button id="reject-cookie-btn">Decline</button>
-</div>
-
+<main id="content" class="entry-page">
+    <div id="cookie-consent" class="entry-cookies" role="region" aria-label="Cookies" hidden>
+        <p>ChemMaps asks you to accept cookies before you use the site.</p>
+        <button type="button" id="accept-cookie-btn" class="entry-button">Accept</button>
+        <button type="button" id="reject-cookie-btn" class="entry-button entry-button-secondary">Decline and leave ChemMaps</button>
+    </div>
+    <header class="entry-hero">
+        <div class="entry-hero-inner">
+            {% include 'chemmaps/includes/entry_nav.html' %}
+            {% if DTXSID %}
+            <p class="entry-error" role="alert">Error. {{ DTXSID }} is not in DSSToxMap. Check the identifier, or open the map without one.</p>
+            {% endif %}
+            <h1>ChemMaps</h1>
+        </div>
+    </header>
+    <div class="entry">
+        <p class="entry-lede">ChemMaps is a way to browse large chemical libraries on a map. Pick one of the four libraries below.</p>
+        <div class="entry-cards">
+            <article class="entry-card entry-card-drug">
+                <h2>DrugMap</h2>
+                <p>DrugMap shows marketed and experimental drugs from DrugBank 5.1.10, released 4 January 2023.</p>
+                <a class="entry-button" href="{% url 'chemmaps:DrugMap' %}">Open DrugMap</a>
+            </article>
+            <article class="entry-card entry-card-dsstox">
+                <h2>DSSToxMap</h2>
+                <p>DSSToxMap shows environmental chemicals from the EPA DSSTox library, released February 2022.</p>
+                <a class="entry-button" href="{% url 'chemmaps:DSSToxMap' %}">Open DSSToxMap</a>
+            </article>
+            <article class="entry-card entry-card-tox21">
+                <h2>Tox21Map</h2>
+                <p>Tox21Map shows the Tox21 screening library, released 29 October 2022.</p>
+                <a class="entry-button" href="{% url 'chemmaps:Tox21Map' %}">Open Tox21Map</a>
+            </article>
+            <article class="entry-card entry-card-pfas">
+                <h2>PFASMap</h2>
+                <p>PFASMap shows PFAS structures, released 29 October 2022.</p>
+                <a class="entry-button" href="{% url 'chemmaps:PFASMap' %}">Open PFASMap</a>
+            </article>
+        </div>
+        <section class="entry-section">
+            <h2>Cite ChemMaps</h2>
+            <ul class="entry-cites">
+                <li><a href="https://doi.org/10.1093/bioinformatics/bty412">Borrel, Kleinstreuer, and Fourches. Exploring drug space with ChemMaps.com. Bioinformatics, 2018.</a></li>
+                <li><a href="https://doi.org/10.1093/nar/gkad380">Borrel, Conway, Nolte, Unnikrishnan, Schmitt, and Kleinstreuer. ChemMaps.com v2.0: exploring the environmental chemical universe. Nucleic Acids Research, 2023.</a></li>
+            </ul>
+        </section>
+        <p class="entry-contact">Contact: <a href="mailto:alexandre.borrel@nih.gov">alexandre.borrel@nih.gov</a></p>
+        <p class="entry-meta">Latest update: October 2024</p>
+    </div>
+</main>
 <script>
-
-    // Get the cookie consent element and the accept and reject buttons
     var cookieConsent = document.getElementById("cookie-consent");
     var acceptBtn = document.getElementById("accept-cookie-btn");
     var rejectBtn = document.getElementById("reject-cookie-btn");
-
-    // Check if the user has already accepted or rejected the cookie policy
     var cookieConsentStatus = getCookie("cookie_consent");
     if (cookieConsentStatus === "accepted") {
-        // If the user has already accepted the cookie policy, hide the cookie consent form
-        cookieConsent.style.display = "none";
+        cookieConsent.hidden = true;
     } else if (cookieConsentStatus === "rejected") {
-        // If the user has already rejected the cookie policy, remove any existing cookies and hide the cookie consent form
         removeCookie("cookie_consent");
         removeCookie("other_cookies");
-        cookieConsent.style.display = "none";
+        cookieConsent.hidden = true;
     } else {
-        // If the user has not accepted or rejected the cookie policy, show the cookie consent form
-        cookieConsent.style.display = "block";
+        cookieConsent.hidden = false;
     }
-
-    // When the user clicks on the accept button, set a cookie and hide the cookie consent form
-    acceptBtn.onclick = function() {
-        // Set a cookie to remember that the user has accepted the cookie policy
+    acceptBtn.onclick = function () {
         setCookie("cookie_consent", "accepted", 365);
-
-        // Set any other cookies that are necessary for the website to function
         setCookie("other_cookies", "example_cookie_value", 365);
-
-        // Hide the cookie consent form
-        cookieConsent.style.display = "none";
-    }
-
-    // When the user clicks on the reject button, set a cookie to remember that the user has rejected the cookie policy and remove any existing cookies
-    rejectBtn.onclick = function() {
-        // Set a cookie to remember that the user has rejected the cookie policy
+        cookieConsent.hidden = true;
+    };
+    rejectBtn.onclick = function () {
         setCookie("cookie_consent", "rejected", 365);
-
-        // Remove any other cookies that were previously set
         removeCookie("other_cookies");
-
-        // Hide the cookie consent form
-        cookieConsent.style.display = "none";
-
-        // exist website
+        cookieConsent.hidden = true;
         window.location.href = "https://ntp.niehs.nih.gov/";
-    }
-
-    // Helper function to set a cookie
+    };
     function setCookie(name, value, days) {
         var expires = "";
         if (days) {
@@ -109,147 +92,18 @@
         }
         document.cookie = name + "=" + (value || "") + expires + "; path=/";
     }
-
-    // Helper function to get a cookie
     function getCookie(name) {
         var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
+        var ca = document.cookie.split(";");
         for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
-            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            while (c.charAt(0) === " ") c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
         }
         return null;
     }
-
-    // Helper function to remove a cookie
     function removeCookie(name) {
         document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }
-
 </script>
-
-<style>
-    .cookie-consent {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        padding: 10px;
-        background-color: #fff;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-        z-index: 9999;
-    }
-
-    .cookie-consent p {
-        margin: 0;
-        font-size: 14px;
-    }
-
-    .cookie-consent button {
-        background-color: #4285f4;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        font-size: 14px;
-        cursor: pointer;
-    }
-
-    .cookie-consent button:hover {
-        background-color: #2d6eb3;
-    }
-</style>
-
-
-
-<div role="navigation"> {% include 'chemmaps/includes/navbar.html' %}</div> 
-
-<div class="container-fluid bgindex text-center padding-left: 0px">
-    <br>
-    {% if DTXSID != "" %}
-        <p class = "Errorform" style="margin-right: 0px"> {{DTXSID}} is not included in the DSSToxMap.</p>
-    {% endif %}
-    <br><br><br><br><br>
-    <htitle>www.chemmaps.com</htitle><br><br>
-    <p><i>"A way to navigate in the chemical space"</i><br>
-    This website is free and open to all users and there is no login requirement.</p><br>
-    <p style="text-align:  center; font-size: 30px">Choose a map among the four maps available and navigate in the space</p>
-
-    <br><br><br>
-</div>
-
-<div class="container padding: 0px">
-    <br>
-    <div class="row">
-        <div class="column">
-            <div class="card-custom">
-                <div class="card-body text-center">
-                    <a href="{% url 'chemmaps:DrugMap' %}">
-                        <h4 class="card-title">DrugMap</h4>
-                    </a>
-                    <p class="card-text" style="font-size: 16px;"> Drugbank 5.1.10<br>(release 2023-01-04)<br></p>
-                </div>
-            </div>
-        </div>
-
-        <div class="column">
-            <div class="card-custom">
-                <div class="card-body text-center">
-                    <a href="{% url 'chemmaps:DSSToxMap' %}">
-                        <h4 class="card-title">DSSToxMap</h4>
-                    </a>
-                    <p class="card-text" style="font-size: 16px;">DSSTox<br>(release 2022-02)</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="column">
-            <div class="card-custom">
-                <div class="card-body text-center">
-                    <a href="{% url 'chemmaps:Tox21Map' %}">
-                        <h4 class="card-title">Tox21Map</h4>
-                    </a>
-                    <p class="card-text" style="font-size: 16px;">Tox21 Screening Chemical Library<br>(release 2022-10-29)</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="column">
-            <div class="card-custom">
-                <div class="card-body text-center">
-                    <a href="{% url 'chemmaps:PFASMap' %}">
-                        <h4 class="card-title">PFASMap</h4>
-                    </a>
-                    <p class="card-text" style="font-size: 16px;">PFAS structures<br>(release 2022-10-29)</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <br>
-</div>
-
-
-<div class="container-fluid bgindex text-center padding-left: 0px" style="padding-left:0px">
-    <br><br><br><br>
-    <br>
-    <p style="text-align:  center; font-size: 20px">
-        Please cite: <a href="https://doi.org/10.1093/bioinformatics/bty412" class="aurl">
-            A. Borrel, N. C. Kleinstreuer, & D. Fourches. (2018) Exploring drug space with ChemMaps.com.
-            Bioinformatics, (1), 1–3.</a>
-        <br>
-        <a href="https://doi.org/10.1093/nar/gkad380" class="aurl">
-            A. Borrel, M. Conway, S. Z. Nolte, A. Unnikrishnan, C. P. Schmitt, N. C. Kleinstreuer. (2023) ChemMaps.com v2.0: exploring the environmental chemical universe.
-            NAR, (51), W78–W82.</a><br></p><br><br><br>
-        <br>
-</div>
-
-<div class="container text-center padding: 0px">
-    <br>
-    <h4>Contact us</h4>
-    <p><a a class="aurl" style="color: #232b5f" href="mailto:alexandre.borrel@nih.gov"> alexandre.borrel[at]nih.gov</a><br>
-    </p>
-    <div style="text-align: left;"><i>Lastest update: 10/2024</i></div>
-</div>
-
 {% endblock content %}

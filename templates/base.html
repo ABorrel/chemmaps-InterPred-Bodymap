@@ -42,7 +42,7 @@
         {% endif %}
 
         {% block content_container %}
-        <div class='container-fluid'>
+        <main id="content" class="container-fluid">
             {% if request.user.is_authenticated %}
                  <span class="label label-info pull-right username-label">{{request.user.username}}</span>
             {% endif %}
@@ -50,7 +50,7 @@
             {% block content %}
 
             {% endblock content %}
-        </div>
+        </main>
         {% endblock content_container %}
     </div>
 

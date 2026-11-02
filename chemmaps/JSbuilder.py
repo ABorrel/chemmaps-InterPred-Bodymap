@@ -317,7 +317,7 @@ class JSbuilder:
                             "chemical_description", "desc_1d2d",
                             "WHERE inchikey = %s LIMIT 1", [inchikey],
                         )
-                        if lvaldesc2D == "ERROR":
+                        if lvaldesc2D == "ERROR" or not lvaldesc2D or lvaldesc2D[0][0] is None:
                             i = i + 1
                             continue
                         else:
