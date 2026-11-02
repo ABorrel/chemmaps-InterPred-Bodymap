@@ -6,7 +6,7 @@ from .uploadMap import propToDict
 from os import path
 from math import sqrt
 from copy import deepcopy
-from re import search
+from re import fullmatch
 
 from CompDesc import CompDesc
 
@@ -37,15 +37,15 @@ class DSSToxPrep:
             self.err = 1
             return
 
-        # case of DTXID
-        if search("DTXSID", center_chem):
-            # check if include in the DB
-            cmd_search = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1] FROM mvwchemmap_mapdsstox \
-                WHERE dsstox_id = '%s'" %(center_chem)
-            
-            
-            chem_center = self.cDB.execCMD(cmd_search)
-            if chem_center == []:
+        # case of DTXSID
+        if fullmatch(r"DTXSID\d+", center_chem):
+            map_rel = self.cDB.relation("mvwchemmap_mapdsstox")
+            cmd_search = (
+                "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1] "
+                "FROM " + map_rel + " WHERE dsstox_id = %s"
+            )
+            chem_center = self.cDB.execCMD(cmd_search, [center_chem])
+            if not isinstance(chem_center, list) or chem_center == []:
                 self.err = 1
                 return 
             
@@ -56,24 +56,37 @@ class DSSToxPrep:
                 inch = chem_center[0][2]
             
 
-            cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube(d3_cube) FROM %s.mvwchemmap_mapdsstox \
-                where dsstox_id='%s' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, center_chem, nbChem)
+            cmdExtract = (
+                "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox "
+                "FROM " + map_rel + " ORDER BY cube(d3_cube) <-> (SELECT cube(d3_cube) FROM " + map_rel +
+                " WHERE dsstox_id = %s LIMIT 1) LIMIT %s"
+            )
+            extract_params = [center_chem, int(nbChem)]
 
         else:
 
-            # need to check if it is in user table
-            cmd_count = "SELECT COUNT(*) FROM chemical_description_user WHERE inchikey = '%s' AND map_name = 'dsstox'"%(center_chem)
-            inUser = self.cDB.execCMD(cmd_count)[0][0]
+            map_rel = self.cDB.relation("mvwchemmap_mapdsstox")
+            user_rel = self.cDB.relation("chemical_description_user")
+            counted = self.cDB.execCMD(
+                "SELECT COUNT(*) FROM " + user_rel + " WHERE inchikey = %s AND map_name = 'dsstox'",
+                [center_chem],
+            )
+            inUser = counted[0][0] if isinstance(counted, list) and counted else 0
 
             if inUser == 1:
-                cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                    FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
-                    where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, center_chem, nbChem)
+                cmdExtract = (
+                    "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox "
+                    "FROM " + map_rel + " ORDER BY cube(d3_cube) <-> (SELECT cube(d3_cube) FROM " + user_rel +
+                    " WHERE inchikey = %s AND map_name = 'dsstox' LIMIT 1) LIMIT %s"
+                )
+                extract_params = [center_chem, int(nbChem)]
 
                 if center == 1:
-                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM chemical_description_user WHERE inchikey = '%s' AND map_name = 'dsstox'"%(center_chem))
-                    if coords_center == []:
+                    coords_center = self.cDB.execCMD(
+                        "SELECT d3_cube FROM " + user_rel + " WHERE inchikey = %s AND map_name = 'dsstox'",
+                        [center_chem],
+                    )
+                    if not isinstance(coords_center, list) or coords_center == []:
                         self.err = 1
                         return
                     else:
@@ -84,13 +97,19 @@ class DSSToxPrep:
 
             else:
                 # have to be a inch
-                cmdExtract = "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox \
-                    FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.mvwchemmap_mapdsstox \
-                    where inchikey='%s' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, center_chem, nbChem)
+                cmdExtract = (
+                    "SELECT dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox "
+                    "FROM " + map_rel + " ORDER BY cube(d3_cube) <-> (SELECT cube(d3_cube) FROM " + map_rel +
+                    " WHERE inchikey = %s LIMIT 1) LIMIT %s"
+                )
+                extract_params = [center_chem, int(nbChem)]
 
                 if center == 1:
-                    coords_center = self.cDB.execCMD("SELECT d3_cube FROM %s.mvwchemmap_mapdsstox WHERE inchikey = '%s'"%(self.cDB.schema, center_chem))
-                    if coords_center == []:
+                    coords_center = self.cDB.execCMD(
+                        "SELECT d3_cube FROM " + map_rel + " WHERE inchikey = %s",
+                        [center_chem],
+                    )
+                    if not isinstance(coords_center, list) or coords_center == []:
                         self.err = 1
                         return
                     else:
@@ -99,8 +118,10 @@ class DSSToxPrep:
                     y = coords_center[0][1]
                     z = coords_center[0][2]
 
-        lchem = self.cDB.execCMD(cmdExtract)
-
+        lchem = self.cDB.execCMD(cmdExtract, extract_params)
+        if not isinstance(lchem, list):
+            self.err = 1
+            return
 
         # format for JS dictionnary
         coord = {}
@@ -176,7 +197,10 @@ class DSSToxPrep:
     def loadChemMapAddMap(self):
         
         nbChemAdd = len(list(self.input["coord"].keys()))
-        nbChemInMap = 10000/nbChemAdd
+        if nbChemAdd == 0:
+            self.err = 1
+            return [{}, {}, {}, {}]
+        nbChemInMap = 10000 // nbChemAdd
         
         # case of only one chemical add => center view
         if nbChemAdd == 1:
@@ -190,7 +214,7 @@ class DSSToxPrep:
         dneighbor = {}
 
         for chem in self.input["SMILESClass"].keys():
-            if chem in list(self.input["db_id"].keys()) and search("DTXSID", self.input["db_id"][chem]):
+            if chem in list(self.input["db_id"].keys()) and fullmatch(r"DTXSID\d+", str(self.input["db_id"][chem] or "")):
                 dsstoxID = self.input["db_id"][chem]
                 #ldsstoxAdd.append(dsstoxID)
                 l_dict = self.loadChemMapCenterChem(dsstoxID, center_map, nbChemInMap)

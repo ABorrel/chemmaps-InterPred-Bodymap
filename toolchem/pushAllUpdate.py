@@ -1,6 +1,7 @@
 from . import DBrequest
 from django_server import toolbox
 from os import path, rename, rmdir
+from django_server.db_config import project_root
 from datetime import date
 from shutil import copy2
 
@@ -13,7 +14,7 @@ class pushAllUpdate:
         self.cDB = DBrequest.DBrequest()
         self.cDB.DB.verbose = 0
         self.prsession = pr_session
-        self.pr_static = path.abspath("./static/chemmaps/map") + "/"
+        self.pr_static = path.join(project_root(), "static", "chemmaps", "map") + "/"
         self.notice = []
         self.error = []
 

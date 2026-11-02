@@ -1,6 +1,6 @@
 from numpy import setdiff1d, average
 #from math import log10
-from re import search
+from re import fullmatch
 
 from .uploadMap import loadingMap
 from django_server import DB
@@ -9,9 +9,25 @@ from django_server import DB
 class loadTox21AssayMap:
     def __init__(self, assay):
 
-        self.assay = assay
+        self.assay = assay if isinstance(assay, str) and fullmatch(r"[-\w]*", assay) else ""
         self.l_desc = ["LogP_pred", "MolWeight"]
         self.cDB = DB.DB()
+
+    def _fetch(self, sql, params=None):
+        self.cDB.connOpen()
+        try:
+            if self.cDB.conn is None:
+                return []
+            cur = self.cDB.conn.cursor()
+            if params:
+                cur.execute(sql, params)
+            else:
+                cur.execute(sql)
+            return cur.fetchall()
+        except Exception:
+            return []
+        finally:
+            self.cDB.connClose()
     
     def loadMapCoords(self):
 
@@ -97,10 +113,11 @@ class loadTox21AssayMap:
 
     def loadAssayTargeted(self):
 
-        self.cDB.connOpen()
-        # load assays results
-        l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, ac50, aenm FROM ice_tox21 INNER JOIN chts_assays ON chts_assays.assay = ice_tox21.aenm WHERE gene='%s'"%(self.assay))
-        self.cDB.connClose()
+        l_chemassay = self._fetch(
+            "SELECT dtxsid, new_hitc, ac50, aenm FROM ice_tox21 "
+            "INNER JOIN chts_assays ON chts_assays.assay = ice_tox21.aenm WHERE gene = %s",
+            [self.assay],
+        )
 
         # format output assays
         d_assay = {}
@@ -116,7 +133,7 @@ class loadTox21AssayMap:
                 d_assay[dtxsid] = {}
                 d_assay[dtxsid]["Most active assay"] = "None"
                 d_assay[dtxsid]["Active assays"] = 0
-                if hitc == 0 and hitc == -1: 
+                if hitc == 0 or hitc == -1: 
                     d_assay[dtxsid]["Assay Outcome"] = "inactive"
                     d_assay[dtxsid]["AC50"] = 0.0
                 elif hitc == 2:
@@ -182,19 +199,20 @@ class loadTox21AssayMap:
 
 
         # assays targeted
-        self.cDB.connOpen()
-        # load assays results
-        l_assay = self.cDB.execCMD("SELECT DISTINCT aenm FROM ice_tox21 INNER JOIN chts_assays ON chts_assays.assay = ice_tox21.aenm WHERE gene='%s'"%(self.assay))
-        self.cDB.connClose()
+        l_assay = self._fetch(
+            "SELECT DISTINCT aenm FROM ice_tox21 "
+            "INNER JOIN chts_assays ON chts_assays.assay = ice_tox21.aenm WHERE gene = %s",
+            [self.assay],
+        )
 
         self.nb_assays = len(l_assay)
 
     def loadAssayResults(self):
 
-        self.cDB.connOpen()
-        # load assays results
-        l_chemassay = self.cDB.execCMD("SELECT dtxsid, new_hitc, ac50 FROM ice_tox21 WHERE aenm='%s'"%(self.assay))
-        self.cDB.connClose()
+        l_chemassay = self._fetch(
+            "SELECT dtxsid, new_hitc, ac50 FROM ice_tox21 WHERE aenm = %s",
+            [self.assay],
+        )
 
         nb_active_chemical = 0
 

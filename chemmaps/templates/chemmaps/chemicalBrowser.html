@@ -52,11 +52,13 @@
 
 </style>
 
+{{ d_assays|json_script:"chemmaps-d-assays" }}
+{{ d_chem|json_script:"chemmaps-d-chem" }}
+{{ d_fail|json_script:"chemmaps-d-fail" }}
 <script>
-    var d_assays = {{ d_assays | safe }};
-    var d_chem = {{ d_chem | safe }};
-    var d_fail = {{ d_fail | safe }}
-    console.log(d_fail);
+    var d_assays = JSON.parse(document.getElementById("chemmaps-d-assays").textContent);
+    var d_chem = JSON.parse(document.getElementById("chemmaps-d-chem").textContent);
+    var d_fail = JSON.parse(document.getElementById("chemmaps-d-fail").textContent);
     // lookup the container we want the Grid to use
     var eGridDiv = document.querySelector('#myGrid');
     // create the grid passing in the div to use together with the columns & data we want to use

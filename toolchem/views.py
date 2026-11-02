@@ -17,6 +17,7 @@ from . import updateFromFiles
 from . import pushAllUpdate
 from .forms import updateForm 
 from django_server import toolbox
+from django_server.db_config import temp_root
 
 
 # Create your views here
@@ -62,7 +63,7 @@ def index(request):
 def upload_chem(request):
 
     # open file with
-    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+    prsession = toolbox.createFolder(temp_root() + "/update/")
 
     # count for index page
     cCount = countChem.countChem()
@@ -111,7 +112,7 @@ def upload_chem(request):
             return render(request, 'toolchem/overlap.html', {"nb_included": nb_included, "nb_noincluded": nb_noincluded, "nb_topush":nb_topush, "map": map_chem, "nbChemDescForMap": cOverlap.nbChemDescForMap})
 
 def compute_desc(request):
-    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/", clean=1)
+    prsession = toolbox.createFolder(temp_root() + "/update/", clean=1)
     cCompDesc = computeDesc.computeDesc(prsession)
     cCompDesc.runDesc()
     
@@ -123,7 +124,7 @@ def compute_desc(request):
     return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "notice":cCompDesc.notice, "dcount":dcount, "error":cCompDesc.error})
 
 def checkAlreadyComputedDesc(request):
-    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+    prsession = toolbox.createFolder(temp_root() + "/update/")
     cCompDesc = computeDesc.computeDesc(prsession)
     cCompDesc.CheckDescriptorFromMainTable()
     
@@ -135,7 +136,7 @@ def checkAlreadyComputedDesc(request):
     return render(request, 'toolchem/index.html', {"formUpdate":formUpdate, "notice":cCompDesc.notice, "dcount":dcount, "error":cCompDesc.error})
 
 def compute_opera(request):
-    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/OPERA/", clean=1)
+    prsession = toolbox.createFolder(temp_root() + "/update/OPERA/", clean=1)
 
     cCompOPERA = computeOPERA.computeOPERA(prsession)
     cCompOPERA.runOPERA()
@@ -149,7 +150,7 @@ def compute_opera(request):
 
 def compute_interference(request):
 
-    prsession = toolbox.createFolder(path.abspath("./temp") + "/update/InterPred/", clean=1)
+    prsession = toolbox.createFolder(temp_root() + "/update/InterPred/", clean=1)
 
     # count for index page
     cCount = countChem.countChem()
@@ -168,7 +169,7 @@ def compute_interference(request):
 
 def compute_coords(request):
 
-    pr_session = path.abspath("./temp") + "/update/"
+    pr_session = temp_root() + "/update/"
 
     # generate the return information
     # form update
@@ -199,8 +200,8 @@ def compute_coords(request):
 def upload_datafiles(request):
 
     a = str(randint(0, 1000000))# define a random number for folder in update to avoid overlap
-    #pr_session = toolbox.createFolder(path.abspath("./temp") + "update/coords-" + a + "/")
-    pr_session = path.abspath("./temp") + "/update/"
+    #pr_session = toolbox.createFolder(temp_root() + "update/coords-" + a + "/")
+    pr_session = temp_root() + "/update/"
 
     # generate the return information
     # form update
@@ -226,7 +227,7 @@ def upload_datafiles(request):
 def download(request, name):
 
     name_session = request.session.get("name_session")
-    prSession = toolbox.createFolder(path.abspath("./temp") + "/update/")
+    prSession = toolbox.createFolder(temp_root() + "/update/")
     file_path = prSession + name + ".csv"
     if path.exists(file_path):
         with open(file_path, 'rb') as fh:
@@ -276,7 +277,7 @@ def clearuserchem(request):
 
 def pushUpdate(request):
 
-    pr_session = path.abspath("./temp") + "/update/"
+    pr_session = temp_root() + "/update/"
     cpush = pushAllUpdate.pushAllUpdate(pr_session)
     cpush.pushAll()
 

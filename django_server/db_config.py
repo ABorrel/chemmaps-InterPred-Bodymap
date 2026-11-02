@@ -1,8 +1,38 @@
 """Shared PostgreSQL settings from database.ini for psycopg2.connect."""
 
+import os
 from configparser import ConfigParser
+from os import path
 
 DEFAULT_SCHEMA = "public"
+
+
+def project_root():
+    """Repository root (parent of the django_server package)."""
+    return path.abspath(path.join(path.dirname(__file__), os.pardir))
+
+
+def database_ini_path():
+    """
+    Production gunicorn keeps cwd /home/alexb, where database.ini already exists.
+    CHEMMAPS_DB_CONFIG selects another file. Otherwise use ./database.ini when
+    that file exists, then the copy next to the repository.
+    """
+    env = os.environ.get("CHEMMAPS_DB_CONFIG")
+    if env:
+        return path.abspath(env)
+    cwd_ini = path.abspath("./database.ini")
+    if path.isfile(cwd_ini):
+        return cwd_ini
+    return path.join(project_root(), "database.ini")
+
+
+def temp_root():
+    """Session upload directory. CHEMMAPS_TEMP overrides the cwd ./temp default."""
+    env = os.environ.get("CHEMMAPS_TEMP")
+    if env:
+        return path.abspath(env)
+    return path.abspath("./temp")
 
 
 def load_postgresql_settings(config_path):

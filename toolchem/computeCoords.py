@@ -2,12 +2,13 @@ from os import system, path
 from copy import deepcopy
 from . import DBrequest
 from django_server import toolbox
+from django_server.db_config import project_root
 
 class computeCoords:
 
     def __init__(self, map_name, pr_session):
         self.map_name = map_name
-        self.p_staticMap = path.abspath("./static/chemmaps/map/" + self.map_name + "/") + "/"
+        self.p_staticMap = path.join(project_root(), "static", "chemmaps", "map", self.map_name) + "/"
         self.error = []
         self.notice = []
         self.pr_session = pr_session
@@ -72,7 +73,7 @@ class computeCoords:
         p_desc1D3D = toolbox.writeDescFromDict(l_ddesc_3D, self.pr_session + "3D.csv")
 
         # run R script
-        cmd = "%s/generateMapFile.R %s %s %s"%(path.abspath("./chemmaps/Rscripts"), p_desc1D2D, p_desc1D3D, self.pr_session)
+        cmd = "%s/generateMapFile.R %s %s %s"%(path.join(project_root(), "chemmaps", "Rscripts"), p_desc1D2D, p_desc1D3D, self.pr_session)
         system(cmd)
 
         p_coords1D2D = self.pr_session + "coord1D2D.csv"

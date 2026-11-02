@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from random import randint
 from os import path
+from django_server.db_config import temp_root
 import json
 
 from .forms import uploadList, UploadChemList, QSARModelChoice
@@ -147,7 +148,7 @@ def computeDesc(request):
 def download(request, name):
 
     name_session = request.session.get("name_session")
-    prSession = path.abspath("./temp") + "/" + str(name_session) + "/"
+    prSession = temp_root() + "/" + str(name_session) + "/"
     file_path = prSession + name + ".csv"
     if path.exists(file_path):
         with open(file_path, 'rb') as fh:

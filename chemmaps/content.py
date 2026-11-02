@@ -3,7 +3,7 @@ from .DBrequest import DBrequest
 from django.db import connection
 
 from os import path, remove
-from re import search
+from re import fullmatch
 from shutil import copy2
 import sys
 import CompDesc
@@ -53,10 +53,16 @@ class uploadSMILES:
                 smiles_clean = []
                 inch = "Error"
                 # Check if in DB => case it has a ID
-                if search("DTXSID", chem_input):
-                    smiles_clean = self.cDB.extractColoumn("chemicals", "smiles_clean, inchikey", "WHERE dsstox_id = '%s'"%(chem_input))
-                elif search("^DB", chem_input):
-                    smiles_clean = self.cDB.extractColoumn("chemicals", "smiles_clean, inchikey", "WHERE drugbank_id = '%s'"%(chem_input))
+                if fullmatch(r"DTXSID\d+", chem_input):
+                    smiles_clean = self.cDB.extractColoumn(
+                        "chemicals", "smiles_clean, inchikey",
+                        "WHERE dsstox_id = %s", [chem_input],
+                    )
+                elif fullmatch(r"DB\d+", chem_input):
+                    smiles_clean = self.cDB.extractColoumn(
+                        "chemicals", "smiles_clean, inchikey",
+                        "WHERE drugbank_id = %s", [chem_input],
+                    )
                 
                 # inspect the DB with SMILES from users
                 if smiles_clean == [] or smiles_clean == "ERROR":
@@ -216,9 +222,15 @@ def downloadDescFromDB(cDB, ldesc1D2D, ldesc3D, table, inchikey, mapName=""):
 
     if table == "global":
         cDB.verbose = 0
-        lval = cDB.extractColoumn("chemical_description", "desc_1d2d, desc_3d","where inchikey='%s' limit(1)"%(inchikey))
+        lval = cDB.extractColoumn(
+            "chemical_description", "desc_1d2d, desc_3d",
+            "WHERE inchikey = %s LIMIT 1", [inchikey],
+        )
     else:
-        lval = cDB.extractColoumn("chemical_description_user", "desc_1d2d, desc_3d","where inchikey='%s' and map_name='%s' limit(1)"%(inchikey, mapName))
+        lval = cDB.extractColoumn(
+            "chemical_description_user", "desc_1d2d, desc_3d",
+            "WHERE inchikey = %s AND map_name = %s LIMIT 1", [inchikey, mapName],
+        )
     
     if lval == "Error" or lval == []:
         return []

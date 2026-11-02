@@ -13,8 +13,15 @@ function defineColumnDef() {
         cellClass: "grid-cell-left",
         cellRenderer: function(params) {
             let keyData = params.data.dtxid;
-            let newLink = `<a href= https://comptox.epa.gov/dashboard/chemical/invitrodb/${keyData} target="_blank">${keyData}</a>`;
-            return newLink;
+            if (typeof keyData !== "string" || !/^DTXSID\d+$/.test(keyData)) {
+                return document.createTextNode(keyData == null ? "" : String(keyData));
+            }
+            let link = document.createElement("a");
+            link.href = "https://comptox.epa.gov/dashboard/chemical/invitrodb/" + keyData;
+            link.target = "_blank";
+            link.rel = "noopener";
+            link.textContent = keyData;
+            return link;
         },
     });
 
@@ -84,8 +91,15 @@ function defineColumnDef() {
         cellClass: "grid-cell-left",
         cellRenderer: function(params) {
             let keyData = params.data.lowest_active_assay;
-            let newLink = `<a href= /chemmaps/tox21/${keyData} target="_blank">${keyData}</a>`;
-            return newLink;
+            if (typeof keyData !== "string" || !/^[-\w]+$/.test(keyData)) {
+                return document.createTextNode(keyData == null ? "" : String(keyData));
+            }
+            let link = document.createElement("a");
+            link.href = "/chemmaps/tox21/" + keyData;
+            link.target = "_blank";
+            link.rel = "noopener";
+            link.textContent = keyData;
+            return link;
         },
     });
     return columnDefs;

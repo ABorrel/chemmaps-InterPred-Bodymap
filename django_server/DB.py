@@ -1,13 +1,11 @@
 import psycopg2
 
-from os import path
-
-from django_server.db_config import load_postgresql_settings
+from django_server.db_config import database_ini_path, load_postgresql_settings
 
 
 class DB:
     def __init__(self, verbose=0):
-        self.dbconfig = path.abspath("./database.ini")
+        self.dbconfig = database_ini_path()
         self.conn = None
         self.verbose = verbose
         self.connect_kwargs = None

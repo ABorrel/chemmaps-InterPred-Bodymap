@@ -1,11 +1,34 @@
-from os import system, path, remove
+from os import path, remove
+from subprocess import run
 from .toolbox import loadMatrixToDict, loadMatrixInfoToDict, convertSMILEStoINCHIKEY, loadMap1D2D3D
-from .DBrequest import DBrequest
+from .DBrequest import DBrequest, quote_columns
 from .uploadMap import loadingMap
 
 import math
 from copy import deepcopy
-from re import search
+from re import fullmatch, search
+
+
+def _inside(root, candidate):
+    root_real = path.realpath(root)
+    cand = path.realpath(candidate)
+    if path.commonpath([root_real, cand]) != root_real:
+        raise ValueError("path escapes root")
+    return cand
+
+
+def _float_array(values):
+    nums = [float(value) for value in values]
+    return "{" + ",".join(str(num) for num in nums) + "}"
+
+
+def _text_array(values):
+    clean = []
+    for value in values:
+        text = str(value)
+        if fullmatch(r"[A-Za-z0-9_-]+", text):
+            clean.append(text)
+    return "{" + ",".join('"%s"' % text for text in clean) + "}"
 
 
 # to format desc for map
@@ -47,11 +70,12 @@ DDESCDSSTOX = {"EPA_category": "EPA category", "LD50_mgkg": "LD50 (mg/kg)",
 class JSbuilder:
 
     def __init__(self, nameMap, ldescMap = [], prout = ""):
-        self.nameMap = nameMap
+        self.nameMap = nameMap if nameMap in ("drugbank", "dsstox", "tox21", "pfas") else ""
         self.prout = prout
         self.ldescMap = ldescMap
         self.cDB = DBrequest()
-        self.pMap = path.abspath(path.dirname(__file__) + "/../static/chemmaps/map/" + self.nameMap + "/") + "/"
+        map_root = path.realpath(path.join(path.dirname(__file__), "..", "static", "chemmaps", "map"))
+        self.pMap = path.realpath(path.join(map_root, self.nameMap)) + path.sep if self.nameMap else ""
         self.cDB.verbose = 0
         self.err = 0
 
@@ -118,6 +142,9 @@ class JSbuilder:
         """
         Case of new chemicals uploaded in the database
         """
+        if not self.nameMap or not self.pMap:
+            self.err = 1
+            return "ERROR"
         self.inDB = 0
 
         # load descriptor from prop
@@ -168,17 +195,20 @@ class JSbuilder:
                 ddesc[ldesc[d]] = lval[d]
                 d = d + 1
 
+            map_columns = "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox"
+            inch_where = "WHERE inchikey = %s AND d3_cube IS NOT NULL LIMIT 1"
             if self.nameMap == "drugbank":
-                lextract = self.cDB.extractColoumn("mvwchemmap_mapdrugbank", "drugbank_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox", "WHERE inchikey = '%s' AND d3_cube is not null limit (1)"%(inchikey))
-
+                lextract = self.cDB.extractColoumn(
+                    "mvwchemmap_mapdrugbank",
+                    "drugbank_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox",
+                    inch_where, [inchikey],
+                )
             elif self.nameMap == "pfas":
-                lextract = self.cDB.extractColoumn("mvwchemmap_mappfas", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox", "WHERE inchikey = '%s' AND d3_cube is not null limit (1)"%(inchikey))
-
+                lextract = self.cDB.extractColoumn("mvwchemmap_mappfas", map_columns, inch_where, [inchikey])
             elif self.nameMap == "tox21":
-                lextract = self.cDB.extractColoumn("mvwchemmap_maptox21", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox", "WHERE inchikey = '%s' AND d3_cube is not null limit (1)"%(inchikey))
-            
+                lextract = self.cDB.extractColoumn("mvwchemmap_maptox21", map_columns, inch_where, [inchikey])
             else:
-                lextract = self.cDB.extractColoumn("mvwchemmap_mapdsstox", "dsstox_id, smiles_clean, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, prop_value, prop_tox", "WHERE inchikey = '%s' AND d3_cube is not null limit (1)"%(inchikey))
+                lextract = self.cDB.extractColoumn("mvwchemmap_mapdsstox", map_columns, inch_where, [inchikey])
             
             if lextract != [] and lextract[0][0] != "":
                 lextract = lextract[0]
@@ -260,7 +290,12 @@ class JSbuilder:
 
             else:
                 #Check on the user table
-                lextract = self.cDB.extractColoumn("chemical_description_user", "source_id, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, desc_1d2d",  "WHERE inchikey = '%s' and map_name = '%s' limit (1)"%(inchikey, self.nameMap))
+                lextract = self.cDB.extractColoumn(
+                    "chemical_description_user",
+                    "source_id, inchikey, dim1d2d[1], dim1d2d[2], dim3d[1], neighbors_dim3, desc_1d2d",
+                    "WHERE inchikey = %s AND map_name = %s LIMIT 1",
+                    [inchikey, self.nameMap],
+                )
 
                 if lextract != [] and lextract != "ERROR" and lextract[0] != None and lextract[0][2] != None:
                     lextract = lextract[0]
@@ -278,7 +313,10 @@ class JSbuilder:
                     # in case where descriptor is in the main chemmapchemicals 
                     if lvaldesc2D == None:
                         # extract only the first line with desc values
-                        lvaldesc2D = self.cDB.extractColoumn("chemical_description", "desc_1d2d",  "WHERE inchikey = '%s' limit (1)"%(inchikey))
+                        lvaldesc2D = self.cDB.extractColoumn(
+                            "chemical_description", "desc_1d2d",
+                            "WHERE inchikey = %s LIMIT 1", [inchikey],
+                        )
                         if lvaldesc2D == "ERROR":
                             i = i + 1
                             continue
@@ -380,10 +418,26 @@ class JSbuilder:
             try: remove(p3Dcoord)
             except:pass
 
-            # run R script
-            ## add Rscript for  windows install!
-            cmd = "%s/addonMap.R %s %s %s1D2Dscaling.csv %s3Dscaling.csv %sCP1D2D.csv %sCP3D.csv %s"%(path.abspath(path.dirname(__file__) + "/Rscripts"), p1D2D, p3D, self.pMap, self.pMap, self.pMap, self.pMap, self.prout)
-            system(cmd)
+            script = path.join(path.dirname(__file__), "Rscripts", "addonMap.R")
+            try:
+                args = [
+                    "Rscript",
+                    _inside(path.join(path.dirname(__file__), "Rscripts"), script),
+                    _inside(self.prout, p1D2D),
+                    _inside(self.prout, p3D),
+                    _inside(self.pMap, self.pMap + "1D2Dscaling.csv"),
+                    _inside(self.pMap, self.pMap + "3Dscaling.csv"),
+                    _inside(self.pMap, self.pMap + "CP1D2D.csv"),
+                    _inside(self.pMap, self.pMap + "CP3D.csv"),
+                    _inside(self.prout, self.prout),
+                ]
+            except ValueError:
+                self.err = 1
+                return "ERROR"
+            completed = run(args, check=False)
+            if completed.returncode != 0:
+                self.err = 1
+                return "ERROR"
 
             if path.exists(p1D2Dcoord) and path.exists(p3Dcoord):
                 dcoords = loadMap1D2D3D(p1D2Dcoord, p3Dcoord)
@@ -397,15 +451,28 @@ class JSbuilder:
                 for ID in dcoords.keys():
                     self.dchemAdd["coord"][ID] = {}
                     self.dchemAdd["coord"][ID] = dcoords[ID]
-                    l = list(ddesc1D2D.keys())
-                    cmdInclude = "SELECT count(*) FROM chemical_description_user WHERE inchikey='%s' AND map_name = '%s';"%(ddesc1D2D[ID]["inchikey"], self.nameMap)
-                    included = int(self.cDB.execCMD(cmdInclude)[0][0])
-                    if included == 0: 
+                    inchikey = ddesc1D2D[ID]["inchikey"]
+                    dim1d2d = _float_array([dcoords[ID][0], dcoords[ID][1]])
+                    dim3d = _float_array([dcoords[ID][2]])
+                    cube = _float_array([dcoords[ID][0], dcoords[ID][1], dcoords[ID][2]])
+                    counted = self.cDB.execCMD(
+                        "SELECT count(*) FROM chemical_description_user WHERE inchikey = %s AND map_name = %s",
+                        [inchikey, self.nameMap],
+                    )
+                    included = int(counted[0][0]) if isinstance(counted, list) and counted else 0
+                    if included == 0:
                         self.cDB.verbose = 0
-                        self.cDB.addElement("chemical_description_user", ["source_id", "dim1d2d", "dim3d", "d3_cube", "inchikey", "map_name", "status"], [ddesc1D2D[ID]["SMILES"], '{%s, %s}'%(dcoords[ID][0],dcoords[ID][1]), '{%s}'%(dcoords[ID][2]), '{%s, %s, %s}'%(dcoords[ID][0],dcoords[ID][1], dcoords[ID][2]),ddesc1D2D[ID]["inchikey"],self.nameMap, "user"])
+                        self.cDB.addElement(
+                            "chemical_description_user",
+                            ["source_id", "dim1d2d", "dim3d", "d3_cube", "inchikey", "map_name", "status"],
+                            [ddesc1D2D[ID]["SMILES"], dim1d2d, dim3d, cube, inchikey, self.nameMap, "user"],
+                        )
                     else:
-                        cmdSQL = "UPDATE chemical_description_user SET dim1d2d = '{%s, %s}', dim3d = '{%s}', d3_cube='{%s, %s, %s}'  WHERE inchikey='%s' AND map_name = '%s';"%(dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], dcoords[ID][0],dcoords[ID][1], dcoords[ID][2], ddesc1D2D[ID]["inchikey"],self.nameMap)
-                        err = self.cDB.updateElement(cmdSQL)
+                        self.cDB.updateElement(
+                            "UPDATE chemical_description_user SET dim1d2d = %s, dim3d = %s, d3_cube = %s "
+                            "WHERE inchikey = %s AND map_name = %s",
+                            [dim1d2d, dim3d, cube, inchikey, self.nameMap],
+                        )
                     
 
     def findneighbor(self, nbneighbor=20):
@@ -431,39 +498,39 @@ class JSbuilder:
                 continue
             else:
                 inch = self.dchemAdd["SMILESClass"][ID]["inchikey"]
-                cmd_count = "SELECT COUNT(*) FROM chemical_description_user WHERE inchikey = '%s' AND map_name = '%s'"%(inch, self.nameMap)
-                inUser = self.cDB.execCMD(cmd_count)[0][0]
-                
-                if inUser == 0:
+                counted = self.cDB.execCMD(
+                    "SELECT COUNT(*) FROM chemical_description_user WHERE inchikey = %s AND map_name = %s",
+                    [inch, self.nameMap],
+                )
+                inUser = counted[0][0] if isinstance(counted, list) and counted else 0
+
+                if inUser == 0 or self.nameMap not in ("dsstox", "pfas", "tox21", "drugbank"):
                     continue
-                else:
-                    if self.nameMap == "dsstox":
-                        # need to check if it is in user table
-                        cmdExtract = "SELECT dsstox_id FROM %s.mvwchemmap_mapdsstox ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
-                            where inchikey='%s' AND map_name='dsstox' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, inch, nbneighbor)
-                    
-                    elif self.nameMap == "pfas":
-                        cmdExtract = "SELECT dsstox_id FROM %s.mvwchemmap_mappfas ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
-                            where inchikey='%s' AND map_name='pfas' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, inch, nbneighbor)
 
-                    elif self.nameMap == "tox21":
-                        cmdExtract = "SELECT dsstox_id FROM %s.mvwchemmap_maptox21 ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
-                            where inchikey='%s' AND map_name='tox21' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, inch,nbneighbor)
+                id_column = "drugbank_id" if self.nameMap == "drugbank" else "dsstox_id"
+                map_table = {
+                    "dsstox": "mvwchemmap_mapdsstox",
+                    "pfas": "mvwchemmap_mappfas",
+                    "tox21": "mvwchemmap_maptox21",
+                    "drugbank": "mvwchemmap_mapdrugbank",
+                }[self.nameMap]
+                map_rel = self.cDB.relation(map_table)
+                user_rel = self.cDB.relation("chemical_description_user")
+                cmdExtract = (
+                    "SELECT " + quote_columns(id_column) + " FROM " + map_rel +
+                    " ORDER BY cube(d3_cube) <-> (SELECT cube(d3_cube) FROM " + user_rel +
+                    " WHERE inchikey = %s AND map_name = %s LIMIT 1) LIMIT %s"
+                )
+                lID = self.cDB.execCMD(cmdExtract, [inch, self.nameMap, int(nbneighbor)])
 
-                    elif self.nameMap == "drugbank":
-                        cmdExtract = "SELECT drugbank_id FROM %s.mvwchemmap_mapdrugbank ORDER BY cube(d3_cube) <->  (SELECT cube (d3_cube) FROM %s.chemical_description_user \
-                            where inchikey='%s' AND map_name='drugbank' limit (1)) limit (%s);"%(self.cDB.schema, self.cDB.schema, inch,nbneighbor)
-
-
-                    lID = self.cDB.execCMD(cmdExtract)
-                    
-                    if lID != "Error" or lID != []:
-                        lID = [ID[0] for ID in lID]
-                        self.dchemAdd["neighbor"][ID] = lID
-                
-                        # add in the user DB
-                        cmdSQL = "UPDATE chemical_description_user SET neighbors_dim3 = '{%s}' WHERE inchikey='%s' AND map_name = '%s' AND status = 'user';"%(",".join("\"" + ID + "\"" for ID in lID), self.dchemAdd["SMILESClass"][ID]["inchikey"], self.nameMap)
-                        self.cDB.updateElement(cmdSQL)
+                if isinstance(lID, list) and lID != []:
+                    lID = [row[0] for row in lID]
+                    self.dchemAdd["neighbor"][ID] = lID
+                    self.cDB.updateElement(
+                        "UPDATE chemical_description_user SET neighbors_dim3 = %s "
+                        "WHERE inchikey = %s AND map_name = %s AND status = 'user'",
+                        [_text_array(lID), inch, self.nameMap],
+                    )
 
 
     def findinfoTable(self):

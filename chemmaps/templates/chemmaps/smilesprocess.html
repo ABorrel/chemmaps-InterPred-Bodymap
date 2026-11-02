@@ -112,22 +112,22 @@
 
             {% if ERRORSmiles == "0" %}
             {% if map == "drugbank"  %}
-            <form action='/chemmaps/DrugMapDescriptors' method='get' onsubmit="ShowLoading()">
+            <form action='/chemmaps/DrugMapDescriptors' method='post' onsubmit="ShowLoading()">{% csrf_token %}
                 <input type='submit' value='Compute descriptors' />
             </form>
             {% endif %}
             {% if map == "dsstox"  %}
-            <form action='/chemmaps/DSSToxMapDescriptors' method='get' onsubmit="ShowLoading()">
+            <form action='/chemmaps/DSSToxMapDescriptors' method='post' onsubmit="ShowLoading()">{% csrf_token %}
                 <input type='submit' value='Compute descriptors' />
             </form>
             {% endif %}
             {% if map == "pfas"  %}
-            <form action='/chemmaps/PFASMapDescriptors' method='get' onsubmit="ShowLoading()">
+            <form action='/chemmaps/PFASMapDescriptors' method='post' onsubmit="ShowLoading()">{% csrf_token %}
                 <input type='submit' value='Compute descriptors' />
             </form>
             {% endif %}
             {% if map == "tox21"  %}
-            <form action='/chemmaps/Tox21MapDescriptors' method='get' onsubmit="ShowLoading()">
+            <form action='/chemmaps/Tox21MapDescriptors' method='post' onsubmit="ShowLoading()">{% csrf_token %}
                 <input type='submit' value='Compute descriptors' />
             </form>
             {% endif %}

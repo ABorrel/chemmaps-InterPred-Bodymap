@@ -13,6 +13,7 @@
     </head>
 
 {% load static %}
+{% load chemmaps_json %}
 {% block extra-css %}
 <link href="{% static 'chemmaps/css/chemMap.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
@@ -216,12 +217,22 @@
     <script src="{% static 'chemmaps/js/mapfunctions.js' %}" type="text/javascript"></script>
     <script src="{% static 'chemmaps/js/toolbox.js' %}" type="text/javascript"></script>
 
+    {{ map|json_safe|json_script:"chemmaps-map" }}
+    {{ dcoord|json_safe|json_script:"chemmaps-dcoord" }}
+    {{ dinfo|json_safe|json_script:"chemmaps-dinfo" }}
+    {{ dneighbor|json_safe|json_script:"chemmaps-dneighbor" }}
+    {{ dSMILESClass|json_safe|json_script:"chemmaps-dsmiles" }}
+    {{ ldesc|json_safe|json_script:"chemmaps-ldesc" }}
     <script>
+
+                function chemmapsJson(id) {
+                    return JSON.parse(document.getElementById(id).textContent);
+                }
 
                 var strDownloadMime = "image/octet-stream";
                 //for the function generalisation
-                var map = {{mapJS | safe}};
-                var prSession = {{prSessionJS | safe}};
+                var map = chemmapsJson("chemmaps-map");
+                var prSession = "";
                 
 
                 // format properly descriptors
@@ -258,24 +269,22 @@
                 ;
 
                 //Coordinates
-                var dcoords = {{dcoord | safe}};
-                //console.log(Object.keys(dcoords).length)
+                var dcoords = chemmapsJson("chemmaps-dcoord");
                 
                 // info for compound bar
-                var dinfo = {{dinfo | safe}};
-                console.log(dinfo);
+                var dinfo = chemmapsJson("chemmaps-dinfo");
 
                 // neighbors
-                var dneighbors = {{dneighbor | safe}};
+                var dneighbors = chemmapsJson("chemmaps-dneighbor");
                 
                 //load SMILES and class
-                var dSMILESClass = {{dSMILESClass | safe}};
+                var dSMILESClass = chemmapsJson("chemmaps-dsmiles");
 
                 //nb chemical
-                nbchem.innerHTML = Object.keys(dinfo).length;
+                nbchem.textContent = Object.keys(dinfo).length;
 
                 // import ldesc
-                var ldesc = {{ldesc | safe}};
+                var ldesc = chemmapsJson("chemmaps-ldesc");
 
                 // color for the map
                 if (map == "drugbank"){

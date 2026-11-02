@@ -14,8 +14,15 @@ function defineColumnDef(din) {
                     lockVisible: true,
                     cellRenderer: function(params) {
                         let keyData = params.data.assay;
-                        let newLink = `<a href= /chemmaps/tox21/${keyData} target="_blank">${keyData}</a>`;
-                        return newLink;
+                        if (typeof keyData !== "string" || !/^[-\w]+$/.test(keyData)) {
+                            return document.createTextNode(keyData == null ? "" : String(keyData));
+                        }
+                        let link = document.createElement("a");
+                        link.href = "/chemmaps/tox21/" + keyData;
+                        link.target = "_blank";
+                        link.rel = "noopener";
+                        link.textContent = keyData;
+                        return link;
                     },
                 });
             }else if (prop == "gene"){
@@ -29,10 +36,15 @@ function defineColumnDef(din) {
                     lockVisible: true,
                     cellRenderer: function(params) {
                         let keyData = params.data.gene;
-                        if (keyData != null){
-                            let newLink = `<a href= /chemmaps/tox21/target=${keyData} target="_blank">${keyData}</a>`;
-                            return newLink;
-                        };
+                        if (typeof keyData !== "string" || !/^[-\w]+$/.test(keyData)) {
+                            return document.createTextNode(keyData == null ? "" : String(keyData));
+                        }
+                        let link = document.createElement("a");
+                        link.href = "/chemmaps/tox21/target=" + keyData;
+                        link.target = "_blank";
+                        link.rel = "noopener";
+                        link.textContent = keyData;
+                        return link;
                     },
                 });
             }else if (prop == "invitro_assay_format"){

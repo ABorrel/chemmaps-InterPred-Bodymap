@@ -39,8 +39,32 @@ def loadMatrixToDict(pmatrixIn, sep ="\t"):
     return dout
 
 
+import re
+import secrets
+
 from os import path, makedirs, listdir, remove
 from shutil import rmtree
+
+from django_server.db_config import temp_root
+
+_SESSION_RE = re.compile(r"^[A-Za-z0-9_-]{8,64}$")
+DOWNLOAD_NAMES = frozenset({"2D", "3D", "lowestAC50"})
+
+
+def ensure_session(request):
+    name = request.session.get("name_session")
+    if not isinstance(name, str) or not _SESSION_RE.fullmatch(name):
+        name = secrets.token_urlsafe(18)
+        request.session["name_session"] = name
+    return name
+
+
+def session_dir(request):
+    root = path.realpath(temp_root())
+    folder = path.realpath(path.join(root, ensure_session(request)))
+    if path.commonpath([root, folder]) != root:
+        raise ValueError("session path escapes temp root")
+    return folder + path.sep
 
 def cleanFolder(prin):
 
